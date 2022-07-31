@@ -16,3 +16,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "SeeYau"
 include ':app'
+include ':features:navigator-screen'
+include ':features:dialog-screen'
+include ':domain:navigator'
+include ':data:navigator'
+include ':core:di'
+include ':core:ui'
+include ':core:network'
+include ':core:util'
+include ':common:ui'

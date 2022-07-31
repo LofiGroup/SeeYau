@@ -39,6 +39,15 @@ android {
 }
 
 dependencies {
+  implementation project(":core:ui")
+  implementation project(":common:ui")
+  
+  implementation project(":domain:navigator")
+  implementation project(":data:navigator")
+
+  implementation project(":features:navigator-screen")
+  implementation project(":features:dialog-screen")
+
   implementation appCompat
   implementation coreKtx
 
@@ -49,7 +58,7 @@ dependencies {
 
   implementation composeDeps.runtime
   implementation composeDeps.ui
-  implementation composeDeps.uiTooling
+  debugImplementation composeDeps.uiTooling
   implementation composeDeps.foundation
   implementation composeDeps.foundationLayout
   implementation composeDeps.material
@@ -57,6 +66,7 @@ dependencies {
   implementation composeDeps.materialIconsExtended
   implementation composeDeps.activity
   implementation composeDeps.navigation
+  debugImplementation composeDeps.poolingContainer
 
   implementation daggerDeps.core
   kapt daggerDeps.annotationProcessor
