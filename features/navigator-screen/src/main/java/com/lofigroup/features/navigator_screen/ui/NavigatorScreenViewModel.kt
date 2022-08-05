@@ -15,17 +15,7 @@ class NavigatorScreenViewModel @Inject constructor(
 
   override fun getState(): Flow<NavigatorScreenState> {
     return getNearbyUsersUseCase().map {
-      when (it) {
-        is Resource.Loading -> {
-          NavigatorScreenState(isLoading = true)
-        }
-        is Resource.Error -> {
-          NavigatorScreenState(errorMessage = it.errorMessage)
-        }
-        is Resource.Success -> {
-          NavigatorScreenState(users = it.data.map { user -> user.toUIModel() })
-        }
-      }
+      NavigatorScreenState(users = it.map { user -> user.toUIModel() })
     }
   }
 }

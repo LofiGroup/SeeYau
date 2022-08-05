@@ -10,7 +10,7 @@ class GetNearbyUsersUseCase @Inject constructor(
   private val repo: NavigatorRepository
 ) {
 
-  operator fun invoke(): Flow<Resource<List<User>>> {
+  operator fun invoke(): Flow<List<User>> {
     return repo.getNearbyUsers()
   }
 

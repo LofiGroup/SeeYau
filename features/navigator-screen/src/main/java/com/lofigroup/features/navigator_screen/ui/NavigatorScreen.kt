@@ -66,20 +66,17 @@ fun NavigatorScreenPreview() {
             UserItemUIModel(
               imageUrl = "",
               isNear = true,
-              name = "Random",
-              status = "Hello world!"
+              name = "Random"
             ),
             UserItemUIModel(
               imageUrl = "",
               isNear = true,
-              name = "Random",
-              status = "Hello world!"
+              name = "Random"
             ),
             UserItemUIModel(
               imageUrl = "",
               isNear = true,
-              name = "Random",
-              status = "Hello world!"
+              name = "Random"
             )
           )
         )

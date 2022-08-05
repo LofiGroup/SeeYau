@@ -47,4 +47,12 @@ dependencies {
   implementation timberDep
 
   implementation coroutinesDeps.core
+
+  implementation roomDeps.runtime
+  implementation roomDeps.ktx
+  kapt roomDeps.annotationProcessor
+  androidTestImplementation roomDeps.runtime
+
+  implementation moshiDeps.core
+  kapt moshiDeps.codegen
 }

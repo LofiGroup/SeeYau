@@ -100,7 +100,7 @@ fun UserItem(
           }
         }
         Text(
-          text = user.status,
+          text = "Let's shine!",
           style = MaterialTheme.typography.caption,
           color = MaterialTheme.colors.error,
           modifier = Modifier.padding(top = 2.dp)
@@ -128,8 +128,7 @@ fun UserItemPreview() {
       user = UserItemUIModel(
         imageUrl = "",
         isNear = true,
-        name = "Random",
-        status = "Hello world!"
+        name = "Random"
       )
     )
   }

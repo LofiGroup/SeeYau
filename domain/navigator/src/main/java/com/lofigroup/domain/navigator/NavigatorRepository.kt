@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface NavigatorRepository {
 
-  fun getNearbyUsers(): Flow<Resource<List<User>>>
+  fun getNearbyUsers(): Flow<List<User>>
+
+  suspend fun saveUser(user: User)
+
+  fun getMyProfile(): User
 
 }

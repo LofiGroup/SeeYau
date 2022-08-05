@@ -47,6 +47,7 @@ dependencies {
 
   implementation project(":features:navigator-screen")
   implementation project(":features:dialog-screen")
+  implementation project(":features:nearby-service")
 
   implementation appCompat
   implementation coreKtx
@@ -72,4 +73,9 @@ dependencies {
   kapt daggerDeps.annotationProcessor
 
   implementation timberDep
+
+  implementation roomDeps.runtime
+  implementation roomDeps.ktx
+  kapt roomDeps.annotationProcessor
+  androidTestImplementation roomDeps.runtime
 }

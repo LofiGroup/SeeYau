@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/dialog-screen" />
             <option value="$PROJECT_DIR$/features/navigator-screen" />
+            <option value="$PROJECT_DIR$/features/nearby-service" />
           </set>
         </option>
       </GradleProjectSettings>

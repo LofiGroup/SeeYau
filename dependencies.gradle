@@ -5,7 +5,8 @@ ext.versions = [
     coroutines     : "1.6.4",
     moshi          : "1.13.0",
     compose        : "1.2.0",
-    composeCompiler: "1.2.0"
+    composeCompiler: "1.2.0",
+    workManager: "2.7.1"
 ]
 
 ext {
@@ -102,4 +103,11 @@ ext {
   ]
 
   landscapistDep = "com.github.skydoves:landscapist-glide:1.6.0"
+
+  nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
+
+  workManagerDeps = [
+      core: "androidx.work:work-runtime-ktx:${versions.workManager}",
+      testing: "androidx.work:work-testing:${versions.workManager}"
+  ]
 }
