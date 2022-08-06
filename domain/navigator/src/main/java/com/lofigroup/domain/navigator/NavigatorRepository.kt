@@ -10,6 +10,8 @@ interface NavigatorRepository {
 
   suspend fun saveUser(user: User)
 
+  suspend fun getUserWithDeviceId(deviceId: String): User?
+
   fun getMyProfile(): User
 
 }

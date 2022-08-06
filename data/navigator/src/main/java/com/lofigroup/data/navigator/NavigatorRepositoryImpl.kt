@@ -24,6 +24,10 @@ class NavigatorRepositoryImpl @Inject constructor(
     userDao.upsert(user.toUserEntity())
   }
 
+  override suspend fun getUserWithDeviceId(deviceId: String) = withContext(ioDispatcher) {
+    userDao.getUserWithDeviceId(deviceId)?.toUser()
+  }
+
   override fun getMyProfile(): User {
     val profile = userData.getProfile()
     return User(

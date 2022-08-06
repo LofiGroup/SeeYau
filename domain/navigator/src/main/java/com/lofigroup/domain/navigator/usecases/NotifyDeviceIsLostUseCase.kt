@@ -8,8 +8,10 @@ class NotifyDeviceIsLostUseCase @Inject constructor(
   private val repository: NavigatorRepository
 ) {
 
-  operator fun invoke(deviceId: String) {
+  suspend operator fun invoke(deviceId: String) {
+    val user = repository.getUserWithDeviceId(deviceId) ?: return
 
+    repository.saveUser(user.copy(isNear = false))
   }
 
 }

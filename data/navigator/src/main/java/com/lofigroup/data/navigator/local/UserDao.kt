@@ -10,6 +10,9 @@ interface UserDao {
   @Query("select * from users")
   fun observeUsers(): Flow<List<UserEntity>>
 
+  @Query("select * from users where endpointId = :endpointId")
+  suspend fun getUserWithDeviceId(endpointId: String): UserEntity?
+
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insert(userEntity: UserEntity): Long
 

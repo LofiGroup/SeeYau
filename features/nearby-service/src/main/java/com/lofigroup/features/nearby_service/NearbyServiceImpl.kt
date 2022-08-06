@@ -81,7 +81,9 @@ class NearbyServiceImpl : Service(), NearbyService {
 
     override fun onEndpointLost(endpointId: String) {
       Timber.d("Endpoint lost: $endpointId")
-      notifyDeviceIsLostUseCase(endpointId)
+      scope.launch {
+        notifyDeviceIsLostUseCase(endpointId)
+      }
     }
 
   }
