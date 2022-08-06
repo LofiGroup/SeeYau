@@ -25,93 +25,12 @@ import javax.inject.Inject
 class NearbyServiceImpl : Service(), NearbyService {
 
   @Inject
-  lateinit var notifyUserIsNearbyUseCase: NotifyUserIsNearbyUseCase
-
-  @Inject
-  lateinit var getMyProfileUseCase: GetMyProfileUseCase
-
-  @Inject
-  lateinit var notifyDeviceIsLostUseCase: NotifyDeviceIsLostUseCase
-
-  private var isSearching = false
+  lateinit var nearbyClient: NearbyClient
 
   private val serviceJob = Job()
   private val scope = CoroutineScope(Dispatchers.Main + serviceJob)
 
   private val binder = LocalBinder()
-
-  private val connectionsClient by lazy {
-    Nearby.getConnectionsClient(this)
-  }
-
-  private val adapter = Moshi.Builder().build().adapter(UserSerializableModel::class.java)
-
-  private val payloadCallback = object : PayloadCallback() {
-    override fun onPayloadReceived(endpointId: String, payload: Payload) {
-      val json = String(payload.asBytes()!!)
-
-      Timber.d("payload received: $json")
-      val data = adapter.fromJson(json)?.toUser(endpointId)
-
-      if (data == null) {
-        Timber.e("Payload data is null!")
-        return
-      }
-
-      scope.launch {
-        notifyUserIsNearbyUseCase(data)
-      }
-    }
-
-    override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
-
-    }
-
-  }
-
-  private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
-    override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-      Timber.d("Endpoint found: $endpointId")
-      connectionsClient.requestConnection(
-        getMyProfileUseCase().id.toString(),
-        endpointId,
-        connectionLifecycleCallback
-      )
-    }
-
-    override fun onEndpointLost(endpointId: String) {
-      Timber.d("Endpoint lost: $endpointId")
-      scope.launch {
-        notifyDeviceIsLostUseCase(endpointId)
-      }
-    }
-
-  }
-
-  private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
-    override fun onConnectionInitiated(endpointId: String, info: ConnectionInfo) {
-      Timber.d("Accepting connection with device with id: $endpointId")
-      connectionsClient.acceptConnection(endpointId, payloadCallback)
-    }
-
-    override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
-      if (result.status.isSuccess) {
-        Timber.d("Successfully connected to device with id: $endpointId")
-
-        val data = getMyProfileUseCase().toSerializableModel()
-
-        val json = adapter.toJson(data)
-        Timber.d("Sending payload: $json")
-
-        connectionsClient.sendPayload(endpointId, Payload.fromBytes(json.toByteArray()))
-      }
-    }
-
-    override fun onDisconnected(endpointId: String) {
-      Timber.d("Disconnecting from device with id: $endpointId")
-    }
-
-  }
 
   override fun onBind(p0: Intent?): IBinder {
     return binder
@@ -124,6 +43,8 @@ class NearbyServiceImpl : Service(), NearbyService {
 
     val component = DaggerNearbyServiceComponent.builder()
       .navigatorComponent(app.provideNavigatorComponent())
+      .context(this)
+      .coroutineScope(scope)
       .build()
 
     component.inject(this)
@@ -134,28 +55,12 @@ class NearbyServiceImpl : Service(), NearbyService {
   }
 
   override fun startDiscoveringNearbyDevices() {
-    if (isSearching) return
-
-    connectionsClient.startDiscovery(
-      packageName,
-      endpointDiscoveryCallback,
-      DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
-    )
-    connectionsClient.startAdvertising(
-      getMyProfileUseCase().id.toString(),
-      packageName,
-      connectionLifecycleCallback,
-      AdvertisingOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
-    )
-    isSearching = true
+    nearbyClient.startBroadcast()
   }
 
   override fun onDestroy() {
     super.onDestroy()
-
-    connectionsClient.stopDiscovery()
-    connectionsClient.stopAdvertising()
+    nearbyClient.stopBroadcast()
     serviceJob.cancel()
-    isSearching = false
   }
 }

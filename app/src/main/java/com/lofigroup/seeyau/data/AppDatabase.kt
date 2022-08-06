@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.data.navigator.local.model.UserEntity
 
-@Database(entities = [UserEntity::class], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
   abstract val userDao: UserDao
