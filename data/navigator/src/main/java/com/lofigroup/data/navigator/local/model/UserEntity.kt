@@ -6,8 +6,7 @@ import com.lofigroup.domain.navigator.model.User
 
 @Entity(tableName = "users")
 data class UserEntity(
-  @PrimaryKey val id: Int,
-  val endpointId: String,
+  @PrimaryKey val id: Long,
   val name: String,
   val isNear: Boolean,
   val lastConnection: Long
@@ -16,7 +15,6 @@ data class UserEntity(
 fun User.toUserEntity(): UserEntity {
   return UserEntity(
     id = id,
-    endpointId = endpointId,
     name = name,
     isNear = isNear,
     lastConnection = lastConnection
@@ -29,7 +27,6 @@ fun UserEntity.toUser(): User {
     name = name,
     isNear = isNear,
     imageUrl = "",
-    lastConnection = lastConnection,
-    endpointId = endpointId
+    lastConnection = lastConnection
   )
 }

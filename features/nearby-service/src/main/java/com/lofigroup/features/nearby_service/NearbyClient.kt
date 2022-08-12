@@ -1,18 +1,26 @@
 package com.lofigroup.features.nearby_service
 
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.bluetooth.le.*
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.ParcelUuid
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
+import com.google.android.gms.nearby.messages.*
+import com.lofigroup.domain.navigator.model.User
 import com.lofigroup.domain.navigator.usecases.GetMyProfileUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
-import com.lofigroup.features.nearby_service.model.UserSerializableModel
-import com.lofigroup.features.nearby_service.model.toSerializableModel
-import com.lofigroup.features.nearby_service.model.toUser
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class NearbyClient @Inject constructor(
@@ -23,99 +31,129 @@ class NearbyClient @Inject constructor(
   private val scope: CoroutineScope
 ) {
 
-  private val connectionsClient = Nearby.getConnectionsClient(context)
-
-  private val adapter = Moshi.Builder().build().adapter(UserSerializableModel::class.java)
-
   private var isSearching = false
 
-  private val payloadCallback = object : PayloadCallback() {
-    override fun onPayloadReceived(endpointId: String, payload: Payload) {
-      val json = String(payload.asBytes()!!)
+  private val btAdapter: BluetoothAdapter =
+    (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
 
-      Timber.d("payload received: $json")
-      val data = adapter.fromJson(json)?.toUser(endpointId)
+  private val advertiseSettings = AdvertiseSettings.Builder()
+    .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+    .setConnectable(false)
+    .build()
+
+  private val pUuid = ParcelUuid(UUID.fromString("000043ef-0000-1000-8000-00805F9B34FB"))
+
+  private val advertiseData = run {
+    val profile = getMyProfileUseCase()
+    val data = profile.id.toByteArray()
+
+    AdvertiseData.Builder()
+      .addServiceUuid(pUuid)
+      .addServiceData(pUuid, data)
+      .build()
+  }
+
+  private val scanCallback = object : ScanCallback() {
+    override fun onScanResult(callbackType: Int, result: ScanResult?) {
+      super.onScanResult(callbackType, result)
+      val data = result?.scanRecord?.getServiceData(pUuid)
 
       if (data == null) {
-        Timber.e("Payload data is null!")
+        Timber.d("BLE received incorrect data")
         return
       }
 
+      val id = data.toLong()
+
       scope.launch {
-        notifyUserIsNearbyUseCase(data)
+        notifyUserIsNearbyUseCase(User(
+          id, "", true, "", System.currentTimeMillis()
+        ))
       }
     }
 
-    override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {
-
+    override fun onScanFailed(errorCode: Int) {
+      super.onScanFailed(errorCode)
+      Timber.d("BLE scan failed. Error code: $errorCode")
     }
 
+    override fun onBatchScanResults(results: MutableList<ScanResult>?) {
+      super.onBatchScanResults(results)
+    }
   }
 
-  private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
-    override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-      Timber.d("Endpoint found: $endpointId")
-      connectionsClient.requestConnection(
-        getMyProfileUseCase().id.toString(),
-        endpointId,
-        connectionLifecycleCallback
-      )
+  private val advertisingCallback = object : AdvertiseCallback() {
+    override fun onStartFailure(errorCode: Int) {
+      super.onStartFailure(errorCode)
+      Timber.d("BLE advertising failed. Error code: $errorCode")
     }
 
-    override fun onEndpointLost(endpointId: String) {
-      Timber.d("Endpoint lost: $endpointId")
+    override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
+      super.onStartSuccess(settingsInEffect)
+      Timber.d("BLE advertising is successful")
     }
-
   }
 
-  private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
-    override fun onConnectionInitiated(endpointId: String, info: ConnectionInfo) {
-      Timber.d("Accepting connection with device with id: $endpointId")
-      connectionsClient.acceptConnection(endpointId, payloadCallback)
+  private fun advertise() {
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+      != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      Timber.e("Bluetooth advertise permission is not granted!")
+      return
     }
 
-    override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
-      if (result.status.isSuccess) {
-        Timber.d("Successfully connected to device with id: $endpointId")
+    btAdapter.bluetoothLeAdvertiser.startAdvertising(advertiseSettings, advertiseData, advertisingCallback)
+  }
 
-        val data = getMyProfileUseCase().toSerializableModel().copy(isNear = true)
+  private fun scan() {
+    val filter = ScanFilter.Builder()
+      .setServiceUuid(pUuid)
+      .build()
 
-        val json = adapter.toJson(data)
-        Timber.d("Sending payload: $json")
+    val scanSettings = ScanSettings.Builder()
+      .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+      .build()
 
-        connectionsClient.sendPayload(endpointId, Payload.fromBytes(json.toByteArray()))
-      }
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+      != PackageManager.PERMISSION_GRANTED  && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      Timber.e("Bluetooth scan permission is not granted!")
+      return
     }
 
-    override fun onDisconnected(endpointId: String) {
-      Timber.d("Disconnecting from device with id: $endpointId")
-      scope.launch {
-        notifyDeviceIsLostUseCase(endpointId)
-      }
-    }
+    btAdapter.bluetoothLeScanner.startScan(listOf(filter), scanSettings, scanCallback)
+  }
 
+  private fun stopAdvertise() {
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+      != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      Timber.e("Bluetooth advertise permission is not granted!")
+      return
+    }
+    btAdapter.bluetoothLeAdvertiser.stopAdvertising(advertisingCallback)
+  }
+
+  private fun stopScan() {
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+      != PackageManager.PERMISSION_GRANTED  && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      Timber.e("Bluetooth scan permission is not granted!")
+      return
+    }
+    btAdapter.bluetoothLeScanner.stopScan(scanCallback)
   }
 
   fun startBroadcast() {
     if (isSearching) return
 
-    connectionsClient.startDiscovery(
-      context.packageName,
-      endpointDiscoveryCallback,
-      DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
-    )
-    connectionsClient.startAdvertising(
-      getMyProfileUseCase().id.toString(),
-      context.packageName,
-      connectionLifecycleCallback,
-      AdvertisingOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
-    )
+    scan()
+    advertise()
+
     isSearching = true
   }
 
   fun stopBroadcast() {
-    connectionsClient.stopDiscovery()
-    connectionsClient.stopAdvertising()
+    stopScan()
+    stopAdvertise()
+
     isSearching = false
   }
 

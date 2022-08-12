@@ -43,11 +43,15 @@ dependencies {
   implementation project(":common:ui")
   
   implementation project(":domain:navigator")
+  implementation project(":domain:auth")
   implementation project(":data:navigator")
+  implementation project(":data:auth")
 
   implementation project(":features:navigator-screen")
   implementation project(":features:dialog-screen")
   implementation project(":features:nearby-service")
+  implementation project(":features:auth-screen")
+  implementation project(":features:splash-screen")
 
   implementation appCompat
   implementation coreKtx

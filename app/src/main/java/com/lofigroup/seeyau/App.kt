@@ -5,7 +5,9 @@ import com.lofigroup.data.navigator.di.DaggerNavigatorDataComponent
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
 import com.lofigroup.domain.navigator.di.NavigatorComponent
+import com.lofigroup.seeyau.data.auth.di.DaggerAuthDataComponent
 import com.lofigroup.seeyau.di.DaggerAppComponent
+import com.lofigroup.seeyau.domain.auth.di.DaggerAuthComponent
 import timber.log.Timber
 
 class App: Application(), NavigatorComponentProvider {
@@ -27,6 +29,18 @@ class App: Application(), NavigatorComponentProvider {
   val navigatorComponent by lazy {
     DaggerNavigatorComponent.builder()
       .repository(navigatorDataComponent.getRepository())
+      .build()
+  }
+
+  val authDataComponent by lazy {
+    DaggerAuthDataComponent.builder()
+      .sharedPref(appComponent.getSharedPref())
+      .build()
+  }
+
+  val authComponent by lazy {
+    DaggerAuthComponent.builder()
+      .authRepository(authDataComponent.getRepository())
       .build()
   }
 

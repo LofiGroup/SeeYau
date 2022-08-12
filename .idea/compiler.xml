@@ -3,19 +3,29 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="SeeYau.app" target="11" />
+      <module name="SeeYau.auth-screen" target="11" />
+      <module name="SeeYau.common.network" target="1.8" />
+      <module name="SeeYau.common.network.main" target="1.8" />
+      <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.ui" target="11" />
       <module name="SeeYau.core.di" target="1.8" />
       <module name="SeeYau.core.di.main" target="1.8" />
       <module name="SeeYau.core.di.test" target="1.8" />
       <module name="SeeYau.core.network" target="11" />
       <module name="SeeYau.core.ui" target="11" />
+      <module name="SeeYau.data.auth" target="11" />
       <module name="SeeYau.data.navigator" target="11" />
+      <module name="SeeYau.domain.auth" target="1.8" />
+      <module name="SeeYau.domain.auth.main" target="1.8" />
+      <module name="SeeYau.domain.auth.test" target="1.8" />
       <module name="SeeYau.domain.navigator" target="1.8" />
       <module name="SeeYau.domain.navigator.main" target="1.8" />
       <module name="SeeYau.domain.navigator.test" target="1.8" />
+      <module name="SeeYau.features.auth-screen" target="11" />
       <module name="SeeYau.features.dialog-screen" target="11" />
       <module name="SeeYau.features.navigator-screen" target="11" />
       <module name="SeeYau.features.nearby-service" target="11" />
+      <module name="SeeYau.features.splash-screen" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

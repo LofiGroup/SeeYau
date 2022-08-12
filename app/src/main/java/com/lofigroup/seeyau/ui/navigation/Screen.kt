@@ -1,10 +1,7 @@
 package com.lofigroup.seeyau.ui.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Message
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screen(
@@ -30,6 +27,16 @@ sealed class Screen(
   object SettingsScreen: Screen(
     route = "settings_screen",
     imageVector = Icons.Filled.Settings
+  )
+
+  object AuthScreen: Screen(
+    route = "auth_screen",
+    imageVector = Icons.Filled.Login
+  )
+
+  object SplashScreen: Screen(
+    route = "splash_screen",
+    imageVector = Icons.Filled.WavingHand
   )
 
 }

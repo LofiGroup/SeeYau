@@ -31,6 +31,10 @@ android {
 }
 
 dependencies {
+  implementation project(":core:network")
+  implementation project(":core:util")
+
+  implementation project(":common:network")
   implementation project(":domain:navigator")
 
   implementation appCompat
@@ -55,4 +59,10 @@ dependencies {
 
   implementation moshiDeps.core
   kapt moshiDeps.codegen
+
+  implementation retrofitDeps.core
+  implementation retrofitDeps.moshiConverter
+
+  implementation okHttp.core
+  implementation okHttp.loggingInterceptor
 }

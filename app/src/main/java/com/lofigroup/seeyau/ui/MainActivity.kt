@@ -41,7 +41,15 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       AppTheme() {
-        RootContainer(app.navigatorComponent)
+        RootContainer(
+          navigatorComponent = app.navigatorComponent,
+          authComponent = app.authComponent,
+          startNearbyService = {
+            Intent(this, NearbyServiceImpl::class.java).also {
+              bindService(it, connection, Context.BIND_AUTO_CREATE)
+            }
+          }
+        )
       }
     }
 
@@ -49,13 +57,6 @@ class MainActivity : ComponentActivity() {
       Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
     ) {
       requestPermissions(RequiredPermissions.permissions, 1)
-    }
-  }
-
-  override fun onStart() {
-    super.onStart()
-    Intent(this, NearbyServiceImpl::class.java).also {
-      bindService(it, connection, Context.BIND_AUTO_CREATE)
     }
   }
 

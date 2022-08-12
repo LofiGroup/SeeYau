@@ -24,8 +24,8 @@ class NavigatorRepositoryImpl @Inject constructor(
     userDao.upsert(user.toUserEntity())
   }
 
-  override suspend fun getUserWithDeviceId(deviceId: String) = withContext(ioDispatcher) {
-    userDao.getUserWithDeviceId(deviceId)?.toUser()
+  override suspend fun getUser(id: Int) = withContext(ioDispatcher) {
+    userDao.getUser(id)?.toUser()
   }
 
   override fun getMyProfile(): User {
@@ -35,8 +35,7 @@ class NavigatorRepositoryImpl @Inject constructor(
       name = profile.name,
       imageUrl = "",
       isNear = false,
-      lastConnection = 0,
-      endpointId = ""
+      lastConnection = 0
     )
   }
 

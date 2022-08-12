@@ -20,7 +20,6 @@ fun BottomBar(navController: NavHostController) {
   val items = listOf(
     Screen.NavigatorScreen,
     Screen.DialogScreen,
-    Screen.NotificationScreen,
     Screen.SettingsScreen
   )
 

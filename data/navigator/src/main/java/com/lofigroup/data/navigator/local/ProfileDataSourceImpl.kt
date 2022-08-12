@@ -29,7 +29,7 @@ class ProfileDataSourceImpl @Inject constructor(
   }
 
   private fun generateNewProfile(): ProfileDataModel {
-    val id = Random.nextInt()
+    val id = Random.nextLong()
 
     val profile = ProfileDataModel(id = id, name = "No name")
     val json = adapter.toJson(profile)

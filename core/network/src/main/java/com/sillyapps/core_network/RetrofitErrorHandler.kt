@@ -2,7 +2,7 @@ package com.sillyapps.core_network
 
 import org.json.JSONObject
 import retrofit2.Response
-import java.lang.Exception
+import kotlin.Exception
 
 fun <T> retrofitErrorHandler(res: Response<T>): T {
   if (res.isSuccessful) {

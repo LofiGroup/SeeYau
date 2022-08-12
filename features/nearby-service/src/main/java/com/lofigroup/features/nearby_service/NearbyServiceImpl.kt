@@ -4,22 +4,11 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.google.android.gms.nearby.Nearby
-import com.google.android.gms.nearby.connection.*
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
-import com.lofigroup.domain.navigator.usecases.GetMyProfileUseCase
-import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
-import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
-import com.lofigroup.features.nearby_service.model.UserSerializableModel
-import com.lofigroup.features.nearby_service.model.toSerializableModel
-import com.lofigroup.features.nearby_service.model.toUser
-import com.squareup.moshi.Moshi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class NearbyServiceImpl : Service(), NearbyService {

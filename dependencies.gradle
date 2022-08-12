@@ -6,7 +6,9 @@ ext.versions = [
     moshi          : "1.13.0",
     compose        : "1.2.0",
     composeCompiler: "1.2.0",
-    workManager: "2.7.1"
+    workManager    : "2.7.1",
+    okHttp         : "4.10.0",
+    retrofit       : "2.9.0"
 ]
 
 ext {
@@ -107,7 +109,7 @@ ext {
   nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
 
   workManagerDeps = [
-      core: "androidx.work:work-runtime-ktx:${versions.workManager}",
+      core   : "androidx.work:work-runtime-ktx:${versions.workManager}",
       testing: "androidx.work:work-testing:${versions.workManager}"
   ]
 }
