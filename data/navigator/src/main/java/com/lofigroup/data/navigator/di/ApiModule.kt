@@ -1,9 +1,10 @@
 package com.lofigroup.data.navigator.di
 
-import com.lofigroup.data.navigator.remote.BasicApi
+import com.lofigroup.data.navigator.remote.SeeYauApi
 import com.lofigroup.data.navigator.remote.interceptors.AddAccessTokenInterceptor
-import com.lofigroup.seeyau.common.network.SeeYauApi
+import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.sillyapps.core.di.AppScope
+import com.sillyapps.core.di.FeatureScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -14,18 +15,18 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 object ApiModule {
 
-  @AppScope
+  @FeatureScope
   @Provides
-  fun provideSeeYauApi(client: OkHttpClient): BasicApi {
+  fun provideSeeYauApi(client: OkHttpClient): SeeYauApi {
     return Retrofit.Builder()
-      .baseUrl(SeeYauApi.baseUrl)
+      .baseUrl(SeeYauApiConstants.baseUrl)
       .client(client)
       .addConverterFactory(MoshiConverterFactory.create())
       .build()
-      .create(BasicApi::class.java)
+      .create(SeeYauApi::class.java)
   }
 
-  @AppScope
+  @FeatureScope
   @Provides
   fun provideHttpClient(
     addAccessTokenInterceptor: AddAccessTokenInterceptor

@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 import com.google.android.gms.nearby.messages.*
+import com.lofigroup.core.util.Resource
 import com.lofigroup.domain.navigator.model.User
 import com.lofigroup.domain.navigator.usecases.GetMyProfileUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
@@ -44,15 +45,7 @@ class NearbyClient @Inject constructor(
 
   private val pUuid = ParcelUuid(UUID.fromString("000043ef-0000-1000-8000-00805F9B34FB"))
 
-  private val advertiseData = run {
-    val profile = getMyProfileUseCase()
-    val data = profile.id.toByteArray()
-
-    AdvertiseData.Builder()
-      .addServiceUuid(pUuid)
-      .addServiceData(pUuid, data)
-      .build()
-  }
+  private var advertiseData: Resource<AdvertiseData> = Resource.Loading()
 
   private val scanCallback = object : ScanCallback() {
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -60,22 +53,20 @@ class NearbyClient @Inject constructor(
       val data = result?.scanRecord?.getServiceData(pUuid)
 
       if (data == null) {
-        Timber.d("BLE received incorrect data")
+        Timber.e("BLE received incorrect data")
         return
       }
 
       val id = data.toLong()
 
       scope.launch {
-        notifyUserIsNearbyUseCase(User(
-          id, "", true, "", System.currentTimeMillis()
-        ))
+        notifyUserIsNearbyUseCase(id)
       }
     }
 
     override fun onScanFailed(errorCode: Int) {
       super.onScanFailed(errorCode)
-      Timber.d("BLE scan failed. Error code: $errorCode")
+      Timber.e("BLE scan failed. Error code: $errorCode")
     }
 
     override fun onBatchScanResults(results: MutableList<ScanResult>?) {
@@ -86,12 +77,37 @@ class NearbyClient @Inject constructor(
   private val advertisingCallback = object : AdvertiseCallback() {
     override fun onStartFailure(errorCode: Int) {
       super.onStartFailure(errorCode)
-      Timber.d("BLE advertising failed. Error code: $errorCode")
+      Timber.e("BLE advertising failed. Error code: $errorCode")
     }
 
     override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
       super.onStartSuccess(settingsInEffect)
       Timber.d("BLE advertising is successful")
+    }
+  }
+
+  init {
+    scope.launch {
+      getMyProfileUseCase().collect {
+        when (it) {
+          is Resource.Error -> {
+            advertiseData = Resource.Error(it.errorMessage)
+          }
+          is Resource.Loading -> {
+            advertiseData = Resource.Loading()
+          }
+          is Resource.Success -> {
+            val idBytes = it.data.id.toByteArray()
+            val data = AdvertiseData.Builder()
+              .addServiceUuid(pUuid)
+              .addServiceData(pUuid, idBytes)
+              .build()
+
+            advertiseData = Resource.Success(data)
+            startBroadcast()
+          }
+        }
+      }
     }
   }
 
@@ -101,8 +117,9 @@ class NearbyClient @Inject constructor(
       Timber.e("Bluetooth advertise permission is not granted!")
       return
     }
+    val data = advertiseData as Resource.Success
 
-    btAdapter.bluetoothLeAdvertiser.startAdvertising(advertiseSettings, advertiseData, advertisingCallback)
+    btAdapter.bluetoothLeAdvertiser.startAdvertising(advertiseSettings, data.data, advertisingCallback)
   }
 
   private fun scan() {
@@ -143,6 +160,16 @@ class NearbyClient @Inject constructor(
 
   fun startBroadcast() {
     if (isSearching) return
+    if (advertiseData !is Resource.Success) {
+      val advertiseData = advertiseData
+      if (advertiseData is Resource.Loading) {
+        Timber.d("Profile is loading. Broadcast failed.")
+      }
+      else if (advertiseData is Resource.Error) {
+        Timber.e("Error occurred while loading profile. Error message: ${advertiseData.errorMessage}")
+      }
+      return
+    }
 
     scan()
     advertise()

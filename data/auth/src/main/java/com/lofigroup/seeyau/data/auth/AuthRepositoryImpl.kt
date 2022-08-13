@@ -45,7 +45,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun getToken(): Token? {
+  override fun getToken(): Token? {
     return tokenStore.getToken()?.toToken()
   }
 }

@@ -8,9 +8,12 @@ import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.seeyau.data.auth.di.DaggerAuthDataComponent
 import com.lofigroup.seeyau.di.DaggerAppComponent
 import com.lofigroup.seeyau.domain.auth.di.DaggerAuthComponent
+import kotlinx.coroutines.MainScope
 import timber.log.Timber
 
 class App: Application(), NavigatorComponentProvider {
+
+  private val appScope = MainScope()
 
   val appComponent by lazy {
     DaggerAppComponent.builder()
@@ -23,6 +26,8 @@ class App: Application(), NavigatorComponentProvider {
       .context(applicationContext)
       .userDao(appComponent.getDatabase().userDao)
       .sharedPref(appComponent.getSharedPref())
+      .appScope(appScope)
+      .authComponent(authComponent)
       .build()
   }
 

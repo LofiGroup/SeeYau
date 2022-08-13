@@ -36,6 +36,7 @@ dependencies {
 
   implementation project(":common:network")
   implementation project(":domain:navigator")
+  implementation project(":domain:auth")
 
   implementation appCompat
   implementation coreKtx

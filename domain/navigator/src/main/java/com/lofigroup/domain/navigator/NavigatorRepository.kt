@@ -8,10 +8,10 @@ interface NavigatorRepository {
 
   fun getNearbyUsers(): Flow<List<User>>
 
-  suspend fun saveUser(user: User)
+  fun getMyProfile(): Flow<Resource<User>>
 
-  suspend fun getUser(id: Int): User?
+  suspend fun notifyUserWithIdWasFound(id: Long)
 
-  fun getMyProfile(): User
+  suspend fun getUser(id: Long): User?
 
 }

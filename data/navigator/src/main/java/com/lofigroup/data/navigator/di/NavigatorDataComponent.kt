@@ -4,14 +4,18 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.domain.navigator.NavigatorRepository
+import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.sillyapps.core.di.AppScope
+import com.sillyapps.core.di.FeatureScope
 import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance
 import dagger.Component
+import kotlinx.coroutines.CoroutineScope
 
-@AppScope
+@FeatureScope
 @Component(
-  modules = [RepositoryModule::class, UserDataModule::class, IOModule::class],
+  modules = [ApiModule::class, RepositoryModule::class, UserDataModule::class, IOModule::class],
+  dependencies = [AuthComponent::class]
 )
 interface NavigatorDataComponent {
 
@@ -27,6 +31,11 @@ interface NavigatorDataComponent {
 
     @BindsInstance
     fun sharedPref(sharedPref: SharedPreferences): Builder
+
+    @BindsInstance
+    fun appScope(appScope: CoroutineScope): Builder
+
+    fun authComponent(authComponent: AuthComponent): Builder
 
     fun build(): NavigatorDataComponent
   }

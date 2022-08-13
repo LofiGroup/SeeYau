@@ -11,7 +11,7 @@ interface UserDao {
   fun observeUsers(): Flow<List<UserEntity>>
 
   @Query("select * from users where id = :id")
-  suspend fun getUser(id: Int): UserEntity?
+  suspend fun getUser(id: Long): UserEntity?
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insert(userEntity: UserEntity): Long

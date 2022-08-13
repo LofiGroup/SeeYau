@@ -62,8 +62,10 @@ class MainActivity : ComponentActivity() {
 
   override fun onStop() {
     super.onStop()
-    unbindService(connection)
-    nearbyServiceIsBound = false
+    if (nearbyServiceIsBound) {
+      unbindService(connection)
+      nearbyServiceIsBound = false
+    }
   }
 
 }

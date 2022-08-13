@@ -12,6 +12,9 @@
       <module name="SeeYau.core.di.main" target="1.8" />
       <module name="SeeYau.core.di.test" target="1.8" />
       <module name="SeeYau.core.network" target="11" />
+      <module name="SeeYau.core.time" target="1.8" />
+      <module name="SeeYau.core.time.main" target="1.8" />
+      <module name="SeeYau.core.time.test" target="1.8" />
       <module name="SeeYau.core.ui" target="11" />
       <module name="SeeYau.data.auth" target="11" />
       <module name="SeeYau.data.navigator" target="11" />

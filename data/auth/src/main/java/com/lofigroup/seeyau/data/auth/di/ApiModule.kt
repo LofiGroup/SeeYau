@@ -1,6 +1,6 @@
 package com.lofigroup.seeyau.data.auth.di
 
-import com.lofigroup.seeyau.common.network.SeeYauApi
+import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.lofigroup.seeyau.data.auth.AuthApi
 import com.sillyapps.core.di.AppScope
 import dagger.Module
@@ -17,7 +17,7 @@ object ApiModule {
   @Provides
   fun provideSeeYauApi(client: OkHttpClient): AuthApi {
     return Retrofit.Builder()
-      .baseUrl(SeeYauApi.baseUrl)
+      .baseUrl(SeeYauApiConstants.baseUrl)
       .client(client)
       .addConverterFactory(MoshiConverterFactory.create())
       .build()

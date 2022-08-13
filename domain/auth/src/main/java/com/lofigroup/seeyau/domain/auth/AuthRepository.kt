@@ -12,6 +12,6 @@ interface AuthRepository {
 
   suspend fun register(access: Access): Resource<Unit>
 
-  suspend fun getToken(): Token?
+  fun getToken(): Token?
 
 }

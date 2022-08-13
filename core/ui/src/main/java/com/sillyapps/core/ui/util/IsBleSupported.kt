@@ -2,8 +2,8 @@ package com.sillyapps.core.ui.util
 
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.pm.PackageManager
 
 fun isBleSupported(context: Context): Boolean {
-  val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-  return bluetoothManager.adapter.isMultipleAdvertisementSupported
+  return context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
 }
