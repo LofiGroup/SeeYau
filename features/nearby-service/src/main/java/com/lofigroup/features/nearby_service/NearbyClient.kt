@@ -86,7 +86,12 @@ class NearbyClient @Inject constructor(
     }
   }
 
+  private var bleAdvertiser: BluetoothLeAdvertiser? = null
+  private var bleScanner: BluetoothLeScanner? = null
+
   init {
+    turnBluetoothOn()
+
     scope.launch {
       getMyProfileUseCase().collect {
         when (it) {
@@ -111,15 +116,26 @@ class NearbyClient @Inject constructor(
     }
   }
 
+  private fun turnBluetoothOn() {
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
+      && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      Timber.e("Bluetooth connect permission is not granted!")
+      return
+    }
+    btAdapter.enable()
+    bleAdvertiser = btAdapter.bluetoothLeAdvertiser
+    bleScanner = btAdapter.bluetoothLeScanner
+  }
+
   private fun advertise() {
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE)
       != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       Timber.e("Bluetooth advertise permission is not granted!")
       return
     }
     val data = advertiseData as Resource.Success
 
-    btAdapter.bluetoothLeAdvertiser.startAdvertising(advertiseSettings, data.data, advertisingCallback)
+    bleAdvertiser?.startAdvertising(advertiseSettings, data.data, advertisingCallback)
   }
 
   private fun scan() {
@@ -137,16 +153,16 @@ class NearbyClient @Inject constructor(
       return
     }
 
-    btAdapter.bluetoothLeScanner.startScan(listOf(filter), scanSettings, scanCallback)
+    bleScanner?.startScan(listOf(filter), scanSettings, scanCallback)
   }
 
   private fun stopAdvertise() {
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE)
       != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       Timber.e("Bluetooth advertise permission is not granted!")
       return
     }
-    btAdapter.bluetoothLeAdvertiser.stopAdvertising(advertisingCallback)
+    bleAdvertiser?.stopAdvertising(advertisingCallback)
   }
 
   private fun stopScan() {
@@ -155,7 +171,7 @@ class NearbyClient @Inject constructor(
       Timber.e("Bluetooth scan permission is not granted!")
       return
     }
-    btAdapter.bluetoothLeScanner.stopScan(scanCallback)
+    bleScanner?.stopScan(scanCallback)
   }
 
   fun startBroadcast() {

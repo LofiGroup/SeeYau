@@ -14,6 +14,7 @@ object RequiredPermissions {
         Manifest.permission.CHANGE_WIFI_STATE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.BLUETOOTH_CONNECT
       )
     }
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
@@ -23,7 +24,7 @@ object RequiredPermissions {
         Manifest.permission.ACCESS_WIFI_STATE,
         Manifest.permission.CHANGE_WIFI_STATE,
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
       )
     }
     else -> {
