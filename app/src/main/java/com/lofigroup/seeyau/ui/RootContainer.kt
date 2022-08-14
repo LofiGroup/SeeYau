@@ -10,12 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.seeyau.domain.auth.di.AuthComponent
+import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.ui.navigation.AppNavHost
 
 @Composable
 fun RootContainer(
   navigatorComponent: NavigatorComponent,
   authComponent: AuthComponent,
+  profileComponent: ProfileComponent,
   startNearbyService: () -> Unit
 ) {
   val navController = rememberNavController()
@@ -35,9 +37,10 @@ fun RootContainer(
       navController = navController,
       navigatorComponent = navigatorComponent,
       authComponent = authComponent,
+      profileComponent = profileComponent,
       startNearbyService = startNearbyService,
       modifier = Modifier.padding(it),
-      setBottomBarVisibility = setBottomBarVisibility
+      setBottomBarVisibility = setBottomBarVisibility,
     )
   }
 }

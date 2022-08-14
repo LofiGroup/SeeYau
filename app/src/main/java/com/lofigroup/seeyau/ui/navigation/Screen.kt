@@ -39,4 +39,9 @@ sealed class Screen(
     imageVector = Icons.Filled.WavingHand
   )
 
+  object ProfileScreen: Screen(
+    route = "profile_screen",
+    imageVector = Icons.Filled.Person
+  )
+
 }

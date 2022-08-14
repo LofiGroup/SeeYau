@@ -8,17 +8,6 @@ import com.squareup.moshi.JsonClass
 data class ProfileDataModel(
   val id: Long,
   val name: String,
-  val imgUrl: String?
+  val imageUrl: String?
 )
 
-fun UserDto.toProfileDataModel() = ProfileDataModel(
-  id = id,
-  name = name,
-  imgUrl = imageUrl
-)
-
-fun ProfileDataModel.toProfile() = Profile(
-  id = id,
-  name = name,
-  imageUrl = imgUrl
-)

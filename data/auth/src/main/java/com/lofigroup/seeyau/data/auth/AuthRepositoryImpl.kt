@@ -11,6 +11,7 @@ import com.lofigroup.seeyau.domain.auth.model.Token
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -25,7 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
       tokenStore.saveToken(response.toTokenDataModel())
       Resource.Success(Unit)
     }
-    catch (e: Exception) {
+    catch (e: HttpException) {
       Resource.Error(e.message ?: "Unknown error")
     }
   }

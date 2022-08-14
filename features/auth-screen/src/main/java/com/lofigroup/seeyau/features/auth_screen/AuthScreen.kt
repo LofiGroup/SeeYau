@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 @Composable
 fun AuthScreen(
   stateHolder: AuthScreenStateHolder,
-  onSuccessfulSign: () -> Unit,
+  onSuccessfulSign: (Boolean) -> Unit,
   ) {
   val state by remember(stateHolder) {
     stateHolder.getState()
@@ -26,7 +26,7 @@ fun AuthScreen(
 
   if (state.isSigned) {
     LaunchedEffect(state) {
-      onSuccessfulSign()
+      onSuccessfulSign(state.authMode == AuthMode.SIGN_UP)
     }
   }
 

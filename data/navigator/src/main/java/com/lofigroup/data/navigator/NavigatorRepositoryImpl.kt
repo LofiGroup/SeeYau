@@ -11,6 +11,7 @@ import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class NavigatorRepositoryImpl @Inject constructor(
       val response = retrofitErrorHandler(api.getUser(id))
 
       userDao.upsert(response.toUserEntity())
-    } catch (e: Exception) {
+    } catch (e: HttpException) {
       Timber.e("Couldn't find user with id: $id. Error message ${e.message}")
     }
   }

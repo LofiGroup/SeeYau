@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
         RootContainer(
           navigatorComponent = app.navigatorComponent,
           authComponent = app.authComponent,
+          profileComponent = app.profileComponent,
           startNearbyService = {
             Intent(this, NearbyServiceImpl::class.java).also {
               bindService(it, connection, Context.BIND_AUTO_CREATE)

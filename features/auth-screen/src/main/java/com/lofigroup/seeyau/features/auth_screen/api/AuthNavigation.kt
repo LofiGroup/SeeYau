@@ -10,7 +10,7 @@ import com.sillyapps.core.ui.daggerViewModel
 @Composable
 fun AuthNavigation(
   authComponent: AuthComponent,
-  onLoggedIn: () -> Unit
+  onLoggedIn: (Boolean) -> Unit
 ) {
   val component = DaggerAuthScreenComponent.builder()
     .authComponent(authComponent)

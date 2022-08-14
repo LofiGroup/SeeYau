@@ -8,15 +8,20 @@ import androidx.navigation.compose.composable
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.navigator_screen.api.NavigatorScreenNavigation
 import com.lofigroup.seeyau.domain.auth.di.AuthComponent
+import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.features.auth_screen.api.AuthNavigation
+import com.lofigroup.seeyau.features.profile_screen.api.ProfileScreenNavigation
 import com.lofigroup.seeyau.features.splash_screen.api.SplashScreenNavigation
 import com.sillyapps.core.ui.util.navigateToTopDestination
 
 @Composable
 fun AppNavHost(
   navController: NavHostController,
+
   navigatorComponent: NavigatorComponent,
   authComponent: AuthComponent,
+  profileComponent: ProfileComponent,
+
   startNearbyService: () -> Unit,
   setBottomBarVisibility: (Boolean) -> Unit,
   modifier: Modifier
@@ -53,7 +58,18 @@ fun AppNavHost(
       setBottomBarVisibility(false)
       AuthNavigation(
         authComponent = authComponent,
-        onLoggedIn = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
+        onLoggedIn = { justRegistered ->
+          val route =
+            if (justRegistered) Screen.ProfileScreen.route else Screen.NavigatorScreen.route
+          navController.navigateToTopDestination(route)
+        }
+      )
+    }
+
+    composable(route = Screen.ProfileScreen.route) {
+      ProfileScreenNavigation(
+        profileComponent = profileComponent,
+        onExit = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
       )
     }
 
