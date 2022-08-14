@@ -2,20 +2,19 @@ package com.lofigroup.data.navigator.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.lofigroup.backend_api.SeeYauApi
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.sillyapps.core.di.AppScope
-import com.sillyapps.core.di.FeatureScope
 import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
 
-@FeatureScope
+@AppScope
 @Component(
-  modules = [ApiModule::class, RepositoryModule::class, UserDataModule::class, IOModule::class],
-  dependencies = [AuthComponent::class]
+  modules = [ApiModule::class, RepositoryModule::class, UserDataModule::class, IOModule::class]
 )
 interface NavigatorDataComponent {
 
@@ -35,7 +34,8 @@ interface NavigatorDataComponent {
     @BindsInstance
     fun appScope(appScope: CoroutineScope): Builder
 
-    fun authComponent(authComponent: AuthComponent): Builder
+    @BindsInstance
+    fun baseApi(api: SeeYauApi): Builder
 
     fun build(): NavigatorDataComponent
   }

@@ -1,6 +1,6 @@
-package com.lofigroup.seeyau.data.auth
+package com.lofigroup.backend_api
 
-import com.lofigroup.seeyau.data.auth.model.TokenDataModel
+import com.lofigroup.backend_api.models.TokenDataModel
 
 interface TokenStore {
 

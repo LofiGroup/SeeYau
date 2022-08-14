@@ -36,6 +36,8 @@ dependencies {
 
   implementation project(":common:network")
 
+  implementation project(":data:backend-api")
+
   implementation project(":domain:auth")
 
   implementation appCompat

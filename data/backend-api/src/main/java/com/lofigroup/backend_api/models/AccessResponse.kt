@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.data.auth.model
+package com.lofigroup.backend_api.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

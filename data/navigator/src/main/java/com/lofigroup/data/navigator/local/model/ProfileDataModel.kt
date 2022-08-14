@@ -1,6 +1,6 @@
 package com.lofigroup.data.navigator.local.model
 
-import com.lofigroup.data.navigator.remote.model.UserDto
+import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.domain.navigator.model.User
 import com.squareup.moshi.JsonClass
 

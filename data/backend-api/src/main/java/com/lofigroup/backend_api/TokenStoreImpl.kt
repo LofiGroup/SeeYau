@@ -1,8 +1,7 @@
-package com.lofigroup.seeyau.data.auth
+package com.lofigroup.backend_api
 
 import android.content.SharedPreferences
-import com.lofigroup.seeyau.data.auth.model.TokenDataModel
-import com.lofigroup.seeyau.domain.auth.model.Token
+import com.lofigroup.backend_api.models.TokenDataModel
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
 

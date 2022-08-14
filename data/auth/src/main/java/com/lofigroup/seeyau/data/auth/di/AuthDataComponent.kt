@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.auth.di
 
-import android.content.SharedPreferences
+import com.lofigroup.backend_api.SeeYauApi
+import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
@@ -17,8 +18,12 @@ interface AuthDataComponent {
 
   @Component.Builder
   interface Builder {
+
     @BindsInstance
-    fun sharedPref(sharedPreferences: SharedPreferences): Builder
+    fun baseApi(api: SeeYauApi): Builder
+
+    @BindsInstance
+    fun tokenStore(tokenStore: TokenStore): Builder
 
     fun build(): AuthDataComponent
   }

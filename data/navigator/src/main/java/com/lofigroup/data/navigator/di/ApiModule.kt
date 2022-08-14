@@ -1,43 +1,30 @@
 package com.lofigroup.data.navigator.di
 
-import com.lofigroup.data.navigator.remote.SeeYauApi
-import com.lofigroup.data.navigator.remote.interceptors.AddAccessTokenInterceptor
-import com.lofigroup.seeyau.common.network.SeeYauApiConstants
+import com.lofigroup.backend_api.SeeYauApi
+import com.lofigroup.backend_api.models.UserDto
+import com.lofigroup.data.navigator.remote.NavigatorApi
+import com.lofigroup.domain.navigator.model.User
 import com.sillyapps.core.di.AppScope
-import com.sillyapps.core.di.FeatureScope
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.Response
 
 @Module
 object ApiModule {
 
-  @FeatureScope
+  @AppScope
   @Provides
-  fun provideSeeYauApi(client: OkHttpClient): SeeYauApi {
-    return Retrofit.Builder()
-      .baseUrl(SeeYauApiConstants.baseUrl)
-      .client(client)
-      .addConverterFactory(MoshiConverterFactory.create())
-      .build()
-      .create(SeeYauApi::class.java)
-  }
+  fun provideNavigatorApi(baseApi: SeeYauApi): NavigatorApi {
+    return object : NavigatorApi {
+      override suspend fun getMe(): Response<UserDto> {
+        return baseApi.getMe()
+      }
 
-  @FeatureScope
-  @Provides
-  fun provideHttpClient(
-    addAccessTokenInterceptor: AddAccessTokenInterceptor
-  ): OkHttpClient {
-    val loggingInterceptor = HttpLoggingInterceptor()
-    loggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+      override suspend fun getUser(id: Long): Response<UserDto> {
+        return baseApi.getUser(id)
+      }
 
-    return OkHttpClient.Builder()
-      .addInterceptor(addAccessTokenInterceptor)
-      .addInterceptor(loggingInterceptor)
-      .build()
+    }
   }
 
 }

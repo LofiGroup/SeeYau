@@ -12,8 +12,4 @@ annotation class AppScope
 
 @Scope
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
-annotation class ActivityScope
-
-@Scope
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
 annotation class ScreenScope

@@ -1,9 +1,6 @@
 package com.lofigroup.data.navigator.local
 
-import android.content.SharedPreferences
 import com.lofigroup.core.util.Resource
-import com.lofigroup.data.navigator.local.model.ProfileDataModel
-import com.lofigroup.data.navigator.remote.model.UserDto
 import com.lofigroup.domain.navigator.model.User
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow

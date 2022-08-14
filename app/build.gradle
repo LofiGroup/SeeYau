@@ -47,6 +47,7 @@ dependencies {
   implementation project(":domain:auth")
   implementation project(":data:navigator")
   implementation project(":data:auth")
+  implementation project(":data:backend-api")
 
   implementation project(":features:navigator-screen")
   implementation project(":features:dialog-screen")

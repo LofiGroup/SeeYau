@@ -5,7 +5,7 @@ import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.data.navigator.local.ProfileDataSource
 import com.lofigroup.data.navigator.local.model.toUser
 import com.lofigroup.data.navigator.local.model.toUserEntity
-import com.lofigroup.data.navigator.remote.SeeYauApi
+import com.lofigroup.data.navigator.remote.NavigatorApi
 import com.lofigroup.data.navigator.remote.model.toUser
 import com.lofigroup.data.navigator.remote.model.toUserEntity
 import com.lofigroup.domain.navigator.NavigatorRepository
@@ -21,7 +21,7 @@ class NavigatorRepositoryImpl @Inject constructor(
   private val profileData: ProfileDataSource,
   private val userDao: UserDao,
   private val ioDispatcher: CoroutineDispatcher,
-  private val api: SeeYauApi,
+  private val api: NavigatorApi,
   private val ioScope: CoroutineScope
 ) : NavigatorRepository {
 

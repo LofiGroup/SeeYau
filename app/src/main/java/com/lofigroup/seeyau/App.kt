@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau
 
 import android.app.Application
+import com.lofigroup.backend_api.di.DaggerBackendApiComponent
 import com.lofigroup.data.navigator.di.DaggerNavigatorDataComponent
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
@@ -21,13 +22,19 @@ class App: Application(), NavigatorComponentProvider {
       .build()
   }
 
+  private val backend by lazy {
+    DaggerBackendApiComponent.builder()
+      .sharedPref(appComponent.getSharedPref())
+      .build()
+  }
+
   val navigatorDataComponent by lazy {
     DaggerNavigatorDataComponent.builder()
       .context(applicationContext)
       .userDao(appComponent.getDatabase().userDao)
       .sharedPref(appComponent.getSharedPref())
       .appScope(appScope)
-      .authComponent(authComponent)
+      .baseApi(backend.getApi())
       .build()
   }
 
@@ -39,7 +46,8 @@ class App: Application(), NavigatorComponentProvider {
 
   val authDataComponent by lazy {
     DaggerAuthDataComponent.builder()
-      .sharedPref(appComponent.getSharedPref())
+      .baseApi(backend.getApi())
+      .tokenStore(backend.tokenStore())
       .build()
   }
 

@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.auth
 
+import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.Resource
 import com.lofigroup.seeyau.data.auth.model.toAccessRequest
 import com.lofigroup.seeyau.data.auth.model.toToken
