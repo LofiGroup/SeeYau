@@ -10,7 +10,6 @@ import dagger.Component
 @Component()
 interface AuthComponent {
 
-  fun getTokenUseCase(): GetTokenUseCase
   fun isLoggedInUseCase(): IsLoggedInUseCase
   fun loginUseCase(): LoginUseCase
   fun logoutUseCase(): LogoutUseCase
