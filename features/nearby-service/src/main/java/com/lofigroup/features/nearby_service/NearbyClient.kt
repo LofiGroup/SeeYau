@@ -9,15 +9,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.ParcelUuid
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.nearby.Nearby
-import com.google.android.gms.nearby.connection.*
-import com.google.android.gms.nearby.messages.*
 import com.lofigroup.core.util.Resource
-import com.lofigroup.domain.navigator.model.User
-import com.lofigroup.domain.navigator.usecases.GetMyProfileUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
-import com.squareup.moshi.Moshi
+import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,7 +23,7 @@ class NearbyClient @Inject constructor(
   private val context: Context,
   private val notifyUserIsNearbyUseCase: NotifyUserIsNearbyUseCase,
   private val notifyDeviceIsLostUseCase: NotifyDeviceIsLostUseCase,
-  private val getMyProfileUseCase: GetMyProfileUseCase,
+  private val getMyProfileUseCase: GetProfileUseCase,
   private val scope: CoroutineScope
 ) {
 

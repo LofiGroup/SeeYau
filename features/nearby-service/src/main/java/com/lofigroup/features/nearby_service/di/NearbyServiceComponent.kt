@@ -3,6 +3,7 @@ package com.lofigroup.features.nearby_service.di
 import android.content.Context
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
+import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.FeatureScope
 import dagger.BindsInstance
@@ -10,7 +11,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineScope
 
 @FeatureScope
-@Component(dependencies = [NavigatorComponent::class])
+@Component(dependencies = [NavigatorComponent::class, ProfileComponent::class])
 interface NearbyServiceComponent {
 
   fun inject(nearbyServiceImpl: NearbyServiceImpl)
@@ -24,6 +25,8 @@ interface NearbyServiceComponent {
     fun coroutineScope(scope: CoroutineScope): Builder
 
     fun navigatorComponent(component: NavigatorComponent): Builder
+
+    fun profileComponent(component: ProfileComponent): Builder
 
     fun build(): NearbyServiceComponent
   }

@@ -6,6 +6,7 @@ import android.os.Binder
 import android.os.IBinder
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
+import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,10 +29,9 @@ class NearbyServiceImpl : Service(), NearbyService {
   override fun onCreate() {
     super.onCreate()
 
-    val app = application as NavigatorComponentProvider
-
     val component = DaggerNearbyServiceComponent.builder()
-      .navigatorComponent(app.provideNavigatorComponent())
+      .navigatorComponent((application as NavigatorComponentProvider).provideNavigatorComponent())
+      .profileComponent((application as ProfileComponentProvider).provideProfileComponent())
       .context(this)
       .coroutineScope(scope)
       .build()

@@ -2,11 +2,8 @@ package com.lofigroup.data.navigator
 
 import com.lofigroup.core.util.Resource
 import com.lofigroup.data.navigator.local.UserDao
-import com.lofigroup.data.navigator.local.ProfileDataSource
 import com.lofigroup.data.navigator.local.model.toUser
-import com.lofigroup.data.navigator.local.model.toUserEntity
 import com.lofigroup.data.navigator.remote.NavigatorApi
-import com.lofigroup.data.navigator.remote.model.toUser
 import com.lofigroup.data.navigator.remote.model.toUserEntity
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.domain.navigator.model.User
@@ -18,22 +15,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class NavigatorRepositoryImpl @Inject constructor(
-  private val profileData: ProfileDataSource,
   private val userDao: UserDao,
   private val ioDispatcher: CoroutineDispatcher,
   private val api: NavigatorApi,
   private val ioScope: CoroutineScope
 ) : NavigatorRepository {
-
-  private suspend fun loadProfile() = withContext(ioDispatcher) {
-    try {
-      val response = retrofitErrorHandler(api.getMe())
-
-      profileData.update(Resource.Success(response.toUser()))
-    } catch (e: Exception) {
-      profileData.update(Resource.Error(e.message ?: "Unknown error"))
-    }
-  }
 
   override fun getNearbyUsers(): Flow<List<User>> =
     userDao.observeUsers().map { it.map { user -> user.toUser() } }
@@ -56,14 +42,6 @@ class NavigatorRepositoryImpl @Inject constructor(
 
   override suspend fun getUser(id: Long) = withContext(ioDispatcher) {
     userDao.getUser(id)?.toUser()
-  }
-
-  override fun getMyProfile(): Flow<Resource<User>> {
-    ioScope.launch(ioDispatcher) {
-      loadProfile()
-    }
-
-    return profileData.getProfile()
   }
 
 }

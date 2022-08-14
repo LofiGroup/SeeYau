@@ -6,13 +6,6 @@ import com.lofigroup.domain.navigator.model.User
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-fun UserDto.toUser() = User(
-  id = id,
-  name = name,
-  imageUrl = imageUrl,
-  lastConnection = 0L
-)
-
 fun UserDto.toUserEntity() = UserEntity(
   id = id,
   name = name,

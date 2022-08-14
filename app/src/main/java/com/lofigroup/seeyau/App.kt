@@ -7,12 +7,16 @@ import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.seeyau.data.auth.di.DaggerAuthDataComponent
+import com.lofigroup.seeyau.data.profile.di.DaggerProfileDataComponent
 import com.lofigroup.seeyau.di.DaggerAppComponent
 import com.lofigroup.seeyau.domain.auth.di.DaggerAuthComponent
+import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
+import com.lofigroup.seeyau.domain.profile.di.DaggerProfileComponent
+import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import kotlinx.coroutines.MainScope
 import timber.log.Timber
 
-class App: Application(), NavigatorComponentProvider {
+class App: Application(), NavigatorComponentProvider, ProfileComponentProvider {
 
   private val appScope = MainScope()
 
@@ -28,11 +32,25 @@ class App: Application(), NavigatorComponentProvider {
       .build()
   }
 
-  val navigatorDataComponent by lazy {
+  private val navigatorDataComponent by lazy {
     DaggerNavigatorDataComponent.builder()
       .context(applicationContext)
       .userDao(appComponent.getDatabase().userDao)
       .sharedPref(appComponent.getSharedPref())
+      .appScope(appScope)
+      .baseApi(backend.getApi())
+      .build()
+  }
+
+  private val authDataComponent by lazy {
+    DaggerAuthDataComponent.builder()
+      .baseApi(backend.getApi())
+      .tokenStore(backend.tokenStore())
+      .build()
+  }
+
+  private val profileDataComponent by lazy {
+    DaggerProfileDataComponent.builder()
       .appScope(appScope)
       .baseApi(backend.getApi())
       .build()
@@ -44,10 +62,9 @@ class App: Application(), NavigatorComponentProvider {
       .build()
   }
 
-  val authDataComponent by lazy {
-    DaggerAuthDataComponent.builder()
-      .baseApi(backend.getApi())
-      .tokenStore(backend.tokenStore())
+  val profileComponent by lazy {
+    DaggerProfileComponent.builder()
+      .profileRepository(profileDataComponent.getRepository())
       .build()
   }
 
@@ -71,6 +88,10 @@ class App: Application(), NavigatorComponentProvider {
 
   override fun provideNavigatorComponent(): NavigatorComponent {
     return navigatorComponent
+  }
+
+  override fun provideProfileComponent(): ProfileComponent {
+    return profileComponent
   }
 
 }

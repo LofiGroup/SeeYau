@@ -1,7 +1,7 @@
-package com.lofigroup.data.navigator.local.model
+package com.lofigroup.seeyau.data.profile.model
 
 import com.lofigroup.backend_api.models.UserDto
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -17,9 +17,8 @@ fun UserDto.toProfileDataModel() = ProfileDataModel(
   imgUrl = imageUrl
 )
 
-fun ProfileDataModel.toUser() = User(
+fun ProfileDataModel.toProfile() = Profile(
   id = id,
   name = name,
-  imageUrl = imgUrl,
-  lastConnection = 0L
+  imageUrl = imgUrl
 )

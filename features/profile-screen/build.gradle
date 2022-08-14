@@ -1,5 +1,5 @@
 plugins {
-  id 'com.android.application'
+  id 'com.android.library'
   id 'org.jetbrains.kotlin.android'
   id 'kotlin-kapt'
 }
@@ -8,13 +8,11 @@ android {
   compileSdk 32
 
   defaultConfig {
-    applicationId "com.lofigroup.seeyau"
     minSdk 21
     targetSdk 32
-    versionCode 1
-    versionName "1.0"
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
   }
 
   buildTypes {
@@ -24,7 +22,6 @@ android {
     }
   }
   compileOptions {
-    coreLibraryDesugaringEnabled true
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
@@ -42,26 +39,9 @@ android {
 dependencies {
   implementation project(":core:ui")
   implementation project(":common:ui")
-  
-  implementation project(":domain:navigator")
-  implementation project(":domain:auth")
-  implementation project(":domain:profile")
-
-  implementation project(":data:navigator")
-  implementation project(":data:auth")
-  implementation project(":data:profile")
-  implementation project(":data:backend-api")
-
-  implementation project(":features:navigator-screen")
-  implementation project(":features:dialog-screen")
-  implementation project(":features:nearby-service")
-  implementation project(":features:auth-screen")
-  implementation project(":features:splash-screen")
 
   implementation appCompat
   implementation coreKtx
-
-  coreLibraryDesugaring desugaringDep
 
   testImplementation testDeps.core
   testImplementation testDeps.truth
@@ -70,7 +50,7 @@ dependencies {
 
   implementation composeDeps.runtime
   implementation composeDeps.ui
-  debugImplementation composeDeps.uiTooling
+  implementation composeDeps.uiTooling
   implementation composeDeps.foundation
   implementation composeDeps.foundationLayout
   implementation composeDeps.material
@@ -84,9 +64,4 @@ dependencies {
   kapt daggerDeps.annotationProcessor
 
   implementation timberDep
-
-  implementation roomDeps.runtime
-  implementation roomDeps.ktx
-  kapt roomDeps.annotationProcessor
-  androidTestImplementation roomDeps.runtime
 }

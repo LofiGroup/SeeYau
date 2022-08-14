@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @AppScope
 @Component(
-  modules = [ApiModule::class, RepositoryModule::class, UserDataModule::class, IOModule::class]
+  modules = [ApiModule::class, RepositoryModule::class, IOModule::class]
 )
 interface NavigatorDataComponent {
 
