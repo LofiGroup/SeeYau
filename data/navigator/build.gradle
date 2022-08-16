@@ -39,7 +39,6 @@ dependencies {
   implementation project(":data:backend-api")
 
   implementation project(":domain:navigator")
-  implementation project(":domain:auth")
 
   implementation appCompat
   implementation coreKtx

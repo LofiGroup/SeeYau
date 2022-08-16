@@ -58,9 +58,10 @@ class ProfileScreenViewModel @Inject constructor(
 
     state.value = state.value.copy(isLoading = true)
     viewModelScope.launch {
-      when (val result = updateProfileUseCase(state.value.toProfile())) {
-        is Result.Success -> state.value = state.value.copy(isLoading = false, navigateOut = true)
-        is Result.Error -> state.value = state.value.copy(isLoading = false, errorMessage = result.message)
+      state.value = when (val result = updateProfileUseCase(state.value.toProfile())) {
+        is Result.Success -> state.value.copy(isLoading = false, navigateOut = true)
+        is Result.Error -> state.value.copy(isLoading = false, errorMessage = result.message)
+        is Result.Undefined -> state.value.copy(isLoading = false, errorMessage = result.message)
       }
     }
   }

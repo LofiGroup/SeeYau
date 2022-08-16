@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState
+import com.sillyapps.core.ui.components.ShowToast
 
 @Composable
 fun SplashScreen(
@@ -30,6 +31,11 @@ fun SplashScreen(
     CircularProgressIndicator(
       modifier = Modifier.align(Alignment.Center)
     )
+  }
+
+  val errorMessage = state.errorMessage
+  if (errorMessage != null) {
+    ShowToast(message = errorMessage)
   }
 
 }

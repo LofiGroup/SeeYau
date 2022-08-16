@@ -1,0 +1,71 @@
+plugins {
+  id 'com.android.library'
+  id 'org.jetbrains.kotlin.android'
+  id 'kotlin-kapt'
+}
+
+android {
+  compileSdk 32
+
+  defaultConfig {
+    minSdk 21
+    targetSdk 32
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+}
+
+dependencies {
+  implementation project(":core:network")
+  implementation project(":core:util")
+
+  implementation project(":common:network")
+
+  implementation project(":data:backend-api")
+
+  implementation project(":domain:chat")
+
+  implementation appCompat
+  implementation coreKtx
+
+  testImplementation testDeps.core
+  testImplementation testDeps.truth
+  androidTestImplementation testDeps.android
+  androidTestImplementation testDeps.espresso
+
+  implementation daggerDeps.core
+  kapt daggerDeps.annotationProcessor
+
+  implementation timberDep
+
+  implementation coroutinesDeps.core
+
+  implementation roomDeps.runtime
+  implementation roomDeps.ktx
+  kapt roomDeps.annotationProcessor
+  androidTestImplementation roomDeps.runtime
+
+  implementation moshiDeps.core
+  kapt moshiDeps.codegen
+
+  implementation retrofitDeps.core
+  implementation retrofitDeps.moshiConverter
+
+  implementation okHttp.core
+  implementation okHttp.loggingInterceptor
+}

@@ -28,5 +28,9 @@ object ApiModule {
       return baseApi.register(body)
     }
 
+    override suspend fun check(): Response<Unit> {
+      return baseApi.check()
+    }
+
   }
 }

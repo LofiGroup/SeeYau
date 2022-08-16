@@ -10,4 +10,6 @@ interface AuthApi {
 
   suspend fun register(body: AccessRequest): Response<AccessResponse>
 
+  suspend fun check(): Response<Unit>
+
 }

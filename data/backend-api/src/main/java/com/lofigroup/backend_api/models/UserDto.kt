@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserDto(
-  @Json(name = "id")
+  @Json(name = "user_id")
   val id: Long,
 
   @Json(name = "name")

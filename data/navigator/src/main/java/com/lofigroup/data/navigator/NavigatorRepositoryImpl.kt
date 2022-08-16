@@ -7,6 +7,7 @@ import com.lofigroup.data.navigator.remote.NavigatorApi
 import com.lofigroup.data.navigator.remote.model.toUserEntity
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.domain.navigator.model.User
+import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -36,8 +37,12 @@ class NavigatorRepositoryImpl @Inject constructor(
       val response = retrofitErrorHandler(api.getUser(id))
 
       userDao.upsert(response.toUserEntity())
-    } catch (e: HttpException) {
+    }
+    catch (e: HttpException) {
       Timber.e("Couldn't find user with id: $id. Error message ${e.message}")
+    }
+    catch (e: Exception) {
+      Timber.e(getErrorMessage(e))
     }
   }
 

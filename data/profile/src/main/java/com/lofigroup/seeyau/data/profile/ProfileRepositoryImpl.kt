@@ -8,6 +8,7 @@ import com.lofigroup.seeyau.data.profile.model.toUpdateProfileRequest
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
+import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -30,8 +31,8 @@ class ProfileRepositoryImpl @Inject constructor(
       val response = retrofitErrorHandler(api.getProfile())
 
       profileData.update(Resource.Success(response.toProfileDataModel()))
-    } catch (e: HttpException) {
-      profileData.update(Resource.Error(e.message ?: "Unknown error"))
+    } catch (e: Exception) {
+      profileData.update(Resource.Error(getErrorMessage(e)))
     }
   }
 
@@ -62,8 +63,8 @@ class ProfileRepositoryImpl @Inject constructor(
       profileData.update(Resource.Success(profile.toProfileDataModel()))
       Result.Success
     }
-    catch (e: HttpException) {
-      Result.Error(e.message ?: " Unknown error")
+    catch (e: Exception) {
+      Result.Error(getErrorMessage(e))
     }
   }
 }

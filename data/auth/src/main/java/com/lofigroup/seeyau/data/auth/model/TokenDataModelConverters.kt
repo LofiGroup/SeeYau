@@ -9,7 +9,7 @@ import kotlin.math.exp
 fun AccessResponse.toTokenDataModel() =
   TokenDataModel(
     value = token,
-    expiresIn = System.currentTimeMillis() + 24 * 3600000
+    expiresIn = expiresIn
   )
 
 fun TokenDataModel.toToken() =

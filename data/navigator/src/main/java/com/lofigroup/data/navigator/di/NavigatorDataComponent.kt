@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.lofigroup.backend_api.SeeYauApi
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.domain.navigator.NavigatorRepository
-import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance

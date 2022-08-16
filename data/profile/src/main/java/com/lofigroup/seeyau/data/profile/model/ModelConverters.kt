@@ -29,7 +29,6 @@ fun ProfileDataModel.toProfile() = Profile(
 )
 
 fun Profile.toUpdateProfileRequest() = UpdateProfileRequest(
-  id = id,
   name = name,
   imageUrl = imageUrl ?: ""
 )

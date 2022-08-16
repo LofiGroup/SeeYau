@@ -9,19 +9,22 @@ import retrofit2.http.*
 
 interface SeeYauApi {
 
-  @POST("/login/")
+  @POST("/api/auth/login")
   suspend fun login(@Body body: AccessRequest): Response<AccessResponse>
 
-  @POST("/register/")
+  @POST("/api/auth/register")
   suspend fun register(@Body body: AccessRequest): Response<AccessResponse>
 
-  @GET("/users/{user_id}")
+  @GET("/api/auth/check")
+  suspend fun check(): Response<Unit>
+
+  @GET("/api/profiles/{user_id}")
   suspend fun getUser(@Path("user_id") id: Long): Response<UserDto>
 
-  @GET("users/me")
+  @GET("/api/profiles/me")
   suspend fun getMe(): Response<UserDto>
 
-  @PUT("users/me")
+  @PUT("/api/profiles/me")
   suspend fun updateMe(@Body body: UpdateProfileRequest): Response<Unit>
 
 }

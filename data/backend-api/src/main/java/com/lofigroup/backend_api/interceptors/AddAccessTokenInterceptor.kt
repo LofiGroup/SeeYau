@@ -13,11 +13,10 @@ class AddAccessTokenInterceptor @Inject constructor(
 
     val token = tokenStore.getToken() ?: return chain.proceed(originalRequest)
 
-    val url = originalRequest.url.newBuilder().addQueryParameter("access_token", token.value)
+    val requestWithBearer = originalRequest.newBuilder()
+      .addHeader("Authorization", "Bearer ${token.value}")
       .build()
 
-    val requestWithAccessToken = originalRequest.newBuilder().url(url).build()
-
-    return chain.proceed(requestWithAccessToken)
+    return chain.proceed(requestWithBearer)
   }
 }
