@@ -38,13 +38,13 @@ class App: Application(), NavigatorComponentProvider, ProfileComponentProvider {
       .userDao(appComponent.getDatabase().userDao)
       .sharedPref(appComponent.getSharedPref())
       .appScope(appScope)
-      .baseApi(backend.getApi())
+      .baseRetrofit(backend.getRetrofit())
       .build()
   }
 
   private val authDataComponent by lazy {
     DaggerAuthDataComponent.builder()
-      .baseApi(backend.getApi())
+      .baseRetrofit(backend.getRetrofit())
       .tokenStore(backend.tokenStore())
       .build()
   }
@@ -52,7 +52,7 @@ class App: Application(), NavigatorComponentProvider, ProfileComponentProvider {
   private val profileDataComponent by lazy {
     DaggerProfileDataComponent.builder()
       .appScope(appScope)
-      .baseApi(backend.getApi())
+      .baseRetrofit(backend.getRetrofit())
       .build()
   }
 

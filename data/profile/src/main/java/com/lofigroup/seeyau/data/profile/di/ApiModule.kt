@@ -1,26 +1,19 @@
 package com.lofigroup.seeyau.data.profile.di
 
 import com.lofigroup.backend_api.SeeYauApi
-import com.lofigroup.backend_api.models.UpdateProfileRequest
-import com.lofigroup.backend_api.models.UserDto
+import com.lofigroup.seeyau.data.profile.model.UpdateProfileRequest
 import com.lofigroup.seeyau.data.profile.ProfileApi
 import com.sillyapps.core.di.AppScope
 import dagger.Module
 import dagger.Provides
-import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.create
 
 @Module
 object ApiModule {
 
   @AppScope
   @Provides
-  fun provideApi(baseApi: SeeYauApi): ProfileApi = object : ProfileApi {
-    override suspend fun getProfile() = baseApi.getMe()
-
-
-    override suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) =
-      baseApi.updateMe(updateProfileRequest)
-
-  }
+  fun provideApi(retrofit: Retrofit): ProfileApi = retrofit.create(ProfileApi::class.java)
 
 }

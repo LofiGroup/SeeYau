@@ -17,13 +17,12 @@ object ApiModule {
 
   @AppScope
   @Provides
-  fun provideSeeYauApi(client: OkHttpClient): SeeYauApi {
+  fun provideSeeYauApi(client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
       .baseUrl(SeeYauApiConstants.baseUrl)
       .client(client)
       .addConverterFactory(MoshiConverterFactory.create())
       .build()
-      .create(SeeYauApi::class.java)
   }
 
   @AppScope

@@ -8,23 +8,13 @@ import com.sillyapps.core.di.AppScope
 import dagger.Module
 import dagger.Provides
 import retrofit2.Response
+import retrofit2.Retrofit
 
 @Module
 object ApiModule {
 
   @AppScope
   @Provides
-  fun provideNavigatorApi(baseApi: SeeYauApi): NavigatorApi {
-    return object : NavigatorApi {
-      override suspend fun getMe(): Response<UserDto> {
-        return baseApi.getMe()
-      }
-
-      override suspend fun getUser(id: Long): Response<UserDto> {
-        return baseApi.getUser(id)
-      }
-
-    }
-  }
+  fun provideNavigatorApi(retrofit: Retrofit): NavigatorApi = retrofit.create(NavigatorApi::class.java)
 
 }

@@ -90,4 +90,10 @@ dependencies {
   implementation roomDeps.ktx
   kapt roomDeps.annotationProcessor
   androidTestImplementation roomDeps.runtime
+
+  implementation retrofitDeps.core
+  implementation retrofitDeps.moshiConverter
+
+  implementation okHttp.core
+  implementation okHttp.loggingInterceptor
 }

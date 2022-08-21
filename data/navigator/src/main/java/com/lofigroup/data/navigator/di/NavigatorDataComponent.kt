@@ -10,6 +10,7 @@ import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
+import retrofit2.Retrofit
 
 @AppScope
 @Component(
@@ -34,7 +35,7 @@ interface NavigatorDataComponent {
     fun appScope(appScope: CoroutineScope): Builder
 
     @BindsInstance
-    fun baseApi(api: SeeYauApi): Builder
+    fun baseRetrofit(retrofit: Retrofit): Builder
 
     fun build(): NavigatorDataComponent
   }

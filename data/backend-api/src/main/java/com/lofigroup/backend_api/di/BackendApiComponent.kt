@@ -6,12 +6,13 @@ import com.lofigroup.backend_api.TokenStore
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance
 import dagger.Component
+import retrofit2.Retrofit
 
 @AppScope
 @Component(modules = [ApiModule::class, TokenStoreModule::class])
 interface BackendApiComponent {
 
-  fun getApi(): SeeYauApi
+  fun getRetrofit(): Retrofit
 
   fun tokenStore(): TokenStore
 

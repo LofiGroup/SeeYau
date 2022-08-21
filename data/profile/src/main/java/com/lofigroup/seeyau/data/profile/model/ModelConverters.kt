@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.data.profile.model
 
-import com.lofigroup.backend_api.models.UpdateProfileRequest
 import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.seeyau.domain.profile.model.Profile
 

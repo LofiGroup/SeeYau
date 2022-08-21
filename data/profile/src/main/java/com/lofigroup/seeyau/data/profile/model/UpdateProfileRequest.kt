@@ -1,4 +1,4 @@
-package com.lofigroup.backend_api.models
+package com.lofigroup.seeyau.data.profile.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -7,6 +7,6 @@ import com.squareup.moshi.JsonClass
 data class UpdateProfileRequest(
   @Json(name = "name")
   val name: String,
-  @Json(name = "image_url")
+  @Json(name = "img_url")
   val imageUrl: String
 )

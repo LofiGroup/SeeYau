@@ -7,6 +7,7 @@ import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance
 import dagger.Component
+import retrofit2.Retrofit
 
 @AppScope
 @Component(
@@ -20,7 +21,7 @@ interface AuthDataComponent {
   interface Builder {
 
     @BindsInstance
-    fun baseApi(api: SeeYauApi): Builder
+    fun baseRetrofit(retrofit: Retrofit): Builder
 
     @BindsInstance
     fun tokenStore(tokenStore: TokenStore): Builder

@@ -7,6 +7,7 @@ import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
+import retrofit2.Retrofit
 
 @AppScope
 @Component(modules = [ApiModule::class, RepositoryModule::class, IOModule::class])
@@ -17,7 +18,7 @@ interface ProfileDataComponent {
   @Component.Builder
   interface Builder {
     @BindsInstance
-    fun baseApi(api: SeeYauApi): Builder
+    fun baseRetrofit(retrofit: Retrofit): Builder
 
     @BindsInstance
     fun appScope(appScope: CoroutineScope): Builder

@@ -6,8 +6,6 @@ import retrofit2.Response
 
 interface NavigatorApi {
 
-  suspend fun getMe(): Response<UserDto>
-
   suspend fun getUser(id: Long): Response<UserDto>
 
 }
