@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.data.auth.di
 
-import com.lofigroup.backend_api.SeeYauApi
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.sillyapps.core.di.AppScope

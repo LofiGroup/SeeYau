@@ -1,7 +1,6 @@
 package com.lofigroup.backend_api.di
 
 import android.content.SharedPreferences
-import com.lofigroup.backend_api.SeeYauApi
 import com.lofigroup.backend_api.TokenStore
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance

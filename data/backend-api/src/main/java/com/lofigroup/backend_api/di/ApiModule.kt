@@ -1,7 +1,5 @@
 package com.lofigroup.backend_api.di
 
-import com.lofigroup.backend_api.SeeYauApi
-import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.backend_api.interceptors.AddAccessTokenInterceptor
 import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.sillyapps.core.di.AppScope
