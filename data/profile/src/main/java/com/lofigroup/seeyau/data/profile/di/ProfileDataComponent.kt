@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.data.profile.di
 
-import com.lofigroup.backend_api.SeeYauApi
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
