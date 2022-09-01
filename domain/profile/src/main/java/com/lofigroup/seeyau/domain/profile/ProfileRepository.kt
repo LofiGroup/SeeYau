@@ -7,7 +7,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
 
-  fun getProfile(): Flow<Resource<Profile>>
+  suspend fun pullProfileData()
+
+  fun getProfile(): Flow<Profile>
+
+  suspend fun getMyId(): Long
 
   suspend fun updateProfile(profile: Profile): Result
 

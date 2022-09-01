@@ -36,6 +36,7 @@ dependencies {
 
   implementation project(":common:network")
   implementation project(":data:backend-api")
+  implementation project(":data:navigator")
   implementation project(":domain:profile")
 
   implementation appCompat

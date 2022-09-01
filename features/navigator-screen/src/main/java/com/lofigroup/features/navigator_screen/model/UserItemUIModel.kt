@@ -13,6 +13,6 @@ fun User.toUIModel(): UserItemUIModel {
   return UserItemUIModel(
     imageUrl = imageUrl,
     name = name,
-    isNear = System.currentTimeMillis() - lastConnection < 1 * Time.m
+    isNear = isNear
   )
 }

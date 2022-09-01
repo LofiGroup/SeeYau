@@ -7,6 +7,7 @@ import android.os.IBinder
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
+import com.sillyapps.core.ui.service.ServiceBinder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class NearbyServiceImpl : Service(), NearbyService {
 
   @Inject
-  lateinit var nearbyClient: NearbyClient
+  lateinit var nearbyBtClient: NearbyBtClient
 
   private val serviceJob = Job()
   private val scope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -39,17 +40,17 @@ class NearbyServiceImpl : Service(), NearbyService {
     component.inject(this)
   }
 
-  inner class LocalBinder : Binder() {
-    fun getService(): NearbyService = this@NearbyServiceImpl
+  inner class LocalBinder : Binder(), ServiceBinder<NearbyService> {
+    override fun getService(): NearbyService = this@NearbyServiceImpl
   }
 
   override fun startDiscoveringNearbyDevices() {
-    nearbyClient.startBroadcast()
+    nearbyBtClient.startBroadcast()
   }
 
   override fun onDestroy() {
     super.onDestroy()
-    nearbyClient.stopBroadcast()
+    nearbyBtClient.stopBroadcast()
     serviceJob.cancel()
   }
 }

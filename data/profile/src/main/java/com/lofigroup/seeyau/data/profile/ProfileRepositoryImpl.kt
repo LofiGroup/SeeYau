@@ -2,9 +2,11 @@ package com.lofigroup.seeyau.data.profile
 
 import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.Result
+import com.lofigroup.data.navigator.local.UserDao
+import com.lofigroup.data.navigator.remote.model.toUserEntity
 import com.lofigroup.seeyau.data.profile.model.toProfile
-import com.lofigroup.seeyau.data.profile.model.toProfileDataModel
 import com.lofigroup.seeyau.data.profile.model.toUpdateProfileRequest
+import com.lofigroup.seeyau.data.profile.model.toUserDto
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
@@ -17,50 +19,47 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
   private val api: ProfileApi,
   private val ioDispatcher: CoroutineDispatcher,
   private val ioScope: CoroutineScope,
-  private val profileData: ProfileDataSource
+  private val profileData: ProfileDataSource,
+  private val userDao: UserDao
 ): ProfileRepository {
 
-  private suspend fun loadProfile() = withContext(ioDispatcher) {
+  override suspend fun pullProfileData() = withContext(ioDispatcher) {
     try {
       val response = retrofitErrorHandler(api.getProfile())
 
-      profileData.update(Resource.Success(response.toProfileDataModel()))
+      userDao.insert(response.toUserEntity().copy(id = 0))
+      profileData.update(response.id)
     } catch (e: Exception) {
-      profileData.update(Resource.Error(getErrorMessage(e)))
+      Timber.e(getErrorMessage(e))
     }
   }
 
-  override fun getProfile(): Flow<Resource<Profile>> {
-    if (!profileData.isNotEmpty()) {
-      ioScope.launch(ioDispatcher) {
-        loadProfile()
-      }
+  override fun getProfile(): Flow<Profile> {
+    return userDao.observeMe().map {
+      it.toProfile()
     }
+  }
 
-    return profileData.getProfile().map {
-      when (it) {
-        is Resource.Loading -> Resource.Loading()
-        is Resource.Success -> Resource.Success(it.data.toProfile())
-        is Resource.Error -> Resource.Error(it.errorMessage)
-      }
-    }
+  override suspend fun getMyId(): Long {
+    return profileData.getMyId()
   }
 
   override suspend fun updateProfile(profile: Profile): Result = withContext(ioDispatcher) {
     return@withContext try {
       retrofitErrorHandler(api.updateProfile(profile.toUpdateProfileRequest()))
 
-      profileData.update(Resource.Success(profile.toProfileDataModel()))
+      userDao.insert(profile.toUserDto().toUserEntity())
       Result.Success
     }
     catch (e: EmptyResponseBodyException) {
-      profileData.update(Resource.Success(profile.toProfileDataModel()))
+      userDao.insert(profile.toUserDto().toUserEntity())
       Result.Success
     }
     catch (e: Exception) {

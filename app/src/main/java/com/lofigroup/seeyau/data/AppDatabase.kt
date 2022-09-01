@@ -6,11 +6,19 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.data.navigator.local.model.UserEntity
+import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
+import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 
-@Database(entities = [UserEntity::class], version = 5, exportSchema = false)
+@Database(
+  entities = [
+    UserEntity::class, MessageEntity::class, ChatEntity::class
+  ], version = 8, exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
 
   abstract val userDao: UserDao
+  abstract val chatDao: ChatDao
 
   companion object {
     @Volatile

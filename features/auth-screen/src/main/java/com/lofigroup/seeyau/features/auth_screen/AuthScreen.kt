@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.auth_screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,13 +31,13 @@ fun AuthScreen(
     }
   }
 
-  val (email, setEmail) = remember {
+  val (email, setEmail) = rememberSaveable {
     mutableStateOf("")
   }
-  val (password, setPassword) = remember {
+  val (password, setPassword) = rememberSaveable {
     mutableStateOf("")
   }
-  val (passwordDuplicate, setPasswordDuplicate) = remember {
+  val (passwordDuplicate, setPasswordDuplicate) = rememberSaveable {
     mutableStateOf("")
   }
 

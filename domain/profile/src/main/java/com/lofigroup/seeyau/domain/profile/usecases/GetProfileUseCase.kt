@@ -10,6 +10,6 @@ class GetProfileUseCase @Inject constructor(
   private val repository: ProfileRepository
 ) {
 
-  operator fun invoke(): Flow<Resource<Profile>> = repository.getProfile()
+  operator fun invoke(): Flow<Profile> = repository.getProfile()
 
 }

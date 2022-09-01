@@ -8,6 +8,8 @@ interface NavigatorRepository {
 
   fun getNearbyUsers(): Flow<List<User>>
 
+  suspend fun pullData()
+
   suspend fun notifyUserWithIdWasFound(id: Long)
 
   suspend fun getUser(id: Long): User?

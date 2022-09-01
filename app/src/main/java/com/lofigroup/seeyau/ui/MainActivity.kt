@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.ui
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -9,30 +10,32 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
+import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
+import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
+import com.sillyapps.core.ui.Factory
+import com.sillyapps.core.ui.daggerViewModel
+import com.sillyapps.core.ui.service.ServiceModuleConnection
 import com.sillyapps.core.ui.util.hasPermissions
+import timber.log.Timber
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
-  private lateinit var nearbyService: NearbyService
-  private var nearbyServiceIsBound: Boolean = false
-
-  private val connection = object : ServiceConnection {
-    override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
-      val binder = service as NearbyServiceImpl.LocalBinder
-      nearbyService = binder.getService()
-      nearbyServiceIsBound = true
-      nearbyService.startDiscoveringNearbyDevices()
-    }
-
-    override fun onServiceDisconnected(p0: ComponentName?) {
-      nearbyServiceIsBound = false
-    }
-
-  }
+  private val nearbyServiceConnection =
+    ServiceModuleConnection<NearbyService>(
+      NearbyServiceImpl::class.java,
+      onServiceConnected = { it.startDiscoveringNearbyDevices() }
+    )
+  private val dataSyncServiceConnection =
+    ServiceModuleConnection<DataSyncService>(
+      DataSyncServiceImpl::class.java,
+      onServiceConnected = { it.sync() }
+    )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -42,13 +45,9 @@ class MainActivity : ComponentActivity() {
     setContent {
       AppTheme() {
         RootContainer(
-          navigatorComponent = app.navigatorComponent,
-          authComponent = app.authComponent,
-          profileComponent = app.profileComponent,
-          startNearbyService = {
-            Intent(this, NearbyServiceImpl::class.java).also {
-              bindService(it, connection, Context.BIND_AUTO_CREATE)
-            }
+          appModules = app.appModules,
+          onStart = {
+            bindServices()
           }
         )
       }
@@ -63,10 +62,13 @@ class MainActivity : ComponentActivity() {
 
   override fun onStop() {
     super.onStop()
-    if (nearbyServiceIsBound) {
-      unbindService(connection)
-      nearbyServiceIsBound = false
-    }
+    nearbyServiceConnection.unbind(this)
+    dataSyncServiceConnection.unbind(this)
+  }
+
+  private fun bindServices() {
+    nearbyServiceConnection.bind(this)
+    dataSyncServiceConnection.bind(this)
   }
 
 }

@@ -1,5 +1,8 @@
 package com.lofigroup.seeyau.data.profile.di
 
+import android.content.SharedPreferences
+import com.lofigroup.data.navigator.local.UserDao
+import com.lofigroup.seeyau.data.profile.ProfileDataSource
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
@@ -13,11 +16,18 @@ import retrofit2.Retrofit
 interface ProfileDataComponent {
 
   fun getRepository(): ProfileRepository
+  fun getProfileDataSource(): ProfileDataSource
 
   @Component.Builder
   interface Builder {
     @BindsInstance
     fun baseRetrofit(retrofit: Retrofit): Builder
+
+    @BindsInstance
+    fun userDao(userDao: UserDao): Builder
+
+    @BindsInstance
+    fun sharedPref(sharedPreferences: SharedPreferences): Builder
 
     @BindsInstance
     fun appScope(appScope: CoroutineScope): Builder

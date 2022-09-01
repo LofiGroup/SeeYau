@@ -13,7 +13,7 @@ annotation class IODispatcher
 annotation class IOCoroutineScope
 
 @Module
-class IOModule {
+object IOModule {
   @Provides
   fun provideIODispatcher(): CoroutineDispatcher {
     return Dispatchers.IO

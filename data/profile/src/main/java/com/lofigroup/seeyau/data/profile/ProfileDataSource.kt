@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileDataSource {
 
-  fun getProfile(): Flow<Resource<ProfileDataModel>>
+  fun getMyId(): Long
 
-  fun update(profileRes: Resource<ProfileDataModel>)
+  fun update(id: Long)
 
   fun isNotEmpty(): Boolean
 

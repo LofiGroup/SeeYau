@@ -3,11 +3,9 @@ package com.lofigroup.seeyau.ui
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -19,7 +17,7 @@ import com.sillyapps.core.ui.util.navigateToTopDestination
 fun BottomBar(navController: NavHostController) {
   val items = listOf(
     Screen.NavigatorScreen,
-    Screen.DialogScreen,
+    Screen.ChatListScreen,
     Screen.SettingsScreen
   )
 

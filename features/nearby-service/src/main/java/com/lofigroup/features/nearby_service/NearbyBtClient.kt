@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import com.lofigroup.core.util.Resource
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.GetMyIdUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -19,11 +20,11 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class NearbyClient @Inject constructor(
+class NearbyBtClient @Inject constructor(
   private val context: Context,
   private val notifyUserIsNearbyUseCase: NotifyUserIsNearbyUseCase,
   private val notifyDeviceIsLostUseCase: NotifyDeviceIsLostUseCase,
-  private val getMyProfileUseCase: GetProfileUseCase,
+  private val getMyIdUseCase: GetMyIdUseCase,
   private val scope: CoroutineScope
 ) {
 
@@ -88,26 +89,15 @@ class NearbyClient @Inject constructor(
     turnBluetoothOn()
 
     scope.launch {
-      getMyProfileUseCase().collect {
-        when (it) {
-          is Resource.Error -> {
-            advertiseData = Resource.Error(it.errorMessage)
-          }
-          is Resource.Loading -> {
-            advertiseData = Resource.Loading()
-          }
-          is Resource.Success -> {
-            val idBytes = it.data.id.toByteArray()
-            val data = AdvertiseData.Builder()
-              .addServiceUuid(pUuid)
-              .addServiceData(pUuid, idBytes)
-              .build()
+      val id = getMyIdUseCase()
+      val idBytes = id.toByteArray()
+      val data = AdvertiseData.Builder()
+        .addServiceUuid(pUuid)
+        .addServiceData(pUuid, idBytes)
+        .build()
 
-            advertiseData = Resource.Success(data)
-            startBroadcast()
-          }
-        }
-      }
+      advertiseData = Resource.Success(data)
+      startBroadcast()
     }
   }
 

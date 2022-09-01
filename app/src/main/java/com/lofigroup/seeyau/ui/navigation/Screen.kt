@@ -14,8 +14,13 @@ sealed class Screen(
     imageVector = Icons.Filled.Search
   )
 
-  object DialogScreen: Screen(
-    route = "dialog_screen",
+  object ChatListScreen: Screen(
+    route = "chat_list_screen",
+    imageVector = Icons.Filled.Message
+  )
+
+  object ChatScreen: Screen(
+    route = "chat_screen",
     imageVector = Icons.Filled.Message
   )
 

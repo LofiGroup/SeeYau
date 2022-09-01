@@ -46,4 +46,6 @@ dependencies {
   implementation composeDeps.material
   implementation composeDeps.navigation
   debugImplementation composeDeps.poolingContainer
+
+  implementation timberDep
 }

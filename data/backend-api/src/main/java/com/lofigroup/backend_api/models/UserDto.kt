@@ -12,5 +12,5 @@ data class UserDto(
   val name: String,
 
   @Json(name = "img_url")
-  val imageUrl: String?
+  val imageUrl: String?,
 )

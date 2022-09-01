@@ -9,6 +9,7 @@ import com.lofigroup.seeyau.data.auth.model.toTokenDataModel
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.Access
 import com.lofigroup.seeyau.domain.auth.model.Token
+import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
@@ -52,6 +53,8 @@ class AuthRepositoryImpl @Inject constructor(
   override suspend fun check() = withContext(ioDispatcher) {
     return@withContext try {
       retrofitErrorHandler(authApi.check())
+      Result.Success
+    } catch (e: EmptyResponseBodyException) {
       Result.Success
     } catch (e: HttpException) {
       Result.Error(e.message())

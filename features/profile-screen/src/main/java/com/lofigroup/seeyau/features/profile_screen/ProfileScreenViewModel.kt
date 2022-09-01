@@ -28,11 +28,7 @@ class ProfileScreenViewModel @Inject constructor(
   init {
     viewModelScope.launch {
       getProfileUseCase().collect() {
-        state.value = when (it) {
-          is Resource.Success -> it.data.toProfileScreenState()
-          is Resource.Error -> ProfileScreenState(errorMessage = it.errorMessage, isLoading = false)
-          is Resource.Loading -> ProfileScreenState(isLoading = true)
-        }
+        state.value = it.toProfileScreenState()
       }
     }
   }
