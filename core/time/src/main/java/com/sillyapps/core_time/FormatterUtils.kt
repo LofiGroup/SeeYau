@@ -1,5 +1,8 @@
 package com.sillyapps.core_time
 
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.sign
@@ -99,4 +102,32 @@ fun getFormattedValuesInRange(size: Int): Array<String> {
     if (it < 10) return@Array "0$it"
     return@Array it.toString()
   }
+}
+
+fun millisToLastSeen(utcMillis: Long): LastSeen {
+  val period = System.currentTimeMillis() - utcMillis
+
+  return when {
+    period > Time.m -> {
+      LastSeen.Recently
+    }
+    period > Time.h -> LastSeen.MinutesAgo((period / Time.m).toInt())
+    period > 24 * Time.h -> LastSeen.HoursAgo((period / Time.h).toInt())
+    else -> {
+      val date = Instant.ofEpochMilli(utcMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+      LastSeen.LongAgo(date.toString())
+    }
+  }
+}
+
+sealed class LastSeen {
+
+  object Recently: LastSeen()
+
+  class MinutesAgo(val minutes: Int): LastSeen()
+
+  class HoursAgo(val hours: Int): LastSeen()
+
+  class LongAgo(val date: String): LastSeen()
+
 }

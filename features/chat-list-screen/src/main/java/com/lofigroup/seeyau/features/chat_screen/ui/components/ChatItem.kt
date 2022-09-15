@@ -21,12 +21,8 @@ import com.lofigroup.domain.navigator.model.User
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.Chat
-import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
-import com.lofigroup.seeyau.features.chat_screen.ui.ChatListScreen
-import com.lofigroup.seeyau.features.chat_screen.ui.ChatListScreenStateHolder
+import com.sillyapps.core.ui.components.RemoteImage
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 @Composable
 fun ChatItem(
@@ -43,35 +39,7 @@ fun ChatItem(
       .padding(start = 4.dp, end = 8.dp),
       verticalAlignment = Alignment.CenterVertically
     ) {
-      GlideImage(
-        imageModel = chat.user.imageUrl,
-        contentScale = ContentScale.FillBounds,
-        alignment = Alignment.Center,
-        success = { imageState ->
-          val drawable = imageState.drawable
-
-          if (drawable != null) {
-            Image(
-              bitmap = drawable.toBitmap().asImageBitmap(),
-              contentDescription = null,
-              modifier = Modifier.fillMaxSize()
-            )
-          }
-        },
-        failure = {
-          Image(
-            painter = painterResource(id = R.drawable.ic_baseline_broken_image_24),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(Color.Gray),
-            modifier = Modifier.fillMaxSize().clip(CircleShape)
-          )
-        },
-        previewPlaceholder = R.drawable.ic_baseline_broken_image_24,
-        modifier = Modifier
-          .size(64.dp)
-          .clip(CircleShape)
-      )
-
+      RemoteImage(url = chat.partner.imageUrl)
 
       Column(
         modifier = Modifier
@@ -82,12 +50,12 @@ fun ChatItem(
           verticalAlignment = Alignment.CenterVertically
         ) {
           Text(
-            text = chat.user.name,
+            text = chat.partner.name,
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(end = 4.dp)
           )
 
-          if (chat.user.isNear) {
+          if (chat.partner.isNear) {
             Icon(
               painter = painterResource(id = R.drawable.ic_baseline_wb_sunny_24),
               contentDescription = null,
@@ -121,7 +89,7 @@ fun ChatItem(
 fun ChatItemPreview() {
   val item = Chat(
     id = 0,
-    user = User(
+    partner = User(
       id = 0,
       name = "Honda",
       imageUrl = "",

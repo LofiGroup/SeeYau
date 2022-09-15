@@ -4,6 +4,6 @@ import com.lofigroup.domain.navigator.model.User
 
 data class Chat(
   val id: Long,
-  val user: User,
+  val partner: User,
   val messages: List<ChatMessage>
 )

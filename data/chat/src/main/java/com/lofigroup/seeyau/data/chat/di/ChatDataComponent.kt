@@ -3,13 +3,14 @@ package com.lofigroup.seeyau.data.chat.di
 import android.content.SharedPreferences
 import com.lofigroup.seeyau.data.chat.ChatRepositoryImpl
 import com.lofigroup.seeyau.data.chat.local.ChatDao
-import com.lofigroup.seeyau.data.chat.remote.ChatApi
+import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.profile.ProfileDataSource
 import com.lofigroup.seeyau.domain.chat.ChatRepository
-import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
 import dagger.*
+import kotlinx.coroutines.CoroutineScope
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @AppScope
@@ -31,6 +32,12 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun chatDao(chatDao: ChatDao): Builder
+
+    @BindsInstance
+    fun httpClient(httpClient: OkHttpClient): Builder
+
+    @BindsInstance
+    fun ioScope(scope: CoroutineScope): Builder
 
     fun build(): ChatDataComponent
   }

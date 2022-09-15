@@ -5,6 +5,7 @@ import com.lofigroup.backend_api.TokenStore
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance
 import dagger.Component
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @AppScope
@@ -12,6 +13,7 @@ import retrofit2.Retrofit
 interface BackendApiComponent {
 
   fun getRetrofit(): Retrofit
+  fun getHttpClient(): OkHttpClient
 
   fun tokenStore(): TokenStore
 

@@ -4,12 +4,15 @@ import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.LastChatUpdateDataSource
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.toDomainModel
-import com.lofigroup.seeyau.data.chat.remote.ChatApi
-import com.lofigroup.seeyau.data.chat.remote.models.ChatUpdatesDto
-import com.lofigroup.seeyau.data.chat.remote.models.toMessageEntity
+import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
+import com.lofigroup.seeyau.data.chat.remote.http.models.ChatUpdatesDto
+import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
+import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebsocketChannel
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
 import com.lofigroup.seeyau.data.profile.ProfileDataSource
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.Chat
+import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +27,8 @@ class ChatRepositoryImpl @Inject constructor(
   private val chatDao: ChatDao,
   private val ioDispatcher: CoroutineDispatcher,
   private val lastChatUpdateDataSource: LastChatUpdateDataSource,
-  private val profileDataSource: ProfileDataSource
+  private val profileDataSource: ProfileDataSource,
+  private val chatWebSocket: ChatWebsocketChannel
 ): ChatRepository {
 
   override suspend fun pullData() = withContext(ioDispatcher) {
@@ -42,16 +46,26 @@ class ChatRepositoryImpl @Inject constructor(
     catch (e: Exception) {
       Timber.e(getErrorMessage(e))
     }
+
+    chatWebSocket.connect()
+  }
+
+  override suspend fun sendMessage(messageRequest: ChatMessageRequest) = withContext(ioDispatcher) {
+    chatWebSocket.sendMessage(messageRequest.toWebSocketRequest())
   }
 
   override fun getChats(): Flow<List<Chat>> {
     return chatDao.getChats().map { it.map { chat -> chat.toDomainModel() } }
   }
 
+  override fun getChat(id: Long): Flow<Chat> {
+    return chatDao.getAssembledChat(id).map { it.toDomainModel() }
+  }
+
   private suspend fun insertUpdates(chatUpdates: ChatUpdatesDto) {
     val chat = ChatEntity(id = chatUpdates.id, partnerId = chatUpdates.partnerId)
     // TODO maybe not safe
-    val messages = chatUpdates.newMessages.map { it.toMessageEntity(chat.id, myId = profileDataSource.getMyId()) }
+    val messages = chatUpdates.newMessages.map { it.toMessageEntity(myId = profileDataSource.getMyId()) }
     chatDao.insertChat(chat)
     chatDao.insertMessages(messages)
   }

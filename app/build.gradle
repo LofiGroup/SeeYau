@@ -62,6 +62,7 @@ dependencies {
   implementation project(":features:profile-screen")
   implementation project(":features:chat-list-screen")
   implementation project(":features:data-sync-service")
+  implementation project(":features:chat-screen")
 
   implementation appCompat
   implementation coreKtx
@@ -94,6 +95,10 @@ dependencies {
   implementation roomDeps.ktx
   kapt roomDeps.annotationProcessor
   androidTestImplementation roomDeps.runtime
+
+  implementation coroutinesDeps.core
+  testImplementation coroutinesDeps.test
+  androidTestImplementation coroutinesDeps.test
 
   implementation retrofitDeps.core
   implementation retrofitDeps.moshiConverter

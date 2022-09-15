@@ -1,22 +1,28 @@
 package com.lofigroup.seeyau.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.navigator_screen.api.NavigatorScreenNavigation
 import com.lofigroup.seeyau.AppModules
 import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.features.auth_screen.api.AuthNavigation
+import com.lofigroup.seeyau.features.chat.ChatScreen
+import com.lofigroup.seeyau.features.chat.api.ChatScreenNavigation
 import com.lofigroup.seeyau.features.chat_screen.api.ChatListScreenNavigation
 import com.lofigroup.seeyau.features.chat_screen.ui.ChatListScreen
 import com.lofigroup.seeyau.features.profile_screen.api.ProfileScreenNavigation
 import com.lofigroup.seeyau.features.splash_screen.api.SplashScreenNavigation
 import com.sillyapps.core.ui.util.navigateToTopDestination
+import timber.log.Timber
 
 @Composable
 fun AppNavHost(
@@ -75,7 +81,27 @@ fun AppNavHost(
       )
     }
 
-    composable(route = Screen.ChatScreen.route) {
+    composable(
+      route = "${Screen.ChatScreen.route}/{chatId}",
+      arguments = listOf(navArgument(name = "chatId") {
+        type = NavType.LongType
+      })
+    ) {
+      val chatId = it.arguments?.getLong("chatId")
+
+      if (chatId == null) {
+        LaunchedEffect(chatId) {
+          Timber.e("Malformed argument: chatId")
+          navController.popBackStack()
+        }
+      }
+      else {
+        setBottomBarVisibility(false)
+        ChatScreenNavigation(
+          chatComponent = appModules.chatModule.domainComponent,
+          chatId = chatId
+        )
+      }
 
     }
 
@@ -83,7 +109,10 @@ fun AppNavHost(
       setBottomBarVisibility(true)
       ChatListScreenNavigation(
         chatComponent = appModules.chatModule.domainComponent,
-        onItemClick = {  }
+        onItemClick = { navController.navigate(
+          "${Screen.ChatScreen.route}/$it"
+        )
+        }
       )
     }
 

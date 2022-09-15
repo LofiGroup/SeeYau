@@ -11,12 +11,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChatListScreenViewModel @Inject constructor(
-  private val pullChatDataUseCase: PullChatDataUseCase,
   private val getChatsUseCase: GetChatsUseCase
 ): ViewModel(), ChatListScreenStateHolder {
 
   init {
-    viewModelScope.launch { pullChatDataUseCase() }
   }
 
   override fun getState(): Flow<ChatListScreenState> = getChatsUseCase().map {

@@ -46,13 +46,15 @@ ext {
   // Coroutines
   coroutinesDeps = [
       android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
-      core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+      core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+      test   : "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
   ]
 
   // Moshi
   moshiDeps = [
-      core   : "com.squareup.moshi:moshi:${versions.moshi}",
-      codegen: "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}"
+      core    : "com.squareup.moshi:moshi:${versions.moshi}",
+      codegen : "com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}",
+      adapters: "com.squareup.moshi:moshi-adapters:${versions.moshi}"
   ]
 
   retrofitDeps = [

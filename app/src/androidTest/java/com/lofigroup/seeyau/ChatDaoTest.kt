@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lofigroup.data.navigator.local.UserDao
@@ -13,14 +14,19 @@ import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatAssembled
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import okio.IOException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.math.truncate
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 class ChatDaoTest {
@@ -50,9 +56,11 @@ class ChatDaoTest {
   @Test
   @Throws(Exception::class)
   fun readAssembledChat() {
-    val assembledChat = runBlocking{ chatDao.getChats().first() }
+    val assembledChat = runBlocking { chatDao.getChats().first() }
     val chat = assembledChat.find { it.chat.id == 1L } ?: throw Exception("Couldn't find chat")
-    val user = runBlocking { userDao.getUser(chatEntity.partnerId) ?: throw Exception("Couldn't find partner") }
+    val user = runBlocking {
+      userDao.getUser(chatEntity.partnerId) ?: throw Exception("Couldn't find partner")
+    }
     assert(
       chat == ChatAssembled(
         chat = chatEntity,
@@ -62,16 +70,93 @@ class ChatDaoTest {
     )
   }
 
+  @Test()
+  @Throws(Exception::class)
+  fun assembledChatFunction_messagesIsSorted() {
+    println("Creating random messages")
+    runBlocking {
+      chatDao.insertMessages(listOf(
+        createMessage(),
+        createMessage(),
+        createMessage(createdIn = 5000L)
+      ))
+    }
+    println("Messages successfully have been created!")
+
+    val assembledChat = runBlocking {
+      chatDao.getAssembledChat(1).first()
+    }
+
+    println("Got assembledChat: $assembledChat")
+
+    var lastCreatedIn = System.currentTimeMillis()
+    for (message in assembledChat.messages) {
+      println("    Message createdIn: ${message.createdIn}")
+      assert(message.createdIn <= lastCreatedIn)
+      lastCreatedIn = message.createdIn
+    }
+  }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  @Test()
+  @Throws(Exception::class)
+  fun assembledChatFunction_isUpdatedWhenNewMessageIsInserted() = runTest {
+    var result: ChatAssembled = chatDao.getAssembledChat(1L).first()
+
+    val collectJob = launch(UnconfinedTestDispatcher()) {
+      chatDao.getAssembledChat(1L).collect() {
+        print("Update:\n    $it")
+        result = it.copy()
+      }
+    }
+
+    val newMessage = createMessage()
+    val expectedResult = result.copy(
+      messages = result.messages.plus(newMessage).sortedBy { it.createdIn }
+    )
+    chatDao.insertMessage(newMessage)
+    assert(expectedResult == result)
+
+    collectJob.cancel()
+  }
+
+
   private fun populateDatabase() = runBlocking {
-    userDao.insert(UserEntity(name = "Ken", id = 1, imageUrl = "", lastConnection = 0))
+    userDao.insert(UserEntity(name = "Ken", id = 0, imageUrl = "", lastConnection = 0))
     userDao.insert(UserEntity(name = "Tanaka", id = 2, imageUrl = "", lastConnection = 0))
 
     chatEntity = ChatEntity(id = 1, partnerId = 2)
     messages = listOf(
-      MessageEntity(id = 1, author = 1, chatId = 1L, createdIn = 0, message = "Hello Tanaka"),
-      MessageEntity(id = 2, author = 2, chatId = 1L, createdIn = 2, message = "Hello Ken")
+      createMessage(),
+      createMessage(authorId = 2)
     )
     chatDao.insertChat(chatEntity)
     chatDao.insertMessages(messages)
+  }
+
+  private fun createMessage(
+    authorId: Long = 0L,
+    chatId: Long = 1L,
+    createdIn: Long = System.currentTimeMillis(),
+    message: String? = null
+  ) = MessageEntity(
+    id = getNextMessageId(),
+    chatId = chatId,
+    createdIn = createdIn,
+    message = message ?: getRandomMessage(),
+    author = authorId
+  )
+
+  companion object {
+    private var messagesId = 1L
+    private val messagesList = listOf("Hello", "How are you?", "Bye!")
+
+    private fun getNextMessageId(): Long {
+      return messagesId++
+    }
+
+    private fun getRandomMessage(): String {
+      return messagesList[Random.nextInt(messagesList.size)]
+    }
   }
 }

@@ -63,6 +63,7 @@ dependencies {
   androidTestImplementation roomDeps.runtime
 
   implementation moshiDeps.core
+  implementation moshiDeps.adapters
   kapt moshiDeps.codegen
 
   implementation retrofitDeps.core

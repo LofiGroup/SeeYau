@@ -17,7 +17,7 @@ object ApiModule {
   @Provides
   fun provideSeeYauApi(client: OkHttpClient): Retrofit {
     return Retrofit.Builder()
-      .baseUrl(SeeYauApiConstants.baseUrl)
+      .baseUrl("https://${SeeYauApiConstants.baseUrl}")
       .client(client)
       .addConverterFactory(MoshiConverterFactory.create())
       .build()

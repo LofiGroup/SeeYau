@@ -57,7 +57,9 @@ class AppModules(
       baseRetrofit = backend.getRetrofit(),
       chatDao = appComponent.getDatabase().chatDao,
       sharedPreferences = appComponent.getSharedPref(),
-      profileDataSource = profileModule.dataComponent.getProfileDataSource()
+      profileDataSource = profileModule.dataComponent.getProfileDataSource(),
+      httpclient = backend.getHttpClient(),
+      ioScope = appScope
     )
   }
 

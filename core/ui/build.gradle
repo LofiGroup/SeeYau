@@ -48,4 +48,6 @@ dependencies {
   debugImplementation composeDeps.poolingContainer
 
   implementation timberDep
+
+  implementation landscapistDep
 }

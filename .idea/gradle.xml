@@ -36,6 +36,7 @@
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/auth-screen" />
             <option value="$PROJECT_DIR$/features/chat-list-screen" />
+            <option value="$PROJECT_DIR$/features/chat-screen" />
             <option value="$PROJECT_DIR$/features/data-sync-service" />
             <option value="$PROJECT_DIR$/features/dialog-screen" />
             <option value="$PROJECT_DIR$/features/navigator-screen" />

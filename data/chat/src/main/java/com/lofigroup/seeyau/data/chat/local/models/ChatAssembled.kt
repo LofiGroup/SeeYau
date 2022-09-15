@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.lofigroup.data.navigator.local.model.UserEntity
 import com.lofigroup.data.navigator.local.model.toDomainModel
-import com.lofigroup.domain.navigator.model.User
 import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 
@@ -18,10 +17,16 @@ data class ChatAssembled(
   val messages: List<MessageEntity>
 )
 
+data class ChatDetailed(
+  val chat: ChatEntity,
+  val partner: UserEntity,
+  val messages: List<MessageEntity>
+)
+
 fun ChatAssembled.toDomainModel(): Chat {
   return Chat(
     id = chat.id,
-    user = partner.toDomainModel(),
+    partner = partner.toDomainModel(),
     messages = messages.map { it.toDomainModel() }
   )
 }

@@ -35,6 +35,7 @@
       <module name="SeeYau.domain.profile.test" target="1.8" />
       <module name="SeeYau.features.auth-screen" target="11" />
       <module name="SeeYau.features.chat-list-screen" target="11" />
+      <module name="SeeYau.features.chat-screen" target="11" />
       <module name="SeeYau.features.data-sync-service" target="11" />
       <module name="SeeYau.features.dialog-screen" target="11" />
       <module name="SeeYau.features.navigator-screen" target="11" />
