@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.features.profile_screen
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Resource
@@ -60,6 +61,14 @@ class ProfileScreenViewModel @Inject constructor(
         is Result.Undefined -> state.value.copy(isLoading = false, errorMessage = result.message)
       }
     }
+  }
+
+  override fun throwError(errorMessage: String) {
+    state.value = state.value.copy(errorMessage = errorMessage)
+  }
+
+  override fun setImageUri(uri: Uri) {
+    state.value = state.value.copy(imageUrl = uri.toString())
   }
 
 }

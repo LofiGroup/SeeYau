@@ -34,4 +34,6 @@ dependencies {
   implementation retrofitDeps.core
   implementation moshiDeps.core
   kapt moshiDeps.codegen
+
+  implementation okHttp.core
 }

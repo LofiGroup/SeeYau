@@ -28,8 +28,8 @@ val Typography = Typography(
 
   caption = TextStyle(
     fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W400,
-    fontSize = 14.sp,
+    fontWeight = FontWeight.W200,
+    fontSize = 12.sp,
     textDecoration = TextDecoration.Underline
   ),
 )

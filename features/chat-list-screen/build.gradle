@@ -66,5 +66,5 @@ dependencies {
 
   implementation timberDep
 
-  implementation landscapistDep
+  implementation coilCompose
 }

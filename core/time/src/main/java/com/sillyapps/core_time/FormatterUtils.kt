@@ -3,6 +3,7 @@ package com.sillyapps.core_time
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.sign
@@ -102,6 +103,11 @@ fun getFormattedValuesInRange(size: Int): Array<String> {
     if (it < 10) return@Array "0$it"
     return@Array it.toString()
   }
+}
+
+fun getLocalTimeFromMillis(millis: Long): String {
+  val time = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalTime()
+  return time.format(DateTimeFormatter.ofPattern("HH:mm"))
 }
 
 fun millisToLastSeen(utcMillis: Long): LastSeen {

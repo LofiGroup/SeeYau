@@ -29,8 +29,7 @@ class NavigatorRepositoryImpl @Inject constructor(
   override suspend fun pullData() = withContext(ioDispatcher) {
     try {
       val response = retrofitErrorHandler(api.getContacts())
-
-
+      Timber.e("Got users: $response")
 
       userDao.insert(response.map { it.toLocalDataModel() })
     } catch (e: Exception) {

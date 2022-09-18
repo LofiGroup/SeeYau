@@ -27,15 +27,16 @@ fun ChatAssembled.toDomainModel(): Chat {
   return Chat(
     id = chat.id,
     partner = partner.toDomainModel(),
-    messages = messages.map { it.toDomainModel() }
+    messages = messages.map { it.toDomainModel(chat.partnerLastVisited) }
   )
 }
 
-private fun MessageEntity.toDomainModel(): ChatMessage {
+private fun MessageEntity.toDomainModel(partnerLastVisit: Long): ChatMessage {
   return ChatMessage(
     id = id,
     message = message,
     author = author,
-    createdIn = createdIn
+    createdIn = createdIn,
+    isRead = partnerLastVisit > createdIn
   )
 }

@@ -48,7 +48,8 @@ class AppModules(
       appScope = appScope,
       baseRetrofit = backend.getRetrofit(),
       userDao = appComponent.getDatabase().userDao,
-      sharedPref = appComponent.getSharedPref()
+      sharedPref = appComponent.getSharedPref(),
+      contentResolver = appComponent.getContentResolver()
     )
   }
 

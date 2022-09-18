@@ -18,5 +18,7 @@ import com.lofigroup.data.navigator.local.model.UserEntity
 )
 data class ChatEntity(
   @PrimaryKey val id: Long,
-  @ColumnInfo(index = true) val partnerId: Long
+  @ColumnInfo(index = true) val partnerId: Long,
+  val lastVisited: Long,
+  val partnerLastVisited: Long
 )

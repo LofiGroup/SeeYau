@@ -26,6 +26,7 @@ fun RootContainer(
   }
 
   Scaffold(
+    topBar = {},
     bottomBar = {
       if (bottomBarIsVisible)
         BottomBar(navController)
@@ -37,7 +38,7 @@ fun RootContainer(
       appModules = appModules,
       onStart = onStart,
       modifier = Modifier.padding(it),
-      setBottomBarVisibility = setBottomBarVisibility,
+      setBottomBarVisibility = setBottomBarVisibility
     )
   }
 }

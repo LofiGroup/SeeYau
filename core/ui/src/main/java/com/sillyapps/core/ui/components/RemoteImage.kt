@@ -1,9 +1,12 @@
 package com.sillyapps.core.ui.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,42 +15,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.sillyapps.core.ui.R
-import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun RemoteImage(
-  url: String?
+  model: Any?,
+  modifier: Modifier = Modifier,
+  placeholderResId: Int = R.drawable.ic_baseline_broken_image_24,
+  onClick: () -> Unit = {}
 ) {
-  GlideImage(
-    imageModel = url,
-    contentScale = ContentScale.FillBounds,
-    alignment = Alignment.Center,
-    success = { imageState ->
-      val drawable = imageState.drawable
-
-      if (drawable != null) {
-        Image(
-          bitmap = drawable.toBitmap().asImageBitmap(),
-          contentDescription = null,
-          modifier = Modifier.fillMaxSize()
-        )
-      }
-    },
-    failure = {
-      Image(
-        painter = painterResource(id = R.drawable.ic_baseline_broken_image_24),
-        contentDescription = null,
-        colorFilter = ColorFilter.tint(Color.Gray),
-        modifier = Modifier.fillMaxSize().clip(CircleShape)
-      )
-    },
-    previewPlaceholder = R.drawable.ic_baseline_broken_image_24,
-    modifier = Modifier
-      .size(64.dp)
+  AsyncImage(
+    model = ImageRequest.Builder(LocalContext.current)
+      .data(model)
+      .crossfade(true)
+      .build(),
+    placeholder = painterResource(id = placeholderResId),
+    contentScale = ContentScale.Crop,
+    contentDescription = null,
+    error = painterResource(id = R.drawable.ic_baseline_broken_image_24),
+    modifier = modifier
       .clip(CircleShape)
+      .clickable { onClick() }
+      .background(MaterialTheme.colors.surface)
   )
+
 }

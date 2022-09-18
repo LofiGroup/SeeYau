@@ -13,16 +13,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.lofigroup.domain.navigator.model.User
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.sillyapps.core.ui.components.RemoteImage
-import com.skydoves.landscapist.glide.GlideImage
+import com.lofigroup.seayau.common.ui.R as common_res
 
 @Composable
 fun ChatItem(
@@ -39,7 +42,11 @@ fun ChatItem(
       .padding(start = 4.dp, end = 8.dp),
       verticalAlignment = Alignment.CenterVertically
     ) {
-      RemoteImage(url = chat.partner.imageUrl)
+      RemoteImage(
+        model = chat.partner.imageUrl,
+        modifier = Modifier
+          .size(40.dp)
+      )
 
       Column(
         modifier = Modifier

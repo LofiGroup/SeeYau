@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
@@ -14,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lofigroup.domain.navigator.model.User
@@ -46,10 +50,16 @@ fun ChatScreen(
         .fillMaxWidth()
         .padding(8.dp)
     ) {
-      RemoteImage(url = state.partner.imageUrl)
+      RemoteImage(
+        model = state.partner.imageUrl,
+        modifier = Modifier
+          .size(40.dp)
+      )
 
       Column(
-        modifier = Modifier.weight(1f)
+        modifier = Modifier
+          .weight(1f)
+          .padding(start = 4.dp)
       ) {
         Text(
           text = state.partner.name,
@@ -87,7 +97,16 @@ fun ChatScreen(
       TextField(
         value = message,
         onValueChange = stateHolder::setMessage,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(
+          imeAction = ImeAction.Next,
+          keyboardType = KeyboardType.Text
+        ),
+        keyboardActions = KeyboardActions(
+          onNext = {
+            stateHolder.sendMessage()
+          }
+        )
       )
       IconButton(
         onClick = stateHolder::sendMessage,
@@ -144,19 +163,22 @@ private fun getPreviewModel(): ChatScreenState {
         id = 0,
         message = "Hello!",
         authorIsMe = true,
-        createdIn = 0L
+        createdIn = 0L,
+        isRead = true
       ),
       PrivateMessage(
         id = 0,
         message = "Hello!",
         authorIsMe = false,
-        createdIn = 1L
+        createdIn = 1L,
+        isRead = true
       ),
       PrivateMessage(
         id = 0,
         message = "Very very very very very very very very very very long message.",
         authorIsMe = true,
-        createdIn = 2L
+        createdIn = 2L,
+        isRead = true
       ),
     )
   )

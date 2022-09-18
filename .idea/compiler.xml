@@ -40,6 +40,7 @@
       <module name="SeeYau.features.dialog-screen" target="11" />
       <module name="SeeYau.features.navigator-screen" target="11" />
       <module name="SeeYau.features.nearby-service" target="11" />
+      <module name="SeeYau.features.pick-image" target="11" />
       <module name="SeeYau.features.profile-screen" target="11" />
       <module name="SeeYau.features.splash-screen" target="11" />
     </bytecodeTargetLevel>

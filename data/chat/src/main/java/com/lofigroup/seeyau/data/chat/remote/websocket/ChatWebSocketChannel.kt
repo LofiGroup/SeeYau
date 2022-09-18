@@ -3,8 +3,12 @@ package com.lofigroup.seeyau.data.chat.remote.websocket
 import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.WebSocketRequest
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.WebSocketResponse
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.MarkChatAsRead
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.WebSocketRequest
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ChatIsReadWsResponse
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ErrorWsResponse
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.NewMessageWsResponse
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.WebSocketResponse
 import com.lofigroup.seeyau.data.profile.ProfileDataSource
 import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +19,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AppScope
-class ChatWebsocketChannel @Inject constructor(
+class ChatWebSocketChannel @Inject constructor(
   private val client: OkHttpClient,
   private val chatDao: ChatDao,
   private val ioScope: CoroutineScope,
@@ -43,13 +47,22 @@ class ChatWebsocketChannel @Inject constructor(
   override fun onMessage(webSocket: WebSocket, text: String) {
     Timber.d("Received message from server: $text")
 
-    val webSocketResponse = WebSocketResponse.adapter.fromJson(text) ?: WebSocketResponse.Error("Malformed json: $text")
+    val webSocketResponse = WebSocketResponse.adapter.fromJson(text) ?: ErrorWsResponse("Malformed json: $text")
     Timber.d("Successfully parsed response")
 
     when (webSocketResponse) {
-      is WebSocketResponse.Error -> Timber.e(webSocketResponse.errorMessage)
-      is WebSocketResponse.NewMessage -> {
+      is ErrorWsResponse -> Timber.e(webSocketResponse.errorMessage)
+      is NewMessageWsResponse -> {
         saveMessage(webSocketResponse)
+      }
+      is ChatIsReadWsResponse -> {
+        ioScope.launch(ioDispatcher) {
+          if (webSocketResponse.userId == profileDataSource.getMyId()) {
+            chatDao.updateChatLastVisited(webSocketResponse.chatId, webSocketResponse.readIn)
+          } else {
+            chatDao.updateChatPartnerLastVisited(webSocketResponse.chatId, webSocketResponse.readIn)
+          }
+        }
       }
     }
   }
@@ -61,11 +74,15 @@ class ChatWebsocketChannel @Inject constructor(
   fun sendMessage(request: WebSocketRequest) {
     val json = WebSocketRequest.toJson(request)
     Timber.d("Sending message through websocket: $json")
-
     webSocket?.send(json)
   }
 
-  private fun saveMessage(webSocketResponse: WebSocketResponse.NewMessage) {
+  fun markChatAsRead(chatId: Long) {
+    val json = WebSocketRequest.toJson(MarkChatAsRead(chatId = chatId))
+    webSocket?.send(json)
+  }
+
+  private fun saveMessage(webSocketResponse: NewMessageWsResponse) {
     ioScope.launch(ioDispatcher) {
       chatDao.insertMessage(webSocketResponse.messageDto.toMessageEntity(myId = profileDataSource.getMyId()))
     }

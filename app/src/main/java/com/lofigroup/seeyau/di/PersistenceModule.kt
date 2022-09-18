@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.lofigroup.seeyau.data.AppDatabase
 import com.sillyapps.core.di.AppScope
 import dagger.Module
@@ -17,6 +18,6 @@ object PersistenceModule {
 
   @AppScope
   @Provides
-  fun provideSharedPref(context: Context) = context.getSharedPreferences(SHARED_PREF_TAG, Context.MODE_PRIVATE)
+  fun provideSharedPref(context: Context): SharedPreferences = context.getSharedPreferences(SHARED_PREF_TAG, Context.MODE_PRIVATE)
 
 }

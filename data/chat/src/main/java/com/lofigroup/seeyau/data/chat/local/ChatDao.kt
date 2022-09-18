@@ -24,6 +24,15 @@ interface ChatDao {
   @Query("select * from messages where chatId = :chatId order by createdIn desc")
   fun getChatMessages(chatId: Long): Flow<List<MessageEntity>>
 
+  @Query("select * from messages order by createdIn desc limit 1")
+  suspend fun getLastMessage(): MessageEntity?
+
+  @Query("update chats set lastVisited = :lastVisited where id = :chatId")
+  suspend fun updateChatLastVisited(chatId: Long, lastVisited: Long)
+
+  @Query("update chats set partnerLastVisited = :lastVisited where id = :chatId")
+  suspend fun updateChatPartnerLastVisited(chatId: Long, lastVisited: Long)
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertChat(chat: ChatEntity)
 

@@ -1,5 +1,7 @@
 package com.lofigroup.seeyau.data.profile.api
 
+import android.content.ContentResolver
+import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.seeyau.data.profile.di.DaggerProfileDataComponent
@@ -11,7 +13,8 @@ class ProfileModule(
   appScope: CoroutineScope,
   baseRetrofit: Retrofit,
   userDao: UserDao,
-  sharedPref: SharedPreferences
+  sharedPref: SharedPreferences,
+  contentResolver: ContentResolver
 ) {
 
   val dataComponent = DaggerProfileDataComponent.builder()
@@ -19,6 +22,7 @@ class ProfileModule(
     .baseRetrofit(baseRetrofit)
     .userDao(userDao)
     .sharedPref(sharedPref)
+    .contentResolver(contentResolver)
     .build()
 
   val domainComponent = DaggerProfileComponent.builder()

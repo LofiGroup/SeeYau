@@ -1,5 +1,7 @@
 package com.lofigroup.seeyau.data.profile.di
 
+import android.content.ContentResolver
+import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.data.navigator.local.UserDao
 import com.lofigroup.seeyau.data.profile.ProfileDataSource
@@ -31,6 +33,9 @@ interface ProfileDataComponent {
 
     @BindsInstance
     fun appScope(appScope: CoroutineScope): Builder
+
+    @BindsInstance
+    fun contentResolver(contentResolver: ContentResolver): Builder
 
     fun build(): ProfileDataComponent
   }

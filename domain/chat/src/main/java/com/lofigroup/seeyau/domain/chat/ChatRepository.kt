@@ -10,6 +10,8 @@ interface ChatRepository {
 
   suspend fun sendMessage(messageRequest: ChatMessageRequest)
 
+  suspend fun markChatAsRead(chatId: Long)
+
   fun getChats(): Flow<List<Chat>>
 
   fun getChat(id: Long): Flow<Chat>

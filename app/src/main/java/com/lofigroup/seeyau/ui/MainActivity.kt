@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.registerForActivityResult
 import androidx.activity.viewModels
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
@@ -17,8 +19,6 @@ import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
-import com.sillyapps.core.ui.Factory
-import com.sillyapps.core.ui.daggerViewModel
 import com.sillyapps.core.ui.service.ServiceModuleConnection
 import com.sillyapps.core.ui.util.hasPermissions
 import timber.log.Timber
@@ -62,8 +62,6 @@ class MainActivity : ComponentActivity() {
 
   override fun onStop() {
     super.onStop()
-    nearbyServiceConnection.unbind(this)
-    dataSyncServiceConnection.unbind(this)
   }
 
   private fun bindServices() {

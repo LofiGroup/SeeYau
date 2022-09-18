@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.di
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.seeyau.data.AppDatabase
@@ -9,7 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 
 @AppScope
-@Component(modules = [PersistenceModule::class])
+@Component(modules = [PersistenceModule::class, IOModule::class])
 interface AppComponent {
 
   fun getSharedPref(): SharedPreferences
@@ -17,6 +18,8 @@ interface AppComponent {
   fun getDatabase(): AppDatabase
 
   fun getViewModel(): MainViewModel
+
+  fun getContentResolver(): ContentResolver
 
   @Component.Builder
   interface Builder {
