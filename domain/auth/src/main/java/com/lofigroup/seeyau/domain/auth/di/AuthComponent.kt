@@ -11,9 +11,9 @@ import dagger.Component
 interface AuthComponent {
 
   fun isLoggedInUseCase(): IsLoggedInUseCase
-  fun loginUseCase(): LoginUseCase
   fun logoutUseCase(): LogoutUseCase
-  fun registerUseCase(): RegisterUseCase
+  fun authorizeUseCase(): AuthorizeUseCase
+  fun startAuthUseCase(): StartAuthUseCase
 
   @Component.Builder
   interface Builder {

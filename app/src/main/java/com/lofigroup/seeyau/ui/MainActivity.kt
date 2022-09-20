@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
     val app = (application as App)
 
     setContent {
+
       AppTheme() {
         RootContainer(
           appModules = app.appModules,

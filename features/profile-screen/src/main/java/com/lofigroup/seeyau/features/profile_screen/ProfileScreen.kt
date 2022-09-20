@@ -33,6 +33,7 @@ import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.components.ShowToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun ProfileScreen(
@@ -50,11 +51,11 @@ fun ProfileScreen(
     rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
       if (result.isSuccessful) {
         val uri = result.uriContent
-          ?: return@rememberLauncherForActivityResult stateHolder.throwError(context.getString(R.string.image_crop_error))
+          ?: return@rememberLauncherForActivityResult stateHolder.throwError(context.getString(CommonR.string.image_crop_error))
 
         stateHolder.setImageUri(uri)
       } else {
-        stateHolder.throwError(context.getString(R.string.image_crop_error))
+        stateHolder.throwError(context.getString(CommonR.string.image_crop_error))
       }
     }
 
@@ -71,7 +72,7 @@ fun ProfileScreen(
     ) {
       RemoteImage(
         model = state.imageUrl,
-        placeholderResId = R.drawable.ic_baseline_account_box_24,
+        placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
         modifier = Modifier
           .fillMaxWidth(0.4f)
           .aspectRatio(1f)

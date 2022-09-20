@@ -11,4 +11,8 @@
   </plurals>
 
   <string name="seen_recently">recently</string>
+
+  <string name="image_crop_error">Image crop is failed.</string>
+
+  <string name="lets_shine">Let\'s shine</string>
 </resources>

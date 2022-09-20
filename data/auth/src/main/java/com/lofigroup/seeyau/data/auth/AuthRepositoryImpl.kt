@@ -4,11 +4,11 @@ import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.data.auth.model.toAccessRequest
-import com.lofigroup.seeyau.data.auth.model.toToken
+import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
 import com.lofigroup.seeyau.data.auth.model.toTokenDataModel
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.Access
-import com.lofigroup.seeyau.domain.auth.model.Token
+import com.lofigroup.seeyau.domain.auth.model.StartAuth
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
@@ -22,9 +22,16 @@ class AuthRepositoryImpl @Inject constructor(
   private val ioDispatcher: CoroutineDispatcher,
   private val tokenStore: TokenStore
 ): AuthRepository {
-  override suspend fun login(access: Access) = withContext(ioDispatcher) {
+
+  private var authOnlyToken: String? = null
+
+  override suspend fun logout() {
+    tokenStore.forgetToken()
+  }
+
+  override suspend fun authorize(access: Access) = withContext(ioDispatcher) {
     return@withContext try {
-      val response = retrofitErrorHandler(authApi.login(access.toAccessRequest()))
+      val response = retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
 
       tokenStore.saveToken(response.toTokenDataModel())
       Resource.Success(Unit)
@@ -34,15 +41,14 @@ class AuthRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun logout() {
-    tokenStore.forgetToken()
-  }
-
-  override suspend fun register(access: Access) = withContext(ioDispatcher) {
+  override suspend fun startAuth(startAuth: StartAuth) = withContext(ioDispatcher) {
     return@withContext try {
-      val response = retrofitErrorHandler(authApi.register(access.toAccessRequest()))
+      val response = retrofitErrorHandler(authApi.startAuth(startAuth.toStartAuthRequest()))
 
-      tokenStore.saveToken(response.toTokenDataModel())
+      authOnlyToken = response.token
+      Resource.Success(Unit)
+    }
+    catch (e: EmptyResponseBodyException) {
       Resource.Success(Unit)
     }
     catch (e: Exception) {

@@ -12,9 +12,7 @@ import androidx.navigation.navArgument
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.navigator_screen.api.NavigatorScreenNavigation
 import com.lofigroup.seeyau.AppModules
-import com.lofigroup.seeyau.domain.auth.di.AuthComponent
-import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
-import com.lofigroup.seeyau.features.auth_screen.api.AuthNavigation
+import com.lofigroup.seeyau.features.auth_screen_flow.api.AuthScreenFlowNavigation
 import com.lofigroup.seeyau.features.chat.ChatScreen
 import com.lofigroup.seeyau.features.chat.api.ChatScreenNavigation
 import com.lofigroup.seeyau.features.chat_screen.api.ChatListScreenNavigation
@@ -63,14 +61,9 @@ fun AppNavHost(
 
     composable(route = Screen.AuthScreen.route) {
       setBottomBarVisibility(false)
-      AuthNavigation(
+      AuthScreenFlowNavigation(
         authComponent = appModules.authModule.domainComponent,
-        onLoggedIn = { justRegistered ->
-          val route =
-            if (justRegistered) Screen.ProfileScreen.route else Screen.NavigatorScreen.route
-          navController.navigateToTopDestination(route)
-          onStart()
-        }
+        isDone = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
       )
     }
 

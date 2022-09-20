@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/repositories/SeeYau/common/network/src/debug/res/xml/network_security_config.xml" value="0.3567708333333333" />
+        <entry key="..\:/repositories/SeeYau/common/ui/src/main/res/drawable/ic_baseline_account_box_24.xml" value="0.1785" />
+        <entry key="..\:/repositories/SeeYau/common/ui/src/main/res/drawable/not_yet_set.xml" value="0.1785" />
       </map>
     </option>
   </component>

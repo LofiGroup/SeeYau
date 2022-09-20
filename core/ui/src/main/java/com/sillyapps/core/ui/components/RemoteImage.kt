@@ -28,6 +28,7 @@ fun RemoteImage(
   model: Any?,
   modifier: Modifier = Modifier,
   placeholderResId: Int = R.drawable.ic_baseline_broken_image_24,
+  errorPlaceholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   onClick: () -> Unit = {}
 ) {
   AsyncImage(
@@ -38,11 +39,10 @@ fun RemoteImage(
     placeholder = painterResource(id = placeholderResId),
     contentScale = ContentScale.Crop,
     contentDescription = null,
-    error = painterResource(id = R.drawable.ic_baseline_broken_image_24),
+    error = painterResource(id = errorPlaceholderResId),
     modifier = modifier
       .clip(CircleShape)
       .clickable { onClick() }
-      .background(MaterialTheme.colors.surface)
   )
 
 }

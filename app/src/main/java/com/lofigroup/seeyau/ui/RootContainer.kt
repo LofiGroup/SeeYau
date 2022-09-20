@@ -31,7 +31,10 @@ fun RootContainer(
       if (bottomBarIsVisible)
         BottomBar(navController)
     },
-    modifier = Modifier.fillMaxSize(),
+    modifier = Modifier
+      .fillMaxSize()
+      .padding()
+    ,
   ) {
     AppNavHost(
       navController = navController,

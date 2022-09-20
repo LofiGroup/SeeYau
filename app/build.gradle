@@ -57,12 +57,12 @@ dependencies {
   implementation project(":features:navigator-screen")
   implementation project(":features:dialog-screen")
   implementation project(":features:nearby-service")
-  implementation project(":features:auth-screen")
   implementation project(":features:splash-screen")
   implementation project(":features:profile-screen")
   implementation project(":features:chat-list-screen")
   implementation project(":features:data-sync-service")
   implementation project(":features:chat-screen")
+  implementation project(":features:auth-screen-flow")
 
   implementation appCompat
   implementation coreKtx

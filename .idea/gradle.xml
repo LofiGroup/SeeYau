@@ -34,7 +34,7 @@
             <option value="$PROJECT_DIR$/domain/navigator" />
             <option value="$PROJECT_DIR$/domain/profile" />
             <option value="$PROJECT_DIR$/features" />
-            <option value="$PROJECT_DIR$/features/auth-screen" />
+            <option value="$PROJECT_DIR$/features/auth-screen-flow" />
             <option value="$PROJECT_DIR$/features/chat-list-screen" />
             <option value="$PROJECT_DIR$/features/chat-screen" />
             <option value="$PROJECT_DIR$/features/data-sync-service" />
