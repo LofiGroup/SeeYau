@@ -34,6 +34,12 @@ val Typography = Typography(
     lineHeight = 24.sp,
     fontSize = 20.sp,
   ),
+  h3 = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.W400,
+    lineHeight = 28.sp,
+    fontSize = 28.sp,
+  ),
   caption = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W200,

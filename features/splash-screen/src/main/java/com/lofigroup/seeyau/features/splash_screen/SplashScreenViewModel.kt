@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.domain.auth.usecases.IsLoggedInUseCase
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +19,9 @@ class SplashScreenViewModel @Inject constructor(
 
   init {
     viewModelScope.launch {
-      state.value = when (val result = isLoggedInUseCase()) {
+      val result = isLoggedInUseCase()
+      delay(2500L)
+      state.value = when (result) {
         is Result.Error -> state.value.copy(isLoggedIn = false, isReady = true)
         Result.Success -> state.value.copy(isLoggedIn = true, isReady = true)
         is Result.Undefined -> {

@@ -13,11 +13,12 @@ import androidx.compose.ui.unit.dp
 
 val Purple = Color(0xFFEB00EB)
 val PurpleDarker = Color(0xFFC500C5)
-val PurpleDarkest = Color(0xFF7A04D8)
+val PurpleDarkest = Color(0xFFF02FF4)
 val SkyBlue = Color(0xFF0092E3)
+val SkyBlueVariant = Color(0XFF3CD0FF)
 val Red = Color(0xFFFF2222)
 
-val PurpleGradient = Brush.horizontalGradient(listOf(PurpleDarkest, PurpleDarker))
+val PurpleGradient = Brush.horizontalGradient(listOf(SkyBlueVariant, PurpleDarkest))
 
 val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
