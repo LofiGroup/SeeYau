@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.features.profile_screen.model
 
 import com.lofigroup.seeyau.domain.profile.model.Profile
+import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 
 data class ProfileScreenState(
   val id: Long = 0L,
@@ -12,8 +13,7 @@ data class ProfileScreenState(
   val isLoading: Boolean = true
 )
 
-fun ProfileScreenState.toProfile() = Profile(
-  id = id,
+fun ProfileScreenState.toProfileUpdate() = ProfileUpdate(
   name = name,
   imageUrl = imageUrl
 )

@@ -14,6 +14,7 @@ import com.lofigroup.seeyau.data.profile.model.toUpdateProfileForm
 import com.lofigroup.seeyau.data.profile.model.toUserDto
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
+import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 import com.sillyapps.core_network.ContentUriRequestBody
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
@@ -64,7 +65,7 @@ class ProfileRepositoryImpl @Inject constructor(
     return profileData.getMyId()
   }
 
-  override suspend fun updateProfile(profile: Profile): Result = withContext(ioDispatcher) {
+  override suspend fun updateProfile(profile: ProfileUpdate): Result = withContext(ioDispatcher) {
     return@withContext try {
       val newProfile = retrofitErrorHandler(
         api.updateProfile(
@@ -74,10 +75,6 @@ class ProfileRepositoryImpl @Inject constructor(
       )
 
       userDao.insert(newProfile.toUserEntity())
-      Result.Success
-    }
-    catch (e: EmptyResponseBodyException) {
-      userDao.insert(profile.toUserDto().toUserEntity())
       Result.Success
     }
     catch (e: Exception) {

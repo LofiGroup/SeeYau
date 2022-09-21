@@ -63,6 +63,7 @@ fun AppNavHost(
       setBottomBarVisibility(false)
       AuthScreenFlowNavigation(
         authComponent = appModules.authModule.domainComponent,
+        profileComponent = appModules.profileModule.domainComponent,
         isDone = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
       )
     }

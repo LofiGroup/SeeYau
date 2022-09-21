@@ -41,6 +41,7 @@ dependencies {
   implementation project(":common:ui")
 
   implementation project(":domain:auth")
+  implementation project(":domain:profile")
 
   implementation appCompat
   implementation coreKtx

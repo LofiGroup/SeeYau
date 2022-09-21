@@ -5,27 +5,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowLeft
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewModelScope
+import com.lofigroup.core.util.Resource
+import com.lofigroup.core.util.Result
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seayau.common.ui.theme.LocalSpacing
+import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 import com.lofigroup.seeyau.features.auth_screen_flow.R
-import com.lofigroup.seeyau.features.auth_screen_flow.model.AuthScreenFlowModel
-import com.lofigroup.seeyau.features.auth_screen_flow.model.RoutePoint
-import com.lofigroup.seeyau.features.auth_screen_flow.model.VerifyCodeScreenState
+import com.lofigroup.seeyau.features.auth_screen_flow.model.*
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterNameScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterPhoneNumberScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.VerifyPhoneNumberScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthScreenRoot(
@@ -35,6 +36,12 @@ fun AuthScreenRoot(
   val state by remember(stateHolder) {
     stateHolder.getState()
   }.collectAsState(initial = AuthScreenFlowModel())
+
+  LaunchedEffect(state) {
+    if (state.allDataIsValid) {
+      isDone()
+    }
+  }
 
   Surface() {
     Column(
@@ -77,8 +84,7 @@ fun AuthScreenRoot(
             imageUri = state.imageUri,
             setImageUri = stateHolder::setImageUri,
             throwError = stateHolder::throwError,
-            dataIsValid = state.allDataIsValid,
-            isDone = isDone
+            update = stateHolder::updateProfile
           )
         }
       }
@@ -116,6 +122,8 @@ fun TopBar() {
 @Preview
 @Composable
 fun AuthScreenRootPreview() {
+  val scope = rememberCoroutineScope()
+
   val stateHolder = object: AuthScreenFlowStateHolder {
     private val state = MutableStateFlow(AuthScreenFlowModel())
 
@@ -128,7 +136,10 @@ fun AuthScreenRootPreview() {
     }
 
     override fun setNumber(number: String) {
-      state.value = state.value.copy(number = number)
+      state.value = state.value.copy(
+        number = number,
+        enterNumberScreenState = EnterNumberScreenState.TYPING
+      )
     }
 
     override fun setCode(code: String) {
@@ -139,40 +150,65 @@ fun AuthScreenRootPreview() {
         )
       }
       if (code.length == 4) {
-        verifyCode(code)
+        verifyCode()
       }
-    }
-
-    override fun startAuth() {
-
     }
 
     override fun setRoutePoint(routePoint: RoutePoint) {
-      state.value = state.value.copy(routePoint = routePoint)
-    }
-
-    private fun verifyCode(code: String) {
-      if (code == "1234") {
-        state.value = state.value.copy(
-          verifyCodeScreenState = VerifyCodeScreenState.SUCCESS,
-          routePoint = RoutePoint.PickPicture
-        )
-      }
-      else {
-        state.value = state.value.copy(verifyCodeScreenState = VerifyCodeScreenState.ERROR)
-      }
-
+      if (routePoint == RoutePoint.VerifyPhone) {
+        startAuth()
+      } else state.value = state.value.copy(routePoint = routePoint)
     }
 
     override fun setImageUri(uri: Uri) {
       state.value = state.value.copy(
-        imageUri = uri.toString(),
-        allDataIsValid = true
+        imageUri = uri.toString()
       )
+    }
+
+    override fun updateProfile() {
+      scope.launch {
+        delay(1000L)
+
+        state.value = state.value.copy(allDataIsValid = true)
+      }
     }
 
     override fun throwError(errorMessage: String) {
 
+    }
+
+    override fun startAuth() {
+      state.value = state.value.copy(
+        enterNumberScreenState = EnterNumberScreenState.LOADING
+      )
+      scope.launch {
+        delay(1000L)
+
+        state.value = state.value.copy(
+          routePoint = RoutePoint.VerifyPhone
+        )
+      }
+    }
+
+    private fun verifyCode() {
+      scope.launch {
+        state.value = state.value.copy(
+          verifyCodeScreenState = VerifyCodeScreenState.LOADING
+        )
+        delay(1000L)
+        if (state.value.code == "1234") {
+          state.value = state.value.copy(
+            verifyCodeScreenState = VerifyCodeScreenState.SUCCESS
+          )
+          delay(1000L)
+          state.value = state.value.copy(
+            routePoint = RoutePoint.PickPicture
+          )
+        } else {
+          state.value = state.value.copy(verifyCodeScreenState = VerifyCodeScreenState.ERROR)
+        }
+      }
     }
 
   }

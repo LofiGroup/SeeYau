@@ -27,8 +27,7 @@ fun AddPhotoScreen(
   imageUri: String,
   setImageUri: (Uri) -> Unit,
   throwError: (String) -> Unit,
-  dataIsValid: Boolean,
-  isDone: () -> Unit
+  update: () -> Unit
 ) {
   val context = LocalContext.current
 
@@ -60,6 +59,7 @@ fun AddPhotoScreen(
     RemoteImage(
       model = imageUri,
       placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
+      errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
       modifier = Modifier
         .fillMaxWidth(0.7f)
         .aspectRatio(1f)
@@ -68,17 +68,10 @@ fun AddPhotoScreen(
 
     Spacer(modifier = Modifier.weight(1f))
 
-    if (!dataIsValid) {
+    if (imageUri.isBlank()) {
       TextButton(
         onClick = {
-          pickImageResult.launch(
-            options {
-              setGuidelines(CropImageView.Guidelines.ON)
-              setAspectRatio(1, 1)
-              setCropShape(CropImageView.CropShape.RECTANGLE)
-              setOutputCompressFormat(Bitmap.CompressFormat.PNG)
-            }
-          )
+          setImageUri(Uri.parse("content://image.png"))
         },
       ) {
         Text(
@@ -87,8 +80,11 @@ fun AddPhotoScreen(
         )
       }
     } else {
-      TextButton(onClick = isDone) {
-        Text(text = stringResource(id = CommonR.string.lets_shine))
+      TextButton(onClick = update) {
+        Text(
+          text = stringResource(id = CommonR.string.lets_shine),
+          style = MaterialTheme.typography.h5
+        )
       }
     }
     
@@ -111,8 +107,7 @@ fun AddPhotoScreenPreview() {
           imageUri = "",
           setImageUri = {},
           throwError = {},
-          dataIsValid = false,
-          isDone = {}
+          update = {}
         )
       }
     }

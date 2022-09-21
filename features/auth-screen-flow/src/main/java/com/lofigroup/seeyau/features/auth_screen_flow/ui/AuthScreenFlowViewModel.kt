@@ -4,8 +4,12 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Resource
+import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.domain.auth.usecases.AuthorizeUseCase
 import com.lofigroup.seeyau.domain.auth.usecases.StartAuthUseCase
+import com.lofigroup.seeyau.domain.profile.model.Profile
+import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
+import com.lofigroup.seeyau.domain.profile.usecases.UpdateProfileUseCase
 import com.lofigroup.seeyau.features.auth_screen_flow.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +19,8 @@ import javax.inject.Inject
 
 class AuthScreenFlowViewModel @Inject constructor(
   private val authorizeUseCase: AuthorizeUseCase,
-  private val startAuthUseCase: StartAuthUseCase
+  private val startAuthUseCase: StartAuthUseCase,
+  private val updateProfileUseCase: UpdateProfileUseCase
 ) : ViewModel(), AuthScreenFlowStateHolder {
 
   private val state = MutableStateFlow(AuthScreenFlowModel())
@@ -55,9 +60,18 @@ class AuthScreenFlowViewModel @Inject constructor(
 
   override fun setImageUri(uri: Uri) {
     state.value = state.value.copy(
-      imageUri = uri.toString(),
-      allDataIsValid = true
+      imageUri = uri.toString()
     )
+  }
+
+  override fun updateProfile() {
+    viewModelScope.launch {
+      val result = updateProfileUseCase(ProfileUpdate(imageUrl = state.value.imageUri))
+
+      if (result is Result.Success) {
+        state.value = state.value.copy(allDataIsValid = true)
+      }
+    }
   }
 
   override fun throwError(errorMessage: String) {
