@@ -63,7 +63,7 @@ class AuthRepositoryImpl @Inject constructor(
     } catch (e: EmptyResponseBodyException) {
       Result.Success
     } catch (e: HttpException) {
-      if (e.code() == 401) {
+      if (e.code() in listOf(401, 404)) {
         Result.Error(e.message())
       } else Result.Undefined(getErrorMessage(e))
     } catch (e: Exception) {
