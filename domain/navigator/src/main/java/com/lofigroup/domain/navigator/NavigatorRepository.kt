@@ -12,6 +12,6 @@ interface NavigatorRepository {
 
   suspend fun notifyUserWithIdWasFound(id: Long)
 
-  suspend fun getUser(id: Long): User?
+  fun getUser(id: Long): Flow<User>
 
 }

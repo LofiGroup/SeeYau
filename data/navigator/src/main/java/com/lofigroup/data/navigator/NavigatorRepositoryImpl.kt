@@ -52,8 +52,8 @@ class NavigatorRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun getUser(id: Long) = withContext(ioDispatcher) {
-    userDao.getUser(id)?.toDomainModel()
+  override fun getUser(id: Long): Flow<User> {
+    return userDao.observeUser(id).map { it.toDomainModel() }
   }
 
 }

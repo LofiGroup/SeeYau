@@ -1,51 +1,85 @@
 package com.lofigroup.features.navigator_screen.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
-import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.features.navigator_screen.ui.components.UserItem
+import com.lofigroup.features.navigator_screen.R
+import com.lofigroup.features.navigator_screen.ui.components.*
+import com.lofigroup.seayau.common.ui.components.OptionsDialog
+import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ShowToast
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 @Composable
 fun NavigatorScreen(
-  stateHolder: NavigatorScreenStateHolder
+  stateHolder: NavigatorScreenStateHolder,
+  onNavigateToChat: (Long) -> Unit,
+  onNavigateToSettings: () -> Unit,
+  onNavigateToChatList: () -> Unit
 ) {
   val state by remember(stateHolder) {
     stateHolder.getState()
-  }.collectAsState(initial = NavigatorScreenState(isLoading = true))
+  }.collectAsState(initial = previewModel)
 
-  Box(
+  var optionsDialogVisible by rememberSaveable {
+    mutableStateOf(false)
+  }
+
+  Surface(
     modifier = Modifier.fillMaxSize()
   ) {
-    if (state.isLoading) {
-      CircularProgressIndicator(
-        modifier = Modifier.align(Alignment.Center)
-      )
-    }
-    else {
-      LazyColumn() {
-        items(
-          items = state.users
-        ) { user ->
-          UserItem(user = user)
+    Box() {
+      BackgroundImage(selectedUser = state.selectedUser)
+
+      if (!optionsDialogVisible)
+        Column {
+          TopBar(
+            newMessagesCount = state.newMessagesCount,
+            onSettingsButtonClick = onNavigateToSettings,
+            onCloudButtonClick = onNavigateToChatList
+          )
+
+          val selectedUser = state.selectedUser
+          if (selectedUser != null) {
+            UserScreen(
+              user = selectedUser,
+              isInFullScreenMode = state.fullScreenMode,
+              onToggleFullScreenMode = stateHolder::onToggleFullScreenMode,
+              onMoreButtonClicked = {
+                optionsDialogVisible = true
+              },
+              onShowChat = stateHolder::onShowChat,
+              onGoToChat = onNavigateToChat
+            )
+          } else {
+            DefaultScreen()
+          }
+
+          UsersList(
+            nearbyUsers = state.nearbyUsers,
+            metUsers = state.metUsers,
+            onUserSelected = stateHolder::selectUser
+          )
         }
-      }
     }
+  }
+
+  OptionsDialog(
+    visible = optionsDialogVisible,
+    onDismiss = { optionsDialogVisible = false }
+  ) {
+    OptionsDialogItem(
+      text = stringResource(id = R.string.write_message),
+      textColor = MaterialTheme.colors.primary
+    )
+    OptionsDialogItem(
+      text = stringResource(id = R.string.ignore_user)
+    )
   }
 
   val errorMessage = state.errorMessage
@@ -57,37 +91,12 @@ fun NavigatorScreen(
 @Preview
 @Composable
 fun NavigatorScreenPreview() {
-  val stateHolder = object : NavigatorScreenStateHolder {
-    override fun getState(): Flow<NavigatorScreenState> {
-      return flow {
-        emit(
-          NavigatorScreenState(
-          users = listOf(
-            UserItemUIModel(
-              imageUrl = "",
-              isNear = true,
-              name = "Random"
-            ),
-            UserItemUIModel(
-              imageUrl = "",
-              isNear = true,
-              name = "Random"
-            ),
-            UserItemUIModel(
-              imageUrl = "",
-              isNear = true,
-              name = "Random"
-            )
-          )
-        )
-        )
-      }
-    }
-  }
-
   AppTheme {
     NavigatorScreen(
-      stateHolder = stateHolder
+      stateHolder = fakeStateHolder,
+      onNavigateToChat = {},
+      onNavigateToChatList = {},
+      onNavigateToSettings = {}
     )
   }
 }

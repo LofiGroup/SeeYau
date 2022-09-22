@@ -8,7 +8,7 @@ class NotifyDeviceIsLostUseCase @Inject constructor(
 ) {
 
   suspend operator fun invoke(id: Long) {
-    val user = repository.getUser(id) ?: return
+
   }
 
 }

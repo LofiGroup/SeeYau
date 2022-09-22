@@ -21,16 +21,8 @@ fun RootContainer(
 ) {
   val navController = rememberNavController()
 
-  val (bottomBarIsVisible, setBottomBarVisibility) = remember {
-    mutableStateOf(false)
-  }
-
   Scaffold(
     topBar = {},
-    bottomBar = {
-      if (bottomBarIsVisible)
-        BottomBar(navController)
-    },
     modifier = Modifier
       .fillMaxSize()
       .padding()
@@ -40,8 +32,7 @@ fun RootContainer(
       navController = navController,
       appModules = appModules,
       onStart = onStart,
-      modifier = Modifier.padding(it),
-      setBottomBarVisibility = setBottomBarVisibility
+      modifier = Modifier.padding(it)
     )
   }
 }

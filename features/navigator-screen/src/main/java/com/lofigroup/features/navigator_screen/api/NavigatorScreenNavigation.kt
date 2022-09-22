@@ -20,7 +20,10 @@ fun NavigatorScreenNavigation(
   }
 
   NavigatorScreen(
-    stateHolder = viewModel
+    stateHolder = viewModel,
+    onNavigateToChat = {},
+    onNavigateToSettings = {},
+    onNavigateToChatList = {}
   )
 
 }

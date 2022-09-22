@@ -10,6 +10,9 @@ interface UserDao {
   @Query("select * from users where id > 0")
   fun observeUsers(): Flow<List<UserEntity>>
 
+  @Query("select * from users where id = :id")
+  fun observeUser(id: Long): Flow<UserEntity>
+
   @Query("select * from users where id = 0")
   fun observeMe(): Flow<UserEntity>
 

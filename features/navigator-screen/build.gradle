@@ -42,6 +42,7 @@ dependencies {
 
   implementation project(":common:ui")
   implementation project(":domain:navigator")
+  implementation project(":domain:chat")
 
   implementation appCompat
   implementation coreKtx

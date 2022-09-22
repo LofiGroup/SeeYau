@@ -1,10 +1,7 @@
 package com.lofigroup.domain.navigator.di
 
 import com.lofigroup.domain.navigator.NavigatorRepository
-import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
-import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
-import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
-import com.lofigroup.domain.navigator.usecases.PullNavigatorDataUseCase
+import com.lofigroup.domain.navigator.usecases.*
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance
 import dagger.Component
@@ -17,6 +14,7 @@ interface NavigatorComponent {
   fun notifyUserIsNearby(): NotifyUserIsNearbyUseCase
   fun notifyUserILostUseCase(): NotifyDeviceIsLostUseCase
   fun pullNavigatorDataUseCase(): PullNavigatorDataUseCase
+  fun getUserCase(): GetUserUseCase
 
   @Component.Builder
   interface Builder {

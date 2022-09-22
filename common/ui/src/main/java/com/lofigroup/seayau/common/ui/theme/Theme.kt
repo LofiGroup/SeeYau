@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
 private val DarkColorPalette = darkColors(
-  primary = SkyBlue,
-  primaryVariant = SkyBlue,
-  secondary = Purple,
+  primary = Purple,
+  primaryVariant = PurpleDarker,
+  secondary = SkyBlue,
   error = Red
 )
 
@@ -17,7 +17,8 @@ fun AppTheme(content: @Composable () -> Unit) {
   CompositionLocalProvider(
     LocalExtendedColors provides ExtendedColors(),
     LocalSpacing provides Spacing(),
-    LocalIconsSize provides IconsSize()
+    LocalIconsSize provides IconsSize(),
+    LocalSize provides Size()
   ) {
     MaterialTheme(
       colors = DarkColorPalette,

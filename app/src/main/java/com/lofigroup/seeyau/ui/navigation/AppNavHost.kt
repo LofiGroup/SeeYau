@@ -28,7 +28,6 @@ fun AppNavHost(
   appModules: AppModules,
 
   onStart: () -> Unit,
-  setBottomBarVisibility: (Boolean) -> Unit,
   modifier: Modifier
 ) {
 
@@ -53,14 +52,12 @@ fun AppNavHost(
     }
 
     composable(route = Screen.NavigatorScreen.route) {
-      setBottomBarVisibility(true)
       NavigatorScreenNavigation(
         navigatorComponent = appModules.navigatorModule.domainComponent
       )
     }
 
     composable(route = Screen.AuthScreen.route) {
-      setBottomBarVisibility(false)
       AuthScreenFlowNavigation(
         authComponent = appModules.authModule.domainComponent,
         profileComponent = appModules.profileModule.domainComponent,
@@ -90,7 +87,6 @@ fun AppNavHost(
         }
       }
       else {
-        setBottomBarVisibility(false)
         ChatScreenNavigation(
           chatComponent = appModules.chatModule.domainComponent,
           chatId = chatId
@@ -100,7 +96,6 @@ fun AppNavHost(
     }
 
     composable(route = Screen.ChatListScreen.route) {
-      setBottomBarVisibility(true)
       ChatListScreenNavigation(
         chatComponent = appModules.chatModule.domainComponent,
         onItemClick = { navController.navigate(
