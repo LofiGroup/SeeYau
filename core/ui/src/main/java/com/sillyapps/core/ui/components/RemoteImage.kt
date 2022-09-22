@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -29,7 +30,8 @@ fun RemoteImage(
   modifier: Modifier = Modifier,
   placeholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   errorPlaceholderResId: Int = R.drawable.ic_baseline_broken_image_24,
-  onClick: () -> Unit = {}
+  onClick: () -> Unit = {},
+  shape: Shape = CircleShape
 ) {
   AsyncImage(
     model = ImageRequest.Builder(LocalContext.current)
@@ -41,7 +43,7 @@ fun RemoteImage(
     contentDescription = null,
     error = painterResource(id = errorPlaceholderResId),
     modifier = modifier
-      .clip(CircleShape)
+      .clip(shape)
       .clickable { onClick() }
   )
 

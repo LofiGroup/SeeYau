@@ -25,8 +25,7 @@ fun RootContainer(
     topBar = {},
     modifier = Modifier
       .fillMaxSize()
-      .padding()
-    ,
+      .padding(),
   ) {
     AppNavHost(
       navController = navController,

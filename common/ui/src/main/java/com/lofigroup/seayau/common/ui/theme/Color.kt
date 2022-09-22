@@ -23,14 +23,16 @@ val PurpleVerticalGradient = Brush.verticalGradient(listOf(PurpleDarker, Color.B
 
 val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
-val DarkerGray = Color(0x18181880)
+val DarkerGray = Color(0xFF282726)
+val DarkestGray = Color(0xFF1C1C1E)
 
 data class ExtendedColors(
   val disabled: Color = DarkGray,
   val primaryGradient: Brush = BluePurpleGradient,
   val secondaryGradient: Brush = PurpleGradient,
   val backgroundGradient: Brush = PurpleVerticalGradient,
-  val lightBackground: Color = DarkerGray
+  val lightBackground: Color = DarkerGray,
+  val darkBackground: Color = DarkestGray
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {

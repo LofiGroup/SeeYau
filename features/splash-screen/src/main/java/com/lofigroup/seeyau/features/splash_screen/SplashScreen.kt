@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Result
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seayau.common.ui.theme.LocalActivityBarHeights
 import com.lofigroup.seayau.common.ui.theme.LocalExtendedColors
 import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState
@@ -68,7 +69,7 @@ fun SplashScreen(
         ),
         modifier = Modifier
           .align(Alignment.BottomCenter)
-          .padding(bottom = LocalSpacing.current.extraLarge)
+          .padding(bottom = LocalSpacing.current.extraLarge + LocalActivityBarHeights.current.navigationBarHeight)
       )
 
     }

@@ -10,13 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewModelScope
-import com.lofigroup.core.util.Resource
-import com.lofigroup.core.util.Result
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seayau.common.ui.theme.LocalSpacing
-import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
+import com.lofigroup.seayau.common.ui.theme.applyActivityBarPaddings
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.model.*
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
@@ -43,7 +40,9 @@ fun AuthScreenRoot(
     }
   }
 
-  Surface() {
+  Surface(
+    modifier = Modifier.applyActivityBarPaddings()
+  ) {
     Column(
       modifier = Modifier
         .fillMaxSize()

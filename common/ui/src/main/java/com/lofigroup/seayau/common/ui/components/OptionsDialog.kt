@@ -2,7 +2,6 @@ package com.lofigroup.seayau.common.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,11 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.lofigroup.seayau.common.ui.R
-import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalExtendedColors
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
+import com.lofigroup.seayau.common.ui.theme.*
 
 @Composable
 fun OptionsDialog(
@@ -32,7 +28,8 @@ fun OptionsDialog(
       onDismissRequest = onDismiss
     ) {
       Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.applyActivityBarPaddings()
       ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
@@ -50,7 +47,7 @@ fun OptionsDialog(
         Button(
           onClick = onDismiss,
           colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colors.background,
+            backgroundColor = LocalExtendedColors.current.darkBackground,
             contentColor = MaterialTheme.colors.onBackground
           ),
           elevation = ButtonDefaults.elevation(
@@ -101,7 +98,7 @@ fun PreviewOptionsDialog() {
       ) {
         OptionsDialogItem(
           text = "Write message",
-          textColor = MaterialTheme.colors.primary
+          textColor = MaterialTheme.colors.secondary
         )
         OptionsDialogItem(
           text = "Don't show this user again",

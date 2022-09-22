@@ -13,6 +13,7 @@ import com.lofigroup.features.navigator_screen.ui.components.*
 import com.lofigroup.seayau.common.ui.components.OptionsDialog
 import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seayau.common.ui.theme.applyActivityBarPaddings
 import com.sillyapps.core.ui.components.ShowToast
 
 @Composable
@@ -34,10 +35,15 @@ fun NavigatorScreen(
     modifier = Modifier.fillMaxSize()
   ) {
     Box() {
-      BackgroundImage(selectedUser = state.selectedUser)
+      BackgroundImage(
+        selectedUser = state.selectedUser,
+        isInFullScreenMode = state.fullScreenMode
+      )
 
-      if (!optionsDialogVisible)
-        Column {
+      if (!optionsDialogVisible) {
+        Column(
+          modifier = Modifier.applyActivityBarPaddings()
+        ) {
           TopBar(
             newMessagesCount = state.newMessagesCount,
             onSettingsButtonClick = onNavigateToSettings,
@@ -66,6 +72,7 @@ fun NavigatorScreen(
             onUserSelected = stateHolder::selectUser
           )
         }
+      }
     }
   }
 
@@ -75,7 +82,7 @@ fun NavigatorScreen(
   ) {
     OptionsDialogItem(
       text = stringResource(id = R.string.write_message),
-      textColor = MaterialTheme.colors.primary
+      textColor = MaterialTheme.colors.secondary
     )
     OptionsDialogItem(
       text = stringResource(id = R.string.ignore_user)

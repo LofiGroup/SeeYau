@@ -17,7 +17,7 @@ import com.lofigroup.seayau.common.ui.theme.LocalSize
 import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 
 @Composable
-fun UserScreen(
+fun ColumnScope.UserScreen(
   user: UserItemUIModel,
   isInFullScreenMode: Boolean,
   onToggleFullScreenMode: () -> Unit,
@@ -27,7 +27,7 @@ fun UserScreen(
 ) {
 
   Box(
-    modifier = Modifier.fillMaxSize()
+    modifier = Modifier.weight(1f)
   ) {
     UserScreenControls(
       userId = user.id,
@@ -119,12 +119,14 @@ fun BoxScope.ControlItem(
 fun PreviewUserScreen() {
   AppTheme {
     Surface {
-      UserScreen(
-        user = UserItemUIModel.getPreviewModel(),
-        isInFullScreenMode = true,
-        onToggleFullScreenMode = {  },
-        onMoreButtonClicked = {  },
-        onShowChat = {  }) {
+      Column() {
+        UserScreen(
+          user = UserItemUIModel.getPreviewModel(),
+          isInFullScreenMode = true,
+          onToggleFullScreenMode = {  },
+          onMoreButtonClicked = {  },
+          onShowChat = {  }) {
+        }
       }
     }
   }

@@ -38,6 +38,7 @@ fun UserItem(
         model = user.imageUrl,
         placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
         errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
+        onClick = { onUserSelected(user.id) },
         modifier = Modifier
           .size(80.dp)
           .padding(LocalSpacing.current.small)

@@ -37,6 +37,7 @@ android {
 
 dependencies {
   implementation project(":core:time")
+  implementation project(":core:ui")
 
   implementation appCompat
   implementation coreKtx
