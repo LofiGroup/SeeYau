@@ -16,6 +16,7 @@ fun AuthScreenFlowNavigation(
 
   val component = DaggerAuthScreenFlowComponent.builder()
     .authComponent(authComponent)
+    .profileComponent(profileComponent)
     .build()
 
   val viewModel = daggerViewModel {
