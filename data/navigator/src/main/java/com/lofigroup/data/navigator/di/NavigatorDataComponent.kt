@@ -2,7 +2,7 @@ package com.lofigroup.data.navigator.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.lofigroup.data.navigator.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule

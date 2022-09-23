@@ -4,16 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.lofigroup.data.navigator.local.UserDao
-import com.lofigroup.data.navigator.local.model.UserEntity
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 
 @Database(
   entities = [
     UserEntity::class, MessageEntity::class, ChatEntity::class
-  ], version = 9, exportSchema = false
+  ], version = 10, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 

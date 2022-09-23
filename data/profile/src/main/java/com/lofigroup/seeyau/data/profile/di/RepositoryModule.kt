@@ -1,7 +1,7 @@
 package com.lofigroup.seeyau.data.profile.di
 
-import com.lofigroup.seeyau.data.profile.ProfileDataSource
-import com.lofigroup.seeyau.data.profile.ProfileDataSourceImpl
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSourceImpl
 import com.lofigroup.seeyau.data.profile.ProfileRepositoryImpl
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope

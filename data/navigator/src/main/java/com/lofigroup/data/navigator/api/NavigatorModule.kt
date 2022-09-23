@@ -3,15 +3,14 @@ package com.lofigroup.data.navigator.api
 import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.data.navigator.di.DaggerNavigatorDataComponent
-import com.lofigroup.data.navigator.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
-import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineScope
 import retrofit2.Retrofit
 
 class NavigatorModule(
   context: Context,
-  userDao: UserDao,
+  userDao: com.lofigroup.seeyau.data.profile.local.UserDao,
   sharedPreferences: SharedPreferences,
   appScope: CoroutineScope,
   baseRetrofit: Retrofit

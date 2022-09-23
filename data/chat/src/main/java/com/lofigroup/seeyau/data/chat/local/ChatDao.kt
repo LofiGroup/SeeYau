@@ -1,10 +1,10 @@
 package com.lofigroup.seeyau.data.chat.local
 
 import androidx.room.*
-import com.lofigroup.data.navigator.local.model.UserEntity
 import com.lofigroup.seeyau.data.chat.local.models.ChatAssembled
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import kotlinx.coroutines.flow.*
 

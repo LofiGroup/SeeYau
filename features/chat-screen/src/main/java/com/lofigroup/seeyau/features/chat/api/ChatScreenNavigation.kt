@@ -9,7 +9,8 @@ import com.sillyapps.core.ui.daggerViewModel
 @Composable
 fun ChatScreenNavigation(
   chatComponent: ChatComponent,
-  chatId: Long
+  chatId: Long,
+  onUpButtonClick: () -> Unit
 ) {
 
   val component = DaggerChatScreenComponent.builder()
@@ -21,6 +22,9 @@ fun ChatScreenNavigation(
     component.getViewModel()
   }
 
-  ChatScreen(stateHolder = viewModel)
+  ChatScreen(
+    stateHolder = viewModel,
+    onUpButtonClick = onUpButtonClick
+  )
 
 }

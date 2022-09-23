@@ -1,10 +1,11 @@
 package com.lofigroup.seeyau.data.chat.di
 
 import android.content.SharedPreferences
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.chat.ChatRepositoryImpl
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
-import com.lofigroup.seeyau.data.profile.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
@@ -32,6 +33,9 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun chatDao(chatDao: ChatDao): Builder
+
+    @BindsInstance
+    fun userDao(userDao: UserDao): Builder
 
     @BindsInstance
     fun httpClient(httpClient: OkHttpClient): Builder

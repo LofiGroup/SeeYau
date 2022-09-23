@@ -1,7 +1,7 @@
-package com.lofigroup.data.navigator.local
+package com.lofigroup.seeyau.data.profile.local
 
 import androidx.room.*
-import com.lofigroup.data.navigator.local.model.UserEntity
+import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

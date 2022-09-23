@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.lofigroup.data.navigator.local.model.UserEntity
+import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 
 @Entity(
   tableName = "chats",

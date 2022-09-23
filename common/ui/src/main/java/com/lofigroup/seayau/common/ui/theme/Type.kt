@@ -16,6 +16,12 @@ val Typography = Typography(
     lineHeight = 16.sp,
     fontSize = 14.sp
   ),
+  body2 = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.W400,
+    lineHeight = 22.sp,
+    fontSize = 17.sp
+  ),
   h6 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
@@ -55,7 +61,7 @@ val Typography = Typography(
   ),
   subtitle2 = TextStyle(
     fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W500,
+    fontWeight = FontWeight.W400,
     fontSize = 15.sp,
     lineHeight = 22.sp,
     color = DarkGray

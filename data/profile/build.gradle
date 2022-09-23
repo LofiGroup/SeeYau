@@ -33,10 +33,10 @@ android {
 dependencies {
   implementation project(":core:network")
   implementation project(":core:util")
+  implementation project(":core:time")
 
   implementation project(":common:network")
   implementation project(":data:backend-api")
-  implementation project(":data:navigator")
   implementation project(":domain:profile")
 
   implementation appCompat

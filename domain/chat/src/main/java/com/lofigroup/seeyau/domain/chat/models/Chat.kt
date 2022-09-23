@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.domain.chat.models
 
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.seeyau.domain.profile.model.User
+
 
 data class Chat(
   val id: Long,

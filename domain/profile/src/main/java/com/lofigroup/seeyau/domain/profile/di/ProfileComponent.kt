@@ -1,10 +1,7 @@
 package com.lofigroup.seeyau.domain.profile.di
 
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
-import com.lofigroup.seeyau.domain.profile.usecases.GetMyIdUseCase
-import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
-import com.lofigroup.seeyau.domain.profile.usecases.PullProfileDataUseCase
-import com.lofigroup.seeyau.domain.profile.usecases.UpdateProfileUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.*
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance
 import dagger.Component
@@ -20,6 +17,8 @@ interface ProfileComponent {
   fun updateProfileUseCase(): UpdateProfileUseCase
   fun pullProfileDataUseCase(): PullProfileDataUseCase
   fun getMyIdUseCase(): GetMyIdUseCase
+  fun getUserUseCase(): GetUserUseCase
+  fun pullUserDataUseCase(): PullUserDataUseCase
 
   @Component.Builder
   interface Builder {

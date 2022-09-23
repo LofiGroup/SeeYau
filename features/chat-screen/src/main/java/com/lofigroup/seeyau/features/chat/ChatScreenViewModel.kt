@@ -7,8 +7,10 @@ import com.lofigroup.seeyau.domain.chat.usecases.MarkChatAsReadUseCase
 import com.lofigroup.seeyau.domain.chat.usecases.SendChatMessageUseCase
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toChatScreenState
+import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,24 +23,32 @@ class ChatScreenViewModel @Inject constructor(
 ): ViewModel(), ChatScreenStateHolder {
 
   init {
-    viewModelScope.launch { markChatAsReadUseCase(chatId) }
+    viewModelScope.launch {
+      markChatAsReadUseCase(chatId)
+      observeChatUpdates()
+    }
   }
+  private val state = MutableStateFlow(ChatScreenState())
 
-  private val mMessage = MutableStateFlow("")
-
-  override fun getChatState(): Flow<ChatScreenState> = getChatUseCase(chatId).map { it.toChatScreenState() }
-
-  override fun getMessage(): Flow<String> = mMessage
-
-  override fun setMessage(message: String) {
-    mMessage.value = message
-  }
+  override fun getChatState(): Flow<ChatScreenState> = state
 
   override fun sendMessage() {
     viewModelScope.launch {
-      sendChatMessageUseCase(mMessage.value, chatId)
+      sendChatMessageUseCase(state.value.message, chatId)
     }
-    mMessage.value = ""
+  }
+
+  override fun setMessage(message: String) {
+    state.apply { value = value.copy(message = message) }
+  }
+
+  private suspend fun observeChatUpdates() {
+    getChatUseCase(chatId).collect() { chat ->
+      state.apply { value = value.copy(
+        partner = chat.partner,
+        messages = chat.messages.map { it.toPrivateMessage() }
+      ) }
+    }
   }
 
 }

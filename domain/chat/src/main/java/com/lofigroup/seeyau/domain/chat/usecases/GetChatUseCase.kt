@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.domain.chat.usecases
 
-import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.Chat
 import kotlinx.coroutines.flow.Flow

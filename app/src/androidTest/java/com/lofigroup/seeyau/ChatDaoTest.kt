@@ -1,23 +1,18 @@
 package com.lofigroup.seeyau
 
 import android.content.Context
-import androidx.room.Database
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.Transaction
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.lofigroup.data.navigator.local.UserDao
-import com.lofigroup.data.navigator.local.model.UserEntity
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.AppDatabase
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatAssembled
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import okio.IOException
@@ -25,7 +20,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.math.truncate
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
@@ -125,7 +119,7 @@ class ChatDaoTest {
     userDao.insert(UserEntity(name = "Ken", id = 0, imageUrl = "", lastConnection = 0))
     userDao.insert(UserEntity(name = "Tanaka", id = 2, imageUrl = "", lastConnection = 0))
 
-    chatEntity = ChatEntity(id = 1, partnerId = 2)
+    chatEntity = ChatEntity(id = 1, partnerId = 2, lastVisited = 0L, partnerLastVisited = 0L)
     messages = listOf(
       createMessage(),
       createMessage(authorId = 2)

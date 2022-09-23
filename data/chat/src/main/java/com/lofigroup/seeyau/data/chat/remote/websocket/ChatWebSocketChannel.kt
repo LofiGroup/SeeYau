@@ -1,15 +1,13 @@
 package com.lofigroup.seeyau.data.chat.remote.websocket
 
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.MarkChatAsRead
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.WebSocketRequest
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ChatIsReadWsResponse
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ErrorWsResponse
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.NewMessageWsResponse
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.WebSocketResponse
-import com.lofigroup.seeyau.data.profile.ProfileDataSource
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.*
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +20,7 @@ import javax.inject.Inject
 class ChatWebSocketChannel @Inject constructor(
   private val client: OkHttpClient,
   private val chatDao: ChatDao,
+  private val userDao: UserDao,
   private val ioScope: CoroutineScope,
   private val ioDispatcher: CoroutineDispatcher,
   private val profileDataSource: ProfileDataSource
@@ -61,6 +60,13 @@ class ChatWebSocketChannel @Inject constructor(
             chatDao.updateChatLastVisited(webSocketResponse.chatId, webSocketResponse.readIn)
           } else {
             chatDao.updateChatPartnerLastVisited(webSocketResponse.chatId, webSocketResponse.readIn)
+          }
+        }
+      }
+      is UserOnlineStateChangedWsResponse -> {
+        ioScope.launch(ioDispatcher) {
+          if (webSocketResponse.userId != profileDataSource.getMyId()) {
+
           }
         }
       }

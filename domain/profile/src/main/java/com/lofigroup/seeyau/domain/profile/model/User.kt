@@ -1,4 +1,4 @@
-package com.lofigroup.domain.navigator.model
+package com.lofigroup.seeyau.domain.profile.model
 
 data class User(
   val id: Long,

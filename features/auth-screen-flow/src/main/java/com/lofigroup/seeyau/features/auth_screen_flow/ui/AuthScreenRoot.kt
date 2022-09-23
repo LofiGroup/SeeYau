@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
@@ -24,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun AuthScreenRoot(
@@ -105,11 +107,10 @@ fun TopBar() {
       onClick = {}
     ) {
       Icon(
-        imageVector = Icons.Filled.ArrowLeft,
+        painter = painterResource(id = CommonR.drawable.ic_arrow_1_icon),
         contentDescription = null,
         modifier = Modifier
-          .align(Alignment.CenterStart)
-          .size(LocalIconsSize.current.medium),
+          .align(Alignment.CenterStart),
       )
     }
     Text(

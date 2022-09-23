@@ -14,7 +14,6 @@ interface NavigatorComponent {
   fun notifyUserIsNearby(): NotifyUserIsNearbyUseCase
   fun notifyUserILostUseCase(): NotifyDeviceIsLostUseCase
   fun pullNavigatorDataUseCase(): PullNavigatorDataUseCase
-  fun getUserCase(): GetUserUseCase
 
   @Component.Builder
   interface Builder {

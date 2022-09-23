@@ -10,6 +10,7 @@ sealed interface WebSocketResponse {
       PolymorphicJsonAdapterFactory.of(WebSocketResponse::class.java, "response_type")
         .withSubtype(NewMessageWsResponse::class.java, "chat_message")
         .withSubtype(ErrorWsResponse::class.java, "error")
+        .withSubtype(UserOnlineStateChangedWsResponse::class.java, "online_status_changed")
     ).build().adapter(WebSocketResponse::class.java)
   }
 }

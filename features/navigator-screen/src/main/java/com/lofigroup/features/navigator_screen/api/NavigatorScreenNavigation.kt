@@ -8,7 +8,10 @@ import com.sillyapps.core.ui.daggerViewModel
 
 @Composable
 fun NavigatorScreenNavigation(
-  navigatorComponent: NavigatorComponent
+  navigatorComponent: NavigatorComponent,
+  onNavigateToChat: (Long) -> Unit,
+  onNavigateToSettings: () -> Unit,
+  onNavigateToChatList: () -> Unit
 ) {
 
   val component = DaggerNavigatorScreenComponent.builder()
@@ -21,9 +24,9 @@ fun NavigatorScreenNavigation(
 
   NavigatorScreen(
     stateHolder = viewModel,
-    onNavigateToChat = {},
-    onNavigateToSettings = {},
-    onNavigateToChatList = {}
+    onNavigateToChat = onNavigateToChat,
+    onNavigateToSettings = onNavigateToSettings,
+    onNavigateToChatList = onNavigateToChatList
   )
 
 }

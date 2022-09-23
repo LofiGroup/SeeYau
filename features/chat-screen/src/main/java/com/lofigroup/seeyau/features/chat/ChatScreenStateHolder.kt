@@ -7,10 +7,8 @@ interface ChatScreenStateHolder {
 
   fun getChatState(): Flow<ChatScreenState>
 
-  fun getMessage(): Flow<String>
+  fun sendMessage()
 
   fun setMessage(message: String)
-
-  fun sendMessage()
 
 }

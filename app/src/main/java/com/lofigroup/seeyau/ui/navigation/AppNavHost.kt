@@ -53,7 +53,10 @@ fun AppNavHost(
 
     composable(route = Screen.NavigatorScreen.route) {
       NavigatorScreenNavigation(
-        navigatorComponent = appModules.navigatorModule.domainComponent
+        navigatorComponent = appModules.navigatorModule.domainComponent,
+        onNavigateToChatList = { navController.navigate("${Screen.ChatScreen.route}/$it") },
+        onNavigateToSettings = { navController.navigate(Screen.SettingsScreen.route) },
+        onNavigateToChat = { navController.navigate(Screen.ChatListScreen.route) }
       )
     }
 
@@ -89,7 +92,8 @@ fun AppNavHost(
       else {
         ChatScreenNavigation(
           chatComponent = appModules.chatModule.domainComponent,
-          chatId = chatId
+          chatId = chatId,
+          onUpButtonClick = { navController.popBackStack() }
         )
       }
 

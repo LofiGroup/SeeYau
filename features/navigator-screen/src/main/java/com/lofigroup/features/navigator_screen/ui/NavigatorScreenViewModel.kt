@@ -2,9 +2,8 @@ package com.lofigroup.features.navigator_screen.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
-import com.lofigroup.domain.navigator.usecases.GetUserUseCase
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.model.toUIModel
 import com.sillyapps.core_time.Time
@@ -16,7 +15,7 @@ import javax.inject.Inject
 
 class NavigatorScreenViewModel @Inject constructor(
   private val getNearbyUsersUseCase: GetNearbyUsersUseCase,
-  private val getUserUseCase: GetUserUseCase
+
 ) : ViewModel(), NavigatorScreenStateHolder {
 
   private val state = MutableStateFlow(NavigatorScreenState())
@@ -38,9 +37,9 @@ class NavigatorScreenViewModel @Inject constructor(
     observeUserJob?.cancel()
 
     observeUserJob = viewModelScope.launch {
-      getUserUseCase(id).collect {
+      /*getUserUseCase(id).collect {
         applySelectedUserUpdate(it)
-      }
+      }*/
     }
   }
 
@@ -56,14 +55,14 @@ class NavigatorScreenViewModel @Inject constructor(
     state.apply { value = value.copy(chatIsVisible = true) }
   }
 
-  private fun applySelectedUserUpdate(user: User) {
+  private fun applySelectedUserUpdate(nearbyUser: NearbyUser) {
     state.value = state.value.copy(
-      selectedUser = user.toUIModel()
+      selectedUser = nearbyUser.toUIModel()
     )
   }
 
-  private fun applyUpdates(users: List<User>) {
-    val sorted = users.sortedBy {
+  private fun applyUpdates(nearbyUsers: List<NearbyUser>) {
+    val sorted = nearbyUsers.sortedBy {
       it.lastConnection
     }
     var splitIndex = sorted.indexOfFirst {

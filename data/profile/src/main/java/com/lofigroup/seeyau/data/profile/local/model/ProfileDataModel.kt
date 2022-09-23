@@ -1,6 +1,5 @@
-package com.lofigroup.seeyau.data.profile.model
+package com.lofigroup.seeyau.data.profile.local.model
 
-import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.squareup.moshi.JsonClass
 
@@ -11,3 +10,8 @@ data class ProfileDataModel(
   val imageUrl: String?
 )
 
+fun UserEntity.toProfile() = Profile(
+  id = id,
+  name = name,
+  imageUrl = imageUrl
+)

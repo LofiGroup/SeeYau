@@ -11,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.domain.navigator.model.User
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.Chat
+import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
 import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatItem
 import com.sillyapps.core.ui.components.ShowToast

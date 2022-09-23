@@ -1,37 +1,31 @@
 package com.lofigroup.seeyau.data.profile
 
 import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
-import androidx.core.net.toFile
-import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.Result
 import com.lofigroup.core.util.getFileExtFromPath
-import com.lofigroup.data.navigator.local.UserDao
-import com.lofigroup.data.navigator.remote.model.toUserEntity
-import com.lofigroup.seeyau.data.profile.model.toProfile
-import com.lofigroup.seeyau.data.profile.model.toUpdateProfileForm
-import com.lofigroup.seeyau.data.profile.model.toUserDto
+import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
+import com.lofigroup.seeyau.data.profile.local.model.toMyProfile
+import com.lofigroup.seeyau.data.profile.local.model.toProfile
+import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
+import com.lofigroup.seeyau.data.profile.remote.ProfileApi
+import com.lofigroup.seeyau.data.profile.remote.model.toUpdateProfileForm
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
+import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core_network.ContentUriRequestBody
-import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.HttpException
 import timber.log.Timber
-import java.io.File
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
@@ -47,9 +41,19 @@ class ProfileRepositoryImpl @Inject constructor(
     try {
       val response = retrofitErrorHandler(api.getProfile())
 
-      Timber.e("Got profile: $response")
-      userDao.insert(response.toUserEntity().copy(id = 0))
+      userDao.insert(response.toMyProfile())
       profileData.update(response.id)
+    } catch (e: Exception) {
+      Timber.e(getErrorMessage(e))
+    }
+  }
+
+  override suspend fun pullUserData(userId: Long) = withContext(ioDispatcher) {
+    try {
+      val response = retrofitErrorHandler(api.getUser(userId))
+
+      userDao.insert(response.toUserEntity())
+      Unit
     } catch (e: Exception) {
       Timber.e(getErrorMessage(e))
     }
@@ -59,6 +63,10 @@ class ProfileRepositoryImpl @Inject constructor(
     return userDao.observeMe().map {
       it.toProfile()
     }
+  }
+
+  override fun getUser(userId: Long): Flow<User> {
+    return userDao.observeUser(userId).map { it.toDomainModel() }
   }
 
   override suspend fun getMyId(): Long {
@@ -74,7 +82,7 @@ class ProfileRepositoryImpl @Inject constructor(
         )
       )
 
-      userDao.insert(newProfile.toUserEntity())
+      userDao.insert(newProfile.toMyProfile())
       Result.Success
     }
     catch (e: Exception) {

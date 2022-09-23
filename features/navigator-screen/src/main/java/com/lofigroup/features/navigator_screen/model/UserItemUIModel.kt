@@ -1,8 +1,7 @@
 package com.lofigroup.features.navigator_screen.model
 
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
-import com.sillyapps.core_time.Time
 
 data class UserItemUIModel(
   val id: Long,
@@ -25,13 +24,13 @@ data class UserItemUIModel(
   }
 }
 
-fun User.toUIModel(): UserItemUIModel {
+fun NearbyUser.toUIModel(): UserItemUIModel {
   return UserItemUIModel(
     id = id,
     imageUrl = imageUrl,
     name = name,
     isNear = isNear,
-    isOnline = true,
+    isOnline = lastConnection == 0L,
     newMessages = listOf()
   )
 }

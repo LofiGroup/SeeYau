@@ -1,12 +1,12 @@
 package com.lofigroup.data.navigator
 
-import com.lofigroup.data.navigator.local.UserDao
-import com.lofigroup.data.navigator.local.model.toDomainModel
 import com.lofigroup.data.navigator.remote.NavigatorApi
 import com.lofigroup.data.navigator.remote.model.toLocalDataModel
-import com.lofigroup.data.navigator.remote.model.toUserEntity
+import com.lofigroup.data.navigator.remote.model.toNearbyUser
 import com.lofigroup.domain.navigator.NavigatorRepository
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.domain.navigator.model.NearbyUser
+import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.*
@@ -23,8 +23,8 @@ class NavigatorRepositoryImpl @Inject constructor(
   private val ioScope: CoroutineScope
 ) : NavigatorRepository {
 
-  override fun getNearbyUsers(): Flow<List<User>> =
-    userDao.observeUsers().map { it.map { user -> user.toDomainModel() } }
+  override fun getNearbyUsers(): Flow<List<NearbyUser>> =
+    userDao.observeUsers().map { it.map { user -> user.toNearbyUser() } }
 
   override suspend fun pullData() = withContext(ioDispatcher) {
     try {
@@ -50,10 +50,6 @@ class NavigatorRepositoryImpl @Inject constructor(
     catch (e: Exception) {
       Timber.e(getErrorMessage(e))
     }
-  }
-
-  override fun getUser(id: Long): Flow<User> {
-    return userDao.observeUser(id).map { it.toDomainModel() }
   }
 
 }

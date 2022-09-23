@@ -1,10 +1,9 @@
 package com.lofigroup.seeyau.data.profile.di
 
 import android.content.ContentResolver
-import android.content.Context
 import android.content.SharedPreferences
-import com.lofigroup.data.navigator.local.UserDao
-import com.lofigroup.seeyau.data.profile.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule

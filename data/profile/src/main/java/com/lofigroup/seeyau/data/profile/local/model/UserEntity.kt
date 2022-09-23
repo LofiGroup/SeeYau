@@ -1,8 +1,9 @@
-package com.lofigroup.data.navigator.local.model
+package com.lofigroup.seeyau.data.profile.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.backend_api.models.UserDto
+import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core_time.Time
 
 @Entity(tableName = "users")
@@ -31,3 +32,17 @@ fun UserEntity.toDomainModel(): User {
     isNear = System.currentTimeMillis() - lastConnection < 1 * Time.m
   )
 }
+
+fun UserDto.toUserEntity() = UserEntity(
+  id = id,
+  name = name,
+  imageUrl = imageUrl,
+  lastConnection = lastSeen
+)
+
+fun UserDto.toMyProfile() = UserEntity(
+  id = 0,
+  name = name,
+  imageUrl = imageUrl,
+  lastConnection = lastSeen
+)

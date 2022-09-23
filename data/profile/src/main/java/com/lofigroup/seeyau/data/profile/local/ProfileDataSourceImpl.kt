@@ -1,11 +1,6 @@
-package com.lofigroup.seeyau.data.profile
+package com.lofigroup.seeyau.data.profile.local
 
 import android.content.SharedPreferences
-import com.lofigroup.core.util.Resource
-import com.lofigroup.core.util.Result
-import com.lofigroup.seeyau.data.profile.model.ProfileDataModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class ProfileDataSourceImpl @Inject constructor(

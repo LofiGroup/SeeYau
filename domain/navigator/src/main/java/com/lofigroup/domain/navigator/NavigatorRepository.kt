@@ -1,17 +1,14 @@
 package com.lofigroup.domain.navigator
 
-import com.lofigroup.core.util.Resource
-import com.lofigroup.domain.navigator.model.User
+import com.lofigroup.domain.navigator.model.NearbyUser
 import kotlinx.coroutines.flow.Flow
 
 interface NavigatorRepository {
 
-  fun getNearbyUsers(): Flow<List<User>>
+  fun getNearbyUsers(): Flow<List<NearbyUser>>
 
   suspend fun pullData()
 
   suspend fun notifyUserWithIdWasFound(id: Long)
-
-  fun getUser(id: Long): Flow<User>
 
 }

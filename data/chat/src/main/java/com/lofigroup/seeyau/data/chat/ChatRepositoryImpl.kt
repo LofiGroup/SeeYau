@@ -9,7 +9,7 @@ import com.lofigroup.seeyau.data.chat.remote.http.models.toChatEntity
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketChannel
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
-import com.lofigroup.seeyau.data.profile.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest

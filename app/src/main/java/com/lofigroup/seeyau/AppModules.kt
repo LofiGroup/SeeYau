@@ -56,6 +56,7 @@ class AppModules(
   val chatModule by lazy {
     ChatModule(
       baseRetrofit = backend.getRetrofit(),
+      userDao = appComponent.getDatabase().userDao,
       chatDao = appComponent.getDatabase().chatDao,
       sharedPreferences = appComponent.getSharedPref(),
       profileDataSource = profileModule.dataComponent.getProfileDataSource(),
