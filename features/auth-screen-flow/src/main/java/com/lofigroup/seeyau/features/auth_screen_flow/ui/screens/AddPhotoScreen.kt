@@ -26,6 +26,7 @@ import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun AddPhotoScreen(
+  topBar: @Composable () -> Unit,
   imageUri: String,
   setImageUri: (Uri) -> Unit,
   throwError: (String) -> Unit,
@@ -45,18 +46,22 @@ fun AddPhotoScreen(
       }
     }
 
-  Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
+  Box(
     modifier = Modifier
       .fillMaxSize()
-      .padding(top = LocalSpacing.current.extraLarge, bottom = LocalSpacing.current.large)
   ) {
-    Text(
-      text = stringResource(id = R.string.be_recognizable),
-      style = MaterialTheme.typography.h4
-    )
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = Modifier.align(Alignment.TopCenter)
+    ) {
+      topBar()
 
-    Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
+      Text(
+        text = stringResource(id = R.string.be_recognizable),
+        style = MaterialTheme.typography.h4,
+        modifier = Modifier.padding(top = LocalSpacing.current.extraLarge)
+      )
+    }
 
     RemoteImage(
       model = imageUri,
@@ -65,36 +70,39 @@ fun AddPhotoScreen(
       modifier = Modifier
         .fillMaxWidth(0.7f)
         .aspectRatio(1f)
-        .padding(8.dp),
+        .padding(8.dp)
+        .align(Alignment.Center),
       onClick = {
         navigateToPictureCropper(pickImageResult)
       }
     )
 
-    Spacer(modifier = Modifier.weight(1f))
-
-    if (imageUri.isBlank()) {
-      TextButton(
-        onClick = {
-          navigateToPictureCropper(pickImageResult)
-        },
-      ) {
-        Text(
-          text = stringResource(id = R.string.add_photo),
-          style = MaterialTheme.typography.h5,
-          color = MaterialTheme.colors.secondary
-        )
-      }
-    } else {
-      TextButton(onClick = update) {
-        Text(
-          text = stringResource(id = CommonR.string.lets_shine),
-          style = MaterialTheme.typography.h5
-        )
+    Box(
+      modifier = Modifier
+        .align(Alignment.BottomCenter)
+        .padding(bottom = LocalSpacing.current.large)
+    ) {
+      if (imageUri.isBlank()) {
+        TextButton(
+          onClick = {
+            navigateToPictureCropper(pickImageResult)
+          },
+        ) {
+          Text(
+            text = stringResource(id = R.string.add_photo),
+            style = MaterialTheme.typography.h5,
+            color = MaterialTheme.colors.secondary
+          )
+        }
+      } else {
+        TextButton(onClick = update) {
+          Text(
+            text = stringResource(id = CommonR.string.lets_shine),
+            style = MaterialTheme.typography.h5
+          )
+        }
       }
     }
-    
-    Spacer(modifier = Modifier.height(LocalSpacing.current.large))
 
   }
 }
@@ -115,9 +123,8 @@ fun AddPhotoScreenPreview() {
   AppTheme() {
     Surface() {
       Column() {
-        TopBar()
-
         AddPhotoScreen(
+          topBar = { TopBar() },
           imageUri = "",
           setImageUri = {},
           throwError = {},

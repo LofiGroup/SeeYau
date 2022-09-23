@@ -47,10 +47,9 @@ fun AuthScreenRoot(
       modifier = Modifier
         .fillMaxSize()
     ) {
-      TopBar()
-
       when (state.routePoint) {
         RoutePoint.EnterName -> {
+          TopBar()
           EnterNameScreen(
             isDone = {
               stateHolder.setName(it)
@@ -60,6 +59,7 @@ fun AuthScreenRoot(
           )
         }
         RoutePoint.EnterPhone -> {
+          TopBar()
           EnterPhoneNumberScreen(
             isDone = {
               stateHolder.startAuth()
@@ -71,6 +71,7 @@ fun AuthScreenRoot(
         }
 
         RoutePoint.VerifyPhone -> {
+          TopBar()
           VerifyPhoneNumberScreen(
             code = state.code,
             setCode = stateHolder::setCode,
@@ -80,6 +81,7 @@ fun AuthScreenRoot(
         }
         RoutePoint.PickPicture -> {
           AddPhotoScreen(
+            topBar = { TopBar() },
             imageUri = state.imageUri,
             setImageUri = stateHolder::setImageUri,
             throwError = stateHolder::throwError,
