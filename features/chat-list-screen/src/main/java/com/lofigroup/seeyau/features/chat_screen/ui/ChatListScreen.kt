@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.Chat
+import com.lofigroup.seeyau.domain.chat.models.ChatBrief
+import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
 import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatItem
@@ -54,9 +56,9 @@ fun ChatListScreenPreview() {
   val state = MutableStateFlow(
     ChatListScreenState(
       chats = listOf(
-        Chat(
+        ChatBrief(
           id = 1,
-          messages = listOf(),
+          lastMessage = ChatMessage(id = 0, message = "", author = 0, createdIn = 0L, isRead = true),
           partner = User(
             id = 9,
             name = "York",
@@ -65,9 +67,9 @@ fun ChatListScreenPreview() {
             lastConnection = 0
           )
         ),
-        Chat(
+        ChatBrief(
           id = 1,
-          messages = listOf(),
+          lastMessage = ChatMessage(id = 0, message = "", author = 0, createdIn = 0L, isRead = true),
           partner = User(
             id = 9,
             name = "Umbrella",

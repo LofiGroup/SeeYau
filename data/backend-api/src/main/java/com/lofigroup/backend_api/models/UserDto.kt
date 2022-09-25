@@ -15,5 +15,8 @@ data class UserDto(
   val imageUrl: String?,
 
   @Json(name = "last_seen")
-  val lastSeen: Long
+  val lastSeen: Long,
+
+  @Json(name = "last_contact")
+  val lastContact: Long
 )

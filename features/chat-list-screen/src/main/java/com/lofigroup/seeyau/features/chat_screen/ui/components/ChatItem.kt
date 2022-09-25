@@ -14,13 +14,15 @@ import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.Chat
+import com.lofigroup.seeyau.domain.chat.models.ChatBrief
+import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core.ui.components.RemoteImage
 import com.lofigroup.seayau.common.ui.R as common_res
 
 @Composable
 fun ChatItem(
-  chat: Chat,
+  chat: ChatBrief,
   onClick: (Long) -> Unit
 ) {
   Surface(
@@ -85,7 +87,7 @@ fun ChatItem(
 @Preview
 @Composable
 fun ChatItemPreview() {
-  val item = Chat(
+  val item = ChatBrief(
     id = 0,
     partner = User(
       id = 0,
@@ -94,7 +96,7 @@ fun ChatItemPreview() {
       isNear = true,
       lastConnection = 0
     ),
-    messages = listOf()
+    lastMessage = ChatMessage(id = 0, message = "", author = 0, createdIn = 0L, isRead = true)
   )
 
   AppTheme {

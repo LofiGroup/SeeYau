@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.domain.navigator.NavigatorRepository
+import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
 import dagger.BindsInstance
@@ -26,6 +27,9 @@ interface NavigatorDataComponent {
 
     @BindsInstance
     fun userDao(userDao: UserDao): Builder
+
+    @BindsInstance
+    fun chatDao(chatDao: ChatDao): Builder
 
     @BindsInstance
     fun sharedPref(sharedPref: SharedPreferences): Builder

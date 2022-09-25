@@ -32,7 +32,9 @@ class AppModules(
       userDao = appComponent.getDatabase().userDao,
       sharedPreferences = appComponent.getSharedPref(),
       appScope = appScope,
-      baseRetrofit = backend.getRetrofit()
+      baseRetrofit = backend.getRetrofit(),
+      chatDao = appComponent.getDatabase().chatDao,
+      profileRepository = profileModule.dataComponent.getRepository()
     )
   }
 

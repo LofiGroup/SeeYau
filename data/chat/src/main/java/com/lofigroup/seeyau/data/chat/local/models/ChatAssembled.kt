@@ -31,12 +31,3 @@ fun ChatAssembled.toDomainModel(): Chat {
   )
 }
 
-private fun MessageEntity.toDomainModel(partnerLastVisit: Long): ChatMessage {
-  return ChatMessage(
-    id = id,
-    message = message,
-    author = author,
-    createdIn = createdIn,
-    isRead = partnerLastVisit > createdIn
-  )
-}

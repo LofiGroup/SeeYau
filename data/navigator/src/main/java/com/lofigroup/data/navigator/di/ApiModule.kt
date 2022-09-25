@@ -1,6 +1,6 @@
 package com.lofigroup.data.navigator.di
 
-import com.lofigroup.data.navigator.remote.NavigatorApi
+import com.lofigroup.data.navigator.NavigatorApi
 import com.sillyapps.core.di.AppScope
 import dagger.Module
 import dagger.Provides

@@ -54,6 +54,7 @@ class NearbyBtClient @Inject constructor(
       }
 
       val id = data.toLong()
+      Timber.e("Found user with id: $id")
 
       scope.launch {
         notifyUserIsNearbyUseCase(id)
@@ -90,6 +91,7 @@ class NearbyBtClient @Inject constructor(
 
     scope.launch {
       val id = getMyIdUseCase()
+      Timber.e("My id is $id")
       val idBytes = id.toByteArray()
       val data = AdvertiseData.Builder()
         .addServiceUuid(pUuid)

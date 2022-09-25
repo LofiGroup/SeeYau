@@ -10,14 +10,16 @@ import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketChannel
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.Chat
+import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,6 +27,7 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
   private val chatApi: ChatApi,
   private val chatDao: ChatDao,
+  private val userDao: UserDao,
   private val ioDispatcher: CoroutineDispatcher,
   private val lastChatUpdateDataSource: LastChatUpdateDataSource,
   private val profileDataSource: ProfileDataSource,
@@ -55,12 +58,30 @@ class ChatRepositoryImpl @Inject constructor(
     chatWebSocket.markChatAsRead(chatId)
   }
 
-  override fun getChats(): Flow<List<Chat>> {
-    return chatDao.getChats().map { it.map { chat -> chat.toDomainModel() } }
+  override fun getChats(): Flow<List<ChatBrief>> {
+    return chatDao.getChats().flatMapLatest { chats ->
+      combine(chats.map { chat ->
+        userDao.observeUser(chat.partnerId).combine(chatDao.observeLastMessage(chat.id)) { user, lastMessage ->
+          ChatBrief(
+            id = chat.id,
+            partner = user.toDomainModel(),
+            lastMessage = lastMessage.toDomainModel(chat.partnerLastVisited)
+          )
+        }
+      }) { it.asList() }
+    }
   }
 
   override fun getChat(id: Long): Flow<Chat> {
-    return chatDao.getAssembledChat(id).map { it.toDomainModel() }
+    return chatDao.getChat(id).flatMapLatest { chat ->
+      userDao.observeUser(chat.partnerId).combine(chatDao.getChatMessages(chat.id)) { user, messages ->
+        Chat(
+          id = chat.id,
+          partner = user.toDomainModel(),
+          messages = messages.map { it.toDomainModel(chat.partnerLastVisited)}
+        )
+      }
+    }
   }
 
   private suspend fun insertUpdates(chatUpdates: ChatUpdatesDto) {
