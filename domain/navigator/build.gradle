@@ -13,6 +13,8 @@ dependencies {
   api project(":core:di")
   api project(":core:util")
 
+  api project(":domain:chat")
+
   implementation daggerDeps.core
   kapt daggerDeps.annotationProcessor
 

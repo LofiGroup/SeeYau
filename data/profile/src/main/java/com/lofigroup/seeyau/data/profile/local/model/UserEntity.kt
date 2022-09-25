@@ -11,17 +11,9 @@ data class UserEntity(
   @PrimaryKey val id: Long,
   val name: String,
   val imageUrl: String?,
-  val lastConnection: Long
+  val lastConnection: Long,
+  val lastContact: Long
 )
-
-fun User.toUserEntity(): UserEntity {
-  return UserEntity(
-    id = id,
-    name = name,
-    imageUrl = imageUrl,
-    lastConnection = lastConnection
-  )
-}
 
 fun UserEntity.toDomainModel(): User {
   return User(
@@ -37,12 +29,6 @@ fun UserDto.toUserEntity() = UserEntity(
   id = id,
   name = name,
   imageUrl = imageUrl,
-  lastConnection = lastSeen
-)
-
-fun UserDto.toMyProfile() = UserEntity(
-  id = 0,
-  name = name,
-  imageUrl = imageUrl,
-  lastConnection = lastSeen
+  lastConnection = lastSeen,
+  lastContact = lastContact
 )

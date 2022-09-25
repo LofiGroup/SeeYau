@@ -11,18 +11,24 @@ import kotlinx.coroutines.flow.*
 @Dao
 interface ChatDao {
 
-  @Transaction
   @Query("select * from chats")
-  fun getChats(): Flow<List<ChatAssembled>>
+  fun getChats(): Flow<List<ChatEntity>>
 
   @Query("select * from chats where id = :id")
   fun getChat(id: Long): Flow<ChatEntity>
 
-  @Query("select * from users where id = :id")
-  fun getUser(id: Long): Flow<UserEntity>
+  @Query("select * from chats where partnerId = :userId")
+  fun getUserChat(userId: Long): Flow<ChatEntity>
 
   @Query("select * from messages where chatId = :chatId order by createdIn desc")
   fun getChatMessages(chatId: Long): Flow<List<MessageEntity>>
+
+  @Query("select chats.lastVisited as lastVisited, messages.id as id, messages.chatId as chatId, messages.createdIn as createdIn, messages.author as author, messages.message as message " +
+      "from chats, messages where author = :userId and createdIn > lastVisited order by createdIn desc")
+  fun getNewUserMessages(userId: Long): Flow<List<MessageEntity>>
+
+  @Query("select * from messages where chatId = :chatId order by createdIn desc limit 1")
+  fun observeLastMessage(chatId: Long): Flow<MessageEntity>
 
   @Query("select * from messages order by createdIn desc limit 1")
   suspend fun getLastMessage(): MessageEntity?
@@ -41,17 +47,5 @@ interface ChatDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertMessage(message: MessageEntity)
-
-  fun getAssembledChat(id: Long): Flow<ChatAssembled> {
-    return getChat(id).flatMapLatest { chat ->
-      getUser(chat.partnerId).combine(getChatMessages(chat.id)) { user, messages ->
-        ChatAssembled(
-          chat = chat,
-          partner = user,
-          messages = messages
-        )
-      }
-    }
-  }
 
 }

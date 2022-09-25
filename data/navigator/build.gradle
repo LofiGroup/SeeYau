@@ -39,6 +39,7 @@ dependencies {
 
   implementation project(":data:backend-api")
   implementation project(":data:profile")
+  implementation project(":data:chat")
 
   implementation project(":domain:navigator")
 

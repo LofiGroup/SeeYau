@@ -21,4 +21,6 @@ interface ProfileRepository {
 
   suspend fun updateProfile(profile: ProfileUpdate): Result
 
+  suspend fun getLastContactWith(userId: Long): Long?
+
 }

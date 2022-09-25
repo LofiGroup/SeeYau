@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
+import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 
 @Entity(
   tableName = "messages",
@@ -20,3 +21,14 @@ data class MessageEntity(
   @ColumnInfo(index = true) val author: Long,
   val createdIn: Long
 )
+
+fun MessageEntity.toDomainModel(partnerLastVisit: Long): ChatMessage {
+  return ChatMessage(
+    id = id,
+    message = message,
+    author = author,
+    createdIn = createdIn,
+    isRead = partnerLastVisit > createdIn
+  )
+}
+

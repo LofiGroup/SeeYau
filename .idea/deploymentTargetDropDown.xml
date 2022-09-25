@@ -7,22 +7,14 @@
         <deviceKey>
           <Key>
             <type value="SERIAL_NUMBER" />
-            <value value="156885573100A1U" />
+            <value value="HTS00NWP" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-09-25T09:22:50.882120400Z" />
+    <timeTargetWasSelectedWithDropDown value="2022-09-25T13:55:24.145061900Z" />
+    <multipleDevicesSelectedInDropDown value="true" />
     <runningDeviceTargetsSelectedWithDialog>
-      <Target>
-        <type value="RUNNING_DEVICE_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="156885573100A1U" />
-          </Key>
-        </deviceKey>
-      </Target>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>

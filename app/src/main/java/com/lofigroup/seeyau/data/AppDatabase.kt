@@ -13,7 +13,7 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 @Database(
   entities = [
     UserEntity::class, MessageEntity::class, ChatEntity::class
-  ], version = 10, exportSchema = false
+  ], version = 11, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 

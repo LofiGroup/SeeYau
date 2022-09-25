@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface NavigatorRepository {
 
-  fun getNearbyUsers(): Flow<List<NearbyUser>>
-
   suspend fun pullData()
 
   suspend fun notifyUserWithIdWasFound(id: Long)
+
+  fun getNearbyUsers(): Flow<List<NearbyUser>>
 
 }

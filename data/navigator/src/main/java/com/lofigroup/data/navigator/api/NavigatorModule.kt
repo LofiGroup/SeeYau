@@ -5,12 +5,16 @@ import android.content.SharedPreferences
 import com.lofigroup.data.navigator.di.DaggerNavigatorDataComponent
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
+import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import retrofit2.Retrofit
 
 class NavigatorModule(
   context: Context,
-  userDao: com.lofigroup.seeyau.data.profile.local.UserDao,
+  userDao: UserDao,
+  chatDao: ChatDao,
+  profileRepository: ProfileRepository,
   sharedPreferences: SharedPreferences,
   appScope: CoroutineScope,
   baseRetrofit: Retrofit
@@ -21,11 +25,13 @@ class NavigatorModule(
     .baseRetrofit(baseRetrofit)
     .sharedPref(sharedPreferences)
     .userDao(userDao)
+    .chatDao(chatDao)
     .context(context)
     .build()
 
   val domainComponent = DaggerNavigatorComponent.builder()
     .repository(dataComponent.getRepository())
+    .profileRepository(profileRepository)
     .build()
 
 }

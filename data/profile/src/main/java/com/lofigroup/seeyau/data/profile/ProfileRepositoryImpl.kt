@@ -7,11 +7,11 @@ import com.lofigroup.core.util.getFileExtFromPath
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
-import com.lofigroup.seeyau.data.profile.local.model.toMyProfile
 import com.lofigroup.seeyau.data.profile.local.model.toProfile
 import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
 import com.lofigroup.seeyau.data.profile.remote.ProfileApi
 import com.lofigroup.seeyau.data.profile.remote.model.toUpdateProfileForm
+import com.lofigroup.seeyau.data.profile.remote.model.toUserEntity
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
@@ -41,7 +41,7 @@ class ProfileRepositoryImpl @Inject constructor(
     try {
       val response = retrofitErrorHandler(api.getProfile())
 
-      userDao.insert(response.toMyProfile())
+      userDao.insert(response.toUserEntity())
       profileData.update(response.id)
     } catch (e: Exception) {
       Timber.e(getErrorMessage(e))
@@ -82,12 +82,16 @@ class ProfileRepositoryImpl @Inject constructor(
         )
       )
 
-      userDao.insert(newProfile.toMyProfile())
+      userDao.insert(newProfile.toUserEntity())
       Result.Success
     }
     catch (e: Exception) {
       Result.Error(getErrorMessage(e))
     }
+  }
+
+  override suspend fun getLastContactWith(userId: Long): Long? {
+    return userDao.getLastContact(userId)
   }
 
   private fun createMultipartBody(uri: String?): MultipartBody.Part? {

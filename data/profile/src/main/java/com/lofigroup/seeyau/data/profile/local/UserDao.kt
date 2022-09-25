@@ -19,6 +19,9 @@ interface UserDao {
   @Query("select * from users where id = :id")
   suspend fun getUser(id: Long): UserEntity?
 
+  @Query("select lastContact from users where id = :id")
+  suspend fun getLastContact(id: Long): Long?
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insert(entities: List<UserEntity>)
 
