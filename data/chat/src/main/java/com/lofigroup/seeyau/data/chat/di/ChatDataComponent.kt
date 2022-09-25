@@ -7,6 +7,7 @@ import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.domain.chat.ChatRepository
+import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
 import dagger.*
@@ -36,6 +37,9 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun userDao(userDao: UserDao): Builder
+
+    @BindsInstance
+    fun profileRepository(profileRepository: ProfileRepository): Builder
 
     @BindsInstance
     fun httpClient(httpClient: OkHttpClient): Builder

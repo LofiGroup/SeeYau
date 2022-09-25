@@ -8,6 +8,7 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.MarkChatA
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.WebSocketRequest
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.*
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
+import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +24,8 @@ class ChatWebSocketChannel @Inject constructor(
   private val userDao: UserDao,
   private val ioScope: CoroutineScope,
   private val ioDispatcher: CoroutineDispatcher,
-  private val profileDataSource: ProfileDataSource
+  private val profileDataSource: ProfileDataSource,
+  private val profileRepository: ProfileRepository
 ) : WebSocketListener() {
 
   private val wsChatRequest =
@@ -66,7 +68,7 @@ class ChatWebSocketChannel @Inject constructor(
       is UserOnlineStateChangedWsResponse -> {
         ioScope.launch(ioDispatcher) {
           if (webSocketResponse.userId != profileDataSource.getMyId()) {
-
+            profileRepository.pullUserData(webSocketResponse.userId)
           }
         }
       }

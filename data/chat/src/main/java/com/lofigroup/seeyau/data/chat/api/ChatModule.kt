@@ -6,6 +6,7 @@ import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.domain.chat.di.DaggerChatComponent
+import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -17,7 +18,8 @@ class ChatModule(
   baseRetrofit: Retrofit,
   profileDataSource: ProfileDataSource,
   httpclient: OkHttpClient,
-  ioScope: CoroutineScope
+  ioScope: CoroutineScope,
+  profileRepository: ProfileRepository
 ) {
 
   private val dataComponent = DaggerChatDataComponent.builder()
@@ -28,6 +30,7 @@ class ChatModule(
     .httpClient(httpclient)
     .profileDataSource(profileDataSource)
     .ioScope(ioScope)
+    .profileRepository(profileRepository)
     .build()
 
   val domainComponent = DaggerChatComponent.builder()

@@ -54,9 +54,9 @@ fun AppNavHost(
     composable(route = Screen.NavigatorScreen.route) {
       NavigatorScreenNavigation(
         navigatorComponent = appModules.navigatorModule.domainComponent,
-        onNavigateToChatList = { navController.navigate("${Screen.ChatScreen.route}/$it") },
+        onNavigateToChatList = { navController.navigate(Screen.ChatListScreen.route) },
         onNavigateToSettings = { navController.navigate(Screen.SettingsScreen.route) },
-        onNavigateToChat = { navController.navigate(Screen.ChatListScreen.route) }
+        onNavigateToChat = { navController.navigate("${Screen.ChatScreen.route}/$it") }
       )
     }
 

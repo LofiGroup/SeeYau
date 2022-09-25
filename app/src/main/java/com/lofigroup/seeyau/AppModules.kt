@@ -61,7 +61,8 @@ class AppModules(
       sharedPreferences = appComponent.getSharedPref(),
       profileDataSource = profileModule.dataComponent.getProfileDataSource(),
       httpclient = backend.getHttpClient(),
-      ioScope = appScope
+      ioScope = appScope,
+      profileRepository = profileModule.dataComponent.getRepository()
     )
   }
 

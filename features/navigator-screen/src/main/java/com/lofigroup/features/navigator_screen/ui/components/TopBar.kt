@@ -2,6 +2,7 @@ package com.lofigroup.features.navigator_screen.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,9 @@ fun TopBar(
     Image(
       painter = painterResource(id = R.drawable.ic_setting_icon),
       contentDescription = null,
-      modifier = Modifier.align(Alignment.CenterStart)
+      modifier = Modifier
+        .align(Alignment.CenterStart)
+        .clickable { onSettingsButtonClick() }
     )
     Box(
       modifier = Modifier.align(Alignment.CenterEnd)
@@ -39,7 +42,9 @@ fun TopBar(
       Image(
         painter = painterResource(id = R.drawable.ic_cloud_icon),
         contentDescription = null,
-        modifier = Modifier.align(Alignment.CenterEnd)
+        modifier = Modifier
+          .align(Alignment.CenterEnd)
+          .clickable { onCloudButtonClick() }
       )
 
       if (newMessagesCount != 0) {
