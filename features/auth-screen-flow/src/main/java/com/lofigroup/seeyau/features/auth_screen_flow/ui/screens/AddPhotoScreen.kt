@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.features.auth_screen_flow.ui.screens
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
@@ -19,9 +20,11 @@ import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seayau.common.ui.theme.LocalSpacing
+import com.lofigroup.seeyau.common.network.BackendConstants
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
@@ -73,7 +76,7 @@ fun AddPhotoScreen(
         .padding(8.dp)
         .align(Alignment.Center),
       onClick = {
-        navigateToPictureCropper(pickImageResult)
+        pickImageResult.launch(getDefaultImageCropperOptions())
       }
     )
 
@@ -85,7 +88,7 @@ fun AddPhotoScreen(
       if (imageUri.isBlank()) {
         TextButton(
           onClick = {
-            navigateToPictureCropper(pickImageResult)
+            pickImageResult.launch(getDefaultImageCropperOptions())
           },
         ) {
           Text(
@@ -105,16 +108,6 @@ fun AddPhotoScreen(
     }
 
   }
-}
-
-private fun navigateToPictureCropper(pickImageResult: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>) {
-  pickImageResult.launch(
-    options {
-      setGuidelines(CropImageView.Guidelines.ON)
-      setCropShape(CropImageView.CropShape.RECTANGLE)
-      setOutputCompressFormat(Bitmap.CompressFormat.PNG)
-    }
-  )
 }
 
 @Preview
