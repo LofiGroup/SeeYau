@@ -2,21 +2,17 @@ package com.lofigroup.seeyau.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.navigator_screen.api.NavigatorScreenNavigation
 import com.lofigroup.seeyau.AppModules
 import com.lofigroup.seeyau.features.auth_screen_flow.api.AuthScreenFlowNavigation
-import com.lofigroup.seeyau.features.chat.ChatScreen
 import com.lofigroup.seeyau.features.chat.api.ChatScreenNavigation
 import com.lofigroup.seeyau.features.chat_screen.api.ChatListScreenNavigation
-import com.lofigroup.seeyau.features.chat_screen.ui.ChatListScreen
 import com.lofigroup.seeyau.features.profile_screen.api.ProfileScreenNavigation
 import com.lofigroup.seeyau.features.splash_screen.api.SplashScreenNavigation
 import com.sillyapps.core.ui.util.navigateToTopDestination
@@ -27,7 +23,8 @@ fun AppNavHost(
   navController: NavHostController,
   appModules: AppModules,
 
-  onStart: () -> Unit,
+  onAuthorized: () -> Unit,
+  onStartNearbyService: () -> Unit,
   modifier: Modifier
 ) {
 
@@ -39,11 +36,11 @@ fun AppNavHost(
 
     composable(route = Screen.SplashScreen.route) {
       SplashScreenNavigation(
-        authComponent = appModules.authModule.domainComponent,
+        authComponent = appModules.authModuleImpl.domainComponent(),
         isLoggedIn = { isLoggedIn ->
           if (isLoggedIn) {
             navController.navigateToTopDestination(Screen.NavigatorScreen.route)
-            onStart()
+            onAuthorized()
           } else {
             navController.navigateToTopDestination(Screen.AuthScreen.route)
           }
@@ -52,6 +49,7 @@ fun AppNavHost(
     }
 
     composable(route = Screen.NavigatorScreen.route) {
+      onStartNearbyService()
       NavigatorScreenNavigation(
         navigatorComponent = appModules.navigatorModule.domainComponent,
         onNavigateToChatList = { navController.navigate(Screen.ChatListScreen.route) },
@@ -62,9 +60,12 @@ fun AppNavHost(
 
     composable(route = Screen.AuthScreen.route) {
       AuthScreenFlowNavigation(
-        authComponent = appModules.authModule.domainComponent,
+        authComponent = appModules.authModuleImpl.domainComponent(),
         profileComponent = appModules.profileModule.domainComponent,
-        isDone = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
+        isDone = {
+          onAuthorized()
+          navController.navigateToTopDestination(Screen.NavigatorScreen.route)
+        }
       )
     }
 

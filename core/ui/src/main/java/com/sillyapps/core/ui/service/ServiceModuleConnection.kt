@@ -13,17 +13,17 @@ interface ServiceBinder<out T> {
 
 class ServiceModuleConnection<T>(
   private val serviceImplClass: Class<*>,
-  private val onServiceConnected: (T) -> Unit
+  private val serviceIsConnected: (T) -> Unit
 ) {
   private var isBound = false
-  private var boundService: T? = null
+  var boundService: T? = null
 
   private val connection = object : ServiceConnection {
     override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
       Timber.d("Service ${this::class.java.simpleName} is connected")
       val binder = service as ServiceBinder<T>
       boundService = binder.getService()
-      onServiceConnected(boundService!!)
+      serviceIsConnected(boundService!!)
       isBound = true
     }
 

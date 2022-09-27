@@ -4,5 +4,5 @@ import com.lofigroup.backend_api.models.TokenDataModel
 
 fun TokenResponse.toTokenDataModel() =
   TokenDataModel(
-    value = token
+    token = token
   )

@@ -4,8 +4,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.usecases.PullNavigatorDataUseCase
+import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
 import com.lofigroup.seeyau.domain.chat.usecases.PullChatDataUseCase
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
@@ -15,6 +17,8 @@ import com.sillyapps.core.ui.service.ServiceBinder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,19 +35,26 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   @Inject lateinit var pullNavigatorDataUseCase: PullNavigatorDataUseCase
   @Inject lateinit var pullProfileDataUseCase: PullProfileDataUseCase
 
+  private val state = MutableStateFlow(DataSyncServiceState.LOADING)
+
   override fun onBind(intent: Intent?): IBinder {
     return binder
   }
 
   override fun onCreate() {
     super.onCreate()
-    val component = DaggerDataSyncServiceComponent.builder()
-      .chatComponent((application as ChatComponentProvider).provideChatComponent())
-      .profileComponent((application as ProfileComponentProvider).provideProfileComponent())
-      .navigatorComponent((application as NavigatorComponentProvider).provideNavigatorComponent())
-      .build()
 
-    component.inject(this)
+    val authModule = ((application as AuthModuleProvider).provideAuthModule())
+    scope.launch {
+      authModule.observeState().collect() {
+        when (it) {
+          ResourceState.LOADING -> {}
+          ResourceState.IS_READY -> {
+            init()
+          }
+        }
+      }
+    }
   }
 
   override fun onDestroy() {
@@ -56,6 +67,10 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   }
 
   override fun sync() {
+    if (state.value == DataSyncServiceState.LOADING) {
+      Timber.e("DataSync service is not initialized!")
+      return
+    }
     Timber.d("Syncing data...")
     if (syncing) return
     scope.launch {
@@ -63,7 +78,26 @@ class DataSyncServiceImpl: Service(), DataSyncService {
       pullProfileDataUseCase()
       pullNavigatorDataUseCase()
       pullChatDataUseCase()
-      syncing = false
+      state.value = DataSyncServiceState.SYNCED
     }
+  }
+
+  override fun getState(): Flow<DataSyncServiceState> {
+    return state
+  }
+
+  private fun init() {
+    if (state.value == DataSyncServiceState.INITIALIZED) return
+
+    val component = DaggerDataSyncServiceComponent.builder()
+      .chatComponent((application as ChatComponentProvider).provideChatComponent())
+      .profileComponent((application as ProfileComponentProvider).provideProfileComponent())
+      .navigatorComponent((application as NavigatorComponentProvider).provideNavigatorComponent())
+      .build()
+
+    component.inject(this)
+    Timber.e("DataSyncService is initialized")
+    state.value = DataSyncServiceState.INITIALIZED
+    sync()
   }
 }

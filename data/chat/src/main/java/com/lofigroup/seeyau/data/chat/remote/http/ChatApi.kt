@@ -12,6 +12,9 @@ interface ChatApi {
   @GET("/api/chat/get-all-updated")
   suspend fun getChatUpdates(@Query("from_date") fromDate: Long): Response<List<ChatUpdatesDto>>
 
+  @GET("/api/chat/get-chat-updates/{chat_id}")
+  suspend fun getChatData(@Path("chat_id") chatId: Long): Response<ChatUpdatesDto>
+
   @POST("/api/chat/add-friend/{user_id}")
   suspend fun addToFriends(@Path("user_id") userId: Int): Response<Unit>
 

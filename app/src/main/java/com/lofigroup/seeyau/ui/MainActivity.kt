@@ -32,16 +32,17 @@ class MainActivity : ComponentActivity() {
   private val nearbyServiceConnection =
     ServiceModuleConnection<NearbyService>(
       NearbyServiceImpl::class.java,
-      onServiceConnected = { it.startDiscoveringNearbyDevices() }
+      serviceIsConnected = {  }
     )
   private val dataSyncServiceConnection =
     ServiceModuleConnection<DataSyncService>(
       DataSyncServiceImpl::class.java,
-      onServiceConnected = { it.sync() }
+      serviceIsConnected = {  }
     )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    bindServices()
 
     val app = (application as App)
 
@@ -52,8 +53,9 @@ class MainActivity : ComponentActivity() {
       ) {
         RootContainer(
           appModules = app.appModules,
-          onStart = {
-            bindServices()
+          onAuthorized = {
+          },
+          onStartNearbyService = {
           }
         )
       }
@@ -68,11 +70,11 @@ class MainActivity : ComponentActivity() {
 
   override fun onStop() {
     super.onStop()
+
   }
 
   private fun bindServices() {
-    nearbyServiceConnection.bind(this)
-    dataSyncServiceConnection.bind(this)
+
   }
 
 }

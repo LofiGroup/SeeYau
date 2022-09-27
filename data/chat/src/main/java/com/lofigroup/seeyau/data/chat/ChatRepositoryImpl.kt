@@ -7,7 +7,7 @@ import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatUpdatesDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.toChatEntity
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
-import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketChannel
+import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketListener
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
@@ -25,29 +25,14 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
-  private val chatApi: ChatApi,
+  private val chatDataHandler: ChatDataHandler,
   private val chatDao: ChatDao,
   private val userDao: UserDao,
   private val ioDispatcher: CoroutineDispatcher,
-  private val lastChatUpdateDataSource: LastChatUpdateDataSource,
-  private val profileDataSource: ProfileDataSource,
-  private val chatWebSocket: ChatWebSocketChannel
+  private val chatWebSocket: ChatWebSocketListener
 ): ChatRepository {
-
-  override suspend fun pullData() = withContext(ioDispatcher) {
-    try {
-      val fromDate = getLastMessageDate()
-      Timber.e("From date: $fromDate")
-
-      val response = retrofitErrorHandler(chatApi.getChatUpdates(fromDate))
-      for (chatUpdate in response)
-        insertUpdates(chatUpdate)
-    }
-    catch (e: Exception) {
-      Timber.e(getErrorMessage(e))
-    }
-
-    chatWebSocket.connect()
+  override suspend fun pullData() {
+    chatDataHandler.pullData()
   }
 
   override suspend fun sendMessage(messageRequest: ChatMessageRequest) = withContext(ioDispatcher) {
@@ -82,18 +67,6 @@ class ChatRepositoryImpl @Inject constructor(
         )
       }
     }
-  }
-
-  private suspend fun insertUpdates(chatUpdates: ChatUpdatesDto) {
-    val chat = chatUpdates.toChatEntity()
-    val messages = chatUpdates.newMessages.map { it.toMessageEntity(myId = profileDataSource.getMyId()) }
-    chatDao.insertChat(chat)
-    chatDao.insertMessages(messages)
-  }
-
-  private suspend fun getLastMessageDate(): Long {
-    val lastMessage = chatDao.getLastMessage()
-    return lastMessage?.createdIn ?: 0L
   }
 
 }

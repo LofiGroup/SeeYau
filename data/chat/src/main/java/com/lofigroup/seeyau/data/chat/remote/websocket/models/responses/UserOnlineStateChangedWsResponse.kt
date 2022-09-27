@@ -7,4 +7,4 @@ import com.squareup.moshi.JsonClass
 data class UserOnlineStateChangedWsResponse(
   @Json(name = "user_id")
   val userId: Long
-): WebSocketResponse
+): ChatWebSocketResponse

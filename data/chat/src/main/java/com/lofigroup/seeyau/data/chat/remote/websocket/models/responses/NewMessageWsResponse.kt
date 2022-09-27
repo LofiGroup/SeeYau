@@ -8,4 +8,4 @@ import com.squareup.moshi.JsonClass
 class NewMessageWsResponse(
   @Json(name = "message")
   val messageDto: ChatMessageDto
-) : WebSocketResponse
+) : ChatWebSocketResponse

@@ -50,6 +50,10 @@ class ProfileRepositoryImpl @Inject constructor(
 
   override suspend fun pullUserData(userId: Long) = withContext(ioDispatcher) {
     try {
+      if (userId == 0L) {
+        Timber.e("Wrong id")
+        return@withContext
+      }
       val response = retrofitErrorHandler(api.getUser(userId))
 
       userDao.insert(response.toUserEntity())
@@ -83,6 +87,7 @@ class ProfileRepositoryImpl @Inject constructor(
       )
 
       userDao.insert(newProfile.toUserEntity())
+      profileData.update(newProfile.id)
       Result.Success
     }
     catch (e: Exception) {

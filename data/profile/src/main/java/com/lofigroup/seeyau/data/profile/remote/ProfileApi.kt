@@ -20,6 +20,6 @@ interface ProfileApi {
   suspend fun updateProfile(
     @PartMap form: MutableMap<String, RequestBody>,
     @Part image: MultipartBody.Part?
-  ): Response<UserDto>
+  ): Response<ProfileDto>
 
 }

@@ -7,4 +7,4 @@ import com.squareup.moshi.JsonClass
 class ErrorWsResponse(
   @Json(name = "error_message")
   val errorMessage: String
-) : WebSocketResponse
+) : ChatWebSocketResponse

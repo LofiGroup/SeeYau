@@ -14,7 +14,7 @@ class AddAccessTokenInterceptor @Inject constructor(
     val token = tokenStore.getToken() ?: return chain.proceed(originalRequest)
 
     val requestWithBearer = originalRequest.newBuilder()
-      .addHeader("Authorization", "Bearer ${token.value}")
+      .addHeader("Authorization", "Bearer ${token.token}")
       .build()
 
     return chain.proceed(requestWithBearer)

@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.di
 
 import android.content.SharedPreferences
+import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.chat.ChatRepositoryImpl
 import com.lofigroup.seeyau.data.chat.local.ChatDao
@@ -27,6 +28,9 @@ interface ChatDataComponent {
     fun baseRetrofit(retrofit: Retrofit): Builder
 
     @BindsInstance
+    fun webSocketChannel(webSocketChannel: WebSocketChannel): Builder
+
+    @BindsInstance
     fun sharedPref(sharedPreferences: SharedPreferences): Builder
 
     @BindsInstance
@@ -40,9 +44,6 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun profileRepository(profileRepository: ProfileRepository): Builder
-
-    @BindsInstance
-    fun httpClient(httpClient: OkHttpClient): Builder
 
     @BindsInstance
     fun ioScope(scope: CoroutineScope): Builder

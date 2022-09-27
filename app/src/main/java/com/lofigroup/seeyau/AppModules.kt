@@ -3,7 +3,7 @@ package com.lofigroup.seeyau
 import android.content.Context
 import com.lofigroup.backend_api.di.DaggerBackendApiComponent
 import com.lofigroup.data.navigator.api.NavigatorModule
-import com.lofigroup.seeyau.data.auth.api.AuthModule
+import com.lofigroup.seeyau.data.auth.api.AuthModuleImpl
 import com.lofigroup.seeyau.data.chat.api.ChatModule
 import com.lofigroup.seeyau.data.profile.api.ProfileModule
 import com.lofigroup.seeyau.di.DaggerAppComponent
@@ -38,8 +38,8 @@ class AppModules(
     )
   }
 
-  val authModule by lazy {
-    AuthModule(
+  val authModuleImpl by lazy {
+    AuthModuleImpl(
       baseRetrofit = backend.getRetrofit(),
       tokenStore = backend.tokenStore()
     )
@@ -58,16 +58,14 @@ class AppModules(
   val chatModule by lazy {
     ChatModule(
       baseRetrofit = backend.getRetrofit(),
+      webSocketChannel = backend.getWebSocketChannel(),
       userDao = appComponent.getDatabase().userDao,
       chatDao = appComponent.getDatabase().chatDao,
       sharedPreferences = appComponent.getSharedPref(),
       profileDataSource = profileModule.dataComponent.getProfileDataSource(),
-      httpclient = backend.getHttpClient(),
       ioScope = appScope,
       profileRepository = profileModule.dataComponent.getRepository()
     )
   }
-
-
 
 }

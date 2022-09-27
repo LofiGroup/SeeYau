@@ -2,6 +2,7 @@ package com.lofigroup.backend_api.di
 
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.TokenStore
+import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance
 import dagger.Component
@@ -15,6 +16,7 @@ interface BackendApiComponent {
   fun getRetrofit(): Retrofit
   fun getHttpClient(): OkHttpClient
 
+  fun getWebSocketChannel(): WebSocketChannel
   fun tokenStore(): TokenStore
 
   @Component.Builder

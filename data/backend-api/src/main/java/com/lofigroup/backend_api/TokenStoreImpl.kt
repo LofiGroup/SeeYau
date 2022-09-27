@@ -2,7 +2,13 @@ package com.lofigroup.backend_api
 
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.models.TokenDataModel
+import com.lofigroup.core.util.ResourceState
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 class TokenStoreImpl @Inject constructor(
@@ -11,7 +17,7 @@ class TokenStoreImpl @Inject constructor(
   private val TOKEN_TAG = "ijsjkjkds"
 
   private val adapter = Moshi.Builder().build().adapter(TokenDataModel::class.java)
-  private var cachedValue: TokenDataModel? = null
+  private val cachedValue = MutableStateFlow(TokenDataModel(""))
 
   private fun getTokenFromSharedPref(): TokenDataModel? {
     val json = sharedPref.getString(TOKEN_TAG, null)
@@ -19,25 +25,40 @@ class TokenStoreImpl @Inject constructor(
     if (json.isNullOrBlank()) {
       return null
     }
-    return adapter.fromJson(json)
+
+    return try {
+      adapter.fromJson(json)
+    } catch (e: Exception) {
+      Timber.e(e)
+      null
+    }
+  }
+
+  override fun getTokenState(): Flow<ResourceState> = cachedValue.map {
+    if (it.token.isNotBlank()) ResourceState.IS_READY
+    else ResourceState.LOADING
   }
 
   override fun saveToken(token: TokenDataModel) {
     val json = adapter.toJson(token)
 
     sharedPref.edit().putString(TOKEN_TAG, json).apply()
-    cachedValue = token
+    cachedValue.value = token
   }
 
   override fun getToken(): TokenDataModel? {
-    if (cachedValue != null)
-      return cachedValue
+    if (cachedValue.value.token.isNotBlank())
+      return cachedValue.value
 
-    return getTokenFromSharedPref()
+    val token = getTokenFromSharedPref()
+    if (token != null) {
+      cachedValue.value = token
+    }
+    return token
   }
 
   override fun forgetToken() {
-    cachedValue = null
+    cachedValue.value = TokenDataModel("")
     sharedPref.edit().remove(TOKEN_TAG).apply()
   }
 

@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.api
 
 import android.content.SharedPreferences
+import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.seeyau.data.chat.di.DaggerChatDataComponent
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
@@ -16,8 +17,8 @@ class ChatModule(
   userDao: UserDao,
   sharedPreferences: SharedPreferences,
   baseRetrofit: Retrofit,
+  webSocketChannel: WebSocketChannel,
   profileDataSource: ProfileDataSource,
-  httpclient: OkHttpClient,
   ioScope: CoroutineScope,
   profileRepository: ProfileRepository
 ) {
@@ -27,10 +28,10 @@ class ChatModule(
     .userDao(userDao)
     .sharedPref(sharedPreferences)
     .baseRetrofit(baseRetrofit)
-    .httpClient(httpclient)
     .profileDataSource(profileDataSource)
     .ioScope(ioScope)
     .profileRepository(profileRepository)
+    .webSocketChannel(webSocketChannel)
     .build()
 
   val domainComponent = DaggerChatComponent.builder()
