@@ -13,8 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalSize
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
+import com.sillyapps.core.ui.theme.LocalSize
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun ColumnScope.UserScreen(

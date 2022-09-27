@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Result
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalActivityBarHeights
-import com.lofigroup.seayau.common.ui.theme.LocalExtendedColors
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState
 import com.sillyapps.core.ui.components.ShowToast
+import com.sillyapps.core.ui.theme.LocalActivityBarHeights
+import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.LocalSpacing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

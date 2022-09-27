@@ -28,7 +28,7 @@ interface ChatDao {
   fun getNewUserMessages(userId: Long): Flow<List<MessageEntity>>
 
   @Query("select * from messages where chatId = :chatId order by createdIn desc limit 1")
-  fun observeLastMessage(chatId: Long): Flow<MessageEntity>
+  fun observeLastMessage(chatId: Long): Flow<MessageEntity?>
 
   @Query("select * from messages order by createdIn desc limit 1")
   suspend fun getLastMessage(): MessageEntity?

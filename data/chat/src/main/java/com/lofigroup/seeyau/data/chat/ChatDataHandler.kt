@@ -9,9 +9,6 @@ import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.NewMessageWsResponse
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
-import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
-import com.lofigroup.seeyau.domain.chat.models.Chat
-import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler

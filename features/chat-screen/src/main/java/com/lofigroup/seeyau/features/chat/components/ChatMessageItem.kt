@@ -21,11 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalActivityBarHeights
-import com.lofigroup.seayau.common.ui.theme.LocalExtendedColors
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.features.chat.model.PrivateMessage
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core_time.getLocalTimeFromMillis
 import org.intellij.lang.annotations.JdkConstants
 

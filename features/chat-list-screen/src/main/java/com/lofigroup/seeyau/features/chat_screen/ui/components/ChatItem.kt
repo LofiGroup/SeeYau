@@ -9,16 +9,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core.ui.components.RemoteImage
-import com.lofigroup.seayau.common.ui.R as common_res
+import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.seeyau.features.chat_screen.R
+import com.sillyapps.core.ui.components.TextLabel
+import com.sillyapps.core.ui.theme.LocalSpacing
+import com.sillyapps.core_time.getLocalTimeFromMillis
 
 @Composable
 fun ChatItem(
@@ -26,59 +32,65 @@ fun ChatItem(
   onClick: (Long) -> Unit
 ) {
   Surface(
-    modifier = Modifier.clickable { onClick(chat.id) }
+    modifier = Modifier
+      .clickable { onClick(chat.id) }
   ) {
     Row(modifier = Modifier
       .fillMaxWidth()
-      .height(IntrinsicSize.Min)
-      .padding(vertical = 6.dp)
-      .padding(start = 4.dp, end = 8.dp),
+      .padding(LocalSpacing.current.medium)
+      .height(IntrinsicSize.Min),
       verticalAlignment = Alignment.CenterVertically
     ) {
       RemoteImage(
         model = chat.partner.imageUrl,
+        placeholderResId = CommonR.drawable.ic_baseline_account_box_24,
+        errorPlaceholderResId = CommonR.drawable.ic_baseline_account_box_24,
         modifier = Modifier
-          .size(40.dp)
+          .size(LocalIconsSize.current.medium)
       )
 
       Column(
         modifier = Modifier
           .weight(1f)
-          .padding(4.dp)
+          .padding(start = LocalSpacing.current.small)
       ) {
         Row(
-          verticalAlignment = Alignment.CenterVertically
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier.padding(bottom = LocalSpacing.current.extraSmall)
         ) {
           Text(
             text = chat.partner.name,
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(end = 4.dp)
+            style = MaterialTheme.typography.body2,
           )
-
-          if (chat.partner.isNear) {
-            Icon(
-              painter = painterResource(id = R.drawable.ic_baseline_wb_sunny_24),
-              contentDescription = null,
-              tint = MaterialTheme.colors.primary,
-              modifier = Modifier
-                .size(10.dp)
-            )
-          }
         }
         Text(
-          text = "Let's shine!",
-          style = MaterialTheme.typography.caption,
-          color = MaterialTheme.colors.error,
-          modifier = Modifier.padding(top = 2.dp)
+          text = chat.lastMessage?.message ?: stringResource(id = R.string.say_hello),
+          style = MaterialTheme.typography.subtitle2,
+          overflow = TextOverflow.Ellipsis,
+          maxLines = 1
         )
       }
 
-      IconButton(onClick = { }) {
-        Icon(
-          painter = painterResource(id = R.drawable.ic_baseline_more_vert_24),
-          contentDescription = null,
-          modifier = Modifier.size(28.dp)
-        )
+      val lastMessage = chat.lastMessage
+      if (lastMessage != null) {
+        Column(horizontalAlignment = Alignment.End) {
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = LocalSpacing.current.extraSmall)
+          ) {
+            val resId = if (lastMessage.isRead) CommonR.drawable.ic_check_mark_read
+              else CommonR.drawable.ic_check_mark_received
+            Image(
+              painter = painterResource(id = resId),
+              contentDescription = null
+            )
+            Text(
+              text = getLocalTimeFromMillis(lastMessage.createdIn),
+              style = MaterialTheme.typography.caption
+            )
+          }
+          TextLabel(text = "+${chat.newMessagesCount}")
+        }
       }
     }
   }
@@ -96,7 +108,8 @@ fun ChatItemPreview() {
       isNear = true,
       lastConnection = 0
     ),
-    lastMessage = ChatMessage(id = 0, message = "", author = 0, createdIn = 0L, isRead = true)
+    lastMessage = ChatMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),
+    newMessagesCount = 1
   )
 
   AppTheme {

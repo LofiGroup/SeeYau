@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat.getLastSeen
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun TopBar(

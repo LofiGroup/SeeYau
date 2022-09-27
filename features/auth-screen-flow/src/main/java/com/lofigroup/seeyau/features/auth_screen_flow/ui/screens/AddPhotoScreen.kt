@@ -19,11 +19,11 @@ import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.lofigroup.seeyau.common.network.BackendConstants
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import com.lofigroup.seayau.common.ui.R as CommonR
 

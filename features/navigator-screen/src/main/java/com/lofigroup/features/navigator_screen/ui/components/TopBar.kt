@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import com.lofigroup.features.navigator_screen.R
-import com.lofigroup.seayau.common.ui.theme.ExtendedColors
-import com.lofigroup.seayau.common.ui.theme.LocalExtendedColors
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
+import com.sillyapps.core.ui.components.TextLabel
+import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun TopBar(
@@ -48,23 +48,13 @@ fun TopBar(
       )
 
       if (newMessagesCount != 0) {
-        Box(
-          modifier = Modifier
-            .padding(
-              end = LocalSpacing.current.medium,
-              bottom = LocalSpacing.current.medium
-            )
-            .clip(MaterialTheme.shapes.medium)
-            .background(LocalExtendedColors.current.secondaryGradient)
-            .align(Alignment.TopStart)
-        ) {
-          Text(
-            text = "+${newMessagesCount}",
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier
-              .padding(horizontal = LocalSpacing.current.extraSmall)
+        TextLabel(
+          text = "+${newMessagesCount}",
+          modifier = Modifier.padding(
+            end = LocalSpacing.current.medium,
+            bottom = LocalSpacing.current.medium
           )
-        }
+        )
       }
     }
   }

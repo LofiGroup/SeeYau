@@ -12,15 +12,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
-import com.lofigroup.seayau.common.ui.theme.applyActivityBarPaddings
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.model.*
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterNameScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterPhoneNumberScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.VerifyPhoneNumberScreen
+import com.sillyapps.core.ui.theme.LocalSpacing
+import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

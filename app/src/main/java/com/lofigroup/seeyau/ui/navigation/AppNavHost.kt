@@ -106,6 +106,9 @@ fun AppNavHost(
         onItemClick = { navController.navigate(
           "${Screen.ChatScreen.route}/$it"
         )
+        },
+        onUpButtonClick = {
+          navController.popBackStack()
         }
       )
     }

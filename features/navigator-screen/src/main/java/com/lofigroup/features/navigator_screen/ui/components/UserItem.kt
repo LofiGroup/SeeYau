@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 import com.lofigroup.seayau.common.ui.R as CommonR
 

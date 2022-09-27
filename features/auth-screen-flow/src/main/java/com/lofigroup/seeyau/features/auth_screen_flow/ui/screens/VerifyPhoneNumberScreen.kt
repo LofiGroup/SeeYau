@@ -13,10 +13,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.model.VerifyCodeScreenState
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun VerifyPhoneNumberScreen(

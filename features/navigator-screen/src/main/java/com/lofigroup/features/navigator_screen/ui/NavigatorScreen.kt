@@ -13,8 +13,8 @@ import com.lofigroup.features.navigator_screen.ui.components.*
 import com.lofigroup.seayau.common.ui.components.OptionsDialog
 import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.applyActivityBarPaddings
 import com.sillyapps.core.ui.components.ShowToast
+import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 
 @Composable
 fun NavigatorScreen(

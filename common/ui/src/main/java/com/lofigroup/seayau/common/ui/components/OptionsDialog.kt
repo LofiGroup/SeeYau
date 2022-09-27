@@ -15,6 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.*
+import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.LocalSpacing
+import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 
 @Composable
 fun OptionsDialog(

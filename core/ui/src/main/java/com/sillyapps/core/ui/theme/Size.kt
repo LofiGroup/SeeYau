@@ -1,4 +1,4 @@
-package com.lofigroup.seayau.common.ui.theme
+package com.sillyapps.core.ui.theme
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp

@@ -9,9 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.theme.LocalExtendedColors
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 
 @Composable
 fun BackgroundImage(

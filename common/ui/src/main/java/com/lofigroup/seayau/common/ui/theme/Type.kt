@@ -48,9 +48,9 @@ val Typography = Typography(
   ),
   caption = TextStyle(
     fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W200,
+    fontWeight = FontWeight.W400,
     fontSize = 12.sp,
-    textDecoration = TextDecoration.Underline
+    lineHeight = 22.sp
   ),
   subtitle1 = TextStyle(
     fontFamily = FontFamily.Default,

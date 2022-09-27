@@ -46,11 +46,16 @@ class ChatRepositoryImpl @Inject constructor(
   override fun getChats(): Flow<List<ChatBrief>> {
     return chatDao.getChats().flatMapLatest { chats ->
       combine(chats.map { chat ->
-        userDao.observeUser(chat.partnerId).combine(chatDao.observeLastMessage(chat.id)) { user, lastMessage ->
+        combine(
+          userDao.observeUser(chat.partnerId),
+          chatDao.observeLastMessage(chat.id),
+          chatDao.getNewUserMessages(chat.partnerId)
+        ) { user, lastMessage, newMessages ->
           ChatBrief(
             id = chat.id,
             partner = user.toDomainModel(),
-            lastMessage = lastMessage.toDomainModel(chat.partnerLastVisited)
+            lastMessage = lastMessage?.toDomainModel(chat.partnerLastVisited),
+            newMessagesCount = newMessages.size
           )
         }
       }) { it.asList() }

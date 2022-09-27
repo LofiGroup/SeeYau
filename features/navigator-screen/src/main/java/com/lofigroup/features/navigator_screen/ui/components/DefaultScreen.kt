@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.lofigroup.features.navigator_screen.R
-import com.lofigroup.seayau.common.ui.theme.LocalSpacing
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun ColumnScope.DefaultScreen() {
