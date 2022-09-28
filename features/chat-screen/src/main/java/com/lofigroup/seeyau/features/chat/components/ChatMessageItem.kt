@@ -43,55 +43,32 @@ fun ChatMessageItem(
     ))
   }
 
-  var parentWidth by remember {
-    mutableStateOf(0)
-  }
-
-  var isSingleLine by remember {
-    mutableStateOf(true)
-  }
-
-  var labelFit by remember {
-    mutableStateOf(true)
-  }
-
   val context = LocalContext.current
-  val mediumSpacing = context.dpToPx(LocalSpacing.current.medium)
 
   Box(
     modifier = Modifier
       .fillMaxWidth()
       .padding(start = style.startPadding, end = style.endPadding)
-      .padding(bottom = LocalSpacing.current.medium)
-      .onSizeChanged {
-        parentWidth = it.width - mediumSpacing
-      }
+      .padding(bottom = LocalSpacing.current.small)
   ) {
     Box(
       modifier = Modifier
         .clip(MaterialTheme.shapes.large)
         .background(style.brush)
         .padding(
-          vertical = LocalSpacing.current.extraSmall,
-          horizontal = LocalSpacing.current.small
+          vertical = LocalSpacing.current.small,
+          horizontal = 10.dp
         )
         .align(style.alignment)
     ) {
-      val labelPadding = if (isSingleLine) context.pxToDp(labelSize.width) else 0.dp
       Text(
         text = chatMessage.message,
         style = MaterialTheme.typography.body1,
-        onTextLayout = { result ->
-          isSingleLine = result.lineCount == 1
-          val lastLineEndCoord = result.getLineRight(result.lineCount-1)
-
-          labelFit = parentWidth - lastLineEndCoord > labelSize.width
-        },
         modifier = Modifier
           .padding(
-            end = LocalSpacing.current.extraSmall + labelPadding,
-            bottom = if (labelFit) 0.dp else context.pxToDp(labelSize.height)
+            end = LocalSpacing.current.extraSmall + context.pxToDp(labelSize.width)
           )
+          .align(Alignment.TopCenter)
       )
 
       Row(
