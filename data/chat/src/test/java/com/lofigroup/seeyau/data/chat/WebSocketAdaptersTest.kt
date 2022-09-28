@@ -20,4 +20,5 @@ class WebSocketAdaptersTest {
     println(json)
     assert(!json.contains("\\"))
   }
+
 }

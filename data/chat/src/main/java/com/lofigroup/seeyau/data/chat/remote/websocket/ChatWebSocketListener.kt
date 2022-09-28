@@ -64,6 +64,9 @@ class ChatWebSocketListener @Inject constructor(
       is NewChatIsCreatedWsResponse -> {
         chatDataHandler.pullChatData(response.chatId)
       }
+      else -> {
+
+      }
     }
   }
 

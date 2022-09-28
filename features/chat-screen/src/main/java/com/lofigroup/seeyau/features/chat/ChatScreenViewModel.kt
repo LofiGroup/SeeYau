@@ -33,8 +33,11 @@ class ChatScreenViewModel @Inject constructor(
   override fun getChatState(): Flow<ChatScreenState> = state
 
   override fun sendMessage() {
+    val message = state.value.message
+    state.apply { value = value.copy(message = "") }
+
     viewModelScope.launch {
-      sendChatMessageUseCase(state.value.message, chatId)
+      sendChatMessageUseCase(message, chatId)
     }
   }
 

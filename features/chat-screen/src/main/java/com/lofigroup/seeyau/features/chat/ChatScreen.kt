@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
@@ -27,6 +28,7 @@ import com.lofigroup.seeyau.features.chat.components.TopBar
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.PrivateMessage
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import com.lofigroup.seayau.common.ui.R as CommonR
@@ -41,7 +43,7 @@ fun ChatScreen(
     stateHolder.getChatState()
   }.collectAsState(initial = getPreviewModel())
 
-  Column {
+  Column(modifier = Modifier.applyActivityBarPaddings()) {
     TopBar(
       partner = state.partner,
       onUpButtonClick = onUpButtonClick

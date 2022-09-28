@@ -1,14 +1,20 @@
 package com.lofigroup.backend_api.websocket.models
 
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 
-@JsonClass(generateAdapter = true)
 data class WebSocketResponse(
   val type: String,
   val data: String
 ) {
   companion object {
-    val adapter = Moshi.Builder().build().adapter(WebSocketResponse::class.java)
+    private val regex = "\"type\": \"(.+)\".*\"data\": (\\{.+)\\}".toRegex()
+
+    fun fromJson(json: String): WebSocketResponse? {
+      val response = regex.find(json) ?: return null
+
+      val type = response.groupValues[1]
+      val data = response.groupValues[2]
+
+      return WebSocketResponse(type, data)
+    }
   }
 }

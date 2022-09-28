@@ -3,6 +3,7 @@ package com.lofigroup.backend_api.websocket
 import com.lofigroup.backend_api.websocket.models.WebSocketResponse
 import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.sillyapps.core.di.AppScope
+import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.launch
 import okhttp3.*
 import timber.log.Timber
@@ -10,7 +11,7 @@ import javax.inject.Inject
 
 @AppScope
 class WebSocketChannel @Inject constructor(
-  private val client: OkHttpClient,
+  private val client: OkHttpClient
 ) : WebSocketListener() {
 
   private val wsChatRequest =
@@ -31,7 +32,8 @@ class WebSocketChannel @Inject constructor(
   }
 
   override fun onMessage(webSocket: WebSocket, text: String) {
-    val response = WebSocketResponse.adapter.fromJson(text)
+    val response = WebSocketResponse.fromJson(text)
+
     if (response == null) {
       Timber.e("Malformed data")
       return

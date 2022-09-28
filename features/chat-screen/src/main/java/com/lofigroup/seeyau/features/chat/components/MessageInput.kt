@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.features.chat.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -69,7 +70,10 @@ fun MessageInput(
 
     Icon(
       imageVector = Icons.Filled.Send,
-      contentDescription = null
+      contentDescription = null,
+      modifier = Modifier.clickable {
+        sendMessage()
+      }
     )
   }
 }
