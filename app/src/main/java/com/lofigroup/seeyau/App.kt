@@ -29,16 +29,6 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
   override fun onCreate() {
     super.onCreate()
     initTimber()
-    startServices()
-  }
-
-  private fun startServices() {
-    Intent(this, NearbyServiceImpl::class.java).also { intent ->
-      startService(intent)
-    }
-    Intent(this, DataSyncServiceImpl::class.java).also { intent ->
-      startService(intent)
-    }
   }
 
   private fun initTimber() {

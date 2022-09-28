@@ -2,6 +2,7 @@ package com.lofigroup.features.navigator_screen.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -18,6 +19,7 @@ fun ColumnScope.DefaultScreen() {
   Box(
     modifier = Modifier
       .weight(1f)
+      .fillMaxWidth()
       .padding(bottom = LocalSpacing.current.medium)
   ) {
     Text(

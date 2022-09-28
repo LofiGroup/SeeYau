@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     bindServices()
+    startServices()
 
     val app = (application as App)
 
@@ -65,6 +66,15 @@ class MainActivity : ComponentActivity() {
       Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
     ) {
       requestPermissions(RequiredPermissions.permissions, 1)
+    }
+  }
+
+  private fun startServices() {
+    Intent(this, NearbyServiceImpl::class.java).also { intent ->
+      startService(intent)
+    }
+    Intent(this, DataSyncServiceImpl::class.java).also { intent ->
+      startService(intent)
     }
   }
 

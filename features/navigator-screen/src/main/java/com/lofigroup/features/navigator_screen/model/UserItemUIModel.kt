@@ -2,6 +2,7 @@ package com.lofigroup.features.navigator_screen.model
 
 import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
+import com.sillyapps.core_time.Time
 
 data class UserItemUIModel(
   val id: Long,
@@ -9,6 +10,7 @@ data class UserItemUIModel(
   val name: String,
   val isNear: Boolean,
   val isOnline: Boolean,
+  val lastConnection: Long,
   val newMessages: List<ChatMessage>
 ) {
   companion object {
@@ -18,9 +20,10 @@ data class UserItemUIModel(
       name: String = "Random",
       isNear: Boolean = true,
       isOnline: Boolean = false,
+      lastConnection: Long = 0L,
       newMessages: List<ChatMessage> = listOf()
     ) =
-      UserItemUIModel(id, imageUrl, name, isNear, isOnline, newMessages)
+      UserItemUIModel(id, imageUrl, name, isNear, isOnline, lastConnection, newMessages)
   }
 }
 
@@ -30,7 +33,8 @@ fun NearbyUser.toUIModel(): UserItemUIModel {
     imageUrl = imageUrl,
     name = name,
     isNear = isNear,
-    isOnline = lastConnection == 0L,
+    isOnline = lastConnection == Time.IS_ONLINE,
+    lastConnection = lastConnection,
     newMessages = listOf()
   )
 }

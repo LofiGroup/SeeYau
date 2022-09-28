@@ -54,7 +54,6 @@ class NearbyBtClient @Inject constructor(
       }
 
       val id = data.toLong()
-      Timber.e("Found user with id: $id")
 
       scope.launch {
         notifyUserIsNearbyUseCase(id)

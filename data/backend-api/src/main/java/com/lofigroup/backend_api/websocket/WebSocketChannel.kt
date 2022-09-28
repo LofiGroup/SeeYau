@@ -32,6 +32,7 @@ class WebSocketChannel @Inject constructor(
   }
 
   override fun onMessage(webSocket: WebSocket, text: String) {
+    Timber.e("Received message: $text")
     val response = WebSocketResponse.fromJson(text)
 
     if (response == null) {

@@ -25,10 +25,13 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun UsersList(
-  nearbyUsers: List<UserItemUIModel>,
-  metUsers: List<UserItemUIModel>,
+  users: List<UserItemUIModel>,
+  splitIndex: Int,
   onUserSelected: (Long) -> Unit
 ) {
+  val nearbyUsers = users.subList(0, splitIndex)
+  val metUsers = users.subList(splitIndex, users.size)
+
   LazyRow(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.padding(bottom = LocalSpacing.current.medium)
@@ -118,8 +121,8 @@ fun PreviewUsersList() {
       Column() {
         Spacer(modifier = Modifier.weight(1f))
         UsersList(
-          nearbyUsers = users,
-          metUsers = listOf(),
+          users = users,
+          splitIndex = 1,
           onUserSelected = {}
         )
       }

@@ -31,7 +31,8 @@ fun RemoteImage(
   placeholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   errorPlaceholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   onClick: () -> Unit = {},
-  shape: Shape = CircleShape
+  shape: Shape = CircleShape,
+  contentScale: ContentScale = ContentScale.Crop
 ) {
   AsyncImage(
     model = ImageRequest.Builder(LocalContext.current)
@@ -39,7 +40,7 @@ fun RemoteImage(
       .crossfade(true)
       .build(),
     placeholder = painterResource(id = placeholderResId),
-    contentScale = ContentScale.Crop,
+    contentScale = contentScale,
     contentDescription = null,
     error = painterResource(id = errorPlaceholderResId),
     modifier = modifier

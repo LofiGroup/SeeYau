@@ -36,6 +36,7 @@ class NavigatorRepositoryImpl @Inject constructor(
 
   override suspend fun notifyUserWithIdWasFound(id: Long) = withContext(ioDispatcher) {
     try {
+      Timber.e("Found user with id: $id")
       val response = retrofitErrorHandler(api.contactedWithUser(id))
 
       userDao.insert(response.toUserEntity())

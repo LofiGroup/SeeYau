@@ -34,7 +34,7 @@ class ProfileRepositoryImpl @Inject constructor(
   private val ioScope: CoroutineScope,
   private val profileData: ProfileDataSource,
   private val userDao: UserDao,
-  private val contentResolver: ContentResolver
+  private val contentResolver: ContentResolver,
 ): ProfileRepository {
 
   override suspend fun pullProfileData() = withContext(ioDispatcher) {
@@ -50,8 +50,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
   override suspend fun pullUserData(userId: Long) = withContext(ioDispatcher) {
     try {
-      if (userId == 0L) {
-        Timber.e("Wrong id")
+      if (userId == 0L || userId == getMyId()) {
         return@withContext
       }
       val response = retrofitErrorHandler(api.getUser(userId))

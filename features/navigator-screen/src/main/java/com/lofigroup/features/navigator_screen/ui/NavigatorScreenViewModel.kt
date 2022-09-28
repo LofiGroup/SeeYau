@@ -19,7 +19,6 @@ class NavigatorScreenViewModel @Inject constructor(
 ) : ViewModel(), NavigatorScreenStateHolder {
 
   private val state = MutableStateFlow(NavigatorScreenState())
-  private var observeUserJob: Job? = null
 
   init {
     viewModelScope.launch {
@@ -34,12 +33,9 @@ class NavigatorScreenViewModel @Inject constructor(
   }
 
   override fun selectUser(id: Long) {
-    observeUserJob?.cancel()
-
-    observeUserJob = viewModelScope.launch {
-      /*getUserUseCase(id).collect {
-        applySelectedUserUpdate(it)
-      }*/
+    state.apply {
+      val selectedUser = value.sortedUsers.firstOrNull { it.id == id }
+      value = value.copy(selectedUser = selectedUser)
     }
   }
 
@@ -55,25 +51,21 @@ class NavigatorScreenViewModel @Inject constructor(
     state.apply { value = value.copy(chatIsVisible = true) }
   }
 
-  private fun applySelectedUserUpdate(nearbyUser: NearbyUser) {
-    state.value = state.value.copy(
-      selectedUser = nearbyUser.toUIModel()
-    )
-  }
-
   private fun applyUpdates(nearbyUsers: List<NearbyUser>) {
     val sorted = nearbyUsers.sortedBy {
       it.lastConnection
-    }
-    var splitIndex = sorted.indexOfFirst {
+    }.map { it.toUIModel() }
+
+    val splitIndex = sorted.indexOfFirst {
       it.lastConnection > System.currentTimeMillis() - 1 * Time.m
-    }
-    if (splitIndex == -1) {
-      splitIndex = 0
-    }
+    } + 1
+
+    val selectedUser = sorted.firstOrNull { it.id == state.value.selectedUser?.id }
+
     state.value = state.value.copy(
-      nearbyUsers = sorted.subList(0, splitIndex).map { it.toUIModel() },
-      metUsers = sorted.subList(splitIndex, sorted.size).map { it.toUIModel() }
+      selectedUser = selectedUser,
+      sortedUsers = sorted,
+      splitIndex = splitIndex
     )
   }
 }

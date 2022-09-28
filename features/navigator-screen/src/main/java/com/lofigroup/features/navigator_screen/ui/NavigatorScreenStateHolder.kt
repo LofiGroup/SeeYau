@@ -47,10 +47,11 @@ val fakeStateHolder = object : NavigatorScreenStateHolder {
 }
 
 val previewModel = NavigatorScreenState(
-  metUsers = listOf(
+  sortedUsers = listOf(
     UserItemUIModel.getPreviewModel(),
     UserItemUIModel.getPreviewModel(),
     UserItemUIModel.getPreviewModel()
   ),
+  splitIndex = 1,
   newMessagesCount = 1
 )

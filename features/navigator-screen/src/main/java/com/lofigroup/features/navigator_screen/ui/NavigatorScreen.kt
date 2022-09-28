@@ -49,7 +49,6 @@ fun NavigatorScreen(
             onSettingsButtonClick = onNavigateToSettings,
             onCloudButtonClick = onNavigateToChatList
           )
-
           val selectedUser = state.selectedUser
           if (selectedUser != null) {
             UserScreen(
@@ -67,8 +66,8 @@ fun NavigatorScreen(
           }
 
           UsersList(
-            nearbyUsers = state.nearbyUsers,
-            metUsers = state.metUsers,
+            users = state.sortedUsers,
+            splitIndex = state.splitIndex,
             onUserSelected = stateHolder::selectUser
           )
         }
