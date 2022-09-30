@@ -34,7 +34,7 @@ fun DefaultTopBar(
 
     Text(
       text = title,
-      style = MaterialTheme.typography.h5,
+      style = MaterialTheme.typography.h3,
       modifier = Modifier.align(Alignment.Center)
     )
 

@@ -28,19 +28,25 @@ val Typography = Typography(
     lineHeight = 18.sp,
     fontSize = 14.sp
   ),
-  h5 = TextStyle(
+  h4 = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.W700,
+    lineHeight = 24.sp,
+    fontSize = 17.sp,
+  ),
+  h3 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
     lineHeight = 20.sp,
     fontSize = 20.sp,
   ),
-  h4 = TextStyle(
+  h2 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
     lineHeight = 24.sp,
     fontSize = 20.sp,
   ),
-  h3 = TextStyle(
+  h1 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     lineHeight = 28.sp,

@@ -63,7 +63,7 @@ fun SplashScreen(
 
       Text(
         text = stringResource(id = R.string.plum),
-        style = MaterialTheme.typography.h3.copy(
+        style = MaterialTheme.typography.h1.copy(
           fontFamily = FontFamily(Font(R.font.swis721blkbtrusbyme_black)),
           brush = LocalExtendedColors.current.primaryGradient
         ),

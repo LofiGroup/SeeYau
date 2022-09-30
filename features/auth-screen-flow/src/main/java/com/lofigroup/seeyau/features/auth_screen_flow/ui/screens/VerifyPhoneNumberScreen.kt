@@ -37,7 +37,7 @@ fun VerifyPhoneNumberScreen(
   ) {
     Text(
       text = stringResource(id = R.string.verify_phone),
-      style = MaterialTheme.typography.h4
+      style = MaterialTheme.typography.h2
     )
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
@@ -52,7 +52,7 @@ fun VerifyPhoneNumberScreen(
     TextField(
       value = code,
       onValueChange = setCode,
-      textStyle = MaterialTheme.typography.h4.copy(textAlign = TextAlign.Center),
+      textStyle = MaterialTheme.typography.h2.copy(textAlign = TextAlign.Center),
       colors = TextFieldDefaults.textFieldColors(
         backgroundColor = Color.Transparent,
         textColor = textColor

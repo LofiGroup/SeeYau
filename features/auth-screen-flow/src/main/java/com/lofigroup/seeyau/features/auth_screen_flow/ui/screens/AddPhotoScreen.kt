@@ -61,7 +61,7 @@ fun AddPhotoScreen(
 
       Text(
         text = stringResource(id = R.string.be_recognizable),
-        style = MaterialTheme.typography.h4,
+        style = MaterialTheme.typography.h2,
         modifier = Modifier.padding(top = LocalSpacing.current.extraLarge)
       )
     }
@@ -93,7 +93,7 @@ fun AddPhotoScreen(
         ) {
           Text(
             text = stringResource(id = R.string.add_photo),
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.h3,
             color = MaterialTheme.colors.secondary
           )
         }
@@ -101,7 +101,7 @@ fun AddPhotoScreen(
         TextButton(onClick = update) {
           Text(
             text = stringResource(id = CommonR.string.lets_shine),
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.h3
           )
         }
       }

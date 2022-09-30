@@ -2,7 +2,6 @@ package com.lofigroup.features.navigator_screen.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -105,7 +104,7 @@ fun BoxScope.ControlItem(
     onClick = onClick,
     modifier = Modifier
       .align(alignment)
-      .size(LocalSize.current.iconSize)
+      .size(LocalSize.current.medium)
   ) {
     Image(
       painter = painterResource(id = resId),

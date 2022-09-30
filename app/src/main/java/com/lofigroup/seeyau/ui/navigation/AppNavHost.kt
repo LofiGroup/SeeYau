@@ -69,10 +69,10 @@ fun AppNavHost(
       )
     }
 
-    composable(route = Screen.ProfileScreen.route) {
+    composable(route = Screen.SettingsScreen.route) {
       ProfileScreenNavigation(
         profileComponent = appModules.profileModule.domainComponent,
-        onExit = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
+        onUpButtonClick = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
       )
     }
 
@@ -111,14 +111,6 @@ fun AppNavHost(
           navController.popBackStack()
         }
       )
-    }
-
-    composable(route = Screen.NotificationScreen.route) {
-
-    }
-
-    composable(route = Screen.SettingsScreen.route) {
-
     }
 
   }

@@ -1,37 +1,27 @@
 package com.lofigroup.seeyau.features.profile_screen
 
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.strictmode.UntaggedSocketViolation
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.canhub.cropper.CropImageContract
-import com.canhub.cropper.CropImageView
-import com.canhub.cropper.options
+import com.lofigroup.seayau.common.ui.components.DefaultTopBar
+import com.lofigroup.seayau.common.ui.components.LikesLabel
+import com.lofigroup.seayau.common.ui.components.UpButton
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.features.profile_screen.component.SettingButton
+import com.lofigroup.seeyau.features.profile_screen.component.UserIcon
+import com.lofigroup.seeyau.features.profile_screen.component.VisibilitySwitch
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
-import com.sillyapps.core.ui.components.RemoteImage
-import com.sillyapps.core.ui.components.ShowToast
 import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +31,7 @@ import com.lofigroup.seayau.common.ui.R as CommonR
 @Composable
 fun ProfileScreen(
   stateHolder: ProfileScreenStateHolder,
-  onExit: () -> Unit
+  onUpButtonClick: () -> Unit,
 ) {
 
   val state by remember(stateHolder) {
@@ -54,7 +44,11 @@ fun ProfileScreen(
     rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
       if (result.isSuccessful) {
         val uri = result.uriContent
-          ?: return@rememberLauncherForActivityResult stateHolder.throwError(context.getString(CommonR.string.image_crop_error))
+          ?: return@rememberLauncherForActivityResult stateHolder.throwError(
+            context.getString(
+              CommonR.string.image_crop_error
+            )
+          )
 
         stateHolder.setImageUri(uri)
       } else {
@@ -63,20 +57,60 @@ fun ProfileScreen(
     }
 
   Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
+      .fillMaxSize()
       .background(LocalExtendedColors.current.backgroundGradient)
-      .fillMaxWidth()
       .applyActivityBarPaddings()
   ) {
-    RemoteImage(
-      model = state.imageUrl,
-      errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-      placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-      onClick = {
-        pickImageResult.launch(getDefaultImageCropperOptions())
-      }
+    DefaultTopBar(
+      title = stringResource(id = R.string.settings),
+      leftContent = { UpButton(onClick = onUpButtonClick) }
+    )
+    
+    Spacer(modifier = Modifier.height(LocalSpacing.current.large))
+    
+    UserIcon(
+      imageUri = state.imageUrl,
+      onClick = { pickImageResult.launch(getDefaultImageCropperOptions()) }
+    )
+    
+    Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
+    
+    LikesLabel(count = 2718)
+
+    Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
+
+    SettingButton(
+      onClick = {  },
+      iconResId = R.drawable.ic_fluent_person_edit_24_filled,
+      label = stringResource(id = R.string.account)
     )
 
+    Spacer(modifier = Modifier.height(LocalSpacing.current.extraSmall))
+
+    SettingButton(
+      onClick = {  },
+      iconResId = R.drawable.ic_fluent_person_key_20_filled,
+      label = stringResource(id = R.string.privacy_policy)
+    )
+
+    Spacer(modifier = Modifier.height(LocalSpacing.current.extraSmall))
+
+    SettingButton(
+      onClick = {  },
+      iconResId = R.drawable.ic_fluent_person_star_48_filled,
+      label = stringResource(id = R.string.about_app)
+    )
+
+    Spacer(modifier = Modifier.weight(1f))
+
+    VisibilitySwitch(
+      visible = true,
+      onSetVisibilityState = {}
+    )
+
+    Spacer(modifier = Modifier.height(LocalSpacing.current.large))
 
   }
 
@@ -114,7 +148,7 @@ fun ProfileScreenPreview() {
     Surface() {
       ProfileScreen(
         stateHolder = stateHolder,
-        onExit = {}
+        onUpButtonClick = {}
       )
     }
   }

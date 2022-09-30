@@ -62,7 +62,7 @@ fun OptionsDialog(
         ) {
           Text(
             text = stringResource(id = R.string.cancel),
-            style = MaterialTheme.typography.h4,
+            style = MaterialTheme.typography.h2,
 
           )
         }
@@ -80,7 +80,7 @@ fun OptionsDialogItem(
     text = text,
     color = textColor,
     textAlign = TextAlign.Center,
-    style = MaterialTheme.typography.h4,
+    style = MaterialTheme.typography.h2,
     modifier = Modifier
       .fillMaxWidth()
       .padding(LocalSpacing.current.medium)

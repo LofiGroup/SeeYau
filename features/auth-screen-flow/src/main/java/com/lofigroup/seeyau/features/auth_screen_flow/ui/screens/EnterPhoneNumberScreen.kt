@@ -35,7 +35,7 @@ fun EnterPhoneNumberScreen(
   ) {
     Text(
       text = stringResource(id = R.string.enter_your_phone_number),
-      style = MaterialTheme.typography.h4
+      style = MaterialTheme.typography.h2
     )
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
@@ -43,7 +43,7 @@ fun EnterPhoneNumberScreen(
     TextField(
       value = phoneNumber,
       onValueChange = setPhoneNumber,
-      textStyle = MaterialTheme.typography.h4.copy(textAlign = TextAlign.Center),
+      textStyle = MaterialTheme.typography.h2.copy(textAlign = TextAlign.Center),
       colors = TextFieldDefaults.textFieldColors(
         backgroundColor = Color.Transparent
       ),
@@ -80,7 +80,7 @@ fun EnterPhoneNumberScreen(
           ) {
             Text(
               text = stringResource(id = R.string.next),
-              style = MaterialTheme.typography.h5
+              style = MaterialTheme.typography.h3
             )
           }
         }

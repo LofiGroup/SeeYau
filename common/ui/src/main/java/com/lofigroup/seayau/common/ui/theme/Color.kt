@@ -10,10 +10,14 @@ val PurpleBright = Color(0xFFF02FF4)
 val SkyBlue = Color(0xFF0092E3)
 val SkyBlueVariant = Color(0XFF3CD0FF)
 val Red = Color(0xFFFF2222)
+val DarkViolet = Color(0xFF5D29A1)
 
 val BluePurpleGradient = Brush.horizontalGradient(listOf(SkyBlueVariant, PurpleBright))
 val PurpleGradient = Brush.horizontalGradient(listOf(Purple, PurpleDarker))
-val PurpleVerticalGradient = Brush.verticalGradient(listOf(PurpleDarker, Color.Black))
+val PurpleVioletVerticalGradient = Brush.verticalGradient(listOf(
+  PurpleDarker.copy(alpha = 0.5f),
+  DarkViolet.copy(alpha = 0f)
+))
 
 val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
@@ -24,7 +28,7 @@ val extendedColors = ExtendedColors(
   disabled = DarkGray,
   primaryGradient = BluePurpleGradient,
   secondaryGradient = PurpleGradient,
-  backgroundGradient = PurpleVerticalGradient,
+  backgroundGradient = PurpleVioletVerticalGradient,
   lightBackground = DarkerGray,
   darkBackground = DarkestGray
 )

@@ -24,8 +24,6 @@ fun TopBar(
     rightContent = {
       TextLabel(
         text = "+${totalNewMessages}",
-        modifier = Modifier
-          .padding(end = LocalSpacing.current.medium)
       )
     }
   )

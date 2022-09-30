@@ -9,7 +9,7 @@ import com.sillyapps.core.ui.daggerViewModel
 @Composable
 fun ProfileScreenNavigation(
   profileComponent: ProfileComponent,
-  onExit: () -> Unit
+  onUpButtonClick: () -> Unit
 ) {
   
   val component = DaggerProfileScreenComponent.builder()
@@ -22,7 +22,7 @@ fun ProfileScreenNavigation(
   
   ProfileScreen(
     stateHolder = viewModel,
-    onExit = onExit
+    onUpButtonClick = onUpButtonClick
   )
   
 }

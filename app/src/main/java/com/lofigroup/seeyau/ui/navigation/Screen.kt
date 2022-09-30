@@ -24,11 +24,6 @@ sealed class Screen(
     imageVector = Icons.Filled.Message
   )
 
-  object NotificationScreen: Screen(
-    route = "notification_screen",
-    imageVector = Icons.Filled.Notifications
-  )
-
   object SettingsScreen: Screen(
     route = "settings_screen",
     imageVector = Icons.Filled.Settings
@@ -42,11 +37,6 @@ sealed class Screen(
   object SplashScreen: Screen(
     route = "splash_screen",
     imageVector = Icons.Filled.WavingHand
-  )
-
-  object ProfileScreen: Screen(
-    route = "profile_screen",
-    imageVector = Icons.Filled.Person
   )
 
 }

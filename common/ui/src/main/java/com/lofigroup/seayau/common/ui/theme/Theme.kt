@@ -4,6 +4,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import com.sillyapps.core.ui.theme.*
 import com.sillyapps.core.ui.util.ActivityBarHeights
 
@@ -11,7 +12,8 @@ private val DarkColorPalette = darkColors(
   primary = Purple,
   primaryVariant = PurpleDarker,
   secondary = SkyBlue,
-  error = Red
+  error = Red,
+  background = Color.Black
 )
 
 @Composable

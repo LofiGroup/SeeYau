@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.lofigroup.seayau.common.ui.theme.AppTheme
@@ -40,7 +39,7 @@ fun UsersList(
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.size(LocalSize.current.userIconSize)
+        modifier = Modifier.size(LocalSize.current.large)
       ) {
         Image(
           painterResource(id = R.drawable.ic_nearby_icon),
@@ -55,7 +54,7 @@ fun UsersList(
       if (nearbyUsers.isEmpty()) {
         ImageWrap(
           resourceId = R.drawable.ic_placeholder,
-          modifier = Modifier.size(LocalSize.current.userIconSize)
+          modifier = Modifier.size(LocalSize.current.large)
         )
       }
     }
@@ -73,7 +72,7 @@ fun UsersList(
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.size(LocalSize.current.userIconSize)
+        modifier = Modifier.size(LocalSize.current.large)
       ) {
         Image(
           painterResource(id = R.drawable.ic_met_icon),
@@ -88,7 +87,7 @@ fun UsersList(
       if (metUsers.isEmpty()) {
         ImageWrap(
           resourceId = R.drawable.ic_placeholder,
-          modifier = Modifier.size(LocalSize.current.userIconSize)
+          modifier = Modifier.size(LocalSize.current.large)
         )
       }
     }
