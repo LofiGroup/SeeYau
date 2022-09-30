@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/repositories/SeeYau/app/src/main/res/drawable/ic_logovariants_round.xml" value="0.1" />
         <entry key="..\:/repositories/SeeYau/common/network/src/debug/res/xml/network_security_config.xml" value="0.3567708333333333" />
         <entry key="..\:/repositories/SeeYau/common/ui/src/main/res/drawable/ic_baseline_account_box_24.xml" value="0.1785" />
         <entry key="..\:/repositories/SeeYau/common/ui/src/main/res/drawable/ic_check_mark_.xml" value="0.132" />
