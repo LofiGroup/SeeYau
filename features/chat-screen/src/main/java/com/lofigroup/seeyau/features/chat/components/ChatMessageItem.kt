@@ -88,7 +88,8 @@ fun ChatMessageItem(
           Spacer(modifier = Modifier.width(2.dp))
           Image(
             painter = painterResource(id = if (chatMessage.isRead) CommonR.drawable.ic_check_mark_read else CommonR.drawable.ic_check_mark_received),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.size(16.dp)
           )
         }
       }

@@ -70,4 +70,5 @@ dependencies {
   implementation timberDep
 
   implementation coilCompose
+  implementation coilTransformations
 }

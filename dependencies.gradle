@@ -107,6 +107,7 @@ ext {
   ]
 
   coilCompose = "io.coil-kt:coil-compose:2.2.1"
+  coilTransformations = "com.github.Commit451.coil-transformations:transformations:2.0.2"
 
   nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
 

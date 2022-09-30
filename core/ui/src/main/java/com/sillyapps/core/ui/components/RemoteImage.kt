@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.transform.Transformation
 import com.sillyapps.core.ui.R
 
 @Composable
@@ -32,12 +33,14 @@ fun RemoteImage(
   errorPlaceholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   onClick: () -> Unit = {},
   shape: Shape = CircleShape,
-  contentScale: ContentScale = ContentScale.Crop
+  contentScale: ContentScale = ContentScale.Crop,
+  transformations: List<Transformation> = emptyList()
 ) {
   AsyncImage(
     model = ImageRequest.Builder(LocalContext.current)
       .data(model)
       .crossfade(true)
+      .transformations(transformations)
       .build(),
     placeholder = painterResource(id = placeholderResId),
     contentScale = contentScale,
@@ -45,7 +48,7 @@ fun RemoteImage(
     error = painterResource(id = errorPlaceholderResId),
     modifier = modifier
       .clip(shape)
-      .clickable { onClick() }
+      .clickable { onClick() },
   )
 
 }
