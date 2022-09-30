@@ -29,12 +29,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun ChatListScreen(
   stateHolder: ChatListScreenStateHolder,
   onItemClick: (Long) -> Unit,
-  onUpButtonClick: () -> Unit
+  onUpButtonClick: () -> Unit,
+  initialState: ChatListScreenState = ChatListScreenState()
 ) {
 
   val state by remember(stateHolder) {
     stateHolder.getState()
-  }.collectAsState(initial = previewState)
+  }.collectAsState(initial = initialState)
 
   Surface(modifier = Modifier.applyActivityBarPaddings()) {
     Column {
@@ -73,7 +74,8 @@ fun ChatListScreenPreview() {
       ChatListScreen(
         stateHolder = stateHolder,
         onItemClick = {},
-        onUpButtonClick = {}
+        onUpButtonClick = {},
+        initialState = previewState
       )
     }
   }

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.R
+import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.ui.components.*
 import com.lofigroup.seayau.common.ui.components.OptionsDialog
 import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
@@ -21,11 +22,12 @@ fun NavigatorScreen(
   stateHolder: NavigatorScreenStateHolder,
   onNavigateToChat: (Long) -> Unit,
   onNavigateToSettings: () -> Unit,
-  onNavigateToChatList: () -> Unit
+  onNavigateToChatList: () -> Unit,
+  initialState: NavigatorScreenState = NavigatorScreenState()
 ) {
   val state by remember(stateHolder) {
     stateHolder.getState()
-  }.collectAsState(initial = previewModel)
+  }.collectAsState(initial = initialState)
 
   var optionsDialogVisible by rememberSaveable {
     mutableStateOf(false)
@@ -102,7 +104,8 @@ fun NavigatorScreenPreview() {
       stateHolder = fakeStateHolder,
       onNavigateToChat = {},
       onNavigateToChatList = {},
-      onNavigateToSettings = {}
+      onNavigateToSettings = {},
+      initialState = previewModel
     )
   }
 }

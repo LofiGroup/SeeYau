@@ -36,12 +36,13 @@ import com.lofigroup.seayau.common.ui.R as CommonR
 @Composable
 fun ChatScreen(
   stateHolder: ChatScreenStateHolder,
-  onUpButtonClick: () -> Unit
+  onUpButtonClick: () -> Unit,
+  initialState: ChatScreenState = ChatScreenState()
 ) {
 
   val state by remember(stateHolder) {
     stateHolder.getChatState()
-  }.collectAsState(initial = getPreviewModel())
+  }.collectAsState(initial = initialState)
 
   Column(modifier = Modifier.applyActivityBarPaddings()) {
     TopBar(
@@ -86,7 +87,8 @@ fun ChatScreenPreview() {
     Surface() {
       ChatScreen(
         stateHolder = stateHolder,
-        onUpButtonClick = {}
+        onUpButtonClick = {},
+        initialState = getPreviewModel()
       )
     }
   }
