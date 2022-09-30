@@ -31,6 +31,9 @@ import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.components.ShowToast
+import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.applyActivityBarPaddings
+import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import com.lofigroup.seayau.common.ui.R as CommonR
@@ -59,66 +62,22 @@ fun ProfileScreen(
       }
     }
 
-  if (state.navigateOut) {
-    LaunchedEffect(state) {
-      onExit()
-    }
-  }
-
-  Box(modifier = Modifier.fillMaxSize()) {
-    Column(
-      modifier = Modifier.fillMaxSize(),
-      horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-      RemoteImage(
-        model = state.imageUrl,
-        placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-        modifier = Modifier
-          .fillMaxWidth(0.4f)
-          .aspectRatio(1f)
-          .padding(8.dp),
-        onClick = {
-          pickImageResult.launch(
-            options {
-              setGuidelines(CropImageView.Guidelines.ON)
-              setAspectRatio(1, 1)
-              setCropShape(CropImageView.CropShape.RECTANGLE)
-              setOutputCompressFormat(Bitmap.CompressFormat.PNG)
-            }
-          )
-        }
-      )
-
-      TextField(
-        value = state.name,
-        onValueChange = { stateHolder.setName(it) },
-        label = { Text(text = "Name") },
-        enabled = !state.isLoading,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp, vertical = 16.dp)
-      )
-
-      if (state.isLoading) {
-        CircularProgressIndicator(
-          modifier = Modifier.padding(16.dp)
-        )
+  Column(
+    modifier = Modifier
+      .background(LocalExtendedColors.current.backgroundGradient)
+      .fillMaxWidth()
+      .applyActivityBarPaddings()
+  ) {
+    RemoteImage(
+      model = state.imageUrl,
+      errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
+      placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
+      onClick = {
+        pickImageResult.launch(getDefaultImageCropperOptions())
       }
-    }
+    )
 
-    FloatingActionButton(
-      onClick = { stateHolder.saveProfile() },
-      modifier = Modifier
-        .align(Alignment.BottomEnd)
-        .padding(16.dp)
-    ) {
-      Icon(imageVector = Icons.Filled.Check, contentDescription = null)
-    }
-  }
 
-  val errorMessage = state.errorMessage
-  if (errorMessage != null) {
-    ShowToast(message = errorMessage)
   }
 
 }

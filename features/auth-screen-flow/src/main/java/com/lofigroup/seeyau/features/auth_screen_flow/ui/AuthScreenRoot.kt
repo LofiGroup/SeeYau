@@ -3,14 +3,12 @@ package com.lofigroup.seeyau.features.auth_screen_flow.ui
 import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.lofigroup.seayau.common.ui.components.DefaultTopBar
+import com.lofigroup.seayau.common.ui.components.UpButton
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.model.*
@@ -18,13 +16,11 @@ import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterNameScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterPhoneNumberScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.VerifyPhoneNumberScreen
-import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun AuthScreenRoot(
@@ -97,27 +93,10 @@ fun AuthScreenRoot(
 
 @Composable
 fun TopBar() {
-  Box(
-    Modifier
-      .fillMaxWidth()
-      .padding(top = LocalSpacing.current.medium)
-  ) {
-    IconButton(
-      onClick = {}
-    ) {
-      Icon(
-        painter = painterResource(id = CommonR.drawable.ic_arrow_1_icon),
-        contentDescription = null,
-        modifier = Modifier
-          .align(Alignment.CenterStart),
-      )
-    }
-    Text(
-      text = stringResource(id = R.string.authorization),
-      style = MaterialTheme.typography.h5,
-      modifier = Modifier.align(Alignment.Center)
-    )
-  }
+  DefaultTopBar(
+    title = stringResource(id = R.string.authorization),
+    leftContent = { UpButton {  } }
+  )
 }
 
 @Preview

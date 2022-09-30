@@ -15,6 +15,7 @@ class ChatListScreenViewModel @Inject constructor(
 ): ViewModel(), ChatListScreenStateHolder {
 
   init {
+
   }
 
   override fun getState(): Flow<ChatListScreenState> = getChatsUseCase().map {

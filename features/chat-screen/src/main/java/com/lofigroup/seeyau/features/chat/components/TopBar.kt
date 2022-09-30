@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.features.chat.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.lofigroup.seayau.common.ui.R
+import com.lofigroup.seayau.common.ui.components.DefaultTopBar
 import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat.getLastSeen
@@ -31,7 +33,8 @@ fun TopBar(
   ) {
     Image(
       painter = painterResource(id = R.drawable.ic_arrow_1_icon),
-      contentDescription = null
+      contentDescription = null,
+      modifier = Modifier.clickable { onUpButtonClick() }
     )
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
