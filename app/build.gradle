@@ -47,12 +47,14 @@ dependencies {
   implementation project(":domain:auth")
   implementation project(":domain:profile")
   implementation project(":domain:chat")
+  implementation project(":domain:settings")
 
   implementation project(":data:navigator")
   implementation project(":data:auth")
   implementation project(":data:profile")
   implementation project(":data:chat")
   implementation project(":data:backend-api")
+  implementation project(":data:settings")
 
   implementation project(":features:navigator-screen")
   implementation project(":features:dialog-screen")

@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.features.profile_screen.api
 
 import androidx.compose.runtime.Composable
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
+import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
 import com.lofigroup.seeyau.features.profile_screen.ProfileScreen
 import com.lofigroup.seeyau.features.profile_screen.di.DaggerProfileScreenComponent
 import com.sillyapps.core.ui.daggerViewModel
@@ -9,11 +10,13 @@ import com.sillyapps.core.ui.daggerViewModel
 @Composable
 fun ProfileScreenNavigation(
   profileComponent: ProfileComponent,
+  settingsComponent: SettingsComponent,
   onUpButtonClick: () -> Unit
 ) {
   
   val component = DaggerProfileScreenComponent.builder()
     .profileComponent(profileComponent)
+    .settingsComponent(settingsComponent)
     .build()
   
   val viewModel = daggerViewModel {

@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.features.profile_screen.model
 
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
+import com.lofigroup.seeyau.domain.settings.model.Visibility
 
 data class ProfileScreenState(
   val id: Long = 0L,
@@ -9,8 +10,7 @@ data class ProfileScreenState(
   val name: String = "",
   val imageUrl: String = "",
 
-  val navigateOut: Boolean = false,
-  val isLoading: Boolean = true
+  val isVisible: Boolean = true,
 )
 
 fun ProfileScreenState.toProfileUpdate() = ProfileUpdate(
@@ -18,9 +18,9 @@ fun ProfileScreenState.toProfileUpdate() = ProfileUpdate(
   imageUrl = imageUrl
 )
 
-fun Profile.toProfileScreenState() = ProfileScreenState(
-  id = id,
-  name = name,
-  imageUrl = imageUrl ?: "",
-  isLoading = false
+fun ProfileScreenState.applyUpdates(profile: Profile, visibility: Visibility) = ProfileScreenState(
+  id = profile.id,
+  name = profile.name,
+  imageUrl = profile.imageUrl ?: "",
+  isVisible = visibility.isVisible
 )

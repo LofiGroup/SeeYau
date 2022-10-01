@@ -5,6 +5,4 @@ import kotlinx.coroutines.flow.Flow
 
 interface NearbyService {
 
-  fun startDiscoveringNearbyDevices()
-
 }

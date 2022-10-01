@@ -28,11 +28,13 @@
             <option value="$PROJECT_DIR$/data/chat" />
             <option value="$PROJECT_DIR$/data/navigator" />
             <option value="$PROJECT_DIR$/data/profile" />
+            <option value="$PROJECT_DIR$/data/settings" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/auth" />
             <option value="$PROJECT_DIR$/domain/chat" />
             <option value="$PROJECT_DIR$/domain/navigator" />
             <option value="$PROJECT_DIR$/domain/profile" />
+            <option value="$PROJECT_DIR$/domain/settings" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/auth-screen-flow" />
             <option value="$PROJECT_DIR$/features/chat-list-screen" />

@@ -72,6 +72,7 @@ fun AppNavHost(
     composable(route = Screen.SettingsScreen.route) {
       ProfileScreenNavigation(
         profileComponent = appModules.profileModule.domainComponent,
+        settingsComponent = appModules.settingsModule.domainComponent,
         onUpButtonClick = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
       )
     }

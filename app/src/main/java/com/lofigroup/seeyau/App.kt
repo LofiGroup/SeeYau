@@ -11,11 +11,13 @@ import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
 import com.lofigroup.seeyau.domain.chat.di.ChatComponent
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
+import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
+import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 import kotlinx.coroutines.MainScope
 import timber.log.Timber
 
-class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider {
+class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider {
 
   private val appScope = MainScope()
 
@@ -51,6 +53,10 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
 
   override fun provideAuthModule(): AuthModule {
     return appModules.authModuleImpl
+  }
+
+  override fun provideSettingsModule(): SettingsComponent {
+    return appModules.settingsModule.domainComponent
   }
 
 }

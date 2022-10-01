@@ -16,4 +16,6 @@ interface ProfileScreenStateHolder {
 
   fun setImageUri(uri: Uri)
 
+  fun setVisibility(isVisible: Boolean)
+
 }

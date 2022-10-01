@@ -106,8 +106,8 @@ fun ProfileScreen(
     Spacer(modifier = Modifier.weight(1f))
 
     VisibilitySwitch(
-      visible = true,
-      onSetVisibilityState = {}
+      visible = state.isVisible,
+      onSetVisibilityState = stateHolder::setVisibility
     )
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.large))
@@ -139,6 +139,10 @@ fun ProfileScreenPreview() {
     }
 
     override fun setImageUri(uri: Uri) {
+
+    }
+
+    override fun setVisibility(isVisible: Boolean) {
 
     }
 

@@ -6,6 +6,7 @@ import com.lofigroup.data.navigator.api.NavigatorModule
 import com.lofigroup.seeyau.data.auth.api.AuthModuleImpl
 import com.lofigroup.seeyau.data.chat.api.ChatModule
 import com.lofigroup.seeyau.data.profile.api.ProfileModule
+import com.lofigroup.seeyau.data.settings.api.SettingsModule
 import com.lofigroup.seeyau.di.DaggerAppComponent
 import kotlinx.coroutines.CoroutineScope
 
@@ -65,6 +66,12 @@ class AppModules(
       profileDataSource = profileModule.dataComponent.getProfileDataSource(),
       ioScope = appScope,
       profileRepository = profileModule.dataComponent.getRepository()
+    )
+  }
+
+  val settingsModule by lazy {
+    SettingsModule(
+      sharedPreferences = appComponent.getSharedPref()
     )
   }
 

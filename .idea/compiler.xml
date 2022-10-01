@@ -21,6 +21,7 @@
       <module name="SeeYau.data.chat" target="11" />
       <module name="SeeYau.data.navigator" target="11" />
       <module name="SeeYau.data.profile" target="11" />
+      <module name="SeeYau.data.settings" target="11" />
       <module name="SeeYau.domain.auth" target="1.8" />
       <module name="SeeYau.domain.auth.main" target="1.8" />
       <module name="SeeYau.domain.auth.test" target="1.8" />
@@ -33,6 +34,9 @@
       <module name="SeeYau.domain.profile" target="1.8" />
       <module name="SeeYau.domain.profile.main" target="1.8" />
       <module name="SeeYau.domain.profile.test" target="1.8" />
+      <module name="SeeYau.domain.settings" target="1.8" />
+      <module name="SeeYau.domain.settings.main" target="1.8" />
+      <module name="SeeYau.domain.settings.test" target="1.8" />
       <module name="SeeYau.features.auth-screen" target="11" />
       <module name="SeeYau.features.auth-screen-flow" target="11" />
       <module name="SeeYau.features.chat-list-screen" target="11" />

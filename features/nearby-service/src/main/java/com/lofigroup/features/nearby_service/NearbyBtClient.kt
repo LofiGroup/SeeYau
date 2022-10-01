@@ -1,6 +1,7 @@
 package com.lofigroup.features.nearby_service
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.*
@@ -9,17 +10,16 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.ParcelUuid
 import androidx.core.app.ActivityCompat
-import com.lofigroup.core.util.Resource
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetMyIdUseCase
-import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
+@SuppressLint("MissingPermission")
 class NearbyBtClient @Inject constructor(
   private val context: Context,
   private val notifyUserIsNearbyUseCase: NotifyUserIsNearbyUseCase,
@@ -28,7 +28,7 @@ class NearbyBtClient @Inject constructor(
   private val scope: CoroutineScope
 ) {
 
-  private var isSearching = false
+  private var isDiscovering = false
 
   private val btAdapter: BluetoothAdapter =
     (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
@@ -41,7 +41,7 @@ class NearbyBtClient @Inject constructor(
 
   private val pUuid = ParcelUuid(UUID.fromString("000043ef-0000-1000-8000-00805F9B34FB"))
 
-  private var advertiseData: Resource<AdvertiseData> = Resource.Loading()
+  private var advertiseData: AdvertiseData? = null
 
   private val scanCallback = object : ScanCallback() {
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -97,31 +97,23 @@ class NearbyBtClient @Inject constructor(
         .addServiceData(pUuid, idBytes)
         .build()
 
-      advertiseData = Resource.Success(data)
-      startBroadcast()
+      advertiseData = data
+      startDiscovery()
     }
   }
 
   private fun turnBluetoothOn() {
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
-      && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      Timber.e("Bluetooth connect permission is not granted!")
-      return
-    }
+    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_CONNECT)) return
+
     btAdapter.enable()
     bleAdvertiser = btAdapter.bluetoothLeAdvertiser
     bleScanner = btAdapter.bluetoothLeScanner
   }
 
   private fun advertise() {
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE)
-      != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      Timber.e("Bluetooth advertise permission is not granted!")
-      return
-    }
-    val data = advertiseData as Resource.Success
+    val data = advertiseData ?: return
 
-    bleAdvertiser?.startAdvertising(advertiseSettings, data.data, advertisingCallback)
+    bleAdvertiser?.startAdvertising(advertiseSettings, data, advertisingCallback)
   }
 
   private fun scan() {
@@ -133,57 +125,47 @@ class NearbyBtClient @Inject constructor(
       .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
       .build()
 
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
-      != PackageManager.PERMISSION_GRANTED  && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      Timber.e("Bluetooth scan permission is not granted!")
-      return
-    }
-
     bleScanner?.startScan(listOf(filter), scanSettings, scanCallback)
   }
 
   private fun stopAdvertise() {
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE)
-      != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      Timber.e("Bluetooth advertise permission is not granted!")
-      return
-    }
     bleAdvertiser?.stopAdvertising(advertisingCallback)
   }
 
+
   private fun stopScan() {
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
-      != PackageManager.PERMISSION_GRANTED  && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      Timber.e("Bluetooth scan permission is not granted!")
-      return
-    }
     bleScanner?.stopScan(scanCallback)
   }
 
-  fun startBroadcast() {
-    if (isSearching) return
-    if (advertiseData !is Resource.Success) {
-      val advertiseData = advertiseData
-      if (advertiseData is Resource.Loading) {
-        Timber.d("Profile is loading. Broadcast failed.")
+  private fun bluetoothPermissionsNotGranted(vararg permissions: String): Boolean {
+    for (permission in permissions) {
+      if (ActivityCompat.checkSelfPermission(context, permission)
+        != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        Timber.e("Permission $permission is not granted!")
+        return true
       }
-      else if (advertiseData is Resource.Error) {
-        Timber.e("Error occurred while loading profile. Error message: ${advertiseData.errorMessage}")
-      }
-      return
     }
+    return false
+  }
+
+  fun startDiscovery() {
+    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
+    if (isDiscovering) return
 
     scan()
     advertise()
 
-    isSearching = true
+    isDiscovering = true
   }
 
-  fun stopBroadcast() {
+  fun stopDiscovery() {
+    if (!isDiscovering) return
+
+    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
     stopScan()
     stopAdvertise()
 
-    isSearching = false
+    isDiscovering = false
   }
 
 }

@@ -3,28 +3,35 @@ package com.lofigroup.seeyau.features.profile_screen
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UpdateProfileUseCase
+import com.lofigroup.seeyau.domain.settings.model.Visibility
+import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
+import com.lofigroup.seeyau.domain.settings.usecases.SetVisibilityUseCase
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
+import com.lofigroup.seeyau.features.profile_screen.model.applyUpdates
 import com.lofigroup.seeyau.features.profile_screen.model.toProfileUpdate
-import com.lofigroup.seeyau.features.profile_screen.model.toProfileScreenState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileScreenViewModel @Inject constructor(
   private val getProfileUseCase: GetProfileUseCase,
-  private val updateProfileUseCase: UpdateProfileUseCase
+  private val updateProfileUseCase: UpdateProfileUseCase,
+  private val getVisibilityUseCase: GetVisibilityUseCase,
+  private val setVisibilityUseCase: SetVisibilityUseCase
 ): ViewModel(), ProfileScreenStateHolder {
 
   private val state = MutableStateFlow(ProfileScreenState())
 
   init {
     viewModelScope.launch {
-      getProfileUseCase().collect() {
-        state.value = it.toProfileScreenState()
+      combine(getProfileUseCase(), getVisibilityUseCase()) { profile, isVisible ->
+        state.value.applyUpdates(profile, isVisible)
+      }.collect() {
+        state.value = it
       }
     }
   }
@@ -48,13 +55,8 @@ class ProfileScreenViewModel @Inject constructor(
     val dataIsValid = validateData()
     if (!dataIsValid) return
 
-    state.value = state.value.copy(isLoading = true)
     viewModelScope.launch {
-      state.value = when (val result = updateProfileUseCase(state.value.toProfileUpdate())) {
-        is Result.Success -> state.value.copy(isLoading = false, navigateOut = true)
-        is Result.Error -> state.value.copy(isLoading = false, errorMessage = result.message)
-        is Result.Undefined -> state.value.copy(isLoading = false, errorMessage = result.message)
-      }
+      updateProfileUseCase(state.value.toProfileUpdate())
     }
   }
 
@@ -64,6 +66,13 @@ class ProfileScreenViewModel @Inject constructor(
 
   override fun setImageUri(uri: Uri) {
     state.value = state.value.copy(imageUrl = uri.toString())
+  }
+
+  override fun setVisibility(isVisible: Boolean) {
+    viewModelScope.launch {
+      setVisibilityUseCase(Visibility(isVisible))
+      state.apply { value = value.copy(isVisible = isVisible) }
+    }
   }
 
 }
