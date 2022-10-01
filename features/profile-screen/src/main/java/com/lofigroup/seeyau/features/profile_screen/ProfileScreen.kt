@@ -22,7 +22,7 @@ import com.lofigroup.seeyau.features.profile_screen.component.VisibilitySwitch
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.sillyapps.core.ui.theme.applyActivityBarPaddings
+
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +61,7 @@ fun ProfileScreen(
     modifier = Modifier
       .fillMaxSize()
       .background(LocalExtendedColors.current.backgroundGradient)
-      .applyActivityBarPaddings()
+      .systemBarsPadding()
   ) {
     DefaultTopBar(
       title = stringResource(id = R.string.settings),

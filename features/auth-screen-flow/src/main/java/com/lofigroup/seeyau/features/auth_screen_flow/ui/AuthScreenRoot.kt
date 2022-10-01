@@ -16,7 +16,7 @@ import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterNameScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterPhoneNumberScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.VerifyPhoneNumberScreen
-import com.sillyapps.core.ui.theme.applyActivityBarPaddings
+
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,9 @@ fun AuthScreenRoot(
   }
 
   Surface(
-    modifier = Modifier.applyActivityBarPaddings()
+    modifier = Modifier
+      .systemBarsPadding()
+      .imePadding()
   ) {
     Column(
       modifier = Modifier

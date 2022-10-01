@@ -15,8 +15,9 @@ class VisibilitySettingDataSource @Inject constructor(
   private val sharedPref: SharedPreferences
 ) {
 
-  private val state = MutableStateFlow(loadFromSharedPref())
   private val adapter = Moshi.Builder().build().adapter(VisibilityDataModel::class.java)
+  private val state = MutableStateFlow(loadFromSharedPref())
+
 
   private fun loadFromSharedPref(): VisibilityDataModel {
     val json = sharedPref.getString(VISIBILITY_SETTING, "")

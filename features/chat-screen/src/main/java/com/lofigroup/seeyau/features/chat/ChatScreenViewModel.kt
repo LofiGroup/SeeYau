@@ -6,7 +6,6 @@ import com.lofigroup.seeyau.domain.chat.usecases.GetChatUseCase
 import com.lofigroup.seeyau.domain.chat.usecases.MarkChatAsReadUseCase
 import com.lofigroup.seeyau.domain.chat.usecases.SendChatMessageUseCase
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
-import com.lofigroup.seeyau.features.chat.model.toChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +48,7 @@ class ChatScreenViewModel @Inject constructor(
     getChatUseCase(chatId).collect() { chat ->
       state.apply { value = value.copy(
         partner = chat.partner,
-        messages = chat.messages.map { it.toPrivateMessage() }
+        messages = chat.messages.mapIndexed { index, chatMessage ->  chatMessage.toPrivateMessage(index) }
       ) }
     }
   }

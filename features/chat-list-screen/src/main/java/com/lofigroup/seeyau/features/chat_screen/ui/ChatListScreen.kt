@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.chat_screen.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
@@ -21,7 +22,7 @@ import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatItem
 import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatList
 import com.lofigroup.seeyau.features.chat_screen.ui.components.TopBar
 import com.sillyapps.core.ui.components.ShowToast
-import com.sillyapps.core.ui.theme.applyActivityBarPaddings
+
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -37,7 +38,9 @@ fun ChatListScreen(
     stateHolder.getState()
   }.collectAsState(initial = initialState)
 
-  Surface(modifier = Modifier.applyActivityBarPaddings()) {
+  Surface(
+    modifier = Modifier.systemBarsPadding()
+  ) {
     Column {
       TopBar(
         totalNewMessages = 0,

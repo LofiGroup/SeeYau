@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.chat.model.PrivateMessage
+import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.sillyapps.core.ui.util.dpToPx
 import com.sillyapps.core.ui.util.pxToDp
 import com.sillyapps.core_time.getLocalTimeFromMillis
 import com.lofigroup.seayau.common.ui.R as CommonR
@@ -80,7 +80,7 @@ fun ChatMessageItem(
           }
       ) {
         Text(
-          text = getLocalTimeFromMillis(chatMessage.createdIn),
+          text = chatMessage.time,
           style = MaterialTheme.typography.caption,
         )
 
@@ -126,13 +126,7 @@ fun ChatMyMessagePreview() {
   AppTheme() {
     Surface() {
       ChatMessageItem(
-        chatMessage = PrivateMessage(
-          id = 0,
-          message = "Hello! Hello!Hello!Hello!",
-          authorIsMe = true,
-          createdIn = 0L,
-          isRead = true
-        )
+        chatMessage = getPreviewPrivateMessage()
       )
     }
   }
@@ -144,13 +138,7 @@ fun ChatPartnerMessagePreview() {
   AppTheme() {
     Surface() {
       ChatMessageItem(
-        chatMessage = PrivateMessage(
-          id = 0,
-          message = "Hello!Hello!Hello!Hello!Hello!",
-          authorIsMe = false,
-          createdIn = 0L,
-          isRead = true
-        )
+        chatMessage = getPreviewPrivateMessage(authorIsMe = false)
       )
     }
   }

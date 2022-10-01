@@ -15,7 +15,6 @@ import com.lofigroup.seayau.common.ui.components.OptionsDialog
 import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ShowToast
-import com.sillyapps.core.ui.theme.applyActivityBarPaddings
 
 @Composable
 fun NavigatorScreen(
@@ -44,7 +43,7 @@ fun NavigatorScreen(
 
       if (!optionsDialogVisible) {
         Column(
-          modifier = Modifier.applyActivityBarPaddings()
+          modifier = Modifier.systemBarsPadding()
         ) {
           TopBar(
             newMessagesCount = state.newMessagesCount,

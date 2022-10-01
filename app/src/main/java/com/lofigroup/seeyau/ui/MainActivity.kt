@@ -21,8 +21,6 @@ import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 import com.sillyapps.core.ui.service.ServiceModuleConnection
-import com.sillyapps.core.ui.util.ActivityBarHeights
-import com.sillyapps.core.ui.util.getActivityBarHeights
 import com.sillyapps.core.ui.util.hasPermissions
 import timber.log.Timber
 import javax.inject.Inject
@@ -49,9 +47,7 @@ class MainActivity : ComponentActivity() {
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
     setContent {
-      AppTheme(
-        activityBarHeights = getActivityBarHeights()
-      ) {
+      AppTheme() {
         RootContainer(
           appModules = app.appModules,
           onAuthorized = {

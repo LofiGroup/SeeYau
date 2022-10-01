@@ -6,7 +6,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.abs
-import kotlin.math.sign
 
 fun getLocalCurrentTimeMillis(): Long {
   val tz = TimeZone.getDefault()
@@ -108,6 +107,26 @@ fun getFormattedValuesInRange(size: Int): Array<String> {
 fun getLocalTimeFromMillis(millis: Long): String {
   val time = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalTime()
   return time.format(DateTimeFormatter.ofPattern("HH:mm"))
+}
+
+
+fun getLocalDateAndTimeFromMillis(millis: Long): Pair<String, String> {
+  val dateTime = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault())
+
+  val timeFormatted = dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+
+  val date = dateTime.toLocalDate()
+  val now = LocalDate.now()
+  val dateFormatted =
+    when {
+      date.isEqual(now) -> "Today"
+      date.isEqual(now.minusDays(1)) -> "Yesterday"
+      else -> {
+        date.format(DateTimeFormatter.ofPattern("d MMM"))
+      }
+    }
+
+  return Pair(timeFormatted, dateFormatted)
 }
 
 fun millisToLastSeen(utcMillis: Long): LastSeen {

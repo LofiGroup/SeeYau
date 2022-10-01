@@ -17,7 +17,7 @@ import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.*
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.sillyapps.core.ui.theme.applyActivityBarPaddings
+
 
 @Composable
 fun OptionsDialog(
@@ -32,7 +32,7 @@ fun OptionsDialog(
     ) {
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.applyActivityBarPaddings()
+        modifier = Modifier.statusBarsPadding()
       ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(

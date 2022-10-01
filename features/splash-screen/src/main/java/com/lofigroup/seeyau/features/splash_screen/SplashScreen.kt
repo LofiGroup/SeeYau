@@ -1,10 +1,7 @@
 package com.lofigroup.seeyau.features.splash_screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -25,7 +22,6 @@ import com.lofigroup.core.util.Result
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState
 import com.sillyapps.core.ui.components.ShowToast
-import com.sillyapps.core.ui.theme.LocalActivityBarHeights
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
 import kotlinx.coroutines.delay
@@ -51,7 +47,10 @@ fun SplashScreen(
   }
 
   Surface {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+    ) {
 
       Image(
         painter = painterResource(id = R.drawable.ic_intro_logo),
@@ -69,7 +68,8 @@ fun SplashScreen(
         ),
         modifier = Modifier
           .align(Alignment.BottomCenter)
-          .padding(bottom = LocalSpacing.current.extraLarge + LocalActivityBarHeights.current.navigationBarHeight)
+          .navigationBarsPadding()
+          .padding(bottom = LocalSpacing.current.extraLarge)
       )
 
     }
