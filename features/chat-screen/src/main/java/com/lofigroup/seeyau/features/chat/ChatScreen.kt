@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.features.chat
 
 import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -22,7 +23,6 @@ import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ChatScreen(
   stateHolder: ChatScreenStateHolder,
@@ -54,7 +54,10 @@ fun ChatScreen(
       setMessage = stateHolder::setMessage,
       sendMessage = stateHolder::sendMessage
     )
+  }
 
+  BackHandler {
+    onUpButtonClick()
   }
 }
 
@@ -87,11 +90,6 @@ fun ChatScreenPreview() {
       )
     }
   }
-}
-
-fun getLastSeen(millis: Long, context: Context): String {
-  val lastSeen = getLocalizedLastSeen(millis, context)
-  return "${context.getString(R.string.last_seen_in)} $lastSeen"
 }
 
 private fun getPreviewModel(): ChatScreenState {

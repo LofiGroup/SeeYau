@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-  implementation project(":core:ui")
   implementation project(":common:ui")
   
   implementation project(":domain:navigator")
@@ -57,7 +56,6 @@ dependencies {
   implementation project(":data:settings")
 
   implementation project(":features:navigator-screen")
-  implementation project(":features:dialog-screen")
   implementation project(":features:nearby-service")
   implementation project(":features:splash-screen")
   implementation project(":features:profile-screen")

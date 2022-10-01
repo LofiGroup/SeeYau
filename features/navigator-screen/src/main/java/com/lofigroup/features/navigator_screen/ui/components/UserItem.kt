@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
+import com.lofigroup.seayau.common.ui.components.UserIcon
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSpacing
@@ -27,33 +28,13 @@ fun UserItem(
   onUserSelected: (Long) -> Unit
 ) {
   Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier
-      .clickable {
-        onUserSelected(user.id)
-      }
+    horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    Box() {
-      RemoteImage(
-        model = user.imageUrl,
-        placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-        errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-        onClick = { onUserSelected(user.id) },
-        modifier = Modifier
-          .size(80.dp)
-          .padding(LocalSpacing.current.small)
-      )
-
-      if (user.isOnline) {
-        Image(
-          painter = painterResource(id = R.drawable.ic_online_big),
-          contentDescription = null,
-          modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(end = LocalSpacing.current.medium)
-        )
-      }
-    }
+    UserIcon(
+      imageUri = user.imageUrl,
+      isOnline = user.isOnline,
+      onClick = { onUserSelected(user.id) }
+    )
 
     Text(
       text = user.name,
@@ -70,7 +51,7 @@ fun UserItemPreview() {
   AppTheme {
     Surface() {
       UserItem(
-        user = UserItemUIModel.getPreviewModel(),
+        user = UserItemUIModel.getPreviewModel(isOnline = true),
         onUserSelected = {}
       )
     }

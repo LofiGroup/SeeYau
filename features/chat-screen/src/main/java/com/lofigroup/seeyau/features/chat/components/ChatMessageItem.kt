@@ -80,7 +80,7 @@ fun ChatMessageItem(
           }
       ) {
         Text(
-          text = chatMessage.time,
+          text = chatMessage.dateTime.time,
           style = MaterialTheme.typography.caption,
         )
 

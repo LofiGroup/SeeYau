@@ -11,8 +11,8 @@ class GetChatUseCase @Inject constructor(
   private val repository: ChatRepository
 ) {
 
-  operator fun invoke(id: Long): Flow<Chat> {
-    return repository.getChat(id)
+  operator fun invoke(chatId: Long): Flow<Chat> {
+    return repository.getChat(chatId)
   }
 
 }

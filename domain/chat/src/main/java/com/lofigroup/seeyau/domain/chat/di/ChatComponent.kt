@@ -15,6 +15,7 @@ interface ChatComponent {
   fun getChatUseCase(): GetChatUseCase
   fun sendChatMessageUseCase(): SendChatMessageUseCase
   fun markChatAsRead(): MarkChatAsReadUseCase
+  fun getChatIdByUserIdUseCase(): GetChatIdByUserIdUseCase
 
   @Component.Builder
   interface Builder {

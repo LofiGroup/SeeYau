@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <plurals name="seen_hours_ago">
-    <item quantity="one">%d hour ago</item>
-    <item quantity="other">%d hours ago</item>
+    <item quantity="one">Last seen %d hour ago</item>
+    <item quantity="other">Last seen %d hours ago</item>
   </plurals>
 
   <plurals name="seen_minutes_ago">
-    <item quantity="one">%d minutes ago</item>
-    <item quantity="other">%d minutes ago</item>
+    <item quantity="one">Last seen %d minutes ago</item>
+    <item quantity="other">Last seen %d minutes ago</item>
   </plurals>
 
-  <string name="seen_recently">recently</string>
+  <string name="seen_recently">Last seen recently</string>
+  <string name="online">Online</string>
 
   <string name="image_crop_error">Image crop is failed.</string>
 
   <string name="lets_shine">Let\'s shine</string>
 
   <string name="cancel">Cancel</string>
+
+  <string name="today">Today</string>
+  <string name="yesterday">Yesterday</string>
 </resources>

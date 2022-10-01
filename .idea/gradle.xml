@@ -40,7 +40,6 @@
             <option value="$PROJECT_DIR$/features/chat-list-screen" />
             <option value="$PROJECT_DIR$/features/chat-screen" />
             <option value="$PROJECT_DIR$/features/data-sync-service" />
-            <option value="$PROJECT_DIR$/features/dialog-screen" />
             <option value="$PROJECT_DIR$/features/navigator-screen" />
             <option value="$PROJECT_DIR$/features/nearby-service" />
             <option value="$PROJECT_DIR$/features/profile-screen" />

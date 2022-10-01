@@ -23,12 +23,15 @@ interface ChatDao {
   @Query("select * from messages where chatId = :chatId order by createdIn desc")
   fun getChatMessages(chatId: Long): Flow<List<MessageEntity>>
 
-  @Query("select chats.lastVisited as lastVisited, messages.id as id, messages.chatId as chatId, messages.createdIn as createdIn, messages.author as author, messages.message as message " +
+  @Query("select messages.id as id, messages.chatId as chatId, messages.createdIn as createdIn, messages.author as author, messages.message as message " +
       "from chats, messages where author = :userId and createdIn > lastVisited order by createdIn desc")
   fun getNewUserMessages(userId: Long): Flow<List<MessageEntity>>
 
   @Query("select * from messages where chatId = :chatId order by createdIn desc limit 1")
   fun observeLastMessage(chatId: Long): Flow<MessageEntity?>
+
+  @Query("select id from chats where partnerId = :userId")
+  suspend fun getChatIdFromUserId(userId: Long): Long?
 
   @Query("select * from messages order by createdIn desc limit 1")
   suspend fun getLastMessage(): MessageEntity?

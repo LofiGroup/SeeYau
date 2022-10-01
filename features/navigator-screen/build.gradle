@@ -37,9 +37,6 @@ android {
 }
 
 dependencies {
-  implementation project(":core:ui")
-  implementation project(":core:time")
-
   implementation project(":common:ui")
   implementation project(":domain:navigator")
   implementation project(":domain:chat")

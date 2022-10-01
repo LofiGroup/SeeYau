@@ -17,6 +17,8 @@ interface NavigatorScreenStateHolder {
 
   fun onShowChat()
 
+  suspend fun getChatIdByUserId(userId: Long): Long?
+
 }
 
 val fakeStateHolder = object : NavigatorScreenStateHolder {
@@ -42,6 +44,10 @@ val fakeStateHolder = object : NavigatorScreenStateHolder {
 
   override fun onShowChat() {
 
+  }
+
+  override suspend fun getChatIdByUserId(userId: Long): Long {
+    return 0
   }
 
 }

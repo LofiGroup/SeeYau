@@ -13,9 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.components.DefaultTopBar
+import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
 import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seeyau.domain.profile.model.User
-import com.lofigroup.seeyau.features.chat.getLastSeen
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSpacing
 
@@ -47,7 +47,7 @@ fun TopBar(
         .size(LocalIconsSize.current.medium)
     )
 
-    Spacer(modifier = Modifier.width(LocalSpacing.current.extraSmall))
+    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
     Column(
       modifier = Modifier
@@ -58,10 +58,7 @@ fun TopBar(
         style = MaterialTheme.typography.body2
       )
       Text(
-        text = getLastSeen(
-          millis = partner.lastConnection,
-          context = LocalContext.current
-        ),
+        text = getLocalizedLastSeen(partner.lastConnection, LocalContext.current.resources),
         style = MaterialTheme.typography.subtitle2
       )
     }

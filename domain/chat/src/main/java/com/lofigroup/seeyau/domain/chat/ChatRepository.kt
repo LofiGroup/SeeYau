@@ -15,6 +15,8 @@ interface ChatRepository {
 
   fun getChats(): Flow<List<ChatBrief>>
 
-  fun getChat(id: Long): Flow<Chat>
+  fun getChat(chatId: Long): Flow<Chat>
+
+  suspend fun getChatIdByUserId(userId: Long): Long?
 
 }

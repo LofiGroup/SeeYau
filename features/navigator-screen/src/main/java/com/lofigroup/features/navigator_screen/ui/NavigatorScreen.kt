@@ -15,6 +15,7 @@ import com.lofigroup.seayau.common.ui.components.OptionsDialog
 import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ShowToast
+import kotlinx.coroutines.launch
 
 @Composable
 fun NavigatorScreen(
@@ -27,6 +28,8 @@ fun NavigatorScreen(
   val state by remember(stateHolder) {
     stateHolder.getState()
   }.collectAsState(initial = initialState)
+
+  val scope = rememberCoroutineScope()
 
   var optionsDialogVisible by rememberSaveable {
     mutableStateOf(false)
@@ -60,7 +63,12 @@ fun NavigatorScreen(
                 optionsDialogVisible = true
               },
               onShowChat = stateHolder::onShowChat,
-              onGoToChat = onNavigateToChat
+              onGoToChat = {
+                scope.launch {
+                  val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
+                  onNavigateToChat(chatId)
+                }
+              }
             )
           } else {
             DefaultScreen()

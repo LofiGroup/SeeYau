@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.features.chat.di
 
+import android.content.res.Resources
 import com.lofigroup.seeyau.domain.chat.di.ChatComponent
 import com.lofigroup.seeyau.features.chat.ChatScreenViewModel
 import com.sillyapps.core.di.ScreenScope
@@ -16,6 +17,9 @@ interface ChatScreenComponent {
   @Component.Builder
   interface Builder {
     fun chatComponent(chatComponent: ChatComponent): Builder
+
+    @BindsInstance
+    fun resources(resources: Resources): Builder
 
     @BindsInstance
     fun chatId(id: Long): Builder

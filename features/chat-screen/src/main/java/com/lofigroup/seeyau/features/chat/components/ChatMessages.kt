@@ -29,7 +29,7 @@ fun ColumnScope.ChatMessages(
       reverseLayout = true,
       state = listState
     ) {
-      items.groupBy { it.date }.forEach { (date, messages) ->
+      items.groupBy { it.dateTime.date }.forEach { (date, messages) ->
         items(
           items = messages,
           key = { it.positionInList },
@@ -81,7 +81,7 @@ fun DateStickyLabel(
   }
 
   if (item != null && isVisible)
-    DateHeader(date = item.date)
+    DateHeader(date = item.dateTime.date)
 }
 
 @Composable

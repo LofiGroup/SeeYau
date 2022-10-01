@@ -6,6 +6,7 @@ import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.model.toUIModel
+import com.lofigroup.seeyau.domain.chat.usecases.GetChatIdByUserIdUseCase
 import com.sillyapps.core_time.Time
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 class NavigatorScreenViewModel @Inject constructor(
   private val getNearbyUsersUseCase: GetNearbyUsersUseCase,
-
+  private val getChatIdByUserIdUseCase: GetChatIdByUserIdUseCase
 ) : ViewModel(), NavigatorScreenStateHolder {
 
   private val state = MutableStateFlow(NavigatorScreenState())
@@ -49,6 +50,10 @@ class NavigatorScreenViewModel @Inject constructor(
 
   override fun onShowChat() {
     state.apply { value = value.copy(chatIsVisible = true) }
+  }
+
+  override suspend fun getChatIdByUserId(userId: Long): Long? {
+    return getChatIdByUserIdUseCase(userId)
   }
 
   private fun applyUpdates(nearbyUsers: List<NearbyUser>) {

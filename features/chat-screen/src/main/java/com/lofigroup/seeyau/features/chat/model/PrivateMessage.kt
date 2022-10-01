@@ -1,27 +1,25 @@
 package com.lofigroup.seeyau.features.chat.model
 
+import android.content.res.Resources
+import com.lofigroup.seayau.common.ui.getLocalizedDatedAndTimeFromMillis
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
-import com.sillyapps.core_time.getLocalDateAndTimeFromMillis
+import com.sillyapps.core_time.DateAndTime
 
 data class PrivateMessage(
   val id: Long,
   val authorIsMe: Boolean,
   val message: String,
-  val date: String,
-  val time: String,
+  val dateTime: DateAndTime,
   val isRead: Boolean,
 
   val positionInList: Int
 )
 
-fun ChatMessage.toPrivateMessage(positionInList: Int): PrivateMessage {
-  val (time, date) = getLocalDateAndTimeFromMillis(createdIn)
-
+fun ChatMessage.toPrivateMessage(positionInList: Int, resources: Resources): PrivateMessage {
   return PrivateMessage(
     authorIsMe = author == 0L,
     message = message,
-    time = time,
-    date = date,
+    dateTime = getLocalizedDatedAndTimeFromMillis(createdIn, resources),
     id = id,
     isRead = isRead,
     positionInList = positionInList
@@ -39,8 +37,7 @@ fun getPreviewPrivateMessage(
   return PrivateMessage(
     authorIsMe = authorIsMe,
     message = message,
-    time = time,
-    date = date,
+    dateTime = DateAndTime(date, time),
     id = id,
     isRead = isRead,
     positionInList = 0
