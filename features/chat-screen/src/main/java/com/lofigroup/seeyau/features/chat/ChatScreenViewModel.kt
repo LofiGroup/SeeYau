@@ -50,6 +50,7 @@ class ChatScreenViewModel @Inject constructor(
         partner = chat.partner,
         messages = chat.messages.mapIndexed { index, chatMessage ->  chatMessage.toPrivateMessage(index) }
       ) }
+      markChatAsReadUseCase(chatId)
     }
   }
 
