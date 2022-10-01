@@ -94,7 +94,7 @@ fun ChatScreenPreview() {
 
 private fun getPreviewModel(): ChatScreenState {
   return ChatScreenState(
-    partner = User(0, "Roman", imageUrl = "", lastConnection = 10000, isNear = false),
+    partner = User(0, "Roman", imageUrl = "", lastConnection = 10000, isNear = false, isOnline = true),
     messages = listOf(
       getPreviewPrivateMessage(),
       getPreviewPrivateMessage(authorIsMe = false),

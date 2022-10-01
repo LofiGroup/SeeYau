@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.lofigroup.seayau.common.ui.R
-import com.lofigroup.seayau.common.ui.components.DefaultTopBar
 import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
 import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
@@ -39,12 +39,10 @@ fun TopBar(
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
-    RemoteImage(
-      model = partner.imageUrl,
-      placeholderResId = R.drawable.ic_baseline_account_box_24,
-      errorPlaceholderResId = R.drawable.ic_baseline_account_box_24,
-      modifier = Modifier
-        .size(LocalIconsSize.current.medium)
+    UserIcon(
+      imageUri = partner.imageUrl,
+      isOnline = partner.isOnline,
+      onClick = {  }
     )
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
@@ -67,5 +65,34 @@ fun TopBar(
       painter = painterResource(id = R.drawable.ic_more_1_icon),
       contentDescription = null
     )
+  }
+}
+
+@Composable
+fun UserIcon(
+  imageUri: String?,
+  isOnline: Boolean,
+  onClick: () -> Unit
+) {
+  Box() {
+    RemoteImage(
+      model = imageUri,
+      placeholderResId = R.drawable.ic_baseline_account_circle_24,
+      errorPlaceholderResId = R.drawable.ic_baseline_account_circle_24,
+      onClick = onClick,
+      modifier = Modifier
+        .size(LocalSize.current.medium)
+    )
+
+    if (isOnline) {
+      Image(
+        painter = painterResource(
+          id = R.drawable.ic_online_small
+        ),
+        contentDescription = null,
+        modifier = Modifier
+          .align(Alignment.BottomEnd)
+      )
+    }
   }
 }

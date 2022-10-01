@@ -1,4 +1,4 @@
-package com.lofigroup.seayau.common.ui.components
+package com.lofigroup.features.navigator_screen.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -8,9 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import com.lofigroup.seayau.common.ui.R
-import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
@@ -34,7 +33,9 @@ fun UserIcon(
 
     if (isOnline) {
       Image(
-        painter = painterResource(id = R.drawable.ic_online_big),
+        painter = painterResource(
+          id = R.drawable.ic_online_big
+        ),
         contentDescription = null,
         modifier = Modifier
           .align(Alignment.BottomEnd)

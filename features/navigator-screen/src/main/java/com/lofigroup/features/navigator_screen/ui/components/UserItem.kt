@@ -9,18 +9,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.components.UserIcon
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.sillyapps.core.ui.components.RemoteImage
-import com.sillyapps.core.ui.theme.LocalSpacing
-
-import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun UserItem(

@@ -21,7 +21,8 @@ fun UserEntity.toDomainModel(): User {
     name = name,
     imageUrl = imageUrl,
     lastConnection = lastConnection,
-    isNear = System.currentTimeMillis() - lastConnection < 1 * Time.m
+    isOnline = lastConnection == Time.IS_ONLINE,
+    isNear = System.currentTimeMillis() - lastContact < 1 * Time.m
   )
 }
 

@@ -106,7 +106,8 @@ fun ChatItemPreview() {
       name = "Honda",
       imageUrl = "",
       isNear = true,
-      lastConnection = 0
+      lastConnection = 0,
+      isOnline = true
     ),
     lastMessage = ChatMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),
     newMessagesCount = 1

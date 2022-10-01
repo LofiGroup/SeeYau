@@ -94,7 +94,8 @@ val previewState = ChatListScreenState(
         name = "York",
         imageUrl = "",
         isNear = true,
-        lastConnection = 0
+        lastConnection = 0,
+        isOnline = true
       ),
       newMessagesCount = 1
     ),
@@ -106,7 +107,8 @@ val previewState = ChatListScreenState(
         name = "Umbrella",
         imageUrl = "",
         isNear = true,
-        lastConnection = 0
+        lastConnection = 0,
+        isOnline = false
       ),
       newMessagesCount = 1
     )
