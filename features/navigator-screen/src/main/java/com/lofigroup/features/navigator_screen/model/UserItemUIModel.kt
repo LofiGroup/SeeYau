@@ -8,9 +8,7 @@ data class UserItemUIModel(
   val id: Long,
   val imageUrl: String?,
   val name: String,
-  val isNear: Boolean,
   val isOnline: Boolean,
-  val lastConnection: Long,
   val newMessages: List<ChatMessage>
 ) {
   companion object {
@@ -18,12 +16,10 @@ data class UserItemUIModel(
       id: Long = 1L,
       imageUrl: String? = "",
       name: String = "Random",
-      isNear: Boolean = true,
       isOnline: Boolean = false,
-      lastConnection: Long = 0L,
       newMessages: List<ChatMessage> = listOf()
     ) =
-      UserItemUIModel(id, imageUrl, name, isNear, isOnline, lastConnection, newMessages)
+      UserItemUIModel(id, imageUrl, name, isOnline, newMessages)
   }
 }
 
@@ -32,9 +28,7 @@ fun NearbyUser.toUIModel(): UserItemUIModel {
     id = id,
     imageUrl = imageUrl,
     name = name,
-    isNear = isNear,
-    isOnline = lastConnection == Time.IS_ONLINE,
-    lastConnection = lastConnection,
+    isOnline = isOnline,
     newMessages = listOf()
   )
 }

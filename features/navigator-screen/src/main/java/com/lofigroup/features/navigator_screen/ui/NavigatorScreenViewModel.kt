@@ -58,18 +58,20 @@ class NavigatorScreenViewModel @Inject constructor(
 
   private fun applyUpdates(nearbyUsers: List<NearbyUser>) {
     val sorted = nearbyUsers.sortedBy {
-      it.lastConnection
-    }.map { it.toUIModel() }
+      it.lastContact
+    }
 
     val splitIndex = sorted.indexOfFirst {
-      it.lastConnection > System.currentTimeMillis() - 1 * Time.m
+      it.lastContact > System.currentTimeMillis() - 1 * Time.m
     } + 1
 
-    val selectedUser = sorted.firstOrNull { it.id == state.value.selectedUser?.id }
+    val sortedMapped = sorted.map { it.toUIModel() }
+
+    val selectedUser = sortedMapped.firstOrNull { it.id == state.value.selectedUser?.id }
 
     state.value = state.value.copy(
       selectedUser = selectedUser,
-      sortedUsers = sorted,
+      sortedUsers = sortedMapped,
       splitIndex = splitIndex
     )
   }

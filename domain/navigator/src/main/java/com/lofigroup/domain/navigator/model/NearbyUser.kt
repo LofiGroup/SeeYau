@@ -6,7 +6,7 @@ data class NearbyUser(
   val id: Long,
   val name: String,
   val imageUrl: String?,
-  val lastConnection: Long,
-  val isNear: Boolean,
+  val lastContact: Long,
+  val isOnline: Boolean,
   val newMessages: List<ChatMessage>
 )
