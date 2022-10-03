@@ -7,6 +7,7 @@
   <string name="verify_phone">Verify phone</string>
   <string name="code_is_sent_to">Code is sent to %1$s</string>
   <string name="code_is_not_correct">Code is not correct</string>
+  <string name="code_is_correct">Code is correct</string>
   <string name="be_recognizable">Be recognizable</string>
   <string name="add_photo">Add photo</string>
   <string name="something_went_wrong">Something went wrong</string>

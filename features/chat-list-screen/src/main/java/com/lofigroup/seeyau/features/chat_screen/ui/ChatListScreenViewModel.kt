@@ -14,12 +14,11 @@ class ChatListScreenViewModel @Inject constructor(
   private val getChatsUseCase: GetChatsUseCase
 ): ViewModel(), ChatListScreenStateHolder {
 
-  init {
-
-  }
-
-  override fun getState(): Flow<ChatListScreenState> = getChatsUseCase().map {
-    ChatListScreenState(chats = it)
+  override fun getState(): Flow<ChatListScreenState> = getChatsUseCase().map { chats ->
+    ChatListScreenState(
+      chats = chats,
+      newMessagesCount = chats.sumOf { it.newMessagesCount }
+    )
   }
 
 }

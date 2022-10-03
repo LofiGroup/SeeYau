@@ -24,7 +24,7 @@ fun DefaultTopBar(
   Box(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(LocalSpacing.current.bigMedium)
+      .padding(LocalSpacing.current.medium)
   ) {
     Row(
       modifier = Modifier.align(Alignment.CenterStart)

@@ -1,12 +1,17 @@
 package com.lofigroup.seeyau.features.auth_screen_flow.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -18,6 +23,7 @@ import com.lofigroup.seeyau.features.auth_screen_flow.model.VerifyCodeScreenStat
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
 import com.sillyapps.core.ui.theme.LocalSpacing
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VerifyPhoneNumberScreen(
   code: String,
@@ -59,10 +65,12 @@ fun VerifyPhoneNumberScreen(
       ),
       singleLine = true,
       keyboardOptions = KeyboardOptions(
-        imeAction = ImeAction.Next,
         keyboardType = KeyboardType.Number
       ),
-      enabled = state != VerifyCodeScreenState.LOADING
+      enabled = state != VerifyCodeScreenState.LOADING,
+      modifier = Modifier.onFocusChanged {
+        if (it.isFocused) setCode("")
+      }
     )
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
@@ -70,6 +78,7 @@ fun VerifyPhoneNumberScreen(
     when (state) {
       VerifyCodeScreenState.TYPING -> {}
       VerifyCodeScreenState.ERROR -> {
+        LocalSoftwareKeyboardController.current?.hide()
         Text(
           text = stringResource(id = R.string.code_is_not_correct),
           style = MaterialTheme.typography.subtitle1,
@@ -77,7 +86,12 @@ fun VerifyPhoneNumberScreen(
         )
       }
       VerifyCodeScreenState.SUCCESS -> {
-
+        LocalSoftwareKeyboardController.current?.hide()
+        Text(
+          text = stringResource(id = R.string.code_is_correct),
+          style = MaterialTheme.typography.subtitle1,
+          color = MaterialTheme.colors.secondary
+        )
       }
       VerifyCodeScreenState.LOADING -> {
         CircularProgressIndicator()

@@ -72,6 +72,7 @@ class NavigatorScreenViewModel @Inject constructor(
     state.value = state.value.copy(
       selectedUser = selectedUser,
       sortedUsers = sortedMapped,
+      newMessagesCount = sortedMapped.sumOf { it.newMessages.size },
       splitIndex = splitIndex
     )
   }

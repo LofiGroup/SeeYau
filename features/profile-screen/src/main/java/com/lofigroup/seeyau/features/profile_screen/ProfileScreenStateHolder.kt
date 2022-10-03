@@ -10,8 +10,6 @@ interface ProfileScreenStateHolder {
 
   fun setName(name: String)
 
-  fun saveProfile()
-
   fun throwError(errorMessage: String)
 
   fun setImageUri(uri: Uri)

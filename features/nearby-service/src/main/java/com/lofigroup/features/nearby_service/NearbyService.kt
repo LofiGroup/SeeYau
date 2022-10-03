@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface NearbyService {
 
+  fun observeState(): Flow<ResourceState>
+
 }

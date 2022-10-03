@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.registerForActivityResult
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
+import com.lofigroup.core.util.ResourceState
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
 import com.lofigroup.seayau.common.ui.theme.AppTheme
@@ -22,26 +23,35 @@ import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 import com.sillyapps.core.ui.service.ServiceModuleConnection
 import com.sillyapps.core.ui.util.hasPermissions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
+  private val job = Job()
+  private val scope = CoroutineScope(Dispatchers.Main + job)
+
   private val nearbyServiceConnection =
     ServiceModuleConnection<NearbyService>(
       NearbyServiceImpl::class.java,
-      serviceIsConnected = {  }
+      serviceIsConnected = {
+        observeNearbyServiceState(it)
+      }
     )
   private val dataSyncServiceConnection =
     ServiceModuleConnection<DataSyncService>(
       DataSyncServiceImpl::class.java,
-      serviceIsConnected = {  }
+      serviceIsConnected = {}
     )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    bindServices()
     startServices()
+    bindServices()
 
     val app = (application as App)
 
@@ -57,7 +67,22 @@ class MainActivity : ComponentActivity() {
         )
       }
     }
+  }
 
+  private fun observeNearbyServiceState(service: NearbyService) {
+    scope.launch {
+      service.observeState().collect() {
+        when (it) {
+          ResourceState.LOADING -> {}
+          ResourceState.IS_READY -> {
+            requestPermissions()
+          }
+        }
+      }
+    }
+  }
+
+  private fun requestPermissions() {
     if (!hasPermissions(this, RequiredPermissions.permissions) &&
       Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
     ) {
@@ -74,13 +99,19 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  override fun onStop() {
-    super.onStop()
-
+  override fun onDestroy() {
+    super.onDestroy()
+    unbindServices()
   }
 
   private fun bindServices() {
+    dataSyncServiceConnection.bind(this)
+    nearbyServiceConnection.bind(this)
+  }
 
+  private fun unbindServices() {
+    dataSyncServiceConnection.unbind(this)
+    nearbyServiceConnection.unbind(this)
   }
 
 }

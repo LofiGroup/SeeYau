@@ -39,11 +39,14 @@ fun ChatListScreen(
   }.collectAsState(initial = initialState)
 
   Surface(
-    modifier = Modifier.systemBarsPadding()
+    modifier = Modifier
+      .fillMaxSize()
   ) {
-    Column {
+    Column(
+      modifier = Modifier.systemBarsPadding()
+    ) {
       TopBar(
-        totalNewMessages = 0,
+        totalNewMessages = state.newMessagesCount,
         onUpButtonClick = onUpButtonClick
       )
 

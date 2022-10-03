@@ -45,13 +45,7 @@ class ProfileScreenViewModel @Inject constructor(
     return true
   }
 
-  override fun getState(): Flow<ProfileScreenState> = state
-
-  override fun setName(name: String) {
-    state.value = state.value.copy(name = name)
-  }
-
-  override fun saveProfile() {
+  private fun saveProfile() {
     val dataIsValid = validateData()
     if (!dataIsValid) return
 
@@ -60,12 +54,19 @@ class ProfileScreenViewModel @Inject constructor(
     }
   }
 
+  override fun getState(): Flow<ProfileScreenState> = state
+
+  override fun setName(name: String) {
+    state.value = state.value.copy(name = name)
+  }
+
   override fun throwError(errorMessage: String) {
     state.value = state.value.copy(errorMessage = errorMessage)
   }
 
   override fun setImageUri(uri: Uri) {
     state.value = state.value.copy(imageUrl = uri.toString())
+    saveProfile()
   }
 
   override fun setVisibility(isVisible: Boolean) {

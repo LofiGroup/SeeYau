@@ -21,4 +21,8 @@
 
   <string name="today">Today</string>
   <string name="yesterday">Yesterday</string>
+
+  <string name="what_do_you_want_to_do">What do you want to do?</string>
+  <string name="write_message">Write message</string>
+  <string name="ignore_user">Don\'t show this user again</string>
 </resources>

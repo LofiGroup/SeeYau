@@ -5,12 +5,15 @@ import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,7 +65,7 @@ fun AddPhotoScreen(
       Text(
         text = stringResource(id = R.string.be_recognizable),
         style = MaterialTheme.typography.h2,
-        modifier = Modifier.padding(top = LocalSpacing.current.extraLarge)
+        modifier = Modifier.padding(top = LocalSpacing.current.large)
       )
     }
 
@@ -70,14 +73,13 @@ fun AddPhotoScreen(
       model = imageUri,
       placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
       errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
+      onClick = { pickImageResult.launch(getDefaultImageCropperOptions()) },
       modifier = Modifier
         .fillMaxWidth(0.7f)
         .aspectRatio(1f)
         .padding(8.dp)
-        .align(Alignment.Center),
-      onClick = {
-        pickImageResult.launch(getDefaultImageCropperOptions())
-      }
+        .align(Alignment.Center)
+
     )
 
     Box(

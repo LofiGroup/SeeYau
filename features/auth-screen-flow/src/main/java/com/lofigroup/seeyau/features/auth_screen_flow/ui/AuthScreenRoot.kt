@@ -39,12 +39,12 @@ fun AuthScreenRoot(
 
   Surface(
     modifier = Modifier
-      .systemBarsPadding()
-      .imePadding()
   ) {
     Column(
       modifier = Modifier
         .fillMaxSize()
+        .systemBarsPadding()
+        .imePadding()
     ) {
       when (state.routePoint) {
         RoutePoint.EnterName -> {

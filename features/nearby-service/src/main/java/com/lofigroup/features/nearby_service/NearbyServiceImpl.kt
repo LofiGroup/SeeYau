@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import com.lofigroup.core.util.Resource
+import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
@@ -18,6 +19,8 @@ import com.sillyapps.core.ui.service.ServiceModuleConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -45,6 +48,8 @@ class NearbyServiceImpl : Service(), NearbyService {
   private val binder = LocalBinder()
 
   private var isInitialized: Boolean = false
+
+  private val state = MutableStateFlow(ResourceState.LOADING)
 
   override fun onBind(p0: Intent?): IBinder {
     return binder
@@ -121,8 +126,13 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun onDestroy() {
     super.onDestroy()
+    Timber.e("Destroying NearbyService")
     dataSyncServiceConnection.unbind(this)
     nearbyBtClient?.stopDiscovery()
     serviceJob.cancel()
+  }
+
+  override fun observeState(): Flow<ResourceState> {
+    return state
   }
 }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +27,8 @@ fun EnterPhoneNumberScreen(
   setPhoneNumber: (String) -> Unit,
   isDone: () -> Unit
 ) {
+
+  val focusManager = LocalFocusManager.current
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -55,6 +58,7 @@ fun EnterPhoneNumberScreen(
       keyboardActions = KeyboardActions(
         onNext = {
           isDone()
+          focusManager.clearFocus()
         }
       ),
       enabled = state != EnterNumberScreenState.LOADING

@@ -43,6 +43,7 @@ class ServiceModuleConnection<T>(
   fun unbind(context: Context) {
     if (!isBound) return
     context.unbindService(connection)
+    boundService = null
   }
 
 }

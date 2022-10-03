@@ -33,12 +33,14 @@ fun ChatMessageItem(
   chatMessage: PrivateMessage
 ) {
   val style =
-    if (chatMessage.authorIsMe) ChatMessageStyle.MyMessageStyle(SolidColor(MaterialTheme.colors.secondary))
-    else ChatMessageStyle.PartnerMessage(LocalExtendedColors.current.secondaryGradient)
+    if (chatMessage.authorIsMe)
+      ChatMessageStyle.MyMessageStyle(SolidColor(MaterialTheme.colors.secondary))
+    else
+      ChatMessageStyle.PartnerMessage(LocalExtendedColors.current.secondaryGradient)
 
   var labelSize by remember {
     mutableStateOf(IntSize(
-      width = if (chatMessage.authorIsMe) 150 else 80,
+      width = if (chatMessage.authorIsMe) 135 else 80,
       height = 64
     ))
   }

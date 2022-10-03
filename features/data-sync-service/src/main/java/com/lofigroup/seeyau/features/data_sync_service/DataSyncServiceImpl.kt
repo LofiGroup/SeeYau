@@ -59,6 +59,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
 
   override fun onDestroy() {
     super.onDestroy()
+    Timber.e("Destroying NearbyService")
     serviceJob.cancel()
   }
 

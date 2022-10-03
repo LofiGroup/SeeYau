@@ -5,5 +5,6 @@ import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 
 data class ChatListScreenState(
   val errorMessage: String? = null,
-  val chats: List<ChatBrief> = listOf()
+  val chats: List<ChatBrief> = listOf(),
+  val newMessagesCount: Int = 0
 )

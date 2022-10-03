@@ -16,6 +16,7 @@ import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ShowToast
 import kotlinx.coroutines.launch
+import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun NavigatorScreen(
@@ -86,14 +87,26 @@ fun NavigatorScreen(
 
   OptionsDialog(
     visible = optionsDialogVisible,
-    onDismiss = { optionsDialogVisible = false }
+    onDismiss = { optionsDialogVisible = false },
+    caption = stringResource(id = CommonR.string.what_do_you_want_to_do)
   ) {
     OptionsDialogItem(
-      text = stringResource(id = R.string.write_message),
-      textColor = MaterialTheme.colors.secondary
+      text = stringResource(id = CommonR.string.write_message),
+      onClick = {
+        state.selectedUser?.let {
+          scope.launch {
+            val chatId = stateHolder.getChatIdByUserId(it.id) ?: return@launch
+            onNavigateToChat(chatId)
+          }
+          optionsDialogVisible = false
+        }
+      }
     )
     OptionsDialogItem(
-      text = stringResource(id = R.string.ignore_user)
+      text = stringResource(id = CommonR.string.ignore_user),
+      onClick = {
+        optionsDialogVisible = false
+      }
     )
   }
 

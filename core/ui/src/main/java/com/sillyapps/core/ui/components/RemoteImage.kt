@@ -31,11 +31,12 @@ fun RemoteImage(
   modifier: Modifier = Modifier,
   placeholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   errorPlaceholderResId: Int = R.drawable.ic_baseline_broken_image_24,
-  onClick: () -> Unit = {},
+  onClick: () -> Unit = NOT_CLICKABLE,
   shape: Shape = CircleShape,
   contentScale: ContentScale = ContentScale.Crop,
   transformations: List<Transformation> = emptyList()
 ) {
+
   AsyncImage(
     model = ImageRequest.Builder(LocalContext.current)
       .data(model)
@@ -48,7 +49,10 @@ fun RemoteImage(
     error = painterResource(id = errorPlaceholderResId),
     modifier = modifier
       .clip(shape)
-      .clickable { onClick() },
+      .clickable(enabled = onClick != NOT_CLICKABLE, onClick = onClick)
+
   )
 
 }
+
+private val NOT_CLICKABLE = {}
