@@ -53,7 +53,7 @@ class NavigatorRepositoryImpl @Inject constructor(
   override fun getNearbyUsers(): Flow<List<NearbyUser>> {
     return userDao.observeUsers().flatMapLatest { users ->
       combine(users.map { user ->
-        chatDao.getNewUserMessages(user.id).map { newMessages ->
+        chatDao.observeUserNewMessages(user.id).map { newMessages ->
           user.toNearbyUser(newMessages)
         }
       }) { it.asList() }

@@ -18,9 +18,12 @@ fun ProfileScreenState.toProfileUpdate() = ProfileUpdate(
   imageUrl = imageUrl
 )
 
-fun ProfileScreenState.applyUpdates(profile: Profile, visibility: Visibility) = copy(
+fun ProfileScreenState.applyProfileUpdates(profile: Profile) = copy(
   id = profile.id,
   name = profile.name,
-  imageUrl = profile.imageUrl ?: "",
+  imageUrl = profile.imageUrl ?: ""
+)
+
+fun ProfileScreenState.applyVisibilityUpdates(visibility: Visibility) = copy(
   isVisible = visibility.isVisible
 )

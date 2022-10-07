@@ -11,18 +11,15 @@ data class PrivateMessage(
   val message: String,
   val dateTime: DateAndTime,
   val isRead: Boolean,
-
-  val positionInList: Int
 )
 
-fun ChatMessage.toPrivateMessage(positionInList: Int, resources: Resources): PrivateMessage {
+fun ChatMessage.toPrivateMessage(resources: Resources): PrivateMessage {
   return PrivateMessage(
     authorIsMe = author == 0L,
     message = message,
     dateTime = getLocalizedDatedAndTimeFromMillis(createdIn, resources),
     id = id,
-    isRead = isRead,
-    positionInList = positionInList
+    isRead = isRead
   )
 }
 
@@ -40,6 +37,5 @@ fun getPreviewPrivateMessage(
     dateTime = DateAndTime(date, time),
     id = id,
     isRead = isRead,
-    positionInList = 0
   )
 }

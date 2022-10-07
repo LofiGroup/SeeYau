@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat
 
 import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.toDomainModel
 import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketListener
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
@@ -10,10 +11,12 @@ import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
+import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -22,7 +25,8 @@ class ChatRepositoryImpl @Inject constructor(
   private val chatDao: ChatDao,
   private val userDao: UserDao,
   private val ioDispatcher: CoroutineDispatcher,
-  private val chatWebSocket: ChatWebSocketListener
+  private val chatWebSocket: ChatWebSocketListener,
+  private val eventsDataSource: EventsDataSource
 ): ChatRepository {
 
   override suspend fun pullData() {
@@ -37,18 +41,19 @@ class ChatRepositoryImpl @Inject constructor(
     chatWebSocket.markChatAsRead(chatId)
   }
 
-  override fun getChats(): Flow<List<ChatBrief>> {
-    return chatDao.getChats().flatMapLatest { chats ->
+  override fun observeChats(): Flow<List<ChatBrief>> {
+    return chatDao.observeChats().flatMapLatest { chats ->
       combine(chats.map { chat ->
         combine(
           userDao.observeUser(chat.partnerId),
           chatDao.observeLastMessage(chat.id),
-          chatDao.getNewUserMessages(chat.partnerId)
+          chatDao.observeUserNewMessages(chat.partnerId)
         ) { user, lastMessage, newMessages ->
+          Timber.e("New messages: $newMessages, chat_id = ${chat.id}")
           ChatBrief(
             id = chat.id,
             partner = user.toDomainModel(),
-            lastMessage = lastMessage?.toDomainModel(chat.partnerLastVisited),
+            lastMessage = lastMessage?.toDomainModel(),
             newMessagesCount = newMessages.size
           )
         }
@@ -56,19 +61,23 @@ class ChatRepositoryImpl @Inject constructor(
     }
   }
 
-  override fun getChat(chatId: Long): Flow<Chat> {
-    return chatDao.getChat(chatId).flatMapLatest { chat ->
-      combine(
-        userDao.observeUser(chat.partnerId),
-        chatDao.getChatMessages(chat.id)
-      ) { user, messages ->
+  override fun observeChat(chatId: Long): Flow<Chat> {
+    return chatDao.observeChat(chatId).flatMapLatest { chat ->
+      chatDao.observeChatMessages(chat.id).map { messages ->
         Chat(
           id = chat.id,
-          partner = user.toDomainModel(),
-          messages = messages.map { it.toDomainModel(chat.partnerLastVisited)}
+          messages = messages.map { it.toDomainModel()}
         )
       }
     }
+  }
+
+  override fun observeChatEvents(chatId: Long): Flow<ChatEvent> {
+    return eventsDataSource.observe(chatId)
+  }
+
+  override suspend fun getUserIdByChatId(chatId: Long): Long? {
+    return chatDao.getUserIdFromChatId(chatId)
   }
 
   override suspend fun getChatIdByUserId(userId: Long): Long? {

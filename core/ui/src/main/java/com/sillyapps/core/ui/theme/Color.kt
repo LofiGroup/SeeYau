@@ -2,11 +2,13 @@ package com.sillyapps.core.ui.theme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -30,46 +32,14 @@ data class ExtendedColors(
   val disabled: Color = DarkGray,
   val primaryGradient: Brush = BluePurpleGradient,
   val secondaryGradient: Brush = PurpleGradient,
+  val secondaryVerticalGradient: Brush = PurpleGradient,
   val backgroundGradient: Brush = PurpleVerticalGradient,
   val lightBackground: Color = DarkerGray,
-  val darkBackground: Color = DarkestGray
+  val darkBackground: Color = DarkestGray,
+  val secondaryAsBrush: Brush
 )
 
+
 val LocalExtendedColors = staticCompositionLocalOf {
-  ExtendedColors()
-}
-
-@Preview
-@Composable
-fun PreviewBluePurpleGradient() {
-  Box(Modifier
-    .fillMaxWidth()
-    .height(100.dp)
-    .background(BluePurpleGradient)
-  ) {
-
-  }
-}
-
-@Preview
-@Composable
-fun PreviewPurpleGradient() {
-  Box(Modifier
-    .fillMaxWidth()
-    .height(100.dp)
-    .background(PurpleGradient)
-  ) {
-
-  }
-}
-
-@Preview
-@Composable
-fun PreviewBackgroundGradient() {
-  Box(Modifier
-    .fillMaxSize()
-    .background(PurpleVerticalGradient)
-  ) {
-
-  }
+  ExtendedColors(secondaryAsBrush = SolidColor(SkyBlueVariant))
 }

@@ -26,6 +26,7 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import timber.log.Timber
 import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
@@ -128,10 +129,6 @@ fun ProfileScreenPreview() {
 
     override fun setName(name: String) {
       state.value = state.value.copy(name = name)
-    }
-
-    override fun saveProfile() {
-
     }
 
     override fun throwError(errorMessage: String) {

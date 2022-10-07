@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -13,7 +14,12 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 @Database(
   entities = [
     UserEntity::class, MessageEntity::class, ChatEntity::class
-  ], version = 11, exportSchema = false
+  ],
+  version = 12,
+  exportSchema = true,
+  autoMigrations = [
+
+  ]
 )
 abstract class AppDatabase : RoomDatabase() {
 

@@ -3,6 +3,7 @@ package com.lofigroup.seayau.common.ui.components
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -43,7 +44,11 @@ fun OptionsDialog(
         modifier = Modifier
           .statusBarsPadding()
           .padding(LocalSpacing.current.medium)
-          .clickable { onDismiss() }
+          .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = onDismiss
+          )
       ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(

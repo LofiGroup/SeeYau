@@ -15,10 +15,11 @@ data class ChatMessageDto(
   val author: Long
 )
 
-fun ChatMessageDto.toMessageEntity(myId: Long) = MessageEntity(
+fun ChatMessageDto.toMessageEntity(myId: Long, readIn: Long) = MessageEntity(
   id = id,
   message = message,
   createdIn = createdIn,
   author = if (author == myId) 0 else author,
-  chatId = chatId
+  chatId = chatId,
+  isRead = createdIn < readIn
 )

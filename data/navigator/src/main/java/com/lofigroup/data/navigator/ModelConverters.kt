@@ -12,5 +12,5 @@ fun UserEntity.toNearbyUser(newMessages: List<MessageEntity>) = NearbyUser(
   imageUrl = imageUrl,
   lastContact = lastContact,
   isOnline = lastConnection == Time.IS_ONLINE,
-  newMessages = newMessages.map { it.toDomainModel(System.currentTimeMillis()) }
+  newMessages = newMessages.map { it.toDomainModel() }
 )

@@ -38,8 +38,11 @@ android {
 
 dependencies {
   implementation project(":common:ui")
+
   implementation project(":domain:navigator")
   implementation project(":domain:chat")
+
+  implementation project(":features:chat-screen")
 
   implementation appCompat
   implementation coreKtx

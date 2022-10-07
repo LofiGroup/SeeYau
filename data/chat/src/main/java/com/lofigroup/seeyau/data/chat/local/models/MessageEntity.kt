@@ -19,16 +19,18 @@ data class MessageEntity(
   @ColumnInfo(index = true) val chatId: Long,
   val message: String,
   @ColumnInfo(index = true) val author: Long,
-  val createdIn: Long
+  val createdIn: Long,
+  @ColumnInfo(defaultValue = "0")
+  val isRead: Boolean
 )
 
-fun MessageEntity.toDomainModel(partnerLastVisit: Long): ChatMessage {
+fun MessageEntity.toDomainModel(): ChatMessage {
   return ChatMessage(
     id = id,
     message = message,
     author = author,
     createdIn = createdIn,
-    isRead = partnerLastVisit > createdIn
+    isRead = isRead
   )
 }
 

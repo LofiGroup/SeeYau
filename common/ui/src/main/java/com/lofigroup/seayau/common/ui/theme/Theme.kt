@@ -5,6 +5,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import com.sillyapps.core.ui.theme.*
 
 private val DarkColorPalette = darkColors(
@@ -20,7 +21,7 @@ fun AppTheme(
   content: @Composable () -> Unit
 ) {
   CompositionLocalProvider(
-    LocalExtendedColors provides extendedColors,
+    LocalExtendedColors provides extendedColors(SolidColor(MaterialTheme.colors.secondary)),
     LocalSpacing provides Spacing(),
     LocalIconsSize provides IconsSize(),
     LocalSize provides Size()

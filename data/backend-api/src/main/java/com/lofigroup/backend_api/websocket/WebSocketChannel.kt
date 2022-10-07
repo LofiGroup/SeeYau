@@ -3,7 +3,7 @@ package com.lofigroup.backend_api.websocket
 import com.lofigroup.backend_api.websocket.models.WebSocketResponse
 import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.sillyapps.core.di.AppScope
-import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.*
 import timber.log.Timber
@@ -19,12 +19,12 @@ class WebSocketChannel @Inject constructor(
       .header("origin", "wss://${SeeYauApiConstants.baseUrl}")
       .build()
 
-  private val webSocket: WebSocket = client.newWebSocket(wsChatRequest, this)
+  private var mWebSocket: WebSocket? = client.newWebSocket(wsChatRequest, this)
 
   private val listeners = mutableMapOf<String, WebSocketChannelListener>()
 
   fun disconnect() {
-    webSocket.close(WEBSOCKET_NORMAL_SHUTDOWN_CODE, "Client-side shutdown")
+    mWebSocket?.close(WEBSOCKET_NORMAL_SHUTDOWN_CODE, "Client-side shutdown")
   }
 
   fun registerListener(type: String, listener: WebSocketChannelListener) {
@@ -51,11 +51,14 @@ class WebSocketChannel @Inject constructor(
 
   override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
     Timber.e("Websocket failed: ${t.message}")
+
+    mWebSocket = client.newWebSocket(wsChatRequest, this)
   }
 
-  fun sendMessage(request: String) {
-    Timber.d("Sending message through websocket: $request")
-    webSocket.send(request)
+  fun sendMessage(type: String, request: String) {
+    val message = "{\"type\":\"$type\",\"data\":$request}"
+    Timber.d("Sending message through websocket: $message")
+    mWebSocket?.send(message)
   }
 
   companion object {

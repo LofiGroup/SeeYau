@@ -32,8 +32,7 @@ fun UsersList(
   val metUsers = users.subList(splitIndex, users.size)
 
   LazyRow(
-    verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.padding(bottom = LocalSpacing.current.medium)
+    verticalAlignment = Alignment.CenterVertically
   ) {
     item {
       Column(

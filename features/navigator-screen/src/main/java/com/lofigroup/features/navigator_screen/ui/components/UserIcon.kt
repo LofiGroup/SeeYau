@@ -1,17 +1,22 @@
 package com.lofigroup.features.navigator_screen.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.R
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 
@@ -19,9 +24,13 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 fun UserIcon(
   imageUri: String?,
   isOnline: Boolean,
-  onClick: () -> Unit
+  isSelected: Boolean,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-  Box() {
+  Box(
+    modifier = modifier
+  ) {
     RemoteImage(
       model = imageUri,
       placeholderResId = R.drawable.ic_baseline_account_circle_24,
@@ -29,8 +38,15 @@ fun UserIcon(
       onClick = onClick,
       modifier = Modifier
         .size(LocalSize.current.large)
-        .padding(LocalSpacing.current.small)
     )
+
+    if (isSelected) {
+      Box(modifier = Modifier
+        .size(LocalSize.current.large)
+        .border(width = 4.dp, brush = LocalExtendedColors.current.secondaryVerticalGradient, shape = CircleShape)
+      ) {
+      }
+    }
 
     if (isOnline) {
       Image(
@@ -40,7 +56,7 @@ fun UserIcon(
         contentDescription = null,
         modifier = Modifier
           .align(Alignment.BottomEnd)
-          .padding(end = LocalSpacing.current.medium)
+          .padding(end = LocalSpacing.current.small)
       )
     }
   }

@@ -9,12 +9,14 @@ import com.lofigroup.seeyau.domain.settings.model.Visibility
 import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
 import com.lofigroup.seeyau.domain.settings.usecases.SetVisibilityUseCase
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
-import com.lofigroup.seeyau.features.profile_screen.model.applyUpdates
+import com.lofigroup.seeyau.features.profile_screen.model.applyProfileUpdates
+import com.lofigroup.seeyau.features.profile_screen.model.applyVisibilityUpdates
 import com.lofigroup.seeyau.features.profile_screen.model.toProfileUpdate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileScreenViewModel @Inject constructor(
@@ -27,11 +29,23 @@ class ProfileScreenViewModel @Inject constructor(
   private val state = MutableStateFlow(ProfileScreenState())
 
   init {
+    observeProfileUpdates()
+    observeVisibilityUpdates()
+  }
+
+  private fun observeVisibilityUpdates() {
     viewModelScope.launch {
-      combine(getProfileUseCase(), getVisibilityUseCase()) { profile, isVisible ->
-        state.value.applyUpdates(profile, isVisible)
-      }.collect() {
-        state.value = it
+      getVisibilityUseCase().collect() {
+        state.value = state.value.applyVisibilityUpdates(it)
+      }
+    }
+  }
+
+  private fun observeProfileUpdates() {
+    viewModelScope.launch {
+      getProfileUseCase().collect() {
+        Timber.e("Profile updated: $it")
+        state.value = state.value.applyProfileUpdates(it)
       }
     }
   }
@@ -61,6 +75,7 @@ class ProfileScreenViewModel @Inject constructor(
   }
 
   override fun throwError(errorMessage: String) {
+    Timber.e("Error in profile screen: $errorMessage")
     state.value = state.value.copy(errorMessage = errorMessage)
   }
 

@@ -1,6 +1,7 @@
 package com.lofigroup.features.navigator_screen.api
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.navigator_screen.di.DaggerNavigatorScreenComponent
 import com.lofigroup.features.navigator_screen.ui.NavigatorScreen
@@ -19,6 +20,7 @@ fun NavigatorScreenNavigation(
   val component = DaggerNavigatorScreenComponent.builder()
     .navigatorComponent(navigatorComponent)
     .chatComponent(chatComponent)
+    .resources(LocalContext.current.resources)
     .build()
 
   val viewModel = daggerViewModel {

@@ -1,7 +1,6 @@
 package com.lofigroup.seeyau.data.chat
 
 import com.lofigroup.seeyau.data.chat.local.ChatDao
-import com.lofigroup.seeyau.data.chat.local.models.toDomainModel
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatUpdatesDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.toChatEntity
@@ -14,9 +13,6 @@ import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -59,13 +55,13 @@ class ChatDataHandler @Inject constructor(
 
   fun saveMessage(webSocketResponse: NewMessageWsResponse) {
     ioScope.launch(ioDispatcher) {
-      chatDao.insertMessage(webSocketResponse.messageDto.toMessageEntity(myId = profileDataSource.getMyId()))
+      chatDao.insertOneMessages(webSocketResponse.messageDto, myId = profileDataSource.getMyId())
     }
   }
 
   private suspend fun insertUpdates(chatUpdates: ChatUpdatesDto) {
     val chat = chatUpdates.toChatEntity()
-    val messages = chatUpdates.newMessages.map { it.toMessageEntity(myId = profileDataSource.getMyId()) }
+    val messages = chatUpdates.newMessages.map { it.toMessageEntity(myId = profileDataSource.getMyId(), readIn = chat.partnerLastVisited) }
     chatDao.insertChat(chat)
     chatDao.insertMessages(messages)
   }

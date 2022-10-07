@@ -93,6 +93,7 @@ fun AppNavHost(
       else {
         ChatScreenNavigation(
           chatComponent = appModules.chatModule.domainComponent,
+          profileComponent = appModules.profileModule.domainComponent,
           chatId = chatId,
           onUpButtonClick = {
             navController.navigateBackTo(Screen.ChatListScreen.route)

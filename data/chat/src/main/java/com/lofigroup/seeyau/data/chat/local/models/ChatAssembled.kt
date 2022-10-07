@@ -17,17 +17,4 @@ data class ChatAssembled(
   val messages: List<MessageEntity>
 )
 
-data class ChatDetailed(
-  val chat: ChatEntity,
-  val partner: UserEntity,
-  val messages: List<MessageEntity>
-)
-
-fun ChatAssembled.toDomainModel(): Chat {
-  return Chat(
-    id = chat.id,
-    partner = partner.toDomainModel(),
-    messages = messages.map { it.toDomainModel(chat.partnerLastVisited) }
-  )
-}
 

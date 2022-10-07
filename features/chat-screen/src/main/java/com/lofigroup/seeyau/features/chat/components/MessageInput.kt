@@ -39,11 +39,6 @@ fun MessageInput(
     modifier = Modifier.padding(LocalSpacing.current.medium),
     verticalAlignment = Alignment.CenterVertically
   ) {
-    Image(
-      painter = painterResource(id = R.drawable.ic_scab_icon),
-      contentDescription = null
-    )
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
     TextField(
       value = message,
@@ -59,21 +54,29 @@ fun MessageInput(
         }
       ),
       colors = TextFieldDefaults.textFieldColors(
-        backgroundColor = Color.Transparent
+        backgroundColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent
       ),
-      label = {
+      placeholder = {
         Text(text = stringResource(id = R.string.message))
-      }
+      },
+      leadingIcon = {
+        Image(
+          painter = painterResource(id = R.drawable.ic_scab_icon),
+          contentDescription = null
+        )
+      },
+      trailingIcon = {
+        Icon(
+          imageVector = Icons.Filled.Send,
+          contentDescription = null,
+          modifier = Modifier.clickable {
+            sendMessage()
+          }
+        )
+      },
     )
 
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
-
-    Icon(
-      imageVector = Icons.Filled.Send,
-      contentDescription = null,
-      modifier = Modifier.clickable {
-        sendMessage()
-      }
-    )
   }
 }

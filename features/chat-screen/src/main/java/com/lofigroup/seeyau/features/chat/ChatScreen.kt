@@ -99,6 +99,6 @@ private fun getPreviewModel(): ChatScreenState {
       getPreviewPrivateMessage(),
       getPreviewPrivateMessage(authorIsMe = false),
       getPreviewPrivateMessage(message = "Very very very very very very very very very very long message.")
-    )
+    ).groupBy { it.dateTime.date }
   )
 }

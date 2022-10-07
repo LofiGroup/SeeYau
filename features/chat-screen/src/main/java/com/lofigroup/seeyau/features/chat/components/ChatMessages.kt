@@ -1,9 +1,6 @@
 package com.lofigroup.seeyau.features.chat.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,58 +10,67 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.lofigroup.seeyau.features.chat.model.PrivateMessage
+import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.lastVisibleItemKey
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 @Composable
 fun ColumnScope.ChatMessages(
-  items: List<PrivateMessage>
+  items: Map<String, List<PrivateMessage>>
 ) {
   val listState = rememberLazyListState()
 
-  Box(modifier = Modifier
-    .weight(1f)) {
-    LazyColumn(
-      reverseLayout = true,
-      state = listState
-    ) {
-      items.groupBy { it.dateTime.date }.forEach { (date, messages) ->
-        items(
-          items = messages,
-          key = { it.positionInList },
-          contentType = { "chatMessageItem" }
-        ) { message ->
-          ChatMessageItem(
-            chatMessage = message
-          )
-        }
-        item(
-          key = date,
-          contentType = "dateHeader"
-        ) {
-          DateHeader(date = date)
+  LaunchedEffect(key1 = items) {
+    Timber.e("Scrolling to bottom...")
+    listState.animateScrollToItem(0)
+  }
+
+  ChatMessageStyleProvider() {
+    Box(modifier = Modifier
+      .weight(1f)) {
+      LazyColumn(
+        reverseLayout = true,
+        state = listState,
+        modifier = Modifier.fillMaxSize()
+      ) {
+        items.forEach { (date, messages) ->
+          items(
+            items = messages,
+            key = { "${date}_${it.id}" },
+            contentType = { "chatMessageItem" }
+          ) { message ->
+            ChatMessageItem(
+              chatMessage = message
+            )
+          }
+          item(
+            contentType = "dateHeader"
+          ) {
+            DateHeader(date = date)
+          }
         }
       }
+
+      val lastItemKey = listState.lastVisibleItemKey()
+      val date = if (lastItemKey is String)
+        lastItemKey.split("_")[0]
+      else
+        null
+
+
+      DateStickyLabel(
+        date = date,
+        scrollInProgress = listState.isScrollInProgress
+      )
     }
-
-    val lastItemKey = listState.lastVisibleItemKey()
-    val item = if (lastItemKey is Int)
-      items[lastItemKey]
-    else
-      null
-
-
-    DateStickyLabel(
-      item = item,
-      scrollInProgress = listState.isScrollInProgress
-    )
   }
 }
 
 @Composable
 fun DateStickyLabel(
-  item: PrivateMessage?,
+  date: String?,
   scrollInProgress: Boolean
 ) {
   var isVisible by remember {
@@ -80,8 +86,8 @@ fun DateStickyLabel(
     }
   }
 
-  if (item != null && isVisible)
-    DateHeader(date = item.dateTime.date)
+  if (date != null && isVisible)
+    DateHeader(date = date)
 }
 
 @Composable

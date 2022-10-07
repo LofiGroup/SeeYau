@@ -30,6 +30,7 @@ fun ColumnScope.UserScreen(
   ) {
     UserScreenControls(
       userId = user.id,
+      hasNewMessages = user.newMessages.isNotEmpty(),
       isInFullScreenMode = isInFullScreenMode,
       onToggleFullScreenMode = onToggleFullScreenMode,
       onMoreButtonClicked = onMoreButtonClicked,
@@ -43,6 +44,7 @@ fun ColumnScope.UserScreen(
 @Composable
 fun BoxScope.UserScreenControls(
   userId: Long,
+  hasNewMessages: Boolean,
   isInFullScreenMode: Boolean,
   onToggleFullScreenMode: () -> Unit,
   onMoreButtonClicked: () -> Unit,
@@ -68,11 +70,12 @@ fun BoxScope.UserScreenControls(
       )
     }
     ControlWrapper {
-      ControlItem(
-        resId = R.drawable.ic_stm_1_icon,
-        onClick = onShowChat,
-        alignment = Alignment.CenterStart
-      )
+      if (hasNewMessages)
+        ControlItem(
+          resId = R.drawable.ic_stm_1_icon,
+          onClick = onShowChat,
+          alignment = Alignment.CenterStart
+        )
       ControlItem(
         resId = R.drawable.ic_sfm_2_icon,
         onClick = { onGoToChat(userId) }
