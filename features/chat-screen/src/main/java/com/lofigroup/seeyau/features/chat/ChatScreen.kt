@@ -1,27 +1,26 @@
 package com.lofigroup.seeyau.features.chat
 
-import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat.components.ChatMessages
 import com.lofigroup.seeyau.features.chat.components.MessageInput
 import com.lofigroup.seeyau.features.chat.components.TopBar
+import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
-import com.lofigroup.seeyau.features.chat.model.PrivateMessage
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
+import com.sillyapps.core.ui.components.showToast
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun ChatScreen(
@@ -33,6 +32,22 @@ fun ChatScreen(
   val state by remember(stateHolder) {
     stateHolder.getChatState()
   }.collectAsState(initial = initialState)
+
+  val context = LocalContext.current
+  val listState = rememberLazyListState()
+
+  LaunchedEffect(key1 = Unit) {
+    stateHolder.getCommands().collect {
+      when (it) {
+        is ChatScreenCommand.ShowToast -> {
+          showToast(context, it.message)
+        }
+        ChatScreenCommand.ToLatestMessage -> {
+          listState.animateScrollToItem(0)
+        }
+      }
+    }
+  }
 
   Column(
     modifier = Modifier
@@ -46,7 +61,8 @@ fun ChatScreen(
     )
 
     ChatMessages(
-      items = state.messages
+      items = state.messages,
+      listState = listState
     )
 
     MessageInput(
@@ -70,6 +86,10 @@ fun ChatScreenPreview() {
     
     override fun getChatState(): Flow<ChatScreenState> {
       return mState
+    }
+
+    override fun getCommands(): Flow<ChatScreenCommand> {
+      return flow {  }
     }
 
     override fun setMessage(message: String) {

@@ -44,7 +44,6 @@ class ProfileScreenViewModel @Inject constructor(
   private fun observeProfileUpdates() {
     viewModelScope.launch {
       getProfileUseCase().collect() {
-        Timber.e("Profile updated: $it")
         state.value = state.value.applyProfileUpdates(it)
       }
     }

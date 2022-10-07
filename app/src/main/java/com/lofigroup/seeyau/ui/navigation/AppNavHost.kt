@@ -72,7 +72,7 @@ fun AppNavHost(
       ProfileScreenNavigation(
         profileComponent = appModules.profileModule.domainComponent,
         settingsComponent = appModules.settingsModule.domainComponent,
-        onUpButtonClick = { navController.navigateToTopDestination(Screen.NavigatorScreen.route) }
+        onUpButtonClick = { navController.popBackStack() }
       )
     }
 

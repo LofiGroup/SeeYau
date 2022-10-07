@@ -6,6 +6,7 @@ import com.lofigroup.seeyau.data.chat.ChatDataHandler
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
+import com.lofigroup.seeyau.data.chat.local.EventsDataSourceImpl
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.MarkChatAsRead
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.WebSocketRequest
@@ -13,12 +14,9 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.*
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonWriter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -42,7 +40,6 @@ class ChatWebSocketListener @Inject constructor(
 
   override fun onMessage(message: String) {
     val response = ChatWebSocketResponse.adapter.fromJson(message) ?: ErrorWsResponse("Malformed json: $message")
-    Timber.d("Successfully parsed response")
 
     when (response) {
       is ErrorWsResponse -> Timber.e(response.errorMessage)

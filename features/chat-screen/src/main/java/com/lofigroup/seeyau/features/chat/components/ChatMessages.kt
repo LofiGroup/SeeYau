@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.features.chat.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
@@ -18,14 +19,9 @@ import timber.log.Timber
 
 @Composable
 fun ColumnScope.ChatMessages(
+  listState: LazyListState,
   items: Map<String, List<PrivateMessage>>
 ) {
-  val listState = rememberLazyListState()
-
-  LaunchedEffect(key1 = items) {
-    Timber.e("Scrolling to bottom...")
-    listState.animateScrollToItem(0)
-  }
 
   ChatMessageStyleProvider() {
     Box(modifier = Modifier

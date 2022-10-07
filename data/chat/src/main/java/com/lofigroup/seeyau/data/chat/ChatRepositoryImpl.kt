@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.data.chat
 
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
+import com.lofigroup.seeyau.data.chat.local.EventsDataSourceImpl
 import com.lofigroup.seeyau.data.chat.local.models.toDomainModel
 import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketListener
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
@@ -16,7 +17,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -49,7 +49,6 @@ class ChatRepositoryImpl @Inject constructor(
           chatDao.observeLastMessage(chat.id),
           chatDao.observeUserNewMessages(chat.partnerId)
         ) { user, lastMessage, newMessages ->
-          Timber.e("New messages: $newMessages, chat_id = ${chat.id}")
           ChatBrief(
             id = chat.id,
             partner = user.toDomainModel(),

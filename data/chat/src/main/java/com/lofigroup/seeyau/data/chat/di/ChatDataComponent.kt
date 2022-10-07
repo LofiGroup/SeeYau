@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @AppScope
-@Component(modules = [IOModule::class, RepositoryModule::class, ApiModule::class])
+@Component(modules = [IOModule::class, RepositoryModule::class, ApiModule::class, DataDIModule::class])
 interface ChatDataComponent {
 
   fun getRepository(): ChatRepository

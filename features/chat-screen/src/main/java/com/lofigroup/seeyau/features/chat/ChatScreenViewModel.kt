@@ -7,9 +7,11 @@ import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.chat.usecases.*
 import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
+import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,6 +32,7 @@ class ChatScreenViewModel @Inject constructor(
 ) : ViewModel(), ChatScreenStateHolder {
 
   private val state = MutableStateFlow(ChatScreenState())
+  private val commands = MutableSharedFlow<ChatScreenCommand>()
 
   init {
     viewModelScope.launch {
@@ -41,6 +44,10 @@ class ChatScreenViewModel @Inject constructor(
   }
 
   override fun getChatState(): Flow<ChatScreenState> = state
+
+  override fun getCommands(): Flow<ChatScreenCommand> {
+    return commands
+  }
 
   override fun sendMessage() {
     val message = state.value.message
@@ -93,6 +100,7 @@ class ChatScreenViewModel @Inject constructor(
           }
           is NewChatMessage -> {
             markChatAsReadUseCase(chatId)
+            commands.emit(ChatScreenCommand.ToLatestMessage)
           }
         }
       }
