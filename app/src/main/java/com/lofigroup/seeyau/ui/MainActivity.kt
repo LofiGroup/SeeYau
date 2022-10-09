@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     startServices()
+    requestPermissions()
     bindServices()
 
     val app = (application as App)
@@ -75,7 +76,7 @@ class MainActivity : ComponentActivity() {
         when (it) {
           ResourceState.LOADING -> {}
           ResourceState.IS_READY -> {
-            requestPermissions()
+
           }
         }
       }
