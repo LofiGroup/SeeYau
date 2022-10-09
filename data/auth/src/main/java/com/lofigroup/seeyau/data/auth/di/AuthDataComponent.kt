@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.auth.di
 
 import com.lofigroup.backend_api.TokenStore
+import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
@@ -18,6 +19,9 @@ interface AuthDataComponent {
 
   @Component.Builder
   interface Builder {
+
+    @BindsInstance
+    fun moduleStateHolder(stateHolder: ResourceStateHolder): Builder
 
     @BindsInstance
     fun baseRetrofit(retrofit: Retrofit): Builder

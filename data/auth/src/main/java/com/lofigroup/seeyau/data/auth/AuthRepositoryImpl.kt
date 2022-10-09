@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.data.auth
 
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.Resource
+import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.data.auth.model.toAccessRequest
 import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
   private val authApi: AuthApi,
   private val ioDispatcher: CoroutineDispatcher,
-  private val tokenStore: TokenStore
+  private val tokenStore: TokenStore,
+  private val moduleStateHolder: ResourceStateHolder
 ): AuthRepository {
 
   private var authOnlyToken: String? = null
@@ -57,17 +59,19 @@ class AuthRepositoryImpl @Inject constructor(
   }
 
   override suspend fun check() = withContext(ioDispatcher) {
-    return@withContext try {
+    try {
       retrofitErrorHandler(authApi.check())
-      Result.Success
     } catch (e: EmptyResponseBodyException) {
-      Result.Success
+      moduleStateHolder.setIsReady()
+      return@withContext Result.Success
     } catch (e: HttpException) {
-      if (e.code() in listOf(401, 404)) {
+      return@withContext if (e.code() in listOf(401, 404)) {
         Result.Error(e.message())
       } else Result.Undefined(getErrorMessage(e))
     } catch (e: Exception) {
-      Result.Undefined(getErrorMessage(e))
+      return@withContext Result.Undefined(getErrorMessage(e))
     }
+
+    return@withContext Result.Undefined("Unknown error")
   }
 }
