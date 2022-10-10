@@ -36,6 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
       val response = retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
 
       tokenStore.saveToken(response.toTokenDataModel())
+      moduleStateHolder.setIsReady()
       Resource.Success(Unit)
     }
     catch (e: Exception) {

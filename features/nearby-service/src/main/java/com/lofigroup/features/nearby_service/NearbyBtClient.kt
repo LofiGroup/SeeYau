@@ -98,7 +98,6 @@ class NearbyBtClient @Inject constructor(
         .build()
 
       advertiseData = data
-      startDiscovery()
     }
   }
 
@@ -149,8 +148,8 @@ class NearbyBtClient @Inject constructor(
   }
 
   fun startDiscovery() {
-    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
     if (isDiscovering) return
+    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
 
     scan()
     advertise()

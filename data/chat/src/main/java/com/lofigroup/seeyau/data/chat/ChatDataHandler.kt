@@ -8,6 +8,7 @@ import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.NewMessageWsResponse
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
@@ -25,6 +26,7 @@ class ChatDataHandler @Inject constructor(
   private val userDao: UserDao,
   private val ioDispatcher: CoroutineDispatcher,
   private val profileDataSource: ProfileDataSource,
+  private val profileRepository: ProfileRepository,
   private val ioScope: CoroutineScope
 ) {
   suspend fun pullData() = withContext(ioDispatcher) {
@@ -41,10 +43,11 @@ class ChatDataHandler @Inject constructor(
     }
   }
 
-  fun pullChatData(chatId: Long) {
+  fun pullChatData(chatId: Long, fromDate: Long = 0L) {
     ioScope.launch(ioDispatcher) {
       try {
-        val response = retrofitErrorHandler(chatApi.getChatData(chatId))
+        val response = retrofitErrorHandler(chatApi.getChatData(chatId = chatId, fromDate = fromDate))
+        profileRepository.pullUserData(response.partnerId)
         insertUpdates(response)
       }
       catch (e: Exception) {

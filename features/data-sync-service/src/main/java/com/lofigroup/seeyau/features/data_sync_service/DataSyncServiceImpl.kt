@@ -44,6 +44,8 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   override fun onCreate() {
     super.onCreate()
 
+    Timber.e("Creating datasync service")
+
     val authModule = ((application as AuthModuleProvider).provideAuthModule())
     scope.launch {
       authModule.observeState().collect() {
