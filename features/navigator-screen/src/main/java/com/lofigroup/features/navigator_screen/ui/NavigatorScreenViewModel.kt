@@ -40,14 +40,22 @@ class NavigatorScreenViewModel @Inject constructor(
     state.apply {
       val pos = value.sortedUsers.indexOfFirst { it.id == id }
 
-      val unselect = (value.selectedUserPos == pos)
+      value = if (value.selectedUserPos != pos) {
+        value.copy(
+          sortedUsers = value.sortedUsers.mapIndexed() { index, nearbyUser ->
+            nearbyUser.copy(isSelected = index == pos)
+          },
+          selectedUserPos = pos
+        )
+      } else {
+        value.copy(
+          sortedUsers = value.sortedUsers.transformItemAt(pos) {
+            it.copy(isSelected = false)
+          },
+          selectedUserPos = NavigatorScreenState.NO_USER_SELECTED
+        )
+      }
 
-      value = value.copy(
-        sortedUsers = value.sortedUsers.transformItemAt(pos) { user ->
-          user.copy(isSelected = !unselect)
-        },
-        selectedUserPos = if (unselect) NavigatorScreenState.NO_USER_SELECTED else pos
-      )
     }
   }
 
@@ -60,7 +68,13 @@ class NavigatorScreenViewModel @Inject constructor(
   }
 
   override fun onShowChat() {
-    state.apply { value = value.copy(chatIsVisible = true) }
+    state.apply {
+      value = value.copy(
+        sortedUsers = value.sortedUsers.transformItemAt(value.selectedUserPos) {
+          it.copy(messagesIsCollapsed = true)
+        }
+      )
+    }
   }
 
   override suspend fun getChatIdByUserId(userId: Long): Long? {

@@ -20,7 +20,9 @@ data class ChatMessageStyle(
   val brush: Brush,
   val alignment: Alignment,
   val startPadding: Dp,
-  val endPadding: Dp
+  val endPadding: Dp,
+  val datePadding: Dp,
+  val hasMessageMark: Boolean
 )
 
 @Composable
@@ -48,15 +50,19 @@ val LocalChatMessageStyles = staticCompositionLocalOf {
 
 private val myMessageStyleDefault = ChatMessageStyle(
   alignment = Alignment.CenterEnd,
-  startPadding = 32.dp,
+  startPadding = 64.dp,
   endPadding = 16.dp,
-  brush = Brush.linearGradient()
+  brush = Brush.linearGradient(),
+  datePadding = 50.dp,
+  hasMessageMark = true
 )
 
 private val partnerMessageStyleDefault = ChatMessageStyle(
   alignment = Alignment.CenterStart,
   startPadding = 16.dp,
-  endPadding = 32.dp,
-  brush = Brush.linearGradient()
+  endPadding = 64.dp,
+  brush = Brush.linearGradient(),
+  datePadding = 30.dp,
+  hasMessageMark = false
 )
 

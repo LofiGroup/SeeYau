@@ -11,9 +11,11 @@ data class UserItemUIModel(
   val name: String,
   val isOnline: Boolean,
   val newMessages: List<PreviewMessage>,
+  val newMessagesMapped: Map<String, List<PreviewMessage>>,
+  val newMessagesCount: Int,
   val hasNewMessages: Boolean,
   val isSelected: Boolean,
-  val messagesIsCollapsed: Boolean
+  val messagesIsCollapsed: Boolean,
 ) {
   companion object {
     fun getPreviewModel(
@@ -22,9 +24,23 @@ data class UserItemUIModel(
       name: String = "Random",
       isOnline: Boolean = false,
       newMessages: List<PreviewMessage> = listOf(),
-      isSelected: Boolean = false
-    ) =
-      UserItemUIModel(id, imageUrl, name, isOnline, newMessages, newMessages.isNotEmpty(), isSelected = isSelected, messagesIsCollapsed = false)
+      isSelected: Boolean = false,
+      messagesIsCollapsed: Boolean = false
+    ): UserItemUIModel {
+      val messages = newMessages.mapIndexed { index, chatMessage -> chatMessage.copy(positionInList = index) }
+      return UserItemUIModel(
+        id,
+        imageUrl,
+        name,
+        isOnline,
+        messages,
+        messages.groupBy { it.dateTime.date },
+        messages.size,
+        messages.isNotEmpty(),
+        isSelected = isSelected,
+        messagesIsCollapsed = messagesIsCollapsed
+      )
+    }
   }
 }
 
@@ -33,12 +49,15 @@ fun NearbyUser.toUIModel(
   oldValue: UserItemUIModel?,
   resources: Resources
 ): UserItemUIModel {
+  val list = newMessages.mapIndexed { index, chatMessage ->  chatMessage.toPrivateMessage(resources, positionInList = index) }
   return UserItemUIModel(
     id = id,
     imageUrl = imageUrl,
     name = name,
     isOnline = isOnline,
-    newMessages = newMessages.map { it.toPrivateMessage(resources) },
+    newMessages = list,
+    newMessagesMapped = list.groupBy { it.dateTime.date },
+    newMessagesCount = newMessages.size,
     hasNewMessages = newMessages.isNotEmpty(),
     isSelected = isSelected,
     messagesIsCollapsed = oldValue?.messagesIsCollapsed ?: false

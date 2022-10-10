@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,21 +57,35 @@ fun NavigatorScreen(
           )
           val selectedUser = state.selectedUser
           if (selectedUser != null) {
-            UserScreen(
-              user = selectedUser,
-              isInFullScreenMode = state.fullScreenMode,
-              onToggleFullScreenMode = stateHolder::onToggleFullScreenMode,
-              onMoreButtonClicked = {
-                optionsDialogVisible = true
-              },
-              onShowChat = stateHolder::onShowChat,
-              onGoToChat = {
-                scope.launch {
-                  val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
-                  onNavigateToChat(chatId)
-                }
-              }
-            )
+            Box(modifier = Modifier
+              .weight(1f)
+              .fillMaxWidth()
+            ) {
+              UserNewMessages(
+                selectedUser = selectedUser,
+                onClick = {
+                  scope.launch {
+                    val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
+                    onNavigateToChat(chatId)
+                  }
+                },
+                showChat = stateHolder::onShowChat,
+                modifier = Modifier.align(Alignment.BottomStart)
+              )
+              UserScreenControls(
+                user = selectedUser,
+                isInFullScreenMode = state.fullScreenMode,
+                onToggleFullScreenMode = stateHolder::onToggleFullScreenMode,
+                onMoreButtonClicked = { optionsDialogVisible = true },
+                onGoToChat = {
+                  scope.launch {
+                    val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
+                    onNavigateToChat(chatId)
+                  }
+                },
+                modifier = Modifier.align(Alignment.BottomEnd)
+              )
+            }
           } else {
             DefaultScreen()
           }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sillyapps.core.ui.theme.ExtendedColors
@@ -23,14 +24,27 @@ val RedVariant = Color(0xFFFF2D55)
 val DarkViolet = Color(0xFF5D29A1)
 
 val BluePurpleGradient = Brush.horizontalGradient(listOf(SkyBlueVariant, PurpleBright))
+
 val PurpleRedGradient = Brush.horizontalGradient(listOf(Purple, RedVariant))
-val PurpleVioletVerticalGradient = Brush.verticalGradient(listOf(
-  PurpleDarker.copy(alpha = 0.5f),
-  DarkViolet.copy(alpha = 0f)
-))
-val PurpleRedVerticalGradient = Brush.verticalGradient(listOf(
-  RedVariant, Purple.copy(alpha = 0.1f)
-))
+val PurpleRedTransparentGradient = Brush.horizontalGradient(
+  listOf(
+    Purple,
+    RedVariant.copy(alpha = 0.01f)
+  ),
+)
+
+val PurpleVioletVerticalGradient = Brush.verticalGradient(
+  listOf(
+    PurpleDarker.copy(alpha = 0.5f),
+    DarkViolet.copy(alpha = 0.01f)
+  )
+)
+val PurpleRedVerticalGradient = Brush.verticalGradient(
+  listOf(
+    RedVariant, Purple.copy(alpha = 0.1f)
+  )
+)
+
 
 val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
@@ -42,6 +56,7 @@ fun extendedColors(secondaryAsBrush: Brush) = ExtendedColors(
   primaryGradient = BluePurpleGradient,
   secondaryGradient = PurpleRedGradient,
   secondaryVerticalGradient = PurpleRedVerticalGradient,
+  secondaryTransparentGradient = PurpleRedTransparentGradient,
   backgroundGradient = PurpleVioletVerticalGradient,
   lightBackground = DarkerGray,
   darkBackground = DarkestGray,
@@ -61,6 +76,14 @@ fun PreviewPrimaryGradient() {
 fun PreviewSecondaryGradient() {
   AppTheme {
     HorizontalGradient(brush = LocalExtendedColors.current.secondaryGradient)
+  }
+}
+
+@Preview
+@Composable
+fun PreviewSecondaryTransparentGradient() {
+  AppTheme {
+    HorizontalGradient(brush = LocalExtendedColors.current.secondaryTransparentGradient)
   }
 }
 

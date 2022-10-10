@@ -30,12 +30,18 @@ val DarkestGray = Color(0xFF1C1C1E)
 
 data class ExtendedColors(
   val disabled: Color = DarkGray,
+
   val primaryGradient: Brush = BluePurpleGradient,
+
   val secondaryGradient: Brush = PurpleGradient,
   val secondaryVerticalGradient: Brush = PurpleGradient,
+  val secondaryTransparentGradient: Brush = PurpleGradient,
+
   val backgroundGradient: Brush = PurpleVerticalGradient,
+
   val lightBackground: Color = DarkerGray,
   val darkBackground: Color = DarkestGray,
+
   val secondaryAsBrush: Brush
 )
 

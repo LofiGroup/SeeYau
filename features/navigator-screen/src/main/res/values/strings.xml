@@ -6,6 +6,6 @@
   <string name="met">met</string>
   <string name="perhaps_someone_is_near">Perhaps one of the people below is standing nearby you</string>
 
-
+  <string name="more">+%1$d more</string>
 
 </resources>

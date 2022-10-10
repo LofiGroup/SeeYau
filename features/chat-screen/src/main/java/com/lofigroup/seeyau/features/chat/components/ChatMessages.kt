@@ -15,7 +15,6 @@ import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.lastVisibleItemKey
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 @Composable
 fun ColumnScope.ChatMessages(
@@ -94,6 +93,7 @@ fun DateHeader(date: String) {
     textAlign = TextAlign.Center,
     modifier = Modifier
       .padding(horizontal = LocalSpacing.current.medium)
+      .padding(bottom = LocalSpacing.current.small)
       .fillMaxWidth()
   )
 }

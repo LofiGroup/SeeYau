@@ -2,121 +2,211 @@ package com.lofigroup.features.navigator_screen.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.*
 import com.lofigroup.features.navigator_screen.model.PreviewMessage
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.R
+import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.features.navigator_screen.R
+import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.features.chat.components.ChatMessageBase
+import com.lofigroup.seeyau.features.chat.components.DateHeader
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
 import com.lofigroup.seeyau.features.chat.styling.LocalChatMessageStyles
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.sillyapps.core.ui.util.pxToDp
+import com.sillyapps.core.ui.util.dpToPx
 
 @Composable
 fun UserNewMessages(
-  selectedUser: UserItemUIModel?
+  selectedUser: UserItemUIModel,
+  showChat: () -> Unit,
+  onClick: (Long) -> Unit,
+  modifier: Modifier = Modifier
 ) {
+
+  val (isOverflowed, setIsOverflowed) = remember {
+    mutableStateOf(false)
+  }
+  val (lastItemPos, setLastItemPos) = remember {
+    mutableStateOf(-1)
+  }
+
   ChatMessageStyleProvider(
-    partnerMessageStyleBrush = LocalExtendedColors.current.secondaryGradient
+    partnerMessageStyleBrush = LocalExtendedColors.current.secondaryTransparentGradient
   ) {
-    if (selectedUser != null && selectedUser.messagesIsCollapsed) {
-      Column() {
-        selectedUser.newMessages.groupBy { it.dateTime.date }.forEach { (date, messages) ->
-          for (message in messages) {
-            PreviewMessage(message)
-          }
-          DateHeader(date = date)
+    if (selectedUser.messagesIsCollapsed) {
+      Column(
+        modifier = modifier
+          .clickable { onClick(selectedUser.id) }
+      ) {
+        val lastItem = selectedUser.newMessages.getOrNull(lastItemPos)
+        if (isOverflowed && lastItem != null) {
+          DateHeader(date = lastItem.dateTime.date)
+          OnOverflowLabel(messagesCount = selectedUser.newMessages.lastIndex - lastItemPos)
         }
+
+        ConstrainedColumn(
+          maxHeight = 200.dp,
+          setOverflowed = setIsOverflowed,
+          setLastItemPos = setLastItemPos
+        ) {
+          selectedUser.newMessagesMapped.forEach { (date, messages) ->
+            for (message in messages)
+              UserMessage(message = message)
+            DateHeader(date = date)
+          }
+        }
+      }
+    }
+    else {
+      ControlItem(
+        resId = R.drawable.ic_stm_1_icon,
+        onClick = showChat,
+        modifier = modifier
+      )
+    }
+
+  }
+}
+
+@Composable
+fun ConstrainedColumn(
+  maxHeight: Dp,
+  setOverflowed: (Boolean) -> Unit,
+  setLastItemPos: (Int) -> Unit,
+  content: @Composable () -> Unit
+) {
+  val maxHeightPx = LocalContext.current.dpToPx(maxHeight)
+
+  Layout(
+    modifier = Modifier,
+    content = content
+  ) { measurables, constraints ->
+    var height = 0
+
+    val placeables = mutableListOf<Placeable>()
+    for (measurable in measurables) {
+      val placeable = measurable.measure(constraints)
+
+      placeables.add(placeable)
+      height += placeable.height
+
+      if (height > maxHeightPx) {
+        break
+      }
+    }
+
+    if (measurables.size != placeables.size && height > maxHeightPx) {
+      val removedItem = placeables.removeLast()
+      height -= removedItem.height
+
+      val lastMeasurableId = measurables[placeables.lastIndex].layoutId
+
+      if (lastMeasurableId is Int) {
+        setLastItemPos(lastMeasurableId)
+      } else {
+        placeables.removeLast()
+        val id = measurables[placeables.lastIndex].layoutId as Int
+        setLastItemPos(id)
+      }
+      setOverflowed(true)
+    } else {
+      setOverflowed(false)
+      setLastItemPos(-1)
+    }
+
+    layout(constraints.maxWidth, height) {
+      var yPosition = height
+
+      placeables.forEach {
+        yPosition -= it.height
+        it.placeRelative(x = 0, y = yPosition)
       }
     }
   }
-
 }
 
 @Composable
-fun PreviewMessage(
-  message: PreviewMessage
+fun OnOverflowLabel(
+  messagesCount: Int
 ) {
-  /*val style = LocalChatMessageStyles.current.partnerMessageStyle
-
-  val context = LocalContext.current
-
-  Box(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(start = style.startPadding, end = style.endPadding)
-      .padding(bottom = LocalSpacing.current.small)
+  val style = LocalChatMessageStyles.current.partnerMessageStyle
+  Box(modifier = Modifier
+    .padding(start = style.startPadding, end = style.endPadding)
+    .padding(bottom = LocalSpacing.current.small)
   ) {
-    Box(
+    Row(
       modifier = Modifier
-        .clip(MaterialTheme.shapes.large)
-        .background(style.brush)
-        .padding(
-          vertical = LocalSpacing.current.small,
-          horizontal = 10.dp
-        )
-        .align(style.alignment)
+        .clip(MaterialTheme.shapes.medium)
+        .background(MaterialTheme.colors.primary)
+        .padding(vertical = LocalSpacing.current.small, horizontal = 10.dp)
     ) {
       Text(
-        text = message.message,
+        text = stringResource(id = R.string.more, messagesCount),
         style = MaterialTheme.typography.body1,
-        modifier = Modifier
-          .padding(
-            end = LocalSpacing.current.extraSmall + context.pxToDp(labelSize.width)
-          )
-          .align(Alignment.TopCenter)
       )
 
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .align(Alignment.BottomEnd)
-          .onSizeChanged { size ->
-            labelSize = size
-          }
-      ) {
-        Text(
-          text = chatMessage.dateTime.time,
-          style = MaterialTheme.typography.caption,
-        )
-
-        if (chatMessage.authorIsMe) {
-          Spacer(modifier = Modifier.width(2.dp))
-          Image(
-            painter = painterResource(id = if (chatMessage.isRead) R.drawable.ic_check_mark_read else R.drawable.ic_check_mark_received),
-            contentDescription = null,
-            modifier = Modifier.size(16.dp)
-          )
-        }
-      }
+      Image(painter = painterResource(id = R.drawable.ic_message), contentDescription = null)
     }
-  }*/
+  }
 }
 
 @Composable
-fun DateHeader(date: String) {
-  Text(
-    text = date,
-    style = MaterialTheme.typography.caption,
-    textAlign = TextAlign.Center,
-    modifier = Modifier
-      .padding(horizontal = LocalSpacing.current.medium)
-      .fillMaxWidth()
+fun UserMessage(message: PreviewMessage) {
+  val style = LocalChatMessageStyles.current.partnerMessageStyle
+  ChatMessageBase(
+    style = style.copy(brush = style.brush),
+    text = message.message,
+    dateTime = message.dateTime,
+    modifier = Modifier.layoutId(message.positionInList),
+    maxLines = 4
   )
+}
+
+@Preview
+@Composable
+fun UserNewMessagesPreview() {
+  AppTheme {
+    Surface() {
+      Box() {
+        UserNewMessages(
+          selectedUser = UserItemUIModel.getPreviewModel(
+            newMessages = listOf(
+              PreviewMessage.getPreviewModel(),
+              PreviewMessage.getPreviewModel(),
+              PreviewMessage.getPreviewModel(),
+              PreviewMessage.getPreviewModel(),
+              PreviewMessage.getPreviewModel(),
+              PreviewMessage.getPreviewModel(),
+            ),
+            messagesIsCollapsed = true
+          ),
+          onClick = {},
+          showChat = {}
+        )
+      }
+    }
+  }
 }
