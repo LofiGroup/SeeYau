@@ -80,7 +80,7 @@ fun UserNewMessages(
         }
       }
     }
-    else {
+    else if (selectedUser.hasNewMessages) {
       ControlItem(
         resId = R.drawable.ic_stm_1_icon,
         onClick = showChat,
