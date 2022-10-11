@@ -17,6 +17,7 @@ import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.sillyapps.core.ui.components.showToast
+import kotlinx.coroutines.delay
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,7 @@ fun ChatScreen(
           showToast(context, it.message)
         }
         ChatScreenCommand.ToLatestMessage -> {
+          delay(300)
           listState.animateScrollToItem(0)
         }
       }

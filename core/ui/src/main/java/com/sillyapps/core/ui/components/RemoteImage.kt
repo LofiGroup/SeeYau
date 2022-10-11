@@ -29,7 +29,7 @@ import com.sillyapps.core.ui.R
 fun RemoteImage(
   model: Any?,
   modifier: Modifier = Modifier,
-  placeholderResId: Int = R.drawable.ic_baseline_broken_image_24,
+  placeholderResId: Int? = null,
   errorPlaceholderResId: Int = R.drawable.ic_baseline_broken_image_24,
   onClick: () -> Unit = NOT_CLICKABLE,
   shape: Shape = CircleShape,
@@ -43,14 +43,13 @@ fun RemoteImage(
       .crossfade(true)
       .transformations(transformations)
       .build(),
-    placeholder = painterResource(id = placeholderResId),
+    placeholder = placeholderResId?.let { painterResource(id = errorPlaceholderResId) },
     contentScale = contentScale,
     contentDescription = null,
     error = painterResource(id = errorPlaceholderResId),
     modifier = modifier
       .clip(shape)
       .clickable(enabled = onClick != NOT_CLICKABLE, onClick = onClick)
-
   )
 
 }
