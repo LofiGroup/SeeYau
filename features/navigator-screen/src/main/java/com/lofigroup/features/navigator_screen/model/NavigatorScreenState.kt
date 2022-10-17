@@ -1,6 +1,9 @@
 package com.lofigroup.features.navigator_screen.model
 
+import com.lofigroup.seeyau.domain.profile.model.Profile
+
 data class NavigatorScreenState(
+  val profile: Profile = previewProfile,
   val sortedUsers: List<UserItemUIModel> = emptyList(),
   val selectedUserPos: Int = NO_USER_SELECTED,
   val splitIndex: Int = 0,

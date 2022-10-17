@@ -26,6 +26,7 @@ import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -79,8 +80,11 @@ class ProfileRepositoryImpl @Inject constructor(
   }
 
   override fun getProfile(): Flow<Profile> {
-    return userDao.observeMe().map {
-      it.toProfile()
+    return combine(
+      userDao.observeMe(),
+      likeDao.observeLikesCount()
+    ) { profile, likesCount ->
+      profile.toProfile(likesCount)
     }
   }
 

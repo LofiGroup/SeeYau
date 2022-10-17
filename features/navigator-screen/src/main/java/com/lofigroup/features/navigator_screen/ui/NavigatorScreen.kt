@@ -52,6 +52,7 @@ fun NavigatorScreen(
         ) {
           TopBar(
             newMessagesCount = state.newMessagesCount,
+            profile = state.profile,
             onSettingsButtonClick = onNavigateToSettings,
             onCloudButtonClick = onNavigateToChatList
           )

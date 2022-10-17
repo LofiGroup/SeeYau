@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LikeDao {
 
-  @Query("select * from likes")
-  fun observeAllLikes(): Flow<List<LikeEntity>>
+  @Query("select count(id) from likes where isLiked = 1 and toWhom = 0")
+  fun observeLikesCount(): Flow<Int>
 
   @Query("select * from likes where byWho = :userId and isLiked = 1")
   fun observeUserLike(userId: Long): Flow<LikeEntity?>

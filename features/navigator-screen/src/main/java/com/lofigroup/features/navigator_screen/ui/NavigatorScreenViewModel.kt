@@ -9,6 +9,7 @@ import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.model.toUIModel
 import com.lofigroup.seeyau.domain.chat.usecases.GetChatIdByUserIdUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.LikeUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UnLikeUserUseCase
 import com.sillyapps.core_time.Time
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class NavigatorScreenViewModel @Inject constructor(
   private val getNearbyUsersUseCase: GetNearbyUsersUseCase,
   private val getChatIdByUserIdUseCase: GetChatIdByUserIdUseCase,
+  private val getProfileUseCase: GetProfileUseCase,
   private val likeUserUseCase: LikeUserUseCase,
   private val unLikeUserUseCase: UnLikeUserUseCase,
   private val resources: Resources
@@ -29,11 +31,8 @@ class NavigatorScreenViewModel @Inject constructor(
   private val state = MutableStateFlow(NavigatorScreenState())
 
   init {
-    viewModelScope.launch {
-      getNearbyUsersUseCase().collect { users ->
-        applyUpdates(users)
-      }
-    }
+    observeProfile()
+    observeNearbyUsers()
   }
 
   override fun getState(): Flow<NavigatorScreenState> {
@@ -90,6 +89,22 @@ class NavigatorScreenViewModel @Inject constructor(
 
   override suspend fun getChatIdByUserId(userId: Long): Long? {
     return getChatIdByUserIdUseCase(userId)
+  }
+
+  private fun observeProfile() {
+    viewModelScope.launch {
+      getProfileUseCase().collect { profile ->
+        state.value = state.value.copy(profile = profile)
+      }
+    }
+  }
+
+  private fun observeNearbyUsers() {
+    viewModelScope.launch {
+      getNearbyUsersUseCase().collect { users ->
+        applyUpdates(users)
+      }
+    }
   }
 
   private fun applyUpdates(nearbyUsers: List<NearbyUser>) {

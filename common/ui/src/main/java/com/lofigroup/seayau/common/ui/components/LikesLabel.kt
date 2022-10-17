@@ -3,6 +3,8 @@ package com.lofigroup.seayau.common.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -13,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun LikesLabel(
@@ -23,10 +26,12 @@ fun LikesLabel(
     modifier = modifier,
     verticalAlignment = Alignment.CenterVertically
   ) {
-    Image(
+    Icon(
       painter = painterResource(id = R.drawable.ic_like_small),
       contentDescription = null
     )
+
+    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
     Text(
       text = count.toString(),

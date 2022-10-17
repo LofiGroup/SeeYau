@@ -10,8 +10,9 @@ data class ProfileDataModel(
   val imageUrl: String?
 )
 
-fun UserEntity.toProfile() = Profile(
+fun UserEntity.toProfile(likesCount: Int) = Profile(
   id = id,
   name = name,
-  imageUrl = imageUrl
+  imageUrl = imageUrl,
+  likesCount = likesCount
 )

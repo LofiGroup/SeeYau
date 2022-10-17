@@ -9,6 +9,7 @@ data class ProfileScreenState(
   val errorMessage: String? = null,
   val name: String = "",
   val imageUrl: String = "",
+  val likesCount: Int = 0,
 
   val isVisible: Boolean = true,
 )
@@ -21,7 +22,8 @@ fun ProfileScreenState.toProfileUpdate() = ProfileUpdate(
 fun ProfileScreenState.applyProfileUpdates(profile: Profile) = copy(
   id = profile.id,
   name = profile.name,
-  imageUrl = profile.imageUrl ?: ""
+  imageUrl = profile.imageUrl ?: "",
+  likesCount = profile.likesCount
 )
 
 fun ProfileScreenState.applyVisibilityUpdates(visibility: Visibility) = copy(

@@ -78,7 +78,7 @@ fun ProfileScreen(
     
     Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
     
-    LikesLabel(count = 2718)
+    LikesLabel(count = state.likesCount)
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
 
