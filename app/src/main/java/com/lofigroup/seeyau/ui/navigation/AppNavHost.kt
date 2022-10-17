@@ -50,6 +50,7 @@ fun AppNavHost(
       NavigatorScreenNavigation(
         navigatorComponent = appModules.navigatorModule.domainComponent,
         chatComponent = appModules.chatModule.domainComponent,
+        profileComponent = appModules.profileModule.domainComponent,
         onNavigateToChatList = { navController.navigate(Screen.ChatListScreen.route) },
         onNavigateToSettings = { navController.navigate(Screen.SettingsScreen.route) },
         onNavigateToChat = {

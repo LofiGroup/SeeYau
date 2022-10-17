@@ -1,14 +1,14 @@
 package com.lofigroup.features.navigator_screen.model
 
 import android.content.res.Resources
-import com.lofigroup.seayau.common.ui.getLocalizedDatedAndTimeFromMillis
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
+import com.lofigroup.seeyau.features.chat.model.UIChatMessage
+import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
+import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
 import com.sillyapps.core_time.DateAndTime
 
 data class PreviewMessage(
-  val id: Long,
-  val message: String,
-  val dateTime: DateAndTime,
+  val message: UIChatMessage,
   val positionInList: Int
 ) {
   companion object {
@@ -19,15 +19,16 @@ data class PreviewMessage(
       message: String = "Hello",
       dateTime: DateAndTime = DateAndTime("3 oct", "23:00"),
       positionInList: Int = 0
-    ) = PreviewMessage(id, message, dateTime, positionInList)
+    ) = PreviewMessage(
+      message = getPreviewPrivateMessage(id, authorIsMe = false, message, dateTime.date, dateTime.time, isRead = false),
+      positionInList = positionInList
+    )
   }
 }
 
-fun ChatMessage.toPrivateMessage(resources: Resources, positionInList: Int): PreviewMessage {
+fun ChatMessage.toPreviewMessage(resources: Resources, positionInList: Int): PreviewMessage {
   return PreviewMessage(
-    message = message,
-    dateTime = getLocalizedDatedAndTimeFromMillis(createdIn, resources),
-    id = id,
+    message = toPrivateMessage(resources),
     positionInList = positionInList
   )
 }

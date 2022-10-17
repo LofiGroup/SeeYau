@@ -6,6 +6,7 @@ import com.lofigroup.data.navigator.di.DaggerNavigatorDataComponent
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
 import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import retrofit2.Retrofit
@@ -14,6 +15,7 @@ class NavigatorModule(
   context: Context,
   userDao: UserDao,
   chatDao: ChatDao,
+  likeDao: LikeDao,
   profileRepository: ProfileRepository,
   sharedPreferences: SharedPreferences,
   appScope: CoroutineScope,
@@ -26,6 +28,7 @@ class NavigatorModule(
     .sharedPref(sharedPreferences)
     .userDao(userDao)
     .chatDao(chatDao)
+    .likeDao(likeDao)
     .context(context)
     .build()
 

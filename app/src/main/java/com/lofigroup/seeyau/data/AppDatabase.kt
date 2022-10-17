@@ -9,22 +9,24 @@ import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.profile.local.LikeDao
+import com.lofigroup.seeyau.data.profile.local.model.LikeEntity
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 
 @Database(
   entities = [
-    UserEntity::class, MessageEntity::class, ChatEntity::class
+    UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class
   ],
-  version = 12,
+  version = 14,
   exportSchema = true,
   autoMigrations = [
-
   ]
 )
 abstract class AppDatabase : RoomDatabase() {
 
   abstract val userDao: UserDao
   abstract val chatDao: ChatDao
+  abstract val likeDao: LikeDao
 
   companion object {
     @Volatile

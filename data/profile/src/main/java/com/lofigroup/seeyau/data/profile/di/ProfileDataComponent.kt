@@ -2,8 +2,12 @@ package com.lofigroup.seeyau.data.profile.di
 
 import android.content.ContentResolver
 import android.content.SharedPreferences
+import com.lofigroup.backend_api.websocket.WebSocketChannel
+import com.lofigroup.core.util.EventChannel
+import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
+import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
@@ -25,7 +29,13 @@ interface ProfileDataComponent {
     fun baseRetrofit(retrofit: Retrofit): Builder
 
     @BindsInstance
+    fun webSocketChannel(webSocketChannel: WebSocketChannel): Builder
+
+    @BindsInstance
     fun userDao(userDao: UserDao): Builder
+
+    @BindsInstance
+    fun likeDao(likeDao: LikeDao): Builder
 
     @BindsInstance
     fun sharedPref(sharedPreferences: SharedPreferences): Builder

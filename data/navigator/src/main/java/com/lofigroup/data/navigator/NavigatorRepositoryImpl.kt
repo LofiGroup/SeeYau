@@ -3,6 +3,7 @@ package com.lofigroup.data.navigator
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
 import com.sillyapps.core_network.getErrorMessage
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class NavigatorRepositoryImpl @Inject constructor(
   private val userDao: UserDao,
   private val chatDao: ChatDao,
+  private val likeDao: LikeDao,
   private val ioDispatcher: CoroutineDispatcher,
   private val api: NavigatorApi,
   private val ioScope: CoroutineScope
@@ -53,8 +55,11 @@ class NavigatorRepositoryImpl @Inject constructor(
   override fun getNearbyUsers(): Flow<List<NearbyUser>> {
     return userDao.observeUsers().flatMapLatest { users ->
       combine(users.map { user ->
-        chatDao.observeUserNewMessages(user.id).map { newMessages ->
-          user.toNearbyUser(newMessages)
+        combine(
+          chatDao.observeUserNewMessages(user.id),
+          likeDao.observeLikedState(user.id)
+        ) { newMessages, isLiked ->
+          user.toNearbyUser(newMessages, isLiked ?: false)
         }
       }) { it.asList() }
     }

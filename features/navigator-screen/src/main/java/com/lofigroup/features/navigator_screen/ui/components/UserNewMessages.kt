@@ -4,33 +4,26 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.lofigroup.features.navigator_screen.model.PreviewMessage
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.R as CommonR
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.features.chat.components.ChatMessageBase
+import com.lofigroup.seeyau.features.chat.components.ChatMessageItem
+import com.lofigroup.seeyau.features.chat.components.ChatMessagePlain
 import com.lofigroup.seeyau.features.chat.components.DateHeader
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
 import com.lofigroup.seeyau.features.chat.styling.LocalChatMessageStyles
@@ -63,7 +56,7 @@ fun UserNewMessages(
       ) {
         val lastItem = selectedUser.newMessages.getOrNull(lastItemPos)
         if (isOverflowed && lastItem != null) {
-          DateHeader(date = lastItem.dateTime.date)
+          DateHeader(date = lastItem.message.dateTime.date)
           OnOverflowLabel(messagesCount = selectedUser.newMessages.lastIndex - lastItemPos)
         }
 
@@ -175,11 +168,8 @@ fun OnOverflowLabel(
 
 @Composable
 fun UserMessage(message: PreviewMessage) {
-  val style = LocalChatMessageStyles.current.partnerMessageStyle
-  ChatMessageBase(
-    style = style.copy(brush = style.brush),
-    text = message.message,
-    dateTime = message.dateTime,
+  ChatMessageItem(
+    message.message,
     modifier = Modifier.layoutId(message.positionInList),
     maxLines = 4
   )

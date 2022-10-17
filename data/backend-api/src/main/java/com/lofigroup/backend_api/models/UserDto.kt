@@ -18,5 +18,8 @@ data class UserDto(
   val lastSeen: Long,
 
   @Json(name = "last_contact")
-  val lastContact: Long
+  val lastContact: Long,
+
+  @Json(name = "likes_count")
+  val likesCount: Int
 )

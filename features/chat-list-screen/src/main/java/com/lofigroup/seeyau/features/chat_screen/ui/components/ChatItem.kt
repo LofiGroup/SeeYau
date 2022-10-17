@@ -1,11 +1,13 @@
 package com.lofigroup.seeyau.features.chat_screen.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -64,7 +66,7 @@ fun ChatItem(
           )
         }
         Text(
-          text = chat.lastMessage?.message ?: stringResource(id = R.string.say_hello),
+          text = getMessageText(chat.lastMessage),
           style = MaterialTheme.typography.subtitle2,
           overflow = TextOverflow.Ellipsis,
           maxLines = 1
@@ -89,10 +91,31 @@ fun ChatItem(
               style = MaterialTheme.typography.caption
             )
           }
-          TextLabel(text = "+${chat.newMessagesCount}")
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            if (chat.lastMessage is ChatMessage.LikeMessage) {
+              Image(
+                painter = painterResource(id = CommonR.drawable.ic_like),
+                contentDescription = null
+              )
+            }
+            if (chat.newMessagesCount > 0)
+              TextLabel(text = "+${chat.newMessagesCount}")
+          }
         }
       }
     }
+  }
+}
+
+@Composable
+@ReadOnlyComposable
+private fun getMessageText(message: ChatMessage?): String {
+  return when (message) {
+    is ChatMessage.LikeMessage -> stringResource(id = CommonR.string.sent_you_like)
+    is ChatMessage.PlainMessage -> message.message
+    null -> stringResource(id = R.string.say_hello)
   }
 }
 
@@ -109,7 +132,7 @@ fun ChatItemPreview() {
       lastConnection = 0,
       isOnline = true
     ),
-    lastMessage = ChatMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),
+    lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),
     newMessagesCount = 1
   )
 

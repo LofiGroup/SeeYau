@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.7">
+    <bytecodeTargetLevel target="1.8">
       <module name="SeeYau.app" target="11" />
       <module name="SeeYau.auth-screen" target="11" />
-      <module name="SeeYau.common.network" target="1.8" />
       <module name="SeeYau.common.network.main" target="1.8" />
       <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.ui" target="11" />
-      <module name="SeeYau.core.di" target="1.8" />
-      <module name="SeeYau.core.di.main" target="1.8" />
-      <module name="SeeYau.core.di.test" target="1.8" />
       <module name="SeeYau.core.network" target="11" />
-      <module name="SeeYau.core.time" target="1.8" />
-      <module name="SeeYau.core.time.main" target="1.8" />
-      <module name="SeeYau.core.time.test" target="1.8" />
       <module name="SeeYau.core.ui" target="11" />
       <module name="SeeYau.data.auth" target="11" />
       <module name="SeeYau.data.backend-api" target="11" />
@@ -22,21 +15,6 @@
       <module name="SeeYau.data.navigator" target="11" />
       <module name="SeeYau.data.profile" target="11" />
       <module name="SeeYau.data.settings" target="11" />
-      <module name="SeeYau.domain.auth" target="1.8" />
-      <module name="SeeYau.domain.auth.main" target="1.8" />
-      <module name="SeeYau.domain.auth.test" target="1.8" />
-      <module name="SeeYau.domain.chat" target="1.8" />
-      <module name="SeeYau.domain.chat.main" target="1.8" />
-      <module name="SeeYau.domain.chat.test" target="1.8" />
-      <module name="SeeYau.domain.navigator" target="1.8" />
-      <module name="SeeYau.domain.navigator.main" target="1.8" />
-      <module name="SeeYau.domain.navigator.test" target="1.8" />
-      <module name="SeeYau.domain.profile" target="1.8" />
-      <module name="SeeYau.domain.profile.main" target="1.8" />
-      <module name="SeeYau.domain.profile.test" target="1.8" />
-      <module name="SeeYau.domain.settings" target="1.8" />
-      <module name="SeeYau.domain.settings.main" target="1.8" />
-      <module name="SeeYau.domain.settings.test" target="1.8" />
       <module name="SeeYau.features.auth-screen" target="11" />
       <module name="SeeYau.features.auth-screen-flow" target="11" />
       <module name="SeeYau.features.chat-list-screen" target="11" />

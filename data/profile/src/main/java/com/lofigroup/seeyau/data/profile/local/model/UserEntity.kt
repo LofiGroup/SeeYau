@@ -12,7 +12,8 @@ data class UserEntity(
   val name: String,
   val imageUrl: String?,
   val lastConnection: Long,
-  val lastContact: Long
+  val lastContact: Long,
+  val likesCount: Int
 )
 
 fun UserEntity.toDomainModel(): User {
@@ -31,5 +32,6 @@ fun UserDto.toUserEntity() = UserEntity(
   name = name,
   imageUrl = imageUrl,
   lastConnection = lastSeen,
-  lastContact = lastContact
+  lastContact = lastContact,
+  likesCount = likesCount
 )

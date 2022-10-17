@@ -19,6 +19,9 @@ interface ProfileComponent {
   fun getMyIdUseCase(): GetMyIdUseCase
   fun getUserUseCase(): GetUserUseCase
   fun pullUserDataUseCase(): PullUserDataUseCase
+  fun pullLikesUseCase(): PullLikesUseCase
+  fun likeUserUseCase(): LikeUserUseCase
+  fun unlikeUserUseCase(): UnLikeUserUseCase
 
   @Component.Builder
   interface Builder {

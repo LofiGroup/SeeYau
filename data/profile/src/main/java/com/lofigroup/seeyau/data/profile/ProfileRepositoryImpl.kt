@@ -4,19 +4,23 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.lofigroup.core.util.Result
 import com.lofigroup.core.util.getFileExtFromPath
+import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
+import com.lofigroup.seeyau.data.profile.local.model.toLikeEntity
 import com.lofigroup.seeyau.data.profile.local.model.toProfile
 import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
-import com.lofigroup.seeyau.data.profile.remote.ProfileApi
-import com.lofigroup.seeyau.data.profile.remote.model.toUpdateProfileForm
-import com.lofigroup.seeyau.data.profile.remote.model.toUserEntity
+import com.lofigroup.seeyau.data.profile.remote.http.ProfileApi
+import com.lofigroup.seeyau.data.profile.remote.http.model.toUpdateProfileForm
+import com.lofigroup.seeyau.data.profile.remote.http.model.toUserEntity
+import com.lofigroup.seeyau.data.profile.remote.websocket.ProfileWebSocketListener
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core_network.ContentUriRequestBody
+import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,7 +38,9 @@ class ProfileRepositoryImpl @Inject constructor(
   private val ioScope: CoroutineScope,
   private val profileData: ProfileDataSource,
   private val userDao: UserDao,
+  private val likeDao: LikeDao,
   private val contentResolver: ContentResolver,
+  private val profileWebSocketListener: ProfileWebSocketListener
 ): ProfileRepository {
 
   override suspend fun pullProfileData() = withContext(ioDispatcher) {
@@ -57,6 +63,16 @@ class ProfileRepositoryImpl @Inject constructor(
 
       userDao.insert(response.toUserEntity())
       Unit
+    } catch (e: Exception) {
+      Timber.e(getErrorMessage(e))
+    }
+  }
+
+  override suspend fun pullLikes() = withContext(ioDispatcher) {
+    try {
+      val response = retrofitErrorHandler(api.getLikes(likeDao.getLastLikeUpdatedIn() ?: 0L))
+
+      likeDao.insertLikes(response.map { it.toLikeEntity(profileData.getMyId()) })
     } catch (e: Exception) {
       Timber.e(getErrorMessage(e))
     }
@@ -96,6 +112,36 @@ class ProfileRepositoryImpl @Inject constructor(
 
   override suspend fun getLastContactWith(userId: Long): Long? {
     return userDao.getLastContact(userId)
+  }
+
+  override suspend fun likeUser(userId: Long) = withContext(ioDispatcher) {
+    try {
+      if (userId == 0L || userId == getMyId()) {
+        return@withContext
+      }
+      val response = retrofitErrorHandler(api.likeUser(userId))
+      likeDao.insert(response.toLikeEntity(profileData.getMyId()))
+      pullUserData(userId)
+    }
+    catch (e: Exception) {
+      Timber.e(getErrorMessage(e))
+    }
+  }
+
+  override suspend fun unlikeUser(userId: Long) = withContext(ioDispatcher) {
+    try {
+      if (userId == 0L || userId == getMyId()) {
+        return@withContext
+      }
+      retrofitErrorHandler(api.unlikeUser(userId))
+    }
+    catch (e: EmptyResponseBodyException) {
+      likeDao.unlike(userId)
+      pullUserData(userId)
+    }
+    catch (e: Exception) {
+      Timber.e(getErrorMessage(e))
+    }
   }
 
   private fun createMultipartBody(uri: String?): MultipartBody.Part? {

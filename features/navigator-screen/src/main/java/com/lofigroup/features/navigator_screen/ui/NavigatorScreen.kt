@@ -83,7 +83,8 @@ fun NavigatorScreen(
                     onNavigateToChat(chatId)
                   }
                 },
-                modifier = Modifier.align(Alignment.BottomEnd)
+                onLikeButtonClick = stateHolder::onSetLike,
+                modifier = Modifier.align(Alignment.BottomEnd),
               )
             }
           } else {

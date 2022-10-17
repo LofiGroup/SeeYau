@@ -56,7 +56,6 @@ fun ChatListScreen(
         modifier = Modifier.weight(1f)
       )
     }
-
   }
 
   val errorMessage = state.errorMessage
@@ -91,7 +90,7 @@ val previewState = ChatListScreenState(
   chats = listOf(
     ChatBrief(
       id = 1,
-      lastMessage = ChatMessage(id = 0, message = "Hello hero!", author = 0, createdIn = 0L, isRead = true),
+      lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello hero!", author = 0, createdIn = 0L, isRead = true),
       partner = User(
         id = 9,
         name = "York",
@@ -104,7 +103,7 @@ val previewState = ChatListScreenState(
     ),
     ChatBrief(
       id = 1,
-      lastMessage = ChatMessage(id = 0, message = "Hi alligator!", author = 0, createdIn = 0L, isRead = true),
+      lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hi alligator!", author = 0, createdIn = 0L, isRead = true),
       partner = User(
         id = 9,
         name = "Umbrella",

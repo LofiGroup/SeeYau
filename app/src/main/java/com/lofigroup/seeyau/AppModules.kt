@@ -31,6 +31,7 @@ class AppModules(
     NavigatorModule(
       context = appContext,
       userDao = appComponent.getDatabase().userDao,
+      likeDao = appComponent.getDatabase().likeDao,
       sharedPreferences = appComponent.getSharedPref(),
       appScope = appScope,
       baseRetrofit = backend.getRetrofit(),
@@ -50,7 +51,9 @@ class AppModules(
     ProfileModule(
       appScope = appScope,
       baseRetrofit = backend.getRetrofit(),
+      webSocketChannel = backend.getWebSocketChannel(),
       userDao = appComponent.getDatabase().userDao,
+      likeDao = appComponent.getDatabase().likeDao,
       sharedPref = appComponent.getSharedPref(),
       contentResolver = appComponent.getContentResolver()
     )
@@ -62,6 +65,7 @@ class AppModules(
       webSocketChannel = backend.getWebSocketChannel(),
       userDao = appComponent.getDatabase().userDao,
       chatDao = appComponent.getDatabase().chatDao,
+      likeDao = appComponent.getDatabase().likeDao,
       sharedPreferences = appComponent.getSharedPref(),
       profileDataSource = profileModule.dataComponent.getProfileDataSource(),
       ioScope = appScope,

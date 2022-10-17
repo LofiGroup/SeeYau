@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.data.profile.remote.model
+package com.lofigroup.seeyau.data.profile.remote.http.model
 
 import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
@@ -22,5 +22,6 @@ fun ProfileDto.toUserEntity() = UserEntity(
   name = name,
   imageUrl = imageUrl,
   lastConnection = 0L,
-  lastContact = 0L
+  lastContact = 0L,
+  likesCount = 0
 )

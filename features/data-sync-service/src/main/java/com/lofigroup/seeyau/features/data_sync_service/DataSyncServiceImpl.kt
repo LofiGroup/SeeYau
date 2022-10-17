@@ -11,6 +11,7 @@ import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
 import com.lofigroup.seeyau.domain.chat.usecases.PullChatDataUseCase
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
+import com.lofigroup.seeyau.domain.profile.usecases.PullLikesUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullProfileDataUseCase
 import com.lofigroup.seeyau.features.data_sync_service.di.DaggerDataSyncServiceComponent
 import com.sillyapps.core.ui.service.ServiceBinder
@@ -34,6 +35,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   @Inject lateinit var pullChatDataUseCase: PullChatDataUseCase
   @Inject lateinit var pullNavigatorDataUseCase: PullNavigatorDataUseCase
   @Inject lateinit var pullProfileDataUseCase: PullProfileDataUseCase
+  @Inject lateinit var pullLikesUseCase: PullLikesUseCase
 
   private val state = MutableStateFlow(DataSyncServiceState.LOADING)
 
@@ -80,6 +82,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
       syncing = true
       pullProfileDataUseCase()
       pullNavigatorDataUseCase()
+      pullLikesUseCase()
       pullChatDataUseCase()
       state.value = DataSyncServiceState.SYNCED
     }

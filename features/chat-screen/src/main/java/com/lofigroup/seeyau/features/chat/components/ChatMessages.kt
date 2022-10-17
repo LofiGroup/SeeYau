@@ -4,13 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.lofigroup.seeyau.features.chat.model.PrivateMessage
+import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.lastVisibleItemKey
@@ -19,7 +18,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun ColumnScope.ChatMessages(
   listState: LazyListState,
-  items: Map<String, List<PrivateMessage>>
+  items: Map<String, List<UIChatMessage>>
 ) {
 
   ChatMessageStyleProvider() {

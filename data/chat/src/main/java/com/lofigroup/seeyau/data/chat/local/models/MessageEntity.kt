@@ -25,12 +25,6 @@ data class MessageEntity(
 )
 
 fun MessageEntity.toDomainModel(): ChatMessage {
-  return ChatMessage(
-    id = id,
-    message = message,
-    author = author,
-    createdIn = createdIn,
-    isRead = isRead
-  )
+  return ChatMessage.PlainMessage(id = id, message = message, author = author, createdIn = createdIn, isRead = isRead)
 }
 

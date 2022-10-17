@@ -9,6 +9,8 @@ import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.model.toUIModel
 import com.lofigroup.seeyau.domain.chat.usecases.GetChatIdByUserIdUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.LikeUserUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.UnLikeUserUseCase
 import com.sillyapps.core_time.Time
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +21,8 @@ import javax.inject.Inject
 class NavigatorScreenViewModel @Inject constructor(
   private val getNearbyUsersUseCase: GetNearbyUsersUseCase,
   private val getChatIdByUserIdUseCase: GetChatIdByUserIdUseCase,
+  private val likeUserUseCase: LikeUserUseCase,
+  private val unLikeUserUseCase: UnLikeUserUseCase,
   private val resources: Resources
 ) : ViewModel(), NavigatorScreenStateHolder {
 
@@ -74,6 +78,13 @@ class NavigatorScreenViewModel @Inject constructor(
           it.copy(messagesIsCollapsed = true)
         }
       )
+    }
+  }
+
+  override fun onSetLike(like: Boolean, userId: Long) {
+    viewModelScope.launch {
+      if (like) likeUserUseCase(userId)
+      else unLikeUserUseCase(userId)
     }
   }
 

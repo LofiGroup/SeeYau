@@ -13,6 +13,8 @@ interface ProfileRepository {
 
   suspend fun pullUserData(userId: Long)
 
+  suspend fun pullLikes()
+
   fun getProfile(): Flow<Profile>
 
   fun getUser(userId: Long): Flow<User>
@@ -22,5 +24,9 @@ interface ProfileRepository {
   suspend fun updateProfile(profile: ProfileUpdate): Result
 
   suspend fun getLastContactWith(userId: Long): Long?
+
+  suspend fun likeUser(userId: Long)
+
+  suspend fun unlikeUser(userId: Long)
 
 }

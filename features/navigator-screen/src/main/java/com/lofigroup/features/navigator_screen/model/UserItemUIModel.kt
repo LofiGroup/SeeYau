@@ -2,14 +2,14 @@ package com.lofigroup.features.navigator_screen.model
 
 import android.content.res.Resources
 import com.lofigroup.domain.navigator.model.NearbyUser
-import com.lofigroup.seeyau.domain.chat.models.ChatMessage
-import com.sillyapps.core_time.Time
 
 data class UserItemUIModel(
   val id: Long,
   val imageUrl: String?,
   val name: String,
   val isOnline: Boolean,
+  val isLikedByMe: Boolean,
+  val likesCount: Int,
   val newMessages: List<PreviewMessage>,
   val newMessagesMapped: Map<String, List<PreviewMessage>>,
   val newMessagesCount: Int,
@@ -33,8 +33,10 @@ data class UserItemUIModel(
         imageUrl,
         name,
         isOnline,
+        false,
+        1,
         messages,
-        messages.groupBy { it.dateTime.date },
+        messages.groupBy { it.message.dateTime.date },
         messages.size,
         messages.isNotEmpty(),
         isSelected = isSelected,
@@ -49,14 +51,16 @@ fun NearbyUser.toUIModel(
   oldValue: UserItemUIModel?,
   resources: Resources
 ): UserItemUIModel {
-  val list = newMessages.mapIndexed { index, chatMessage ->  chatMessage.toPrivateMessage(resources, positionInList = index) }
+  val list = newMessages.mapIndexed { index, chatMessage ->  chatMessage.toPreviewMessage(resources, positionInList = index) }
   return UserItemUIModel(
     id = id,
     imageUrl = imageUrl,
     name = name,
+    isLikedByMe = isLikedByMe,
+    likesCount = likesCount,
     isOnline = isOnline,
     newMessages = list,
-    newMessagesMapped = list.groupBy { it.dateTime.date },
+    newMessagesMapped = list.groupBy { it.message.dateTime.date },
     newMessagesCount = newMessages.size,
     hasNewMessages = newMessages.isNotEmpty(),
     isSelected = isSelected,

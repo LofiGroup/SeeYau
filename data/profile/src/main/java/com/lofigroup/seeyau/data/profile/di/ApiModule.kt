@@ -1,6 +1,6 @@
 package com.lofigroup.seeyau.data.profile.di
 
-import com.lofigroup.seeyau.data.profile.remote.ProfileApi
+import com.lofigroup.seeyau.data.profile.remote.http.ProfileApi
 import com.sillyapps.core.di.AppScope
 import dagger.Module
 import dagger.Provides

@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.chat
 
+import com.lofigroup.core.util.EventChannel
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatUpdatesDto
@@ -8,6 +9,7 @@ import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.NewMessageWsResponse
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.getErrorMessage
@@ -27,8 +29,9 @@ class ChatDataHandler @Inject constructor(
   private val ioDispatcher: CoroutineDispatcher,
   private val profileDataSource: ProfileDataSource,
   private val profileRepository: ProfileRepository,
-  private val ioScope: CoroutineScope
+  private val ioScope: CoroutineScope,
 ) {
+
   suspend fun pullData() = withContext(ioDispatcher) {
     try {
       val fromDate = getLastMessageDate()

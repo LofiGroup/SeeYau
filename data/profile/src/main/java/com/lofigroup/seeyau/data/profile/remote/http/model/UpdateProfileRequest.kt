@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.data.profile.remote.model
+package com.lofigroup.seeyau.data.profile.remote.http.model
 
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 import com.squareup.moshi.Json
