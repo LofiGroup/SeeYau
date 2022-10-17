@@ -6,6 +6,7 @@ import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.model.toLikeEntity
 import com.lofigroup.seeyau.data.profile.remote.websocket.models.ProfileWebsocketResponse
+import com.lofigroup.seeyau.data.profile.remote.websocket.models.toLikeEntity
 import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +31,7 @@ class ProfileWebSocketListener @Inject constructor(
     when (response) {
       is ProfileWebsocketResponse.LikeIsUpdated -> {
         ioScope.launch(ioDispatcher) {
-          likeDao.insert(response.like.toLikeEntity(profileDataSource.getMyId()))
+          likeDao.insert(response.toLikeEntity())
         }
       }
     }
