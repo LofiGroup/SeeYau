@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.local.models
 
 import com.lofigroup.seeyau.data.profile.local.model.LikeEntity
+import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 
 fun LikeEntity.toChatMessage(): ChatMessage {
@@ -10,3 +11,6 @@ fun LikeEntity.toChatMessage(): ChatMessage {
     isRead = true
   )
 }
+
+
+

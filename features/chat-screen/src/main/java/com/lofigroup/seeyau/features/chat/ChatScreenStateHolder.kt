@@ -14,4 +14,6 @@ interface ChatScreenStateHolder {
 
   fun setMessage(message: String)
 
+  fun onExit()
+
 }

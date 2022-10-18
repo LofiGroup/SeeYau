@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.chat
 import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.chat.usecases.*
@@ -21,6 +22,9 @@ class ChatScreenViewModel @Inject constructor(
   private val getUserIdByChatIdUseCase: GetUserIdByChatIdUseCase,
   private val getUserUseCase: GetUserUseCase,
 
+  private val getChatDraftUseCase: GetChatDraftUseCase,
+  private val updateChatDraftUseCase: UpdateChatDraftUseCase,
+
   private val observeChatUseCase: ObserveChatUseCase,
   private val observeChatEventsUseCase: ObserveChatEventsUseCase,
 
@@ -37,6 +41,7 @@ class ChatScreenViewModel @Inject constructor(
   init {
     viewModelScope.launch {
       markChatAsReadUseCase(chatId)
+      setMessageFromDraft()
     }
     observeProfileUpdates()
     observeChatUpdates()
@@ -60,6 +65,21 @@ class ChatScreenViewModel @Inject constructor(
 
   override fun setMessage(message: String) {
     state.apply { value = value.copy(message = message) }
+  }
+
+  override fun onExit() {
+    viewModelScope.launch {
+      updateChatDraftUseCase(ChatDraft(
+        message = state.value.message,
+        createdIn = System.currentTimeMillis(),
+        chatId = chatId
+      ))
+    }
+  }
+
+  private suspend fun setMessageFromDraft() {
+    val draft = getChatDraftUseCase(chatId) ?: return
+    setMessage(draft.message)
   }
 
   private fun observeProfileUpdates() {

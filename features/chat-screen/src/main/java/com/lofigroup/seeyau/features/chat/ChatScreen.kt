@@ -75,6 +75,7 @@ fun ChatScreen(
   }
 
   BackHandler {
+    stateHolder.onExit()
     onUpButtonClick()
   }
 }
@@ -96,6 +97,10 @@ fun ChatScreenPreview() {
 
     override fun setMessage(message: String) {
       mMessage.value = message
+    }
+
+    override fun onExit() {
+
     }
 
     override fun sendMessage() {

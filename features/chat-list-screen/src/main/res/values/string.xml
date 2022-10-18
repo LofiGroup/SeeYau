@@ -2,4 +2,10 @@
 <resources>
   <string name="chats">Chats</string>
   <string name="say_hello">Say Hello…</string>
+
+  <string name="memory">Memory +%1$d</string>
+  <string name="likes">Likes +%1$d</string>
+  <string name="Interaction">Interaction +%1$d</string>
+
+  <string name="draft">Draft</string>
 </resources>

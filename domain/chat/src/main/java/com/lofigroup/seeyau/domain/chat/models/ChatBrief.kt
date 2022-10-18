@@ -6,5 +6,7 @@ data class ChatBrief(
   val id: Long,
   val partner: User,
   val lastMessage: ChatMessage?,
-  val newMessagesCount: Int
+  val newMessagesCount: Int,
+  val chatDraft: ChatDraft?,
+  val likedYouAt: Long
 )

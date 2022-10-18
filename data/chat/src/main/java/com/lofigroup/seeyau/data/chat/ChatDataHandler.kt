@@ -38,6 +38,7 @@ class ChatDataHandler @Inject constructor(
       Timber.e("From date: $fromDate")
 
       val response = retrofitErrorHandler(chatApi.getChatUpdates(fromDate))
+      Timber.e("Chat updates: $response")
       for (chatUpdate in response)
         insertUpdates(chatUpdate)
     }

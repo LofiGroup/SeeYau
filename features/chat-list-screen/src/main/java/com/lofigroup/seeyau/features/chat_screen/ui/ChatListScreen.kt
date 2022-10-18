@@ -51,7 +51,9 @@ fun ChatListScreen(
       )
 
       ChatList(
-        chats = state.chats,
+        memoryFolder = state.memoryFolder,
+        likesFolder = state.likesFolder,
+        interactionFolder = state.interactionFolder,
         onItemClick = onItemClick,
         modifier = Modifier.weight(1f)
       )
@@ -87,7 +89,7 @@ fun ChatListScreenPreview() {
 }
 
 val previewState = ChatListScreenState(
-  chats = listOf(
+  interactionFolder = listOf(
     ChatBrief(
       id = 1,
       lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello hero!", author = 0, createdIn = 0L, isRead = true),
@@ -99,7 +101,9 @@ val previewState = ChatListScreenState(
         lastConnection = 0,
         isOnline = true
       ),
-      newMessagesCount = 1
+      newMessagesCount = 1,
+      chatDraft = null,
+      likedYouAt = 0L
     ),
     ChatBrief(
       id = 1,
@@ -112,7 +116,9 @@ val previewState = ChatListScreenState(
         lastConnection = 0,
         isOnline = false
       ),
-      newMessagesCount = 1
+      newMessagesCount = 1,
+      chatDraft = null,
+      likedYouAt = 0L
     )
   )
 )

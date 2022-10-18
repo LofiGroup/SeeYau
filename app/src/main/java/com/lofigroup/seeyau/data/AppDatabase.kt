@@ -1,13 +1,13 @@
 package com.lofigroup.seeyau.data
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
+import com.lofigroup.seeyau.data.chat.local.models.MessageDraftEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.model.LikeEntity
@@ -15,9 +15,9 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 
 @Database(
   entities = [
-    UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class
+    UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class, MessageDraftEntity::class
   ],
-  version = 14,
+  version = 15,
   exportSchema = true,
   autoMigrations = [
   ]

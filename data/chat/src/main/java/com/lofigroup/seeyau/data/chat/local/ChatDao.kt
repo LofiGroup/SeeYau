@@ -2,9 +2,11 @@ package com.lofigroup.seeyau.data.chat.local
 
 import androidx.room.*
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
+import com.lofigroup.seeyau.data.chat.local.models.MessageDraftEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatMessageDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
+import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 import kotlinx.coroutines.flow.*
 
 @Dao
@@ -25,6 +27,9 @@ interface ChatDao {
   @Query("select * from messages where chatId = :chatId order by createdIn desc limit 1")
   fun observeLastMessage(chatId: Long): Flow<MessageEntity?>
 
+  @Query("select * from drafts where chatId = :chatId")
+  fun observeChatDraft(chatId: Long): Flow<MessageDraftEntity?>
+
 
   @Query("select partnerLastVisited from chats where id = :chatId")
   suspend fun getPartnerLastVisited(chatId: Long): Long
@@ -37,6 +42,9 @@ interface ChatDao {
 
   @Query("select * from messages order by createdIn desc limit 1")
   suspend fun getLastMessage(): MessageEntity?
+
+  @Query("select * from drafts where chatId = :chatId")
+  suspend fun getChatDraft(chatId: Long): ChatDraft?
 
 
   @Query("update chats set lastVisited = :lastVisited where id = :chatId")
@@ -74,5 +82,11 @@ interface ChatDao {
     val lastVisited = getPartnerLastVisited(chatId)
     insertMessages(messages.map { it.toMessageEntity(myId, lastVisited) })
   }
+
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun insertDraft(draft: MessageDraftEntity): Long
+
+  @Query("delete from drafts where chatId = :chatId")
+  suspend fun deleteDraft(chatId: Long)
 
 }

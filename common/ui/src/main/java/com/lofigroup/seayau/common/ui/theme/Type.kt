@@ -69,8 +69,7 @@ val Typography = Typography(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 15.sp,
-    lineHeight = 22.sp,
-    color = DarkGray
+    lineHeight = 22.sp
   )
 )
 
