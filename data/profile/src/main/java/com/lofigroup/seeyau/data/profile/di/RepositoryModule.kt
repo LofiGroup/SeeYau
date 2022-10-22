@@ -7,6 +7,7 @@ import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 
 @Module
 interface RepositoryModule {

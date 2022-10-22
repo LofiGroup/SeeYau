@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
-import com.lofigroup.seeyau.data.chat.local.models.MessageDraftEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
@@ -18,9 +17,9 @@ import timber.log.Timber
 
 @Database(
   entities = [
-    UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class, MessageDraftEntity::class, BlacklistEntity::class
+    UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class, BlacklistEntity::class
   ],
-  version = 16,
+  version = 17,
   exportSchema = true,
   autoMigrations = [
   ]

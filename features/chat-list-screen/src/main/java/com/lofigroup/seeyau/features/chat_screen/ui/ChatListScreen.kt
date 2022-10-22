@@ -83,37 +83,3 @@ fun ChatListScreenPreview() {
   }
 }
 
-val previewState = ChatListScreenState(
-  interactionFolder = listOf(
-    ChatBrief(
-      id = 1,
-      lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello hero!", author = 0, createdIn = 0L, isRead = true),
-      partner = User(
-        id = 9,
-        name = "York",
-        imageUrl = "",
-        isNear = true,
-        lastConnection = 0,
-        isOnline = true
-      ),
-      newMessagesCount = 1,
-      chatDraft = null,
-      likedYouAt = 0L
-    ),
-    ChatBrief(
-      id = 1,
-      lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hi alligator!", author = 0, createdIn = 0L, isRead = true),
-      partner = User(
-        id = 9,
-        name = "Umbrella",
-        imageUrl = "",
-        isNear = true,
-        lastConnection = 0,
-        isOnline = false
-      ),
-      newMessagesCount = 1,
-      chatDraft = null,
-      likedYouAt = 0L
-    )
-  )
-)

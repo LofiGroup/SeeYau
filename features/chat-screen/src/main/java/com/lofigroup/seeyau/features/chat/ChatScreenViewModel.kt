@@ -22,7 +22,6 @@ class ChatScreenViewModel @Inject constructor(
   private val getUserIdByChatIdUseCase: GetUserIdByChatIdUseCase,
   private val getUserUseCase: GetUserUseCase,
 
-  private val getChatDraftUseCase: GetChatDraftUseCase,
   private val updateChatDraftUseCase: UpdateChatDraftUseCase,
 
   private val observeChatUseCase: ObserveChatUseCase,
@@ -71,15 +70,14 @@ class ChatScreenViewModel @Inject constructor(
     viewModelScope.launch {
       updateChatDraftUseCase(ChatDraft(
         message = state.value.message,
-        createdIn = System.currentTimeMillis(),
         chatId = chatId
       ))
     }
   }
 
   private suspend fun setMessageFromDraft() {
-    val draft = getChatDraftUseCase(chatId) ?: return
-    setMessage(draft.message)
+//    val draft = getChatDraftUseCase(chatId) ?: return
+//    setMessage(draft.message)
   }
 
   private fun observeProfileUpdates() {
@@ -102,6 +100,7 @@ class ChatScreenViewModel @Inject constructor(
       observeChatUseCase(chatId).collect() { chat ->
         state.apply {
           value = value.copy(
+            message = chat.draft.ifBlank { "" },
             messages = chat.messages
               .map { chatMessage -> chatMessage.toPrivateMessage(resources) }
               .groupBy { it.dateTime.date }

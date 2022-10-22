@@ -6,13 +6,15 @@ import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.*
 import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketListener
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
-import com.lofigroup.seeyau.data.profile.local.LikeDao
-import com.lofigroup.seeyau.data.profile.local.UserDao
-import com.lofigroup.seeyau.data.profile.local.model.LikeEntity
-import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
+import com.lofigroup.seeyau.data.profile.ProfileDataHandler
+import com.lofigroup.seeyau.data.profile.local.BlacklistDao
+import com.lofigroup.seeyau.data.profile.local.model.extractLike
+import com.lofigroup.seeyau.data.profile.local.model.toUser
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
+import com.lofigroup.seeyau.domain.profile.model.Like
+import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -25,8 +27,7 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
   private val chatDataHandler: ChatDataHandler,
   private val chatDao: ChatDao,
-  private val userDao: UserDao,
-  private val likeDao: LikeDao,
+  private val profileDataHandler: ProfileDataHandler,
   private val ioDispatcher: CoroutineDispatcher,
   private val chatWebSocket: ChatWebSocketListener,
   private val eventsDataSource: EventsDataSource
@@ -48,19 +49,16 @@ class ChatRepositoryImpl @Inject constructor(
     return chatDao.observeChats().flatMapLatest { chats ->
       combine(chats.map { chat ->
         combine(
-          userDao.observeUser(chat.partnerId),
+          profileDataHandler.observeAssembledUser(chat.partnerId),
           chatDao.observeLastMessage(chat.id),
           chatDao.observeUserNewMessages(chat.partnerId),
-          likeDao.observeUserLike(chat.partnerId),
-          chatDao.observeChatDraft(chat.id)
-        ) { user, lastMessage, newMessages, like, draft ->
+        ) { user, lastMessage, newMessages ->
           ChatBrief(
             id = chat.id,
-            partner = user.toDomainModel(),
-            lastMessage = getLastMessage(lastMessage, like),
+            partner = user.toUser(),
+            lastMessage = getLastMessage(lastMessage, user.extractLike()),
             newMessagesCount = newMessages.size,
-            chatDraft = draft?.toChatDraft(),
-            likedYouAt = like?.updatedIn ?: 0L
+            draft = chat.draft,
           )
         }
       }) { it.asList() }
@@ -71,13 +69,14 @@ class ChatRepositoryImpl @Inject constructor(
     return chatDao.observeChat(chatId).flatMapLatest { chat ->
       combine(
         chatDao.observeChatMessages(chat.id),
-        likeDao.observeUserLike(chat.partnerId)
+        profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
         Chat(
           id = chat.id,
           messages = messages
             .map { it.toDomainModel() }
-            .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
+            .addToOrderedDesc(like?.toChatMessage()) { it.createdIn },
+          draft = chat.draft
         )
       }
     }
@@ -95,25 +94,15 @@ class ChatRepositoryImpl @Inject constructor(
     return chatDao.getChatIdFromUserId(userId)
   }
 
-  override suspend fun getChatDraft(chatId: Long): ChatDraft? = withContext(ioDispatcher) {
-    chatDao.getChatDraft(chatId)
-  }
-
-  override suspend fun updateChatDraft(chatDraft: ChatDraft) = withContext(ioDispatcher) {
-    if (chatDraft.message.isBlank()) {
-      chatDao.deleteDraft(chatDraft.chatId)
-    } else {
-      chatDao.insertDraft(chatDraft.toMessageDraftEntity())
+  override suspend fun updateChatDraft(chatDraft: ChatDraft) {
+    safeIOCall(ioDispatcher) {
+      chatDao.insertDraft(chatDraft.message, chatDraft.chatId)
     }
-    Unit
   }
 
-  private fun getLastMessage(lastMessage: MessageEntity?, like: LikeEntity?): ChatMessage? {
+  private fun getLastMessage(lastMessage: MessageEntity?, like: Like?): ChatMessage? {
     val lastMessageCreatedIn = lastMessage?.createdIn ?: 0L
-    val likeCreatedIn = like?.let {
-      if (it.isLiked) it.updatedIn
-      else 0L
-    } ?: 0L
+    val likeCreatedIn = like?.createdIn ?: 0L
 
     return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel()
       else like?.toChatMessage()

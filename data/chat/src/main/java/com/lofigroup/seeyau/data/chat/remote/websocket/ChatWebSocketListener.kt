@@ -9,6 +9,7 @@ import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.MarkChatAsRead
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.WebSocketRequest
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.*
+import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
@@ -23,12 +24,10 @@ import javax.inject.Inject
 class ChatWebSocketListener @Inject constructor(
   private val webSocketChannel: WebSocketChannel,
   private val chatDao: ChatDao,
-  private val userDao: UserDao,
   private val chatApi: ChatApi,
   private val ioScope: CoroutineScope,
   private val ioDispatcher: CoroutineDispatcher,
-  private val profileDataSource: ProfileDataSource,
-  private val profileRepository: ProfileRepository,
+  private val profileDataHandler: ProfileDataHandler,
   private val chatDataHandler: ChatDataHandler,
   private val eventsDataSource: EventsDataSource
 ): WebSocketChannelListener {
@@ -48,7 +47,7 @@ class ChatWebSocketListener @Inject constructor(
       }
       is ChatIsReadWsResponse -> {
         ioScope.launch(ioDispatcher) {
-          if (response.userId == profileDataSource.getMyId()) {
+          if (response.userId == profileDataHandler.getMyId()) {
             chatDao.updateChatLastVisited(response.chatId, response.readIn)
           } else {
             chatDao.markMessages(response.chatId)
@@ -59,8 +58,8 @@ class ChatWebSocketListener @Inject constructor(
       }
       is UserOnlineStateChangedWsResponse -> {
         ioScope.launch(ioDispatcher) {
-          if (response.userId != profileDataSource.getMyId()) {
-            profileRepository.pullUserData(response.userId)
+          if (response.userId != profileDataHandler.getMyId()) {
+            profileDataHandler.pullUserData(response.userId)
           }
         }
       }

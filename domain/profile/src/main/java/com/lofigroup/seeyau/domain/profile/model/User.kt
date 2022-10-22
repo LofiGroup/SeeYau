@@ -6,5 +6,9 @@ data class User(
   val imageUrl: String?,
   val isOnline: Boolean,
   val lastConnection: Long,
-  val isNear: Boolean
+  val isNear: Boolean,
+
+  val blacklistedYou: Boolean = false,
+  val likedYouAt: Long? = null,
+  val likedAt: Long? = null
 )

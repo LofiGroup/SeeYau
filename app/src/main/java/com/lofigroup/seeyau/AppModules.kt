@@ -30,13 +30,11 @@ class AppModules(
   val navigatorModule by lazy {
     NavigatorModule(
       context = appContext,
-      userDao = appComponent.getDatabase().userDao,
-      likeDao = appComponent.getDatabase().likeDao,
-      blacklistDao = appComponent.getDatabase().blacklistDao,
+      chatDataHandler = chatModule.dataComponent.chatDataHandler(),
+      profileDataHandler = profileModule.dataComponent.getProfileDataHandler(),
       sharedPreferences = appComponent.getSharedPref(),
       appScope = appScope,
       baseRetrofit = backend.getRetrofit(),
-      chatDao = appComponent.getDatabase().chatDao,
       profileRepository = profileModule.dataComponent.getRepository(),
       webSocketChannel = backend.getWebSocketChannel()
     )
@@ -66,14 +64,10 @@ class AppModules(
     ChatModule(
       baseRetrofit = backend.getRetrofit(),
       webSocketChannel = backend.getWebSocketChannel(),
-      userDao = appComponent.getDatabase().userDao,
       chatDao = appComponent.getDatabase().chatDao,
-      likeDao = appComponent.getDatabase().likeDao,
       sharedPreferences = appComponent.getSharedPref(),
-      profileDataSource = profileModule.dataComponent.getProfileDataSource(),
       ioScope = appScope,
-      profileRepository = profileModule.dataComponent.getRepository(),
-      profileEventChannel = profileModule.eventChannel
+      profileDataHandler = profileModule.dataComponent.getProfileDataHandler()
     )
   }
 

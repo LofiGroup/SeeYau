@@ -14,6 +14,9 @@ interface ProfileApi {
   @GET("/api/profiles/contact/{user_id}")
   suspend fun getUser(@Path("user_id") id: Long): Response<UserDto>
 
+  @GET("/api/profiles/contacts")
+  suspend fun getContacts(): Response<List<UserDto>>
+
   @GET("/api/profiles/me")
   suspend fun getProfile(): Response<ProfileDto>
 

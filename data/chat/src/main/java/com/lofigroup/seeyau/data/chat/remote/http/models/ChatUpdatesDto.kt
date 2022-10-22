@@ -22,5 +22,6 @@ fun ChatUpdatesDto.toChatEntity() =
     id = id,
     partnerId = partnerId,
     lastVisited = lastVisited,
-    partnerLastVisited = partnerLastVisited
+    partnerLastVisited = partnerLastVisited,
+    draft = ""
   )

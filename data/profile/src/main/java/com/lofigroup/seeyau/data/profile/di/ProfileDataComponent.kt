@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.core.util.EventChannel
+import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
@@ -23,6 +24,7 @@ interface ProfileDataComponent {
 
   fun getRepository(): ProfileRepository
   fun getProfileDataSource(): ProfileDataSource
+  fun getProfileDataHandler(): ProfileDataHandler
 
   @Component.Builder
   interface Builder {

@@ -35,9 +35,9 @@ fun ChatItem(
     modifier = Modifier
       .clickable { onClick(chat.id) }
   ) {
-    val chatDraft = chat.chatDraft
+    val chatDraft = chat.draft
     val lastMessage = chat.lastMessage
-    if (chatDraft != null) {
+    if (chatDraft.isNotBlank()) {
       DraftChatItemContent(draft = chatDraft, chat = chat)
     } else {
       when (lastMessage) {
@@ -105,14 +105,14 @@ fun BaseChatItemContent(
 
 @Composable
 fun DraftChatItemContent(
-  draft: ChatDraft,
+  draft: String,
   chat: ChatBrief
 ) {
   BaseChatItemContent(
     chat = chat,
     messagePlaceholder = {
       OneLiner(
-        text = draft.message,
+        text = draft,
         style = MaterialTheme.typography.subtitle2.copy(color = Color.Gray)
       )
     },
@@ -196,12 +196,15 @@ fun ChatItemPreview() {
       imageUrl = "",
       isNear = true,
       lastConnection = 0,
-      isOnline = true
+      isOnline = true,
+
+      likedYouAt = null,
+      blacklistedYou = false,
+      likedAt = null
     ),
     lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),
     newMessagesCount = 1,
-    chatDraft = ChatDraft("Hell", createdIn = 0L, 0L),
-    likedYouAt = 0
+    draft = "",
   )
 
   AppTheme {

@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.domain.navigator.NavigatorRepository
+import com.lofigroup.seeyau.data.chat.ChatDataHandler
 import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
@@ -29,16 +31,10 @@ interface NavigatorDataComponent {
     fun context(context: Context): Builder
 
     @BindsInstance
-    fun userDao(userDao: UserDao): Builder
+    fun profileDataHandler(profileDataHandler: ProfileDataHandler): Builder
 
     @BindsInstance
-    fun chatDao(chatDao: ChatDao): Builder
-
-    @BindsInstance
-    fun likeDao(likeDao: LikeDao): Builder
-
-    @BindsInstance
-    fun blacklistDao(dao: BlacklistDao): Builder
+    fun chatDataHandler(chatDataHandler: ChatDataHandler): Builder
 
     @BindsInstance
     fun sharedPref(sharedPref: SharedPreferences): Builder

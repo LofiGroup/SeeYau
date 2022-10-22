@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.User
+import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
 import com.lofigroup.seeyau.features.chat.components.ChatMessages
 import com.lofigroup.seeyau.features.chat.components.MessageInput
 import com.lofigroup.seeyau.features.chat.components.TopBar
@@ -123,7 +124,7 @@ fun ChatScreenPreview() {
 
 private fun getPreviewModel(): ChatScreenState {
   return ChatScreenState(
-    partner = User(0, "Roman", imageUrl = "", lastConnection = 10000, isNear = false, isOnline = true),
+    partner = getUserPreviewModel(),
     messages = listOf(
       getPreviewPrivateMessage(),
       getPreviewPrivateMessage(authorIsMe = false),

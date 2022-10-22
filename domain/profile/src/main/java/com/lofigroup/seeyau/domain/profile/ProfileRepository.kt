@@ -9,11 +9,9 @@ import kotlinx.coroutines.flow.Flow
 interface ProfileRepository {
 
   suspend fun pullProfileData()
-
+  suspend fun pullContacts()
   suspend fun pullUserData(userId: Long)
-
   suspend fun pullLikes()
-
   suspend fun pullBlacklist()
 
   fun getProfile(): Flow<Profile>

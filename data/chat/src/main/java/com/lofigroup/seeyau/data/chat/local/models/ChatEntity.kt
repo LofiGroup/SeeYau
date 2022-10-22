@@ -20,5 +20,6 @@ data class ChatEntity(
   @PrimaryKey val id: Long,
   @ColumnInfo(index = true) val partnerId: Long,
   val lastVisited: Long,
-  val partnerLastVisited: Long
+  val partnerLastVisited: Long,
+  @ColumnInfo(defaultValue = "") val draft: String
 )

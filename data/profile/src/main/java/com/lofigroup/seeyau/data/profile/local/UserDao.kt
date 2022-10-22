@@ -1,11 +1,25 @@
 package com.lofigroup.seeyau.data.profile.local
 
 import androidx.room.*
+import com.lofigroup.seeyau.data.profile.local.model.UserAssembled
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
+  companion object {
+    const val selectAssembledUserQuery =
+      "select users.*, blacklist.createdIn as blacklistedYouAt, likes.updatedIn as likedYouAt, myLikes.updatedIn as likedAt from users " +
+          "left join blacklist on blacklist.byWho = users.id " +
+          "left join likes on likes.byWho = users.id and likes.isLiked = 1 " +
+          "left join likes as myLikes on myLikes.toWhom = users.id and myLikes.isLiked = 1"
+  }
+
+  @Query("$selectAssembledUserQuery where users.id > 0")
+  fun observeAssembledUsers(): Flow<List<UserAssembled>>
+
+  @Query("$selectAssembledUserQuery where users.id = :userId")
+  fun observeAssembledUser(userId: Long): Flow<UserAssembled>
 
   @Query("select * from users where id > 0")
   fun observeUsers(): Flow<List<UserEntity>>

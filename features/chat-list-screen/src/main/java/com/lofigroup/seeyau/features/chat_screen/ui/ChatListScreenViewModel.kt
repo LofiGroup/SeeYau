@@ -19,12 +19,13 @@ class ChatListScreenViewModel @Inject constructor(
     val interactionFolder = mutableListOf<ChatBrief>()
 
     for (chat in chats) {
-      if (chat.chatDraft != null) {
+      if (chat.draft.isNotBlank()) {
         memoryFolder.add(chat)
         continue
       }
 
-      if (System.currentTimeMillis() - chat.likedYouAt < Time.d) {
+      val likedYouAt = chat.partner.likedYouAt ?: 0L
+      if (System.currentTimeMillis() - likedYouAt < Time.d) {
         likesFolder.add(chat)
         continue
       }

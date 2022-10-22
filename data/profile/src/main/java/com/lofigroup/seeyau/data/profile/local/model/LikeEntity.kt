@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.lofigroup.seeyau.data.profile.remote.http.model.LikeDto
+import com.lofigroup.seeyau.domain.profile.model.Like
 
 @Entity(
   tableName = "likes",
@@ -36,3 +37,9 @@ fun LikeDto.toLikeEntity(myId: Long) = run {
     isLiked = isLiked
   )
 }
+
+fun LikeEntity.toDomainModel() = Like(
+  id = id,
+  userId = byWho,
+  createdIn = updatedIn
+)

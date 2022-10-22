@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.data.navigator.di.DaggerNavigatorDataComponent
 import com.lofigroup.domain.navigator.di.DaggerNavigatorComponent
+import com.lofigroup.seeyau.data.chat.ChatDataHandler
 import com.lofigroup.seeyau.data.chat.local.ChatDao
+import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
@@ -15,10 +17,8 @@ import retrofit2.Retrofit
 
 class NavigatorModule(
   context: Context,
-  userDao: UserDao,
-  chatDao: ChatDao,
-  likeDao: LikeDao,
-  blacklistDao: BlacklistDao,
+  chatDataHandler: ChatDataHandler,
+  profileDataHandler: ProfileDataHandler,
   profileRepository: ProfileRepository,
   sharedPreferences: SharedPreferences,
   appScope: CoroutineScope,
@@ -31,11 +31,9 @@ class NavigatorModule(
     .baseRetrofit(baseRetrofit)
     .websocketChannel(webSocketChannel)
     .sharedPref(sharedPreferences)
-    .userDao(userDao)
-    .chatDao(chatDao)
-    .likeDao(likeDao)
+    .chatDataHandler(chatDataHandler)
+    .profileDataHandler(profileDataHandler)
     .context(context)
-    .blacklistDao(blacklistDao)
     .build()
 
   val domainComponent = DaggerNavigatorComponent.builder()

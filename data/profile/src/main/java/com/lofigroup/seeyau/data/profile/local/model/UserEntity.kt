@@ -23,7 +23,11 @@ fun UserEntity.toDomainModel(): User {
     imageUrl = imageUrl,
     lastConnection = lastConnection,
     isOnline = lastConnection == Time.IS_ONLINE,
-    isNear = System.currentTimeMillis() - lastContact < 1 * Time.m
+    isNear = System.currentTimeMillis() - lastContact < 1 * Time.m,
+
+    blacklistedYou = false,
+    likedYouAt = null,
+    likedAt = null
   )
 }
 

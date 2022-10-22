@@ -21,7 +21,6 @@ interface ChatRepository {
   suspend fun getUserIdByChatId(chatId: Long): Long?
   suspend fun getChatIdByUserId(userId: Long): Long?
 
-  suspend fun getChatDraft(chatId: Long): ChatDraft?
   suspend fun updateChatDraft(chatDraft: ChatDraft)
 
 }

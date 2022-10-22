@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-suspend fun apiCall(
+suspend fun safeIOCall(
   dispatcher: CoroutineDispatcher,
   block: suspend () -> Unit,
 ) {

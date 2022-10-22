@@ -2,7 +2,6 @@ package com.lofigroup.seeyau.data.profile
 
 import android.content.ContentResolver
 import android.net.Uri
-import com.lofigroup.core.util.EventChannel
 import com.lofigroup.core.util.Result
 import com.lofigroup.core.util.getFileExtFromPath
 import com.lofigroup.core.util.splitInTwo
@@ -10,7 +9,6 @@ import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
-import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.lofigroup.seeyau.data.profile.local.model.toLikeEntity
 import com.lofigroup.seeyau.data.profile.local.model.toProfile
@@ -28,7 +26,7 @@ import com.sillyapps.core_network.ContentUriRequestBody
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
-import com.sillyapps.core_network.utils.apiCall
+import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -49,11 +47,11 @@ class ProfileRepositoryImpl @Inject constructor(
   private val blacklistDao: BlacklistDao,
   private val contentResolver: ContentResolver,
   private val profileWebSocketListener: ProfileWebSocketListener,
-  private val eventChannel: EventChannel<ProfileChannelEvent>
+  private val profileDataHandler: ProfileDataHandler
 ): ProfileRepository {
 
   override suspend fun pullProfileData() {
-    apiCall(ioDispatcher) {
+    safeIOCall(ioDispatcher) {
       val response = retrofitErrorHandler(api.getProfile())
 
       userDao.upsert(response.toUserEntity())
@@ -61,19 +59,16 @@ class ProfileRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun pullUserData(userId: Long) {
-    apiCall(ioDispatcher) {
-      if (userId == 0L || userId == getMyId()) {
-        return@apiCall
-      }
-      val response = retrofitErrorHandler(api.getUser(userId))
+  override suspend fun pullContacts() {
+    profileDataHandler.pullContacts()
+  }
 
-      userDao.upsert(response.toUserEntity())
-    }
+  override suspend fun pullUserData(userId: Long) {
+    profileDataHandler.pullUserData(userId)
   }
 
   override suspend fun pullLikes() {
-    apiCall(ioDispatcher) {
+    safeIOCall(ioDispatcher) {
       val response = retrofitErrorHandler(api.getLikes(likeDao.getLastLikeUpdatedIn() ?: 0L))
 
       Timber.e(response.toString())
@@ -82,12 +77,12 @@ class ProfileRepositoryImpl @Inject constructor(
   }
 
   override suspend fun pullBlacklist() {
-    apiCall(ioDispatcher) {
+    safeIOCall(ioDispatcher) {
       val fromDate = blacklistDao.getBlacklistLastCreatedIn() ?: 0L
       val response = retrofitErrorHandler(api.getBlackList(fromDate))
       Timber.e(response.toString())
 
-      if (response.isEmpty()) return@apiCall
+      if (response.isEmpty()) return@safeIOCall
 
       val (blackList, inBlackList) = response.splitInTwo { it.byWho == profileData.getMyId() }
 
@@ -138,9 +133,9 @@ class ProfileRepositoryImpl @Inject constructor(
   }
 
   override suspend fun likeUser(userId: Long) {
-    apiCall(ioDispatcher) {
+    safeIOCall(ioDispatcher) {
       if (userId == 0L || userId == getMyId()) {
-        return@apiCall
+        return@safeIOCall
       }
       val response = retrofitErrorHandler(api.likeUser(userId))
       Timber.e(response.toString())
@@ -166,7 +161,7 @@ class ProfileRepositoryImpl @Inject constructor(
   }
 
   override suspend fun blacklistUser(userId: Long) {
-    apiCall(ioDispatcher) {
+    safeIOCall(ioDispatcher) {
       val response = retrofitErrorHandler(api.blackListUser(userId))
 
       userDao.delete(response.toWhom)
