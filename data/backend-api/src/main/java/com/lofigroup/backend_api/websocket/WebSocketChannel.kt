@@ -3,8 +3,6 @@ package com.lofigroup.backend_api.websocket
 import com.lofigroup.backend_api.websocket.models.WebSocketResponse
 import com.lofigroup.seeyau.common.network.SeeYauApiConstants
 import com.sillyapps.core.di.AppScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import okhttp3.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,12 +17,18 @@ class WebSocketChannel @Inject constructor(
       .header("origin", "wss://${SeeYauApiConstants.baseUrl}")
       .build()
 
-  private var mWebSocket: WebSocket? = client.newWebSocket(wsChatRequest, this)
+  private var mWebSocket: WebSocket? = null
 
   private val listeners = mutableMapOf<String, WebSocketChannelListener>()
 
+  fun connect() {
+    if (mWebSocket != null) return
+    mWebSocket = client.newWebSocket(wsChatRequest, this)
+  }
+
   fun disconnect() {
     mWebSocket?.close(WEBSOCKET_NORMAL_SHUTDOWN_CODE, "Client-side shutdown")
+    mWebSocket = null
   }
 
   fun registerListener(type: String, listener: WebSocketChannelListener) {
@@ -46,7 +50,11 @@ class WebSocketChannel @Inject constructor(
       return
     }
 
-    listener.onMessage(response.data)
+    try {
+      listener.onMessage(response.data)
+    } catch (e: Exception) {
+      Timber.e(e)
+    }
   }
 
   override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {

@@ -11,8 +11,7 @@ import dagger.Component
 @Component()
 interface SettingsComponent {
 
-  fun getVisibilityUseCase(): GetVisibilityUseCase
-  fun setVisibilityUseCase(): SetVisibilityUseCase
+  fun getRepository(): SettingsRepository
 
   @Component.Builder
   interface Builder {

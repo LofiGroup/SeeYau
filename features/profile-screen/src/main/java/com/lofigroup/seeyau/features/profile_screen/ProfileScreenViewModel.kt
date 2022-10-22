@@ -14,7 +14,6 @@ import com.lofigroup.seeyau.features.profile_screen.model.applyVisibilityUpdates
 import com.lofigroup.seeyau.features.profile_screen.model.toProfileUpdate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject

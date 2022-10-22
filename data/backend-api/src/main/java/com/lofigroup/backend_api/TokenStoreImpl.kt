@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 class TokenStoreImpl @Inject constructor(

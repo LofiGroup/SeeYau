@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.remote.websocket.models.responses
 
-import com.squareup.moshi.*
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 
 sealed interface ChatWebSocketResponse {

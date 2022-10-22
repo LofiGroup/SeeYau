@@ -35,5 +35,8 @@ dependencies {
   implementation moshiDeps.core
   kapt moshiDeps.codegen
 
+  implementation timberDep
+  implementation coroutinesDeps.core
+
   implementation okHttp.core
 }

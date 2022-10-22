@@ -9,8 +9,8 @@ class EventChannel<T> {
 
   fun observe(): Flow<T> = channel
 
-  fun notify(model: T) {
-    channel.tryEmit(model)
+  suspend fun notify(model: T) {
+    channel.emit(model)
   }
 
 }

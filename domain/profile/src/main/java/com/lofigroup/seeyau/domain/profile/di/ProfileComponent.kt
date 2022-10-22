@@ -13,15 +13,7 @@ import dagger.Component
 )
 interface ProfileComponent {
 
-  fun getProfileUseCase(): GetProfileUseCase
-  fun updateProfileUseCase(): UpdateProfileUseCase
-  fun pullProfileDataUseCase(): PullProfileDataUseCase
-  fun getMyIdUseCase(): GetMyIdUseCase
-  fun getUserUseCase(): GetUserUseCase
-  fun pullUserDataUseCase(): PullUserDataUseCase
-  fun pullLikesUseCase(): PullLikesUseCase
-  fun likeUserUseCase(): LikeUserUseCase
-  fun unlikeUserUseCase(): UnLikeUserUseCase
+  fun getRepository(): ProfileRepository
 
   @Component.Builder
   interface Builder {

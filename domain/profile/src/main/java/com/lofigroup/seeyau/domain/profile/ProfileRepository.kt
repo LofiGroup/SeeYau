@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.domain.profile
 
-import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
@@ -15,6 +14,8 @@ interface ProfileRepository {
 
   suspend fun pullLikes()
 
+  suspend fun pullBlacklist()
+
   fun getProfile(): Flow<Profile>
 
   fun getUser(userId: Long): Flow<User>
@@ -28,5 +29,7 @@ interface ProfileRepository {
   suspend fun likeUser(userId: Long)
 
   suspend fun unlikeUser(userId: Long)
+
+  suspend fun blacklistUser(userId: Long)
 
 }

@@ -11,10 +11,7 @@ import dagger.Component
 @Component
 interface NavigatorComponent {
 
-  fun getNearbyUsersUseCase(): GetNearbyUsersUseCase
-  fun notifyUserIsNearby(): NotifyUserIsNearbyUseCase
-  fun notifyUserILostUseCase(): NotifyDeviceIsLostUseCase
-  fun pullNavigatorDataUseCase(): PullNavigatorDataUseCase
+  fun getRepository(): NavigatorRepository
 
   @Component.Builder
   interface Builder {

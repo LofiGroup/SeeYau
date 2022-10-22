@@ -14,10 +14,7 @@ import androidx.compose.ui.res.painterResource
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.components.UserIcon
 import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
-import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
 import com.lofigroup.seeyau.domain.profile.model.User
-import com.sillyapps.core.ui.components.RemoteImage
-import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable

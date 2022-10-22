@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
@@ -125,11 +124,12 @@ class NearbyServiceImpl : Service(), NearbyService {
   }
 
   override fun onDestroy() {
-    super.onDestroy()
     Timber.e("Destroying NearbyService")
     dataSyncServiceConnection.unbind(this)
     nearbyBtClient?.stopDiscovery()
     serviceJob.cancel()
+
+    super.onDestroy()
   }
 
   override fun observeState(): Flow<ResourceState> {

@@ -13,7 +13,7 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
       entity = UserEntity::class,
       parentColumns = arrayOf("id"),
       childColumns = arrayOf("partnerId"),
-      onDelete = ForeignKey.NO_ACTION
+      onDelete = ForeignKey.CASCADE
     )]
 )
 data class ChatEntity(

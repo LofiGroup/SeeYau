@@ -21,5 +21,5 @@ data class UserDto(
   val lastContact: Long,
 
   @Json(name = "likes_count")
-  val likesCount: Int
+  val likesCount: Int,
 )

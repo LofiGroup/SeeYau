@@ -1,9 +1,7 @@
 package com.lofigroup.seeyau.data.settings.datasources
 
 import android.content.SharedPreferences
-import com.lofigroup.core.util.Resource
 import com.lofigroup.seeyau.data.settings.model.VisibilityDataModel
-import com.lofigroup.seeyau.domain.settings.model.Visibility
 import com.sillyapps.core.di.AppScope
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow

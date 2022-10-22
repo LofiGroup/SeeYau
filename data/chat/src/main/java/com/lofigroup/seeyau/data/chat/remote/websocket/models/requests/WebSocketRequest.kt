@@ -1,6 +1,6 @@
 package com.lofigroup.seeyau.data.chat.remote.websocket.models.requests
 
-import com.squareup.moshi.*
+import com.squareup.moshi.Moshi
 
 sealed interface WebSocketRequest {
 

@@ -8,22 +8,18 @@ import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.data.navigator.NavigatorApi
 import com.lofigroup.data.navigator.NavigatorRepositoryImpl
 import com.lofigroup.domain.navigator.NavigatorRepository
-import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.AppDatabase
 import com.lofigroup.seeyau.data.chat.local.ChatDao
-import com.lofigroup.seeyau.data.chat.local.models.ChatAssembled
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
-import com.lofigroup.seeyau.domain.profile.model.User
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.*
-import okhttp3.ResponseBody
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import okio.IOException
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import retrofit2.Response
 import kotlin.random.Random
@@ -121,7 +117,7 @@ class ChatDaoTest {
     collectJob.cancel()
   }*/
 
-  private fun createFakeNavigatorRepository(): NavigatorRepository {
+  /*private fun createFakeNavigatorRepository(): NavigatorRepository {
     val fakeNavigatorApi = object : NavigatorApi {
       override suspend fun getContacts(): Response<List<UserDto>> {
         return Response.success(listOf())
@@ -140,11 +136,11 @@ class ChatDaoTest {
       ioScope = TestScope()
     )
   }
-
+*/
 
   private fun populateDatabase() = runBlocking {
-    userDao.insert(UserEntity(name = "Ken", id = 0, imageUrl = "", lastConnection = 0, lastContact = 0L))
-    userDao.insert(UserEntity(name = "Tanaka", id = 2, imageUrl = "", lastConnection = 0, lastContact = 0L))
+    userDao.insert(UserEntity(name = "Ken", id = 0, imageUrl = "", lastConnection = 0, lastContact = 0L, likesCount = 10))
+    userDao.insert(UserEntity(name = "Tanaka", id = 2, imageUrl = "", lastConnection = 0, lastContact = 0L, likesCount = 11))
 
     chatEntity = ChatEntity(id = 1, partnerId = 2, lastVisited = 0L, partnerLastVisited = 0L)
     messages = listOf(
@@ -165,11 +161,12 @@ class ChatDaoTest {
     chatId = chatId,
     createdIn = createdIn,
     message = message ?: getRandomMessage(),
-    author = authorId
+    author = authorId,
+    isRead = true
   )
 
   private fun getFakeUserDto(): UserDto {
-    return UserDto(id = 0, name = "", imageUrl = "", lastContact = 0L, lastSeen = 0L)
+    return UserDto(id = 0, name = "", imageUrl = "", lastContact = 0L, lastSeen = 0L, likesCount = 21)
   }
 
   companion object {

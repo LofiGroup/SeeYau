@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.data.chat.remote.http.models
 
-import com.lofigroup.seeyau.data.chat.local.models.ContentType
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

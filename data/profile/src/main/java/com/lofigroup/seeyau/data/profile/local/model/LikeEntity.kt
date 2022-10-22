@@ -9,8 +9,8 @@ import com.lofigroup.seeyau.data.profile.remote.http.model.LikeDto
 @Entity(
   tableName = "likes",
   foreignKeys = [
-    ForeignKey(entity = UserEntity::class, childColumns = ["byWho"], parentColumns = ["id"]),
-    ForeignKey(entity = UserEntity::class, childColumns = ["toWhom"], parentColumns = ["id"]),
+    ForeignKey(onDelete = ForeignKey.CASCADE, entity = UserEntity::class, childColumns = ["byWho"], parentColumns = ["id"]),
+    ForeignKey(onDelete = ForeignKey.CASCADE, entity = UserEntity::class, childColumns = ["toWhom"], parentColumns = ["id"]),
   ]
 )
 data class LikeEntity(
@@ -21,11 +21,18 @@ data class LikeEntity(
   val isLiked: Boolean,
 )
 
-fun LikeDto.toLikeEntity(myId: Long) =
+fun LikeDto.toLikeEntity(myId: Long) = run {
+  var byWho = byWho
+  var toWhom = toWhom
+
+  if (byWho == myId) byWho = 0
+  else toWhom = 0
+
   LikeEntity(
     id = id,
-    byWho = if (myId == byWho) 0 else byWho,
-    toWhom = if (myId == toWhom) 0 else toWhom,
+    byWho = byWho,
+    toWhom = toWhom,
     updatedIn = updatedIn,
     isLiked = isLiked
   )
+}

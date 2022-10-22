@@ -10,7 +10,7 @@ import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 @Entity(
   tableName = "messages",
   foreignKeys = [
-    ForeignKey(entity = ChatEntity::class, childColumns = ["chatId"], parentColumns = ["id"]),
+    ForeignKey(onDelete = ForeignKey.CASCADE, entity = ChatEntity::class, childColumns = ["chatId"], parentColumns = ["id"]),
     ForeignKey(entity = UserEntity::class, childColumns = ["author"], parentColumns = ["id"]),
   ]
 )

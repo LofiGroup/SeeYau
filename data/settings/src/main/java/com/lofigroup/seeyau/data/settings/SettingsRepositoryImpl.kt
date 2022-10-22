@@ -1,7 +1,5 @@
 package com.lofigroup.seeyau.data.settings
 
-import com.lofigroup.core.util.Resource
-import com.lofigroup.core.util.map
 import com.lofigroup.seeyau.data.settings.datasources.VisibilitySettingDataSource
 import com.lofigroup.seeyau.data.settings.model.toDataModel
 import com.lofigroup.seeyau.data.settings.model.toDomainModel

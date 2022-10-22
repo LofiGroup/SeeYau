@@ -1,37 +1,30 @@
 package com.lofigroup.seeyau.features.chat_screen.ui.components
 
-import android.content.Context
-import android.inputmethodservice.Keyboard.Row
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.components.UserIcon
 import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seayau.common.ui.theme.LocalIconsSize
-import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.profile.model.User
-import com.sillyapps.core.ui.components.RemoteImage
-import com.lofigroup.seayau.common.ui.R as CommonR
 import com.lofigroup.seeyau.features.chat_screen.R
 import com.sillyapps.core.ui.components.OneLiner
 import com.sillyapps.core.ui.components.TextLabel
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core_time.getLocalTimeFromMillis
+import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun ChatItem(

@@ -1,11 +1,8 @@
 package com.lofigroup.seeyau.features.chat_screen.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,11 +15,9 @@ import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
-import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatItem
 import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatList
 import com.lofigroup.seeyau.features.chat_screen.ui.components.TopBar
 import com.sillyapps.core.ui.components.ShowToast
-
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

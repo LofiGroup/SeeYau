@@ -9,11 +9,11 @@ import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.model.toUIModel
 import com.lofigroup.seeyau.domain.chat.usecases.GetChatIdByUserIdUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.BlackListUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.LikeUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UnLikeUserUseCase
 import com.sillyapps.core_time.Time
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -25,6 +25,7 @@ class NavigatorScreenViewModel @Inject constructor(
   private val getProfileUseCase: GetProfileUseCase,
   private val likeUserUseCase: LikeUserUseCase,
   private val unLikeUserUseCase: UnLikeUserUseCase,
+  private val blackListUserUseCase: BlackListUserUseCase,
   private val resources: Resources
 ) : ViewModel(), NavigatorScreenStateHolder {
 
@@ -67,7 +68,10 @@ class NavigatorScreenViewModel @Inject constructor(
   }
 
   override fun onIgnoreSelectedUser() {
-
+    val selectedUserId = state.value.selectedUser?.id ?: return
+    viewModelScope.launch {
+      blackListUserUseCase(selectedUserId)
+    }
   }
 
   override fun onShowChat() {

@@ -4,11 +4,10 @@ import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.seeyau.data.auth.di.DaggerAuthDataComponent
-import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
+import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.lofigroup.seeyau.domain.auth.di.DaggerAuthComponent
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import retrofit2.Retrofit
 

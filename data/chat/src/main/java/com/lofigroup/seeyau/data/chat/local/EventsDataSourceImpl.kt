@@ -5,7 +5,6 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ChatIsRe
 import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
-import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import timber.log.Timber

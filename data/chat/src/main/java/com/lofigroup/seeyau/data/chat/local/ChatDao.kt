@@ -7,7 +7,7 @@ import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatMessageDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatDraft
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
@@ -40,8 +40,8 @@ interface ChatDao {
   @Query("select id from chats where partnerId = :userId")
   suspend fun getChatIdFromUserId(userId: Long): Long?
 
-  @Query("select * from messages order by createdIn desc limit 1")
-  suspend fun getLastMessage(): MessageEntity?
+  @Query("select createdIn from messages order by createdIn desc limit 1")
+  suspend fun getLastMessageCreatedIn(): Long?
 
   @Query("select * from drafts where chatId = :chatId")
   suspend fun getChatDraft(chatId: Long): ChatDraft?
@@ -62,8 +62,11 @@ interface ChatDao {
     markMessagesAsRead(chatId, lastVisited)
   }
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertChat(chat: ChatEntity)
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertChat(chat: ChatEntity): Long
+
+  @Update
+  suspend fun updateChat(chat: ChatEntity)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertMessages(messages: List<MessageEntity>)
@@ -88,5 +91,13 @@ interface ChatDao {
 
   @Query("delete from drafts where chatId = :chatId")
   suspend fun deleteDraft(chatId: Long)
+
+  @Transaction
+  suspend fun upsertChat(chat: ChatEntity) {
+    val id = insertChat(chat)
+
+    if (id == -1L)
+      updateChat(chat)
+  }
 
 }

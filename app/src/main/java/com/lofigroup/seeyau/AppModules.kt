@@ -32,11 +32,13 @@ class AppModules(
       context = appContext,
       userDao = appComponent.getDatabase().userDao,
       likeDao = appComponent.getDatabase().likeDao,
+      blacklistDao = appComponent.getDatabase().blacklistDao,
       sharedPreferences = appComponent.getSharedPref(),
       appScope = appScope,
       baseRetrofit = backend.getRetrofit(),
       chatDao = appComponent.getDatabase().chatDao,
-      profileRepository = profileModule.dataComponent.getRepository()
+      profileRepository = profileModule.dataComponent.getRepository(),
+      webSocketChannel = backend.getWebSocketChannel()
     )
   }
 
@@ -54,6 +56,7 @@ class AppModules(
       webSocketChannel = backend.getWebSocketChannel(),
       userDao = appComponent.getDatabase().userDao,
       likeDao = appComponent.getDatabase().likeDao,
+      blacklistDao = appComponent.getDatabase().blacklistDao,
       sharedPref = appComponent.getSharedPref(),
       contentResolver = appComponent.getContentResolver()
     )
@@ -69,7 +72,8 @@ class AppModules(
       sharedPreferences = appComponent.getSharedPref(),
       profileDataSource = profileModule.dataComponent.getProfileDataSource(),
       ioScope = appScope,
-      profileRepository = profileModule.dataComponent.getRepository()
+      profileRepository = profileModule.dataComponent.getRepository(),
+      profileEventChannel = profileModule.eventChannel
     )
   }
 

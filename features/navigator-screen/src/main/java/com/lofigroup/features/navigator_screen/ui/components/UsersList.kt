@@ -20,7 +20,6 @@ import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ImageWrap
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
-import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun UsersList(

@@ -1,7 +1,6 @@
 package com.lofigroup.seeyau.data.chat
 
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.SendMessageWsRequest
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.WebSocketRequest
 import com.squareup.moshi.Moshi
 import org.junit.Test
 

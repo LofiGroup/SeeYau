@@ -36,3 +36,19 @@ fun <T> List<T>.addToOrderedDesc(
   mutableList.add(item)
   return mutableList
 }
+
+fun <T> List<T>.splitInTwo(
+  shouldBeInMainList: (T) -> Boolean
+): Pair<List<T>, List<T>> {
+  val mainList = mutableListOf<T>()
+  val otherList = mutableListOf<T>()
+
+  for (item in this) {
+    if (shouldBeInMainList(item))
+      mainList.add(item)
+    else
+      otherList.add(item)
+  }
+
+  return Pair(mainList, otherList)
+}

@@ -1,7 +1,10 @@
 package com.lofigroup.seeyau.domain.auth.di
 
 import com.lofigroup.seeyau.domain.auth.AuthRepository
-import com.lofigroup.seeyau.domain.auth.usecases.*
+import com.lofigroup.seeyau.domain.auth.usecases.AuthorizeUseCase
+import com.lofigroup.seeyau.domain.auth.usecases.IsLoggedInUseCase
+import com.lofigroup.seeyau.domain.auth.usecases.LogoutUseCase
+import com.lofigroup.seeyau.domain.auth.usecases.StartAuthUseCase
 import com.sillyapps.core.di.AppScope
 import dagger.BindsInstance
 import dagger.Component
@@ -10,10 +13,7 @@ import dagger.Component
 @Component()
 interface AuthComponent {
 
-  fun isLoggedInUseCase(): IsLoggedInUseCase
-  fun logoutUseCase(): LogoutUseCase
-  fun authorizeUseCase(): AuthorizeUseCase
-  fun startAuthUseCase(): StartAuthUseCase
+  fun getRepository(): AuthRepository
 
   @Component.Builder
   interface Builder {

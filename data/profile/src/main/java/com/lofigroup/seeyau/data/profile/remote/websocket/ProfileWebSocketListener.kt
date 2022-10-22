@@ -2,11 +2,10 @@ package com.lofigroup.seeyau.data.profile.remote.websocket
 
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.backend_api.websocket.WebSocketChannelListener
+import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
-import com.lofigroup.seeyau.data.profile.local.model.toLikeEntity
-import com.lofigroup.seeyau.data.profile.remote.websocket.models.ProfileWebsocketResponse
-import com.lofigroup.seeyau.data.profile.remote.websocket.models.toLikeEntity
+import com.lofigroup.seeyau.data.profile.remote.websocket.models.*
 import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +16,7 @@ import javax.inject.Inject
 class ProfileWebSocketListener @Inject constructor(
   private val webSocketChannel: WebSocketChannel,
   private val likeDao: LikeDao,
+  private val blacklistDao: BlacklistDao,
   private val ioScope: CoroutineScope,
   private val ioDispatcher: CoroutineDispatcher,
   private val profileDataSource: ProfileDataSource
@@ -29,9 +29,14 @@ class ProfileWebSocketListener @Inject constructor(
     val response = ProfileWebsocketResponse.adapter.fromJson(message) ?: return
 
     when (response) {
-      is ProfileWebsocketResponse.LikeIsUpdated -> {
+      is LikeIsUpdated -> {
         ioScope.launch(ioDispatcher) {
           likeDao.insert(response.toLikeEntity())
+        }
+      }
+      is YouAreBlacklisted -> {
+        ioScope.launch {
+          blacklistDao.insert(response.toBlacklistEntity())
         }
       }
     }

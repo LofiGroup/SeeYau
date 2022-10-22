@@ -1,8 +1,8 @@
 package com.lofigroup.seeyau.data.auth
 
 import com.lofigroup.seeyau.data.auth.model.AccessRequest
-import com.lofigroup.seeyau.data.auth.model.TokenResponse
 import com.lofigroup.seeyau.data.auth.model.StartAuthRequest
+import com.lofigroup.seeyau.data.auth.model.TokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

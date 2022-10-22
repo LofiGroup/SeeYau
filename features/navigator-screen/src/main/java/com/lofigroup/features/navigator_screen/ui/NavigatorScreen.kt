@@ -1,7 +1,6 @@
 package com.lofigroup.features.navigator_screen.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -9,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.ui.components.*
 import com.lofigroup.seayau.common.ui.components.OptionsDialog
@@ -122,6 +120,7 @@ fun NavigatorScreen(
     OptionsDialogItem(
       text = stringResource(id = CommonR.string.ignore_user),
       onClick = {
+        stateHolder.onIgnoreSelectedUser()
         optionsDialogVisible = false
       }
     )

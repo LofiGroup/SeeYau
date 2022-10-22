@@ -1,8 +1,11 @@
 package com.lofigroup.seeyau.features.auth_screen_flow.ui
 
 import android.net.Uri
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -11,12 +14,14 @@ import com.lofigroup.seayau.common.ui.components.DefaultTopBar
 import com.lofigroup.seayau.common.ui.components.UpButton
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
-import com.lofigroup.seeyau.features.auth_screen_flow.model.*
+import com.lofigroup.seeyau.features.auth_screen_flow.model.AuthScreenFlowModel
+import com.lofigroup.seeyau.features.auth_screen_flow.model.EnterNumberScreenState
+import com.lofigroup.seeyau.features.auth_screen_flow.model.RoutePoint
+import com.lofigroup.seeyau.features.auth_screen_flow.model.VerifyCodeScreenState
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterNameScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterPhoneNumberScreen
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.VerifyPhoneNumberScreen
-
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

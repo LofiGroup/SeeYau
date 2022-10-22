@@ -10,16 +10,7 @@ import dagger.Component
 @Component()
 interface ChatComponent {
 
-  fun observeChatsUseCase(): ObserveChatsUseCase
-  fun observeChatUseCase(): ObserveChatUseCase
-  fun pullChatDataUseCase(): PullChatDataUseCase
-  fun observeChatEvents(): ObserveChatEventsUseCase
-  fun sendChatMessageUseCase(): SendChatMessageUseCase
-  fun markChatAsRead(): MarkChatAsReadUseCase
-  fun getChatIdByUserIdUseCase(): GetChatIdByUserIdUseCase
-  fun getUserIdByChatIdUseCase(): GetUserIdByChatIdUseCase
-  fun getChatDraftUseCase(): GetChatDraftUseCase
-  fun updateChatDratUseCase(): UpdateChatDraftUseCase
+  fun getRepository(): ChatRepository
 
   @Component.Builder
   interface Builder {

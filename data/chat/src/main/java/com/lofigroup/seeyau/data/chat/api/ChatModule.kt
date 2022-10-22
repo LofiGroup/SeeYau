@@ -12,7 +12,6 @@ import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.domain.chat.di.DaggerChatComponent
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 class ChatModule(
@@ -24,7 +23,8 @@ class ChatModule(
   webSocketChannel: WebSocketChannel,
   profileDataSource: ProfileDataSource,
   ioScope: CoroutineScope,
-  profileRepository: ProfileRepository
+  profileRepository: ProfileRepository,
+  profileEventChannel: EventChannel<ProfileChannelEvent>
 ) {
 
   private val dataComponent = DaggerChatDataComponent.builder()
@@ -37,6 +37,7 @@ class ChatModule(
     .ioScope(ioScope)
     .profileRepository(profileRepository)
     .webSocketChannel(webSocketChannel)
+    .profileEventChannel(profileEventChannel)
     .build()
 
   val domainComponent = DaggerChatComponent.builder()

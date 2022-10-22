@@ -1,6 +1,5 @@
 package com.sillyapps.core.ui.util
 
-import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
 

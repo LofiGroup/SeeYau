@@ -9,6 +9,8 @@ interface NavigatorRepository {
 
   suspend fun notifyUserWithIdWasFound(id: Long)
 
+  fun connectToWebsocket()
+
   fun getNearbyUsers(): Flow<List<NearbyUser>>
 
 }

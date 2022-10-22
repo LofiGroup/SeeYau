@@ -4,10 +4,8 @@ import android.content.SharedPreferences
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.sillyapps.core.di.AppScope
-import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
-import kotlinx.coroutines.CoroutineScope
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 

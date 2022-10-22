@@ -1,10 +1,8 @@
 package com.lofigroup.seeyau
 
 import android.app.Application
-import android.content.Intent
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.NavigatorComponent
-import com.lofigroup.features.nearby_service.NearbyServiceImpl
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
@@ -13,7 +11,6 @@ import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 import kotlinx.coroutines.MainScope
 import timber.log.Timber
 

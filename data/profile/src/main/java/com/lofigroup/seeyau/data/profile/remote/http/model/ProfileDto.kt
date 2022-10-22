@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.data.profile.remote.http.model
 
-import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -6,11 +6,13 @@ import android.os.Binder
 import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
+import com.lofigroup.domain.navigator.usecases.ConnectToWebsocketUseCase
 import com.lofigroup.domain.navigator.usecases.PullNavigatorDataUseCase
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
 import com.lofigroup.seeyau.domain.chat.usecases.PullChatDataUseCase
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
+import com.lofigroup.seeyau.domain.profile.usecases.PullBlacklistDataUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullLikesUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullProfileDataUseCase
 import com.lofigroup.seeyau.features.data_sync_service.di.DaggerDataSyncServiceComponent
@@ -36,6 +38,9 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   @Inject lateinit var pullNavigatorDataUseCase: PullNavigatorDataUseCase
   @Inject lateinit var pullProfileDataUseCase: PullProfileDataUseCase
   @Inject lateinit var pullLikesUseCase: PullLikesUseCase
+  @Inject lateinit var pullBlacklistDataUseCase: PullBlacklistDataUseCase
+
+  @Inject lateinit var connectToWebsocketUseCase: ConnectToWebsocketUseCase
 
   private val state = MutableStateFlow(DataSyncServiceState.LOADING)
 
@@ -80,10 +85,13 @@ class DataSyncServiceImpl: Service(), DataSyncService {
     if (syncing) return
     scope.launch {
       syncing = true
+      pullBlacklistDataUseCase()
       pullProfileDataUseCase()
       pullNavigatorDataUseCase()
       pullLikesUseCase()
       pullChatDataUseCase()
+
+      connectToWebsocketUseCase()
       state.value = DataSyncServiceState.SYNCED
     }
   }

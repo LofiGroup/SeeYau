@@ -7,7 +7,6 @@ import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.domain.auth.usecases.AuthorizeUseCase
 import com.lofigroup.seeyau.domain.auth.usecases.StartAuthUseCase
-import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 import com.lofigroup.seeyau.domain.profile.usecases.UpdateProfileUseCase
 import com.lofigroup.seeyau.features.auth_screen_flow.model.*

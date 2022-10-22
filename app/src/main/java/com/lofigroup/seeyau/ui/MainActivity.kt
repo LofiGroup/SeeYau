@@ -1,18 +1,10 @@
 package com.lofigroup.seeyau.ui
 
-import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
-import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.features.nearby_service.NearbyService
@@ -27,8 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
@@ -101,8 +91,8 @@ class MainActivity : ComponentActivity() {
   }
 
   override fun onDestroy() {
-    super.onDestroy()
     unbindServices()
+    super.onDestroy()
   }
 
   private fun bindServices() {

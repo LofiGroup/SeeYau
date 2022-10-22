@@ -4,13 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 
 @Entity(
   tableName = "drafts",
   foreignKeys = [
-    ForeignKey(entity = ChatEntity::class, childColumns = ["chatId"], parentColumns = ["id"]),
+    ForeignKey(onDelete = ForeignKey.CASCADE, entity = ChatEntity::class, childColumns = ["chatId"], parentColumns = ["id"]),
   ]
 )
 data class MessageDraftEntity(

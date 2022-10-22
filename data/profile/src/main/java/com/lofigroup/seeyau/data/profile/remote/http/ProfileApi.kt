@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.profile.remote.http
 
 import com.lofigroup.backend_api.models.UserDto
+import com.lofigroup.seeyau.data.profile.remote.http.model.BlackListDto
 import com.lofigroup.seeyau.data.profile.remote.http.model.LikeDto
 import com.lofigroup.seeyau.data.profile.remote.http.model.ProfileDto
 import okhttp3.MultipartBody
@@ -31,5 +32,11 @@ interface ProfileApi {
 
   @POST("/api/profiles/unlike/{user_id}")
   suspend fun unlikeUser(@Path("user_id") id: Long): Response<Unit>
+
+  @POST("/api/profiles/blacklist-user/{user_id}")
+  suspend fun blackListUser(@Path("user_id") id: Long): Response<BlackListDto>
+
+  @GET("/api/profiles/get-blacklist")
+  suspend fun getBlackList(@Query("from_date") fromDate: Long): Response<List<BlackListDto>>
 
 }
