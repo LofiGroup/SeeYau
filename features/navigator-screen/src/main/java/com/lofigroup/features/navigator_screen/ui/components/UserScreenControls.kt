@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 
@@ -64,19 +65,13 @@ fun LikeButton(
     modifier = Modifier.clickable { onClick(!isPressed) },
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    if (isPressed) {
-      Icon(
-        painter = painterResource(id = R.drawable.ic_like_enabled),
-        contentDescription = null,
-        modifier = Modifier.size(LocalSize.current.medium)
-      )
-    } else {
-      Icon(
-        painter = painterResource(id = R.drawable.ic_like_disabled),
-        contentDescription = null,
-        modifier = Modifier.size(LocalSize.current.medium)
-      )
-    }
+    val resId = if (isPressed) R.drawable.ic_like_enabled else R.drawable.ic_like_disabled
+
+    ImageButton(
+      onClick = { onClick(!isPressed) },
+      painter = painterResource(id = resId),
+      modifier = Modifier.size(LocalSize.current.medium)
+    )
 
     Text(
       text = likesCount.toString(),
@@ -91,17 +86,13 @@ fun ControlItem(
   onClick: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  IconButton(
+  ImageButton(
     onClick = onClick,
+    painter = painterResource(id = resId),
     modifier = modifier
       .padding(vertical = LocalSpacing.current.medium)
       .size(LocalSize.current.medium)
-  ) {
-    Image(
-      painter = painterResource(id = resId),
-      contentDescription = null
-    )
-  }
+  )
 }
 
 @Preview

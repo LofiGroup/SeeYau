@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import com.lofigroup.seayau.common.ui.components.DefaultTopBar
 import com.lofigroup.seayau.common.ui.components.LikesLabel
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.Profile
+import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.components.TextLabel
 import com.sillyapps.core.ui.theme.LocalSize
@@ -40,13 +42,14 @@ fun TopBar(
       )
     },
     rightContent = {
-      Box {
-        Image(
+      Box(
+        modifier = Modifier.padding(end = LocalSpacing.current.small)
+      ) {
+        ImageButton(
+          onClick = onCloudButtonClick,
           painter = painterResource(id = R.drawable.ic_cloud_icon),
-          contentDescription = null,
           modifier = Modifier
             .align(Alignment.CenterEnd)
-            .clickable { onCloudButtonClick() }
         )
 
         if (newMessagesCount != 0) {
@@ -71,6 +74,7 @@ fun ProfileSettingsButton(
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier
+      .padding(start = LocalSpacing.current.small)
       .clip(CircleShape)
       .background(Color.Black.copy(alpha = 0.3f))
       .clickable(onClick = onClick)

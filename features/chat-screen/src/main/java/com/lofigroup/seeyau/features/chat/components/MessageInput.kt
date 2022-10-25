@@ -21,7 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.lofigroup.seeyau.features.chat.R
+import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSpacing
+import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun MessageInput(
@@ -56,18 +58,16 @@ fun MessageInput(
         Text(text = stringResource(id = R.string.message))
       },
       leadingIcon = {
-        Image(
-          painter = painterResource(id = R.drawable.ic_scab_icon),
-          contentDescription = null
+        ImageButton(
+          onClick = {  }, 
+          painter = painterResource(id = R.drawable.ic_scab_icon)
         )
       },
       trailingIcon = {
-        Icon(
-          imageVector = Icons.Filled.Send,
-          contentDescription = null,
-          modifier = Modifier.clickable {
-            sendMessage()
-          }
+        val resId = if (message.isBlank()) CommonR.drawable.sfm_gray_1 else CommonR.drawable.sfm_blue_1
+        ImageButton(
+          onClick = sendMessage,
+          painter = painterResource(id = resId)
         )
       },
     )

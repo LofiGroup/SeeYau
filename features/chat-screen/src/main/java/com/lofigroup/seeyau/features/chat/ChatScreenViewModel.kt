@@ -72,6 +72,10 @@ class ChatScreenViewModel @Inject constructor(
 
   override fun sendMessage() {
     val message = state.value.message
+    if (message.isBlank()) {
+      return
+    }
+
     state.apply { value = value.copy(message = "") }
 
     viewModelScope.launch {

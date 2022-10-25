@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.components.UserIcon
 import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
 import com.lofigroup.seeyau.domain.profile.model.User
+import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
@@ -29,12 +31,11 @@ fun TopBar(
     modifier = Modifier
       .fillMaxWidth()
       .background(MaterialTheme.colors.background.copy(alpha = 0.5f))
-      .padding(LocalSpacing.current.medium)
+      .padding(vertical = LocalSpacing.current.medium)
   ) {
-    Image(
-      painter = painterResource(id = R.drawable.ic_arrow_1_icon),
-      contentDescription = null,
-      modifier = Modifier.clickable { onUpButtonClick() }
+    ImageButton(
+      onClick = onUpButtonClick,
+      painter = painterResource(id = R.drawable.ic_arrow_1_icon)
     )
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
@@ -61,10 +62,9 @@ fun TopBar(
       )
     }
 
-    Image(
+    ImageButton(
+      onClick = onMoreButtonClick,
       painter = painterResource(id = R.drawable.ic_more_1_icon),
-      contentDescription = null,
-      modifier = Modifier.clickable(onClick = onMoreButtonClick)
     )
   }
 }

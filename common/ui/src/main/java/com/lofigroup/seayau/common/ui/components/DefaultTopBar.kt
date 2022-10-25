@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
@@ -24,7 +25,7 @@ fun DefaultTopBar(
   Box(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(LocalSpacing.current.medium)
+      .padding(vertical = LocalSpacing.current.medium)
   ) {
     Row(
       modifier = Modifier.align(Alignment.CenterStart)
@@ -50,11 +51,9 @@ fun DefaultTopBar(
 fun UpButton(
   onClick: () -> Unit
 ) {
-  Image(
+  ImageButton(
     painter = painterResource(id = R.drawable.ic_arrow_1_icon),
-    contentDescription = null,
-    modifier = Modifier
-      .clickable { onClick() }
+    onClick = onClick
   )
 }
 
