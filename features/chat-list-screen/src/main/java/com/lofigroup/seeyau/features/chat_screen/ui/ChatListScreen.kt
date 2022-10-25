@@ -4,12 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.lofigroup.seayau.common.ui.components.specific.BigImage
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
@@ -33,6 +32,13 @@ fun ChatListScreen(
     stateHolder.getState()
   }.collectAsState(initial = initialState)
 
+  var bigImageVisible by rememberSaveable {
+    mutableStateOf(false)
+  }
+  var bigImageUrl by rememberSaveable() {
+    mutableStateOf<String?>(null)
+  }
+
   Surface(
     modifier = Modifier
       .fillMaxSize()
@@ -50,10 +56,20 @@ fun ChatListScreen(
         likesFolder = state.likesFolder,
         interactionFolder = state.interactionFolder,
         onItemClick = onItemClick,
+        onIconClick = {
+          bigImageUrl = it
+          bigImageVisible = true
+        },
         modifier = Modifier.weight(1f)
       )
     }
   }
+
+  BigImage(
+    isVisible = bigImageVisible,
+    onDismiss = { bigImageVisible = false },
+    url = bigImageUrl
+  )
 
   val errorMessage = state.errorMessage
   if (errorMessage != null) {

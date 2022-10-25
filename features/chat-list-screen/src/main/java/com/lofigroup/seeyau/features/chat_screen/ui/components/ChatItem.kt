@@ -32,89 +32,93 @@ import com.lofigroup.seayau.common.ui.R as CommonR
 @Composable
 fun ChatItem(
   chat: ChatBrief,
-  onClick: (Long) -> Unit
+  onClick: (Long) -> Unit,
+  onIconClick: (String?) -> Unit,
 ) {
   Surface(
     modifier = Modifier
       .clickable { onClick(chat.id) }
   ) {
-    val chatDraft = chat.draft
-    val lastMessage = chat.lastMessage
-    if (chatDraft.isNotBlank()) {
-      DraftChatItemContent(draft = chatDraft, chat = chat)
-    }
-    else if (chat.partner.blacklistedYou) {
-      BlacklistedChatItemContent(chat)
-    }
-    else {
-      when (lastMessage) {
-        is ChatMessage.LikeMessage -> LikeChatItemContent(likeMessage = lastMessage, chat = chat)
-        is ChatMessage.PlainMessage -> PlainChatItemContent(plainMessage = lastMessage, chat = chat)
-        null -> DefaultChatItemContent(chat = chat)
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(LocalSpacing.current.medium)
+        .height(IntrinsicSize.Min),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      UserIcon(
+        imageUri = chat.partner.imageUrl,
+        isOnline = chat.partner.isOnline,
+        onClick = { onIconClick(chat.partner.imageUrl) }
+      )
+
+      val chatDraft = chat.draft
+      val lastMessage = chat.lastMessage
+      if (chatDraft.isNotBlank()) {
+        DraftChatItemContent(draft = chatDraft, chat = chat)
+      } else if (chat.partner.blacklistedYou) {
+        BlacklistedChatItemContent(chat)
+      } else {
+        when (lastMessage) {
+          is ChatMessage.LikeMessage -> LikeChatItemContent(likeMessage = lastMessage, chat = chat)
+          is ChatMessage.PlainMessage -> PlainChatItemContent(plainMessage = lastMessage, chat = chat)
+          null -> DefaultChatItemContent(chat = chat)
+        }
       }
     }
   }
 }
 
 @Composable
-fun BaseChatItemContent(
+fun RowScope.BaseChatItemContent(
   chat: ChatBrief,
   messagePlaceholder: @Composable () -> Unit,
   messageInfoPlaceholder: @Composable RowScope.() -> Unit = {},
   iconsPlaceholder: @Composable RowScope.() -> Unit = {},
-  showDefaultIcons: Boolean = true
+  showDefaultIcons: Boolean = true,
 ) {
-  Row(modifier = Modifier
-    .fillMaxWidth()
-    .padding(LocalSpacing.current.medium)
-    .height(IntrinsicSize.Min),
-    verticalAlignment = Alignment.CenterVertically
+  Column(
+    modifier = Modifier
+      .weight(1f)
+      .padding(start = LocalSpacing.current.small)
   ) {
-    UserIcon(imageUri = chat.partner.imageUrl, isOnline = chat.partner.isOnline)
+    Text(
+      text = chat.partner.name,
+      style = MaterialTheme.typography.body2,
+      modifier = Modifier.padding(bottom = LocalSpacing.current.extraSmall)
+    )
 
-    Column(
+    messagePlaceholder()
+  }
+
+  Box(
+    modifier = Modifier.fillMaxHeight()
+  ) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
       modifier = Modifier
-        .weight(1f)
-        .padding(start = LocalSpacing.current.small)
+        .padding(bottom = LocalSpacing.current.small)
+        .align(Alignment.TopEnd)
     ) {
-      Text(
-        text = chat.partner.name,
-        style = MaterialTheme.typography.body2,
-        modifier = Modifier.padding(bottom = LocalSpacing.current.extraSmall)
-      )
-
-      messagePlaceholder()
+      messageInfoPlaceholder()
     }
-
-    Box(
-      modifier = Modifier.fillMaxHeight()
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier
+        .align(Alignment.BottomEnd)
     ) {
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .padding(bottom = LocalSpacing.current.small)
-          .align(Alignment.TopEnd)
-      ) {
-        messageInfoPlaceholder()
-      }
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .align(Alignment.BottomEnd)
-      ) {
-        iconsPlaceholder()
-        if (showDefaultIcons && chat.newMessagesCount > 0)
-          TextLabel(
-            text = "+${chat.newMessagesCount}",
-            modifier = Modifier.padding(start = LocalSpacing.current.extraSmall)
-          )
-      }
+      iconsPlaceholder()
+      if (showDefaultIcons && chat.newMessagesCount > 0)
+        TextLabel(
+          text = "+${chat.newMessagesCount}",
+          modifier = Modifier.padding(start = LocalSpacing.current.extraSmall)
+        )
     }
   }
 }
 
 @Composable
-fun BlacklistedChatItemContent(
+fun RowScope.BlacklistedChatItemContent(
   chat: ChatBrief
 ) {
   BaseChatItemContent(
@@ -137,7 +141,7 @@ fun BlacklistedChatItemContent(
 }
 
 @Composable
-fun DraftChatItemContent(
+fun RowScope.DraftChatItemContent(
   draft: String,
   chat: ChatBrief
 ) {
@@ -159,7 +163,7 @@ fun DraftChatItemContent(
 }
 
 @Composable
-fun LikeChatItemContent(
+fun RowScope.LikeChatItemContent(
   likeMessage: ChatMessage.LikeMessage,
   chat: ChatBrief
 ) {
@@ -181,7 +185,7 @@ fun LikeChatItemContent(
 }
 
 @Composable
-fun PlainChatItemContent(
+fun RowScope.PlainChatItemContent(
   plainMessage: ChatMessage.PlainMessage,
   chat: ChatBrief
 ) {
@@ -207,7 +211,7 @@ fun PlainChatItemContent(
 }
 
 @Composable
-fun DefaultChatItemContent(
+fun RowScope.DefaultChatItemContent(
   chat: ChatBrief
 ) {
   BaseChatItemContent(
@@ -235,7 +239,13 @@ fun ChatItemPreview() {
       blacklistedYou = true,
       likedAt = null
     ),
-    lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),
+    lastMessage = ChatMessage.PlainMessage(
+      id = 0,
+      message = "Hello!",
+      author = 0,
+      createdIn = 0L,
+      isRead = true
+    ),
     newMessagesCount = 1,
     draft = "",
   )
@@ -243,7 +253,8 @@ fun ChatItemPreview() {
   AppTheme {
     ChatItem(
       chat = item,
-      onClick = {}
+      onClick = {},
+      onIconClick = {}
     )
   }
 }

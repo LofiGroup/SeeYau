@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.lofigroup.seayau.common.ui.components.specific.BigImage
 import com.lofigroup.seayau.common.ui.components.specific.UserOptionsDialog
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.User
@@ -47,6 +48,10 @@ fun ChatScreen(
     mutableStateOf(false)
   }
 
+  var bigImageVisible by rememberSaveable {
+    mutableStateOf(false)
+  }
+
   LaunchedEffect(key1 = Unit) {
     stateHolder.getCommands().collect {
       when (it) {
@@ -73,7 +78,8 @@ fun ChatScreen(
     TopBar(
       partner = state.partner,
       onUpButtonClick = onUpButtonClick,
-      onMoreButtonClick = { optionsDialogVisible = true }
+      onMoreButtonClick = { optionsDialogVisible = true },
+      onUserIconClick = { bigImageVisible = true }
     )
 
     ChatMessages(
@@ -102,6 +108,12 @@ fun ChatScreen(
       stateHolder.onIgnoreUser()
     },
     onNavigateToChatOptionEnabled = false
+  )
+
+  BigImage(
+    isVisible = bigImageVisible,
+    onDismiss = { bigImageVisible = false },
+    url = state.partner.imageUrl
   )
 }
 

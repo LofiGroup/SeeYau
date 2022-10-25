@@ -32,6 +32,7 @@ fun ChatList(
   interactionFolder: List<ChatBrief>,
 
   onItemClick: (Long) -> Unit,
+  onIconClick: (String?) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val (memoriesExpanded, setMemoriesExpanded) = rememberSaveable {
@@ -52,6 +53,7 @@ fun ChatList(
       onItemClick = onItemClick,
       textResId = R.string.memory,
       imageResId = CommonR.drawable.ic_work_history,
+      onIconClick = onIconClick
     )
     FolderItem(
       isExpanded = likesExpanded,
@@ -60,6 +62,7 @@ fun ChatList(
       onItemClick = onItemClick,
       textResId = R.string.likes,
       imageResId = CommonR.drawable.ic_like_small,
+      onIconClick = onIconClick
     )
     FolderItem(
       isExpanded = interactionExpanded,
@@ -68,6 +71,7 @@ fun ChatList(
       onItemClick = onItemClick,
       textResId = R.string.Interaction,
       imageResId = CommonR.drawable.ic_interaction,
+      onIconClick = onIconClick
     )
   }
 }
@@ -77,8 +81,9 @@ fun LazyListScope.FolderItem(
   setExpanded: (Boolean) -> Unit,
   content: List<ChatBrief>,
   onItemClick: (Long) -> Unit,
+  onIconClick: (String?) -> Unit,
   textResId: Int,
-  imageResId: Int
+  imageResId: Int,
 ) {
   if (content.isNotEmpty()) {
     item {
@@ -92,7 +97,7 @@ fun LazyListScope.FolderItem(
 
     if (isExpanded) {
       items(content) {
-        ChatItem(chat = it, onClick = onItemClick)
+        ChatItem(chat = it, onClick = onItemClick, onIconClick = onIconClick)
       }
     }
   }

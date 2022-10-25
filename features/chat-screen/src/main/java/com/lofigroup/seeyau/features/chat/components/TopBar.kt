@@ -21,7 +21,8 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 fun TopBar(
   partner: User,
   onUpButtonClick: () -> Unit,
-  onMoreButtonClick: () -> Unit
+  onMoreButtonClick: () -> Unit,
+  onUserIconClick: () -> Unit
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
@@ -41,7 +42,7 @@ fun TopBar(
     UserIcon(
       imageUri = partner.imageUrl,
       isOnline = partner.isOnline,
-      onClick = {  }
+      onClick = onUserIconClick
     )
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
