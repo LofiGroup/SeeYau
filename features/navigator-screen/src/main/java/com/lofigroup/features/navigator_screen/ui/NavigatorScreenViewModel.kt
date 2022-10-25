@@ -13,9 +13,12 @@ import com.lofigroup.seeyau.domain.profile.usecases.BlacklistUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.LikeUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UnLikeUserUseCase
+import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
 import com.sillyapps.core_time.Time
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,14 +29,26 @@ class NavigatorScreenViewModel @Inject constructor(
   private val likeUserUseCase: LikeUserUseCase,
   private val unLikeUserUseCase: UnLikeUserUseCase,
   private val blackListUserUseCase: BlacklistUserUseCase,
+  private val getVisibilityUseCase: GetVisibilityUseCase,
   private val resources: Resources
 ) : ViewModel(), NavigatorScreenStateHolder {
 
   private val state = MutableStateFlow(NavigatorScreenState())
 
   init {
-    observeProfile()
-    observeNearbyUsers()
+    viewModelScope.launch {
+      coroutineScope {
+        launch {
+          observeProfile()
+        }
+        launch {
+          observeNearbyUsers()
+        }
+        launch {
+          observeVisibility()
+        }
+      }
+    }
   }
 
   override fun getState(): Flow<NavigatorScreenState> {
@@ -95,19 +110,22 @@ class NavigatorScreenViewModel @Inject constructor(
     return getChatIdByUserIdUseCase(userId)
   }
 
-  private fun observeProfile() {
-    viewModelScope.launch {
-      getProfileUseCase().collect { profile ->
-        state.value = state.value.copy(profile = profile)
-      }
+  private suspend fun observeProfile() {
+    getProfileUseCase().collect { profile ->
+      state.value = state.value.copy(profile = profile)
+    }
+
+  }
+
+  private suspend fun observeNearbyUsers() {
+    getNearbyUsersUseCase().collect { users ->
+      applyUpdates(users)
     }
   }
 
-  private fun observeNearbyUsers() {
-    viewModelScope.launch {
-      getNearbyUsersUseCase().collect { users ->
-        applyUpdates(users)
-      }
+  private suspend fun observeVisibility() {
+    getVisibilityUseCase().collect() {
+      state.apply { value = value.copy(isVisible = it.isVisible) }
     }
   }
 

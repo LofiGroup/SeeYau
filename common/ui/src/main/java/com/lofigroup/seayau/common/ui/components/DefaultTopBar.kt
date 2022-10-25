@@ -19,11 +19,12 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 @Composable
 fun DefaultTopBar(
   title: String,
+  modifier: Modifier = Modifier,
   leftContent: @Composable RowScope.() -> Unit = {},
-  rightContent: @Composable RowScope.() -> Unit = {}
+  rightContent: @Composable RowScope.() -> Unit = {},
 ) {
   Box(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .padding(vertical = LocalSpacing.current.medium)
   ) {

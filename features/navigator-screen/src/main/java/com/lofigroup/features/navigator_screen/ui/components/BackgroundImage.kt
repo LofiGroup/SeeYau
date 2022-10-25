@@ -13,18 +13,24 @@ import com.commit451.coiltransformations.BlurTransformation
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.util.universalBackground
 
 @Composable
 fun BackgroundImage(
+  isVisible: Boolean,
   selectedUser: UserItemUIModel?,
   isInFullScreenMode: Boolean
 ) {
+  val backgroundColor: Any =
+    if (isVisible) LocalExtendedColors.current.backgroundGradient
+    else MaterialTheme.colors.background
+
   Box(
     modifier = Modifier
       .fillMaxSize()
-      .background(LocalExtendedColors.current.backgroundGradient)
+      .universalBackground(backgroundColor)
   ) {
-    if (selectedUser != null && isInFullScreenMode) {
+    if (isVisible && selectedUser != null && isInFullScreenMode) {
       BackgroundCrop(url = selectedUser.imageUrl)
     }
   }

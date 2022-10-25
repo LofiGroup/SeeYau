@@ -8,4 +8,11 @@
 
   <string name="more">+%1$d more</string>
 
+  <string name="unvisible_details">
+    You are currently invisible to other people
+    \n\nUnfortunately you can\'t see new people
+    \n\nBut you can chat with people you have already added
+    \n\nDisable this feature in settings and look around
+  </string>
+
 </resources>

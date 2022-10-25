@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.profile_screen.R
 import com.sillyapps.core.ui.theme.LocalSpacing
+import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun VisibilitySwitch(
@@ -29,14 +30,14 @@ fun VisibilitySwitch(
     .padding(horizontal = LocalSpacing.current.medium)
   ) {
     Image(
-      painter = painterResource(id = R.drawable.ic_bx_hide), 
+      painter = painterResource(id = CommonR.drawable.ic_bx_hide),
       contentDescription = null
     )
     
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
     
     Text(
-      text = stringResource(id = if (visible) R.string.make_me_invisible else R.string.make_me_visible),
+      text = stringResource(id = R.string.make_me_invisible),
       style = MaterialTheme.typography.h4,
       modifier = Modifier.weight(1f)
     )
@@ -44,8 +45,8 @@ fun VisibilitySwitch(
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
     Switch(
-      checked = visible,
-      onCheckedChange = onSetVisibilityState
+      checked = !visible,
+      onCheckedChange = { onSetVisibilityState(!it) }
     )
 
   }

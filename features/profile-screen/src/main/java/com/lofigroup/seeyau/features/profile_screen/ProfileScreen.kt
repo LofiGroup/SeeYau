@@ -2,8 +2,8 @@ package com.lofigroup.seeyau.features.profile_screen
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,6 +26,7 @@ import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
+import com.sillyapps.core.ui.util.universalBackground
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import com.lofigroup.seayau.common.ui.R as CommonR
@@ -58,11 +59,15 @@ fun ProfileScreen(
       }
     }
 
+  val backgroundColor: Any =
+    if (state.isVisible) LocalExtendedColors.current.backgroundGradient
+    else MaterialTheme.colors.background
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
       .fillMaxSize()
-      .background(LocalExtendedColors.current.backgroundGradient)
+      .universalBackground(backgroundColor)
       .systemBarsPadding()
   ) {
     DefaultTopBar(

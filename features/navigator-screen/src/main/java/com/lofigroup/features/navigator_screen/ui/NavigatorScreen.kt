@@ -39,63 +39,70 @@ fun NavigatorScreen(
   Surface(
     modifier = Modifier.fillMaxSize()
   ) {
-    Box() {
+    Box {
       BackgroundImage(
+        isVisible = state.isVisible,
         selectedUser = state.selectedUser,
         isInFullScreenMode = state.fullScreenMode
       )
 
       if (!optionsDialogVisible) {
-        Column(
-          modifier = Modifier.systemBarsPadding()
-        ) {
-          TopBar(
-            newMessagesCount = state.newMessagesCount,
-            profile = state.profile,
-            onSettingsButtonClick = onNavigateToSettings,
-            onCloudButtonClick = onNavigateToChatList
-          )
-          val selectedUser = state.selectedUser
-          if (selectedUser != null) {
-            Box(modifier = Modifier
-              .weight(1f)
-              .fillMaxWidth()
-            ) {
-              UserNewMessages(
-                selectedUser = selectedUser,
-                onClick = {
-                  scope.launch {
-                    val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
-                    onNavigateToChat(chatId)
-                  }
-                },
-                showChat = stateHolder::onShowChat,
-                modifier = Modifier.align(Alignment.BottomStart)
-              )
-              UserScreenControls(
-                user = selectedUser,
-                isInFullScreenMode = state.fullScreenMode,
-                onToggleFullScreenMode = stateHolder::onToggleFullScreenMode,
-                onMoreButtonClicked = { optionsDialogVisible = true },
-                onGoToChat = {
-                  scope.launch {
-                    val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
-                    onNavigateToChat(chatId)
-                  }
-                },
-                onLikeButtonClick = stateHolder::onSetLike,
-                modifier = Modifier.align(Alignment.BottomEnd),
-              )
-            }
-          } else {
-            DefaultScreen()
-          }
+        TopBar(
+          newMessagesCount = state.newMessagesCount,
+          profile = state.profile,
+          onSettingsButtonClick = onNavigateToSettings,
+          onCloudButtonClick = onNavigateToChatList
+        )
 
-          UsersList(
-            users = state.sortedUsers,
-            splitIndex = state.splitIndex,
-            onUserSelected = stateHolder::selectUser
-          )
+        if (state.isVisible) {
+          Column(
+            modifier = Modifier.systemBarsPadding()
+          ) {
+            val selectedUser = state.selectedUser
+            if (selectedUser != null) {
+              Box(modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+              ) {
+                UserNewMessages(
+                  selectedUser = selectedUser,
+                  onClick = {
+                    scope.launch {
+                      val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
+                      onNavigateToChat(chatId)
+                    }
+                  },
+                  showChat = stateHolder::onShowChat,
+                  modifier = Modifier.align(Alignment.BottomStart)
+                )
+                UserScreenControls(
+                  user = selectedUser,
+                  isInFullScreenMode = state.fullScreenMode,
+                  onToggleFullScreenMode = stateHolder::onToggleFullScreenMode,
+                  onMoreButtonClicked = { optionsDialogVisible = true },
+                  onGoToChat = {
+                    scope.launch {
+                      val chatId = stateHolder.getChatIdByUserId(it) ?: return@launch
+                      onNavigateToChat(chatId)
+                    }
+                  },
+                  onLikeButtonClick = stateHolder::onSetLike,
+                  modifier = Modifier.align(Alignment.BottomEnd),
+                )
+              }
+            } else {
+              DefaultScreen()
+            }
+
+            UsersList(
+              users = state.sortedUsers,
+              splitIndex = state.splitIndex,
+              onUserSelected = stateHolder::selectUser
+            )
+          }
+        }
+        else {
+          NotVisibleScreen()
         }
       }
     }

@@ -41,6 +41,7 @@ dependencies {
 
   implementation project(":domain:navigator")
   implementation project(":domain:chat")
+  implementation project(":domain:settings")
 
   implementation project(":features:chat-screen")
 

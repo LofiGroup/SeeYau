@@ -31,7 +31,7 @@ fun TopBar(
   profile: Profile,
   newMessagesCount: Int,
   onSettingsButtonClick: () -> Unit,
-  onCloudButtonClick: () -> Unit
+  onCloudButtonClick: () -> Unit,
 ) {
   DefaultTopBar(
     title = "",
@@ -62,7 +62,8 @@ fun TopBar(
           )
         }
       }
-    }
+    },
+    modifier = Modifier.systemBarsPadding()
   )
 }
 
