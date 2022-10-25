@@ -20,7 +20,8 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 @Composable
 fun TopBar(
   partner: User,
-  onUpButtonClick: () -> Unit
+  onUpButtonClick: () -> Unit,
+  onMoreButtonClick: () -> Unit
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
@@ -61,7 +62,8 @@ fun TopBar(
 
     Image(
       painter = painterResource(id = R.drawable.ic_more_1_icon),
-      contentDescription = null
+      contentDescription = null,
+      modifier = Modifier.clickable(onClick = onMoreButtonClick)
     )
   }
 }

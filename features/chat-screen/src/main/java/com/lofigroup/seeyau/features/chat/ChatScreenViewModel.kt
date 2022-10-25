@@ -12,6 +12,9 @@ import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,13 +43,25 @@ class ChatScreenViewModel @Inject constructor(
   private val state = MutableStateFlow(ChatScreenState())
   private val commands = MutableSharedFlow<ChatScreenCommand>()
 
+  private val job: Job
+
   init {
-    viewModelScope.launch {
-      markChatAsReadUseCase(chatId)
+    job = viewModelScope.launch {
+      coroutineScope {
+        launch {
+          markChatAsReadUseCase(chatId)
+        }
+        launch {
+          observeProfileUpdates()
+        }
+        launch {
+          observeChatUpdates()
+        }
+        launch {
+          observeChatEvents()
+        }
+      }
     }
-    observeProfileUpdates()
-    observeChatUpdates()
-    observeChatEvents()
   }
 
   override fun getChatState(): Flow<ChatScreenState> = state
@@ -78,55 +93,53 @@ class ChatScreenViewModel @Inject constructor(
   }
 
   override fun onIgnoreUser() {
+    job.cancel()
     viewModelScope.launch {
       blacklistUserUseCase(state.value.partner.id)
+      commands.emit(ChatScreenCommand.Exit)
     }
   }
 
-  private fun observeProfileUpdates() {
-    viewModelScope.launch {
-      val profileId = getUserIdByChatIdUseCase(chatId)
+  private suspend fun observeProfileUpdates() {
+    val profileId = getUserIdByChatIdUseCase(chatId)
 
-      if (profileId == null) {
-        Timber.e("ProfileId for chat with id = $chatId is null!")
-        return@launch
-      }
+    if (profileId == null) {
+      Timber.e("ProfileId for chat with id = $chatId is null!")
+      return
+    }
 
-      getUserUseCase(profileId).collect() { user ->
-        state.apply { value = value.copy(partner = user) }
-      }
+    getUserUseCase(profileId).collect() { user ->
+      state.apply { value = value.copy(partner = user) }
     }
   }
 
-  private fun observeChatUpdates() {
-    viewModelScope.launch {
-      observeChatUseCase(chatId).collect() { chat ->
-        state.apply {
-          value = value.copy(
-            message = chat.draft.ifBlank { "" },
-            messages = chat.messages
-              .map { chatMessage -> chatMessage.toPrivateMessage(resources) }
-              .groupBy { it.dateTime.date }
-          )
+  private suspend fun observeChatUpdates() {
+    observeChatUseCase(chatId).collect() { chat ->
+      state.apply {
+        value = value.copy(
+          message = chat.draft.ifBlank { "" },
+          messages = chat.messages
+            .map { chatMessage -> chatMessage.toPrivateMessage(resources) }
+            .groupBy { it.dateTime.date }
+        )
+      }
+    }
+
+  }
+
+  private suspend fun observeChatEvents() {
+    observeChatEventsUseCase(chatId).collect() {
+      when (it) {
+        is ChatIsRead -> {
+
+        }
+        is NewChatMessage -> {
+          markChatAsReadUseCase(chatId)
+          commands.emit(ChatScreenCommand.ToLatestMessage)
         }
       }
     }
-  }
 
-  private fun observeChatEvents() {
-    viewModelScope.launch {
-      observeChatEventsUseCase(chatId).collect() {
-        when (it) {
-          is ChatIsRead -> {
-
-          }
-          is NewChatMessage -> {
-            markChatAsReadUseCase(chatId)
-            commands.emit(ChatScreenCommand.ToLatestMessage)
-          }
-        }
-      }
-    }
   }
 
 }

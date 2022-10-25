@@ -57,6 +57,9 @@ fun ChatScreen(
           delay(300)
           listState.animateScrollToItem(0)
         }
+        ChatScreenCommand.Exit -> {
+          onUpButtonClick()
+        }
       }
     }
   }
@@ -69,7 +72,8 @@ fun ChatScreen(
   ) {
     TopBar(
       partner = state.partner,
-      onUpButtonClick = onUpButtonClick
+      onUpButtonClick = onUpButtonClick,
+      onMoreButtonClick = { optionsDialogVisible = true }
     )
 
     ChatMessages(
@@ -95,10 +99,9 @@ fun ChatScreen(
     onWriteMessage = {},
     onIgnoreUser = {
       optionsDialogVisible = false
-      onUpButtonClick()
       stateHolder.onIgnoreUser()
     },
-    onNavigateToChatOptionEnabled = true
+    onNavigateToChatOptionEnabled = false
   )
 }
 
