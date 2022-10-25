@@ -9,7 +9,7 @@ import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.model.toUIModel
 import com.lofigroup.seeyau.domain.chat.usecases.GetChatIdByUserIdUseCase
-import com.lofigroup.seeyau.domain.profile.usecases.BlackListUserUseCase
+import com.lofigroup.seeyau.domain.profile.usecases.BlacklistUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.LikeUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UnLikeUserUseCase
@@ -25,7 +25,7 @@ class NavigatorScreenViewModel @Inject constructor(
   private val getProfileUseCase: GetProfileUseCase,
   private val likeUserUseCase: LikeUserUseCase,
   private val unLikeUserUseCase: UnLikeUserUseCase,
-  private val blackListUserUseCase: BlackListUserUseCase,
+  private val blackListUserUseCase: BlacklistUserUseCase,
   private val resources: Resources
 ) : ViewModel(), NavigatorScreenStateHolder {
 

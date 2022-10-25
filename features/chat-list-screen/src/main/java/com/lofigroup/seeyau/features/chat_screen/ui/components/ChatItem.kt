@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.chat_screen.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -22,6 +23,8 @@ import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.R
 import com.sillyapps.core.ui.components.OneLiner
 import com.sillyapps.core.ui.components.TextLabel
+import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core_time.getLocalTimeFromMillis
 import com.lofigroup.seayau.common.ui.R as CommonR
@@ -39,7 +42,11 @@ fun ChatItem(
     val lastMessage = chat.lastMessage
     if (chatDraft.isNotBlank()) {
       DraftChatItemContent(draft = chatDraft, chat = chat)
-    } else {
+    }
+    else if (chat.partner.blacklistedYou) {
+      BlacklistedChatItemContent(chat)
+    }
+    else {
       when (lastMessage) {
         is ChatMessage.LikeMessage -> LikeChatItemContent(likeMessage = lastMessage, chat = chat)
         is ChatMessage.PlainMessage -> PlainChatItemContent(plainMessage = lastMessage, chat = chat)
@@ -54,7 +61,8 @@ fun BaseChatItemContent(
   chat: ChatBrief,
   messagePlaceholder: @Composable () -> Unit,
   messageInfoPlaceholder: @Composable RowScope.() -> Unit = {},
-  iconsPlaceholder: @Composable RowScope.() -> Unit = {}
+  iconsPlaceholder: @Composable RowScope.() -> Unit = {},
+  showDefaultIcons: Boolean = true
 ) {
   Row(modifier = Modifier
     .fillMaxWidth()
@@ -95,12 +103,37 @@ fun BaseChatItemContent(
           .align(Alignment.BottomEnd)
       ) {
         iconsPlaceholder()
-        if (chat.newMessagesCount > 0)
-          TextLabel(text = "+${chat.newMessagesCount}")
+        if (showDefaultIcons && chat.newMessagesCount > 0)
+          TextLabel(
+            text = "+${chat.newMessagesCount}",
+            modifier = Modifier.padding(start = LocalSpacing.current.extraSmall)
+          )
       }
     }
   }
+}
 
+@Composable
+fun BlacklistedChatItemContent(
+  chat: ChatBrief
+) {
+  BaseChatItemContent(
+    chat = chat,
+    messagePlaceholder = {
+      OneLiner(
+        text = stringResource(id = CommonR.string.user_is_blacklisted_you),
+        style = MaterialTheme.typography.subtitle2.copy(color = LocalExtendedColors.current.disabled)
+      )
+    },
+    iconsPlaceholder = {
+      Icon(
+        painter = painterResource(id = R.drawable.ic_baseline_warning_24),
+        contentDescription = null,
+        modifier = Modifier.size(LocalSize.current.small)
+      )
+    },
+    showDefaultIcons = false
+  )
 }
 
 @Composable
@@ -199,7 +232,7 @@ fun ChatItemPreview() {
       isOnline = true,
 
       likedYouAt = null,
-      blacklistedYou = false,
+      blacklistedYou = true,
       likedAt = null
     ),
     lastMessage = ChatMessage.PlainMessage(id = 0, message = "Hello!", author = 0, createdIn = 0L, isRead = true),

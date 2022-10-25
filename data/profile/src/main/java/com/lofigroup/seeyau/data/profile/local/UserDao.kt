@@ -9,15 +9,16 @@ import kotlinx.coroutines.flow.Flow
 interface UserDao {
   companion object {
     const val selectAssembledUserQuery =
-      "select users.*, blacklist.createdIn as blacklistedYouAt, likes.updatedIn as likedYouAt, myLikes.updatedIn as likedAt from users " +
-          "left join blacklist on blacklist.byWho = users.id " +
+      "select users.*, likes.updatedIn as likedYouAt, myLikes.updatedIn as likedAt from users " +
           "left join likes on likes.byWho = users.id and likes.isLiked = 1 " +
           "left join likes as myLikes on myLikes.toWhom = users.id and myLikes.isLiked = 1"
   }
 
+  @Transaction
   @Query("$selectAssembledUserQuery where users.id > 0")
   fun observeAssembledUsers(): Flow<List<UserAssembled>>
 
+  @Transaction
   @Query("$selectAssembledUserQuery where users.id = :userId")
   fun observeAssembledUser(userId: Long): Flow<UserAssembled>
 
@@ -53,6 +54,9 @@ interface UserDao {
 
   @Query("delete from users where id in (:idList)")
   suspend fun deleteMultiple(idList: List<Long>)
+
+  @Query("update users set lastConnection = 0, lastContact = 0 where id = :userId")
+  suspend fun resetUser(userId: Long)
 
   @Transaction
   suspend fun upsert(users: List<UserEntity>) {

@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.lofigroup.seayau.common.ui.components.specific.UserOptionsDialog
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
@@ -25,6 +27,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChatScreen(
@@ -39,6 +42,10 @@ fun ChatScreen(
 
   val context = LocalContext.current
   val listState = rememberLazyListState()
+
+  var optionsDialogVisible by rememberSaveable {
+    mutableStateOf(false)
+  }
 
   LaunchedEffect(key1 = Unit) {
     stateHolder.getCommands().collect {
@@ -81,6 +88,18 @@ fun ChatScreen(
     stateHolder.onExit()
     onUpButtonClick()
   }
+
+  UserOptionsDialog(
+    isVisible = optionsDialogVisible,
+    setVisible = { optionsDialogVisible = it },
+    onWriteMessage = {},
+    onIgnoreUser = {
+      optionsDialogVisible = false
+      onUpButtonClick()
+      stateHolder.onIgnoreUser()
+    },
+    onNavigateToChatOptionEnabled = true
+  )
 }
 
 @Preview
@@ -103,6 +122,10 @@ fun ChatScreenPreview() {
     }
 
     override fun onExit() {
+
+    }
+
+    override fun onIgnoreUser() {
 
     }
 

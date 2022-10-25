@@ -16,4 +16,6 @@ interface ChatScreenStateHolder {
 
   fun onExit()
 
+  fun onIgnoreUser()
+
 }

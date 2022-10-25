@@ -1,24 +1,21 @@
 package com.lofigroup.seeyau.data.profile
 
+import com.lofigroup.core.util.splitInTwo
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
-import com.lofigroup.seeyau.data.profile.local.model.UserAssembled
-import com.lofigroup.seeyau.data.profile.local.model.UserEntity
-import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
-import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
+import com.lofigroup.seeyau.data.profile.local.model.*
 import com.lofigroup.seeyau.data.profile.remote.http.ProfileApi
+import com.lofigroup.seeyau.data.profile.remote.http.model.BlackListDto
+import com.lofigroup.seeyau.data.profile.remote.http.model.toEntity
 import com.lofigroup.seeyau.domain.profile.model.Like
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -63,7 +60,7 @@ class ProfileDataHandler @Inject constructor(
   }
 
   fun observeAssembledUsers(): Flow<List<UserAssembled>> {
-    return userDao.observeAssembledUsers().map { it.filter { user -> user.blacklistedYouAt == null } }
+    return userDao.observeAssembledUsers()
   }
 
   fun observeUserLike(userId: Long): Flow<Like?> {
@@ -72,5 +69,38 @@ class ProfileDataHandler @Inject constructor(
 
   suspend fun insertUser(user: UserEntity) {
     userDao.upsert(user)
+  }
+
+  suspend fun handleBlacklistUpdates(blacklistUpdates: List<BlackListDto>) {
+    val (toInsert, toDelete) = blacklistUpdates.splitInTwo { it.isActive }
+
+    insertBlacklist(toInsert)
+    removeBlacklist(toDelete)
+  }
+
+  suspend fun handleWhenYouAreBlacklisted(blacklist: BlackListDto) {
+    Timber.e("Handling blacklist: $blacklist")
+    if (blacklist.toWhom != 0L) return
+
+    if (blacklist.isActive) {
+      userDao.delete(blacklist.byWho)
+      blacklistDao.insert(blacklist.toEntity(getMyId()))
+    }
+    else {
+      blacklistDao.delete(blacklist.toEntity(getMyId()))
+    }
+  }
+
+  private suspend fun insertBlacklist(toInsert: List<BlackListDto>) {
+    val (blackListed, inBlackList) = toInsert.splitInTwo { it.byWho == getMyId() }
+
+    val blacklistedUserIds = blackListed.map { it.toWhom } + inBlackList.map { it.byWho }
+    userDao.deleteMultiple(blacklistedUserIds)
+
+    blacklistDao.insert(toInsert.map { it.toEntity(getMyId()) })
+  }
+
+  private suspend fun removeBlacklist(toDelete: List<BlackListDto>) {
+    blacklistDao.delete(toDelete.map { it.toEntity(getMyId()) })
   }
 }

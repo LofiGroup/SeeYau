@@ -18,6 +18,7 @@
   <string name="lets_shine">Let\'s shine</string>
 
   <string name="cancel">Cancel</string>
+  <string name="confirm">Confirm</string>
 
   <string name="today">Today</string>
   <string name="yesterday">Yesterday</string>
@@ -25,6 +26,10 @@
   <string name="what_do_you_want_to_do">What do you want to do?</string>
   <string name="write_message">Write message</string>
   <string name="ignore_user">Don\'t show this user again</string>
+  <string name="are_you_sure">Are you sure?</string>
+  <string name="ignore_user_detail">This will delete all your data relating to this user, including chats and messages.</string>
 
   <string name="sent_you_like">Sent you like</string>
+
+  <string name="user_is_blacklisted_you">This user is blacklisted you</string>
 </resources>

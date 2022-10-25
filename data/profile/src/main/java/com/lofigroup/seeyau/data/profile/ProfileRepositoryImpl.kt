@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.lofigroup.core.util.Result
 import com.lofigroup.core.util.getFileExtFromPath
-import com.lofigroup.core.util.splitInTwo
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
@@ -12,7 +11,6 @@ import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.lofigroup.seeyau.data.profile.local.model.toLikeEntity
 import com.lofigroup.seeyau.data.profile.local.model.toProfile
-import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
 import com.lofigroup.seeyau.data.profile.remote.http.ProfileApi
 import com.lofigroup.seeyau.data.profile.remote.http.model.toEntity
 import com.lofigroup.seeyau.data.profile.remote.http.model.toUpdateProfileForm
@@ -84,12 +82,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
       if (response.isEmpty()) return@safeIOCall
 
-      val (blackList, inBlackList) = response.splitInTwo { it.byWho == profileData.getMyId() }
-
-      val blacklistedUserIds = blackList.map { it.toWhom }
-
-      userDao.deleteMultiple(blacklistedUserIds)
-      blacklistDao.insert(response.map { it.toEntity() })
+      profileDataHandler.handleBlacklistUpdates(response)
     }
   }
 
@@ -165,7 +158,7 @@ class ProfileRepositoryImpl @Inject constructor(
       val response = retrofitErrorHandler(api.blackListUser(userId))
 
       userDao.delete(response.toWhom)
-      blacklistDao.insert(response.toEntity())
+      blacklistDao.insert(response.toEntity(getMyId()))
     }
   }
 
@@ -173,7 +166,7 @@ class ProfileRepositoryImpl @Inject constructor(
     val uri = uri ?: return null
 
     val imageUri = Uri.parse(uri)
-    if (imageUri.scheme != "content") return null
+    if (imageUri.scheme != "content" && imageUri.scheme != "file") return null
 
     val fileExt = getFileExtFromPath(uri)
 

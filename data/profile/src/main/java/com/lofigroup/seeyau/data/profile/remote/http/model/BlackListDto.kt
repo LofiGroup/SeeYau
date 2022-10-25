@@ -12,12 +12,22 @@ data class BlackListDto(
   @Json(name = "to_whom")
   val toWhom: Long,
   @Json(name = "when")
-  val createdIn: Long
+  val createdIn: Long,
+  @Json(name = "is_active")
+  val isActive: Boolean
 )
 
-fun BlackListDto.toEntity() = BlacklistEntity(
-  id = id,
-  byWho = byWho,
-  toWhom = toWhom,
-  createdIn = createdIn
-)
+fun BlackListDto.toEntity(myId: Long) = run {
+  var byWho = byWho
+  var toWhom = toWhom
+
+  if (byWho == myId) byWho = 0
+  else toWhom = 0
+
+  BlacklistEntity(
+    id = id,
+    byWho = byWho,
+    toWhom = toWhom,
+    createdIn = createdIn
+  )
+}

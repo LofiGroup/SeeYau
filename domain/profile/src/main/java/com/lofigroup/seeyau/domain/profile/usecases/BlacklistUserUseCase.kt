@@ -3,7 +3,7 @@ package com.lofigroup.seeyau.domain.profile.usecases
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import javax.inject.Inject
 
-class BlackListUserUseCase @Inject constructor(
+class BlacklistUserUseCase @Inject constructor(
   private val repository: ProfileRepository
 ) {
 

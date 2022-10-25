@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.profile.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -24,5 +25,11 @@ interface BlacklistDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insert(blacklist: BlacklistEntity)
+
+  @Delete
+  suspend fun delete(blacklist: List<BlacklistEntity>)
+
+  @Delete
+  suspend fun delete(blacklist: BlacklistEntity)
 
 }

@@ -7,6 +7,7 @@ import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.chat.usecases.*
+import com.lofigroup.seeyau.domain.profile.usecases.BlacklistUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
@@ -30,6 +31,8 @@ class ChatScreenViewModel @Inject constructor(
   private val sendChatMessageUseCase: SendChatMessageUseCase,
   private val markChatAsReadUseCase: MarkChatAsReadUseCase,
 
+  private val blacklistUserUseCase: BlacklistUserUseCase,
+
   private val chatId: Long,
   private val resources: Resources
 ) : ViewModel(), ChatScreenStateHolder {
@@ -40,7 +43,6 @@ class ChatScreenViewModel @Inject constructor(
   init {
     viewModelScope.launch {
       markChatAsReadUseCase(chatId)
-      setMessageFromDraft()
     }
     observeProfileUpdates()
     observeChatUpdates()
@@ -75,9 +77,10 @@ class ChatScreenViewModel @Inject constructor(
     }
   }
 
-  private suspend fun setMessageFromDraft() {
-//    val draft = getChatDraftUseCase(chatId) ?: return
-//    setMessage(draft.message)
+  override fun onIgnoreUser() {
+    viewModelScope.launch {
+      blacklistUserUseCase(state.value.partner.id)
+    }
   }
 
   private fun observeProfileUpdates() {

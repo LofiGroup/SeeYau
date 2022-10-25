@@ -12,6 +12,7 @@ import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.ui.components.*
 import com.lofigroup.seayau.common.ui.components.OptionsDialog
 import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
+import com.lofigroup.seayau.common.ui.components.specific.UserOptionsDialog
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ShowToast
 import kotlinx.coroutines.launch
@@ -100,31 +101,23 @@ fun NavigatorScreen(
     }
   }
 
-  OptionsDialog(
-    visible = optionsDialogVisible,
-    onDismiss = { optionsDialogVisible = false },
-    caption = stringResource(id = CommonR.string.what_do_you_want_to_do)
-  ) {
-    OptionsDialogItem(
-      text = stringResource(id = CommonR.string.write_message),
-      onClick = {
-        state.selectedUser?.let {
-          scope.launch {
-            val chatId = stateHolder.getChatIdByUserId(it.id) ?: return@launch
-            onNavigateToChat(chatId)
-          }
-          optionsDialogVisible = false
+  UserOptionsDialog(
+    isVisible = optionsDialogVisible,
+    setVisible = { optionsDialogVisible = it },
+    onWriteMessage = {
+      state.selectedUser?.let {
+        scope.launch {
+          val chatId = stateHolder.getChatIdByUserId(it.id) ?: return@launch
+          onNavigateToChat(chatId)
         }
-      }
-    )
-    OptionsDialogItem(
-      text = stringResource(id = CommonR.string.ignore_user),
-      onClick = {
-        stateHolder.onIgnoreSelectedUser()
         optionsDialogVisible = false
       }
-    )
-  }
+    },
+    onIgnoreUser = {
+      stateHolder.onIgnoreSelectedUser()
+      optionsDialogVisible = false
+    }
+  )
 
   val errorMessage = state.errorMessage
   if (errorMessage != null) {

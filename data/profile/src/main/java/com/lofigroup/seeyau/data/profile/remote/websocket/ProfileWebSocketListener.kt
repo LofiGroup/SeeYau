@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.data.profile.remote.websocket
 
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.backend_api.websocket.WebSocketChannelListener
+import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
@@ -19,7 +20,7 @@ class ProfileWebSocketListener @Inject constructor(
   private val blacklistDao: BlacklistDao,
   private val ioScope: CoroutineScope,
   private val ioDispatcher: CoroutineDispatcher,
-  private val profileDataSource: ProfileDataSource
+  private val profileDataHandler: ProfileDataHandler
 ): WebSocketChannelListener {
   init {
     webSocketChannel.registerListener("profile", this)
@@ -36,9 +37,10 @@ class ProfileWebSocketListener @Inject constructor(
       }
       is YouAreBlacklisted -> {
         ioScope.launch {
-          blacklistDao.insert(response.toBlacklistEntity())
+          profileDataHandler.handleWhenYouAreBlacklisted(response.toBlacklistDto())
         }
       }
+      else -> {}
     }
   }
 

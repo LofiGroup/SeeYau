@@ -19,9 +19,10 @@ fun TopBar(
     title = stringResource(id = R.string.chats),
     leftContent = { UpButton(onClick = onUpButtonClick) },
     rightContent = {
-      TextLabel(
-        text = "+${totalNewMessages}",
-      )
+      if (totalNewMessages > 0)
+        TextLabel(
+          text = "+${totalNewMessages}",
+        )
     }
   )
 }

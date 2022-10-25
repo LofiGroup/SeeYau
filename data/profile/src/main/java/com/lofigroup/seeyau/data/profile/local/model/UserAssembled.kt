@@ -12,7 +12,6 @@ data class UserAssembled(
   val lastContact: Long,
   val likesCount: Int,
 
-  val blacklistedYouAt: Long?,
   val likedYouAt: Long?,
   val likedAt: Long?
 )
@@ -24,7 +23,6 @@ fun UserAssembled.toUser() = User(
   isOnline = lastConnection == Time.IS_ONLINE,
   lastConnection = lastConnection,
   isNear = lastContact > System.currentTimeMillis() - Time.m,
-  blacklistedYou = blacklistedYouAt != null,
   likedYouAt = likedYouAt,
   likedAt = likedAt
 )

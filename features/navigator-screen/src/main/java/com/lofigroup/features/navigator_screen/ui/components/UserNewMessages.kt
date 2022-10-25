@@ -82,7 +82,7 @@ fun UserNewMessages(
       ControlItem(
         resId = R.drawable.ic_stm_1_icon,
         onClick = showChat,
-        modifier = modifier
+        modifier = modifier.padding(start = LocalSpacing.current.medium)
       )
     }
 
