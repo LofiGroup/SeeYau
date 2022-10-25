@@ -13,6 +13,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.Transformation
 import com.sillyapps.core.ui.R
+import com.sillyapps.core.ui.util.conditional
 
 @Composable
 fun RemoteImage(
@@ -25,7 +26,6 @@ fun RemoteImage(
   contentScale: ContentScale = ContentScale.Crop,
   transformations: List<Transformation> = emptyList()
 ) {
-
   AsyncImage(
     model = ImageRequest.Builder(LocalContext.current)
       .data(model)
@@ -38,7 +38,9 @@ fun RemoteImage(
     error = painterResource(id = errorPlaceholderResId),
     modifier = modifier
       .clip(shape)
-      .clickable(enabled = onClick != NOT_CLICKABLE, onClick = onClick)
+      .conditional(onClick != NOT_CLICKABLE) {
+        clickable(onClick = onClick)
+      }
   )
 
 }

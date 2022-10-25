@@ -34,7 +34,6 @@ fun TopBar(
   DefaultTopBar(
     title = "",
     leftContent = {
-
       ProfileSettingsButton(
         profile = profile,
         onClick = onSettingsButtonClick
