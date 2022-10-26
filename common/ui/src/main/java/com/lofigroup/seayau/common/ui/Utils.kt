@@ -11,7 +11,7 @@ fun getLocalizedLastSeen(millis: Long, resources: Resources): String {
     is LastSeen.Online -> resources.getString(R.string.online)
     is LastSeen.HoursAgo -> resources.getQuantityString(R.plurals.seen_hours_ago, lastSeen.hours, lastSeen.hours)
     is LastSeen.MinutesAgo -> resources.getQuantityString(R.plurals.seen_minutes_ago, lastSeen.minutes, lastSeen.minutes)
-    is LastSeen.LongAgo -> lastSeen.date
+    is LastSeen.LongAgo -> resources.getString(R.string.last_seen_date, lastSeen.date)
     LastSeen.Recently -> resources.getString(R.string.seen_recently)
   }
 }

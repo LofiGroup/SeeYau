@@ -10,6 +10,7 @@
     <item quantity="other">Last seen %d minutes ago</item>
   </plurals>
 
+  <string name="last_seen_date">Last seen %1$s</string>
   <string name="seen_recently">Last seen recently</string>
   <string name="online">Online</string>
 

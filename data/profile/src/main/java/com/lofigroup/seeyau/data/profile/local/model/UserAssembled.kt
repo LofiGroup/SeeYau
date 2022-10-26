@@ -28,7 +28,7 @@ fun UserAssembled.toUser() = User(
 )
 
 fun UserAssembled.extractLike() = run {
-  likedAt?.let {
+  likedYouAt?.let {
     Like(
       id = 0,
       createdIn = it,

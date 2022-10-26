@@ -41,7 +41,7 @@ fun MessageInput(
       onValueChange = setMessage,
       modifier = Modifier.weight(1f),
       keyboardOptions = KeyboardOptions(
-        imeAction = ImeAction.Next,
+        imeAction = ImeAction.Default,
         keyboardType = KeyboardType.Text
       ),
       keyboardActions = KeyboardActions(

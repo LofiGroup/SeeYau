@@ -44,7 +44,7 @@ fun millisToLastSeen(utcMillis: Long): LastSeen {
     period < 24 * Time.h -> LastSeen.HoursAgo((period / Time.h).toInt())
     else -> {
       val date = Instant.ofEpochMilli(utcMillis).atZone(ZoneId.systemDefault()).toLocalDate()
-      LastSeen.LongAgo(date.toString())
+      LastSeen.LongAgo(date.format(DateTimeFormatter.ofPattern("dd.MM.yy")))
     }
   }
 }
