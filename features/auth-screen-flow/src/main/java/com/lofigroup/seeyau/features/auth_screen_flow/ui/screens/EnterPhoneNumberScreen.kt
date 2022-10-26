@@ -27,6 +27,7 @@ fun EnterPhoneNumberScreen(
   setPhoneNumber: (String) -> Unit,
   isDone: () -> Unit
 ) {
+  TopBar()
 
   val focusManager = LocalFocusManager.current
 
@@ -53,7 +54,7 @@ fun EnterPhoneNumberScreen(
       singleLine = true,
       keyboardOptions = KeyboardOptions(
         imeAction = ImeAction.Next,
-        keyboardType = KeyboardType.Number
+        keyboardType = KeyboardType.Phone
       ),
       keyboardActions = KeyboardActions(
         onNext = {
@@ -96,8 +97,6 @@ fun EnterPhoneNumberScreen(
         CircularProgressIndicator()
       }
     }
-
-
   }
 }
 
@@ -107,8 +106,6 @@ fun EnterPhoneNumberScreenPreview() {
   AppTheme() {
     Surface() {
       Column() {
-        TopBar()
-
         EnterPhoneNumberScreen(
           phoneNumber = "+79998437886",
           setPhoneNumber = {},

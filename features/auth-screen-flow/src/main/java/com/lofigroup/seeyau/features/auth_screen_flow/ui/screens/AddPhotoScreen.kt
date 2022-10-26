@@ -19,18 +19,20 @@ import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun AddPhotoScreen(
-  topBar: @Composable () -> Unit,
   imageUri: String,
   setImageUri: (Uri) -> Unit,
   throwError: (String) -> Unit,
-  update: () -> Unit
+  update: () -> Unit,
+  onUpButtonClick: () -> Unit
 ) {
+
   val context = LocalContext.current
 
   val pickImageResult =
@@ -53,7 +55,7 @@ fun AddPhotoScreen(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.align(Alignment.TopCenter)
     ) {
-      topBar()
+      TopBar(onUpButtonClick = onUpButtonClick)
 
       Text(
         text = stringResource(id = R.string.be_recognizable),
@@ -75,12 +77,24 @@ fun AddPhotoScreen(
 
     )
 
-    Box(
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
         .align(Alignment.BottomCenter)
-        .padding(bottom = LocalSpacing.current.large)
+        .padding(bottom = LocalSpacing.current.medium)
     ) {
       if (imageUri.isBlank()) {
+        TextButton(
+          onClick = update,
+          modifier = Modifier.padding(bottom = LocalSpacing.current.small)
+        ) {
+          Text(
+            text = stringResource(id = R.string.skip),
+            style = MaterialTheme.typography.h3,
+            color = LocalExtendedColors.current.disabled,
+          )
+        }
+
         TextButton(
           onClick = {
             pickImageResult.launch(getDefaultImageCropperOptions())
@@ -112,11 +126,11 @@ fun AddPhotoScreenPreview() {
     Surface() {
       Column() {
         AddPhotoScreen(
-          topBar = { TopBar() },
           imageUri = "",
           setImageUri = {},
           throwError = {},
-          update = {}
+          update = {},
+          onUpButtonClick = {}
         )
       }
     }

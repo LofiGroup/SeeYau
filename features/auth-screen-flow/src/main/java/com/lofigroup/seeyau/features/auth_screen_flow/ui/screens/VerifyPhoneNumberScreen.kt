@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -26,11 +30,15 @@ fun VerifyPhoneNumberScreen(
   code: String,
   setCode: (String) -> Unit,
   phoneNumber: String,
-  state: VerifyCodeScreenState
+  state: VerifyCodeScreenState,
+  onUpButtonClick: () -> Unit
 ) {
+  TopBar(onUpButtonClick = onUpButtonClick)
 
   val textColor = if (state == VerifyCodeScreenState.ERROR)
     MaterialTheme.colors.error else MaterialTheme.colors.onBackground
+
+  val focusRequester = remember { FocusRequester() }
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,9 +73,9 @@ fun VerifyPhoneNumberScreen(
         keyboardType = KeyboardType.Number
       ),
       enabled = state != VerifyCodeScreenState.LOADING,
-      modifier = Modifier.onFocusChanged {
-        if (it.isFocused) setCode("")
-      }
+      modifier = Modifier
+        .onFocusChanged { if (it.isFocused) setCode("") }
+        .focusRequester(focusRequester)
     )
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
@@ -96,6 +104,9 @@ fun VerifyPhoneNumberScreen(
     }
   }
 
+  LaunchedEffect(Unit) {
+    focusRequester.requestFocus()
+  }
 }
 
 @Preview
@@ -104,13 +115,12 @@ fun VerifyPhoneNumberScreenPreview() {
   AppTheme() {
     Surface() {
       Column() {
-        TopBar()
-
         VerifyPhoneNumberScreen(
           phoneNumber = "+79999999999",
           state = VerifyCodeScreenState.TYPING,
           code = "",
-          setCode = {}
+          setCode = {},
+          onUpButtonClick = {}
         )
       }
     }
@@ -123,13 +133,12 @@ fun VerifyPhoneNumberCodeIsWrongScreenPreview() {
   AppTheme() {
     Surface() {
       Column() {
-        TopBar()
-
         VerifyPhoneNumberScreen(
           code = "",
           setCode = {},
           phoneNumber = "+79999999999",
-          state = VerifyCodeScreenState.ERROR
+          state = VerifyCodeScreenState.ERROR,
+          onUpButtonClick = {}
         )
       }
     }

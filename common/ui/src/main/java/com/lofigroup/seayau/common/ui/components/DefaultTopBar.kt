@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.R
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ImageButton
+import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
@@ -27,6 +28,7 @@ fun DefaultTopBar(
     modifier = modifier
       .fillMaxWidth()
       .padding(vertical = LocalSpacing.current.medium)
+      .defaultMinSize(minHeight = LocalSize.current.medium)
   ) {
     Row(
       modifier = Modifier.align(Alignment.CenterStart)

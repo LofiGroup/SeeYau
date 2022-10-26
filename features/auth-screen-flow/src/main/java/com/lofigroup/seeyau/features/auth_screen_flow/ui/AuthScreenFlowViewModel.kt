@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.Result
+import com.lofigroup.seeyau.domain.auth.model.AuthResponse
 import com.lofigroup.seeyau.domain.auth.usecases.AuthorizeUseCase
 import com.lofigroup.seeyau.domain.auth.usecases.StartAuthUseCase
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
@@ -52,9 +53,7 @@ class AuthScreenFlowViewModel @Inject constructor(
   }
 
   override fun setRoutePoint(routePoint: RoutePoint) {
-    if (routePoint == RoutePoint.VerifyPhone) {
-      startAuth()
-    } else state.value = state.value.copy(routePoint = routePoint)
+    state.value = state.value.copy(routePoint = routePoint)
   }
 
   override fun setImageUri(uri: Uri) {
@@ -65,7 +64,7 @@ class AuthScreenFlowViewModel @Inject constructor(
 
   override fun updateProfile() {
     viewModelScope.launch {
-      val result = updateProfileUseCase(ProfileUpdate(imageUrl = state.value.imageUri))
+      val result = updateProfileUseCase(ProfileUpdate(name = state.value.name, imageUrl = state.value.imageUri))
 
       if (result is Result.Success) {
         state.value = state.value.copy(allDataIsValid = true)
@@ -86,7 +85,8 @@ class AuthScreenFlowViewModel @Inject constructor(
 
       if (result is Resource.Success)
         state.value = state.value.copy(
-          routePoint = RoutePoint.VerifyPhone
+          routePoint = RoutePoint.VerifyPhone,
+          enterNumberScreenState = EnterNumberScreenState.TYPING
         )
       else {
         state.value = state.value.copy(
@@ -107,12 +107,21 @@ class AuthScreenFlowViewModel @Inject constructor(
           verifyCodeScreenState = VerifyCodeScreenState.SUCCESS
         )
         delay(1000L)
-        state.value = state.value.copy(
-          routePoint = RoutePoint.PickPicture
-        )
+
+        resolveNavigation(result.data)
       } else {
         state.value = state.value.copy(verifyCodeScreenState = VerifyCodeScreenState.ERROR)
       }
+    }
+  }
+
+  private suspend fun resolveNavigation(authResponse: AuthResponse) {
+    if (authResponse.exists) {
+      state.value = state.value.copy(routePoint = RoutePoint.AlreadyRegistered)
+      delay(2000L)
+      state.value = state.value.copy(allDataIsValid = true)
+    } else {
+      state.value = state.value.copy(routePoint = RoutePoint.EnterName)
     }
   }
 

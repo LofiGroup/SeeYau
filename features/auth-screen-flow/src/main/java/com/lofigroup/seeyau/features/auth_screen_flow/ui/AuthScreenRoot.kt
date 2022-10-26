@@ -18,10 +18,7 @@ import com.lofigroup.seeyau.features.auth_screen_flow.model.AuthScreenFlowModel
 import com.lofigroup.seeyau.features.auth_screen_flow.model.EnterNumberScreenState
 import com.lofigroup.seeyau.features.auth_screen_flow.model.RoutePoint
 import com.lofigroup.seeyau.features.auth_screen_flow.model.VerifyCodeScreenState
-import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.AddPhotoScreen
-import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterNameScreen
-import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.EnterPhoneNumberScreen
-import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.VerifyPhoneNumberScreen
+import com.lofigroup.seeyau.features.auth_screen_flow.ui.screens.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,17 +50,15 @@ fun AuthScreenRoot(
     ) {
       when (state.routePoint) {
         RoutePoint.EnterName -> {
-          TopBar()
           EnterNameScreen(
             isDone = {
               stateHolder.setName(it)
-              stateHolder.setRoutePoint(RoutePoint.EnterPhone)
+              stateHolder.setRoutePoint(RoutePoint.PickPicture)
             },
             name = state.name
           )
         }
         RoutePoint.EnterPhone -> {
-          TopBar()
           EnterPhoneNumberScreen(
             isDone = {
               stateHolder.startAuth()
@@ -75,22 +70,25 @@ fun AuthScreenRoot(
         }
 
         RoutePoint.VerifyPhone -> {
-          TopBar()
           VerifyPhoneNumberScreen(
             code = state.code,
             setCode = stateHolder::setCode,
             phoneNumber = state.number,
-            state = state.verifyCodeScreenState
+            state = state.verifyCodeScreenState,
+            onUpButtonClick = { stateHolder.setRoutePoint(RoutePoint.EnterPhone) }
           )
         }
         RoutePoint.PickPicture -> {
           AddPhotoScreen(
-            topBar = { TopBar() },
             imageUri = state.imageUri,
             setImageUri = stateHolder::setImageUri,
             throwError = stateHolder::throwError,
-            update = stateHolder::updateProfile
+            update = stateHolder::updateProfile,
+            onUpButtonClick = { stateHolder.setRoutePoint(RoutePoint.EnterName) }
           )
+        }
+        RoutePoint.AlreadyRegistered -> {
+          AlreadyRegisteredScreen()
         }
       }
     }
@@ -99,12 +97,19 @@ fun AuthScreenRoot(
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(
+  onUpButtonClick: () -> Unit = NO_UP_BUTTON
+) {
   DefaultTopBar(
     title = stringResource(id = R.string.authorization),
-    leftContent = { UpButton {  } }
+    leftContent = {
+      if (onUpButtonClick != NO_UP_BUTTON)
+        UpButton(onClick = onUpButtonClick)
+    }
   )
 }
+
+private val NO_UP_BUTTON = {}
 
 @Preview
 @Composable

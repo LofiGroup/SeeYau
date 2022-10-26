@@ -5,17 +5,21 @@ import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.data.auth.model.toAccessRequest
+import com.lofigroup.seeyau.data.auth.model.toAuthResponse
 import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
 import com.lofigroup.seeyau.data.auth.model.toTokenDataModel
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.Access
+import com.lofigroup.seeyau.domain.auth.model.AuthResponse
 import com.lofigroup.seeyau.domain.auth.model.StartAuth
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -31,17 +35,22 @@ class AuthRepositoryImpl @Inject constructor(
     tokenStore.forgetToken()
   }
 
-  override suspend fun authorize(access: Access) = withContext(ioDispatcher) {
-    return@withContext try {
-      val response = retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
+  override suspend fun authorize(access: Access): Resource<AuthResponse> {
+    return safeIOCall(
+      ioDispatcher,
+      block = {
+        val response = retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
 
-      tokenStore.saveToken(response.toTokenDataModel())
-      moduleStateHolder.setIsReady()
-      Resource.Success(Unit)
-    }
-    catch (e: Exception) {
-      Resource.Error(getErrorMessage(e))
-    }
+        tokenStore.saveToken(response.toTokenDataModel())
+        moduleStateHolder.setIsReady()
+
+        Resource.Success(response.toAuthResponse())
+      },
+      errorBlock = {
+        Timber.e(it)
+        Resource.Error(it.message ?: "Unknown error")
+      }
+    )
   }
 
   override suspend fun startAuth(startAuth: StartAuth) = withContext(ioDispatcher) {

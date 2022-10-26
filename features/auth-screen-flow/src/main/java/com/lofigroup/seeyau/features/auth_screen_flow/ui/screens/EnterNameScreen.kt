@@ -5,10 +5,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -25,9 +29,13 @@ fun EnterNameScreen(
   name: String,
   isDone: (String) -> Unit
 ) {
+  TopBar()
+
   val (text, setText) = rememberSaveable {
     mutableStateOf(name)
   }
+
+  val focusRequester = remember { FocusRequester() }
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,7 +66,8 @@ fun EnterNameScreen(
         onNext = {
           isDone(text)
         }
-      )
+      ),
+      modifier = Modifier.focusRequester(focusRequester)
     )
 
     Spacer(modifier = Modifier.weight(1f))
@@ -74,6 +83,10 @@ fun EnterNameScreen(
       }
     }
   }
+
+  LaunchedEffect(Unit) {
+    focusRequester.requestFocus()
+  }
 }
 
 @Preview
@@ -82,8 +95,6 @@ fun EnterNameScreenPreview() {
   AppTheme() {
     Surface() {
       Column() {
-        TopBar()
-
         EnterNameScreen(
           name = "Jacov",
           isDone = {}

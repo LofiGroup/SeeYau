@@ -11,4 +11,7 @@
   <string name="be_recognizable">Be recognizable</string>
   <string name="add_photo">Add photo</string>
   <string name="something_went_wrong">Something went wrong</string>
+
+  <string name="skip">Skip</string>
+  <string name="already_registered">An account for this number is already exists. It should load soon.</string>
 </resources>
