@@ -14,4 +14,6 @@ interface TokenStore {
 
   fun forgetToken()
 
+  fun isEmpty(): Boolean
+
 }

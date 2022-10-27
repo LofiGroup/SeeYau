@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.SolidColor
 import com.sillyapps.core.ui.theme.*
 
 private val DarkColorPalette = darkColors(
-  primary = Purple,
-  primaryVariant = PurpleDarker,
+  primary = SkyBlue,
+  primaryVariant = SkyBlue,
   secondary = SkyBlue,
   error = Red,
   background = Color.Black

@@ -7,4 +7,6 @@ interface SplashScreenStateHolder {
 
   fun getState(): Flow<SplashScreenState>
 
+  fun load()
+
 }

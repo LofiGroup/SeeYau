@@ -61,4 +61,8 @@ class TokenStoreImpl @Inject constructor(
     sharedPref.edit().remove(TOKEN_TAG).apply()
   }
 
+  override fun isEmpty(): Boolean {
+    return cachedValue.value.token.isBlank()
+  }
+
 }

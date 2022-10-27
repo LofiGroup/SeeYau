@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="plum">Plum</string>
-
+  <string name="error_message">Error message:</string>
+  <string name="unexpected_error">Unexpected error</string>
+  <string name="unexpected_error_detail">Unexpected error occurred, please report this error with any of the following available options: \"list some options\"</string>
+  <string name="try_again">Try again</string>
 </resources>

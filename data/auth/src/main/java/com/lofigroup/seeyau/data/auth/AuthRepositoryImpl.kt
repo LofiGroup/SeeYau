@@ -11,6 +11,7 @@ import com.lofigroup.seeyau.data.auth.model.toTokenDataModel
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.Access
 import com.lofigroup.seeyau.domain.auth.model.AuthResponse
+import com.lofigroup.seeyau.domain.auth.model.LoggedInStatus
 import com.lofigroup.seeyau.domain.auth.model.StartAuth
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
@@ -20,6 +21,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -27,7 +30,7 @@ class AuthRepositoryImpl @Inject constructor(
   private val ioDispatcher: CoroutineDispatcher,
   private val tokenStore: TokenStore,
   private val moduleStateHolder: ResourceStateHolder
-): AuthRepository {
+) : AuthRepository {
 
   private var authOnlyToken: String? = null
 
@@ -39,7 +42,8 @@ class AuthRepositoryImpl @Inject constructor(
     return safeIOCall(
       ioDispatcher,
       block = {
-        val response = retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
+        val response =
+          retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
 
         tokenStore.saveToken(response.toTokenDataModel())
         moduleStateHolder.setIsReady()
@@ -59,29 +63,50 @@ class AuthRepositoryImpl @Inject constructor(
 
       authOnlyToken = response.token
       Resource.Success(Unit)
-    }
-    catch (e: EmptyResponseBodyException) {
+    } catch (e: EmptyResponseBodyException) {
       Resource.Success(Unit)
-    }
-    catch (e: Exception) {
+    } catch (e: Exception) {
       Resource.Error(getErrorMessage(e))
     }
   }
 
-  override suspend fun check() = withContext(ioDispatcher) {
-    try {
-      retrofitErrorHandler(authApi.check())
-    } catch (e: EmptyResponseBodyException) {
-      moduleStateHolder.setIsReady()
-      return@withContext Result.Success
-    } catch (e: HttpException) {
-      return@withContext if (e.code() in listOf(401, 404)) {
-        Result.Error(e.message())
-      } else Result.Undefined(getErrorMessage(e))
-    } catch (e: Exception) {
-      return@withContext Result.Undefined(getErrorMessage(e))
-    }
+  override suspend fun check(): LoggedInStatus {
+    return safeIOCall(
+      ioDispatcher,
+      block = {
+        retrofitErrorHandler(authApi.check())
 
-    return@withContext Result.Undefined("Unknown error")
+        moduleStateHolder.setIsReady()
+        LoggedInStatus.LoggedIn
+      },
+      errorBlock = {
+        when (it) {
+          is EmptyResponseBodyException -> {
+            moduleStateHolder.setIsReady()
+            LoggedInStatus.LoggedIn
+          }
+          is HttpException -> {
+            when (it.code()) {
+              408, 429, 502, 503 -> {
+                resolveLoggedInState()
+              }
+              401 -> LoggedInStatus.InvalidToken
+              else -> LoggedInStatus.UnknownError(it.message())
+            }
+          }
+          is SocketTimeoutException, is ConnectException -> {
+            resolveLoggedInState()
+          }
+          else -> {
+            LoggedInStatus.UnknownError(it.message ?: "Unknown error")
+          }
+        }
+      }
+    )
+  }
+
+  private fun resolveLoggedInState(): LoggedInStatus {
+    return if (tokenStore.isEmpty()) LoggedInStatus.InvalidToken
+    else LoggedInStatus.CantAccessServer
   }
 }
