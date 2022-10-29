@@ -2,6 +2,7 @@ package com.lofigroup.features.navigator_screen.model
 
 import android.content.res.Resources
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
+import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
@@ -20,7 +21,7 @@ data class PreviewMessage(
       dateTime: DateAndTime = DateAndTime("3 oct", "23:00"),
       positionInList: Int = 0
     ) = PreviewMessage(
-      message = getPreviewPrivateMessage(id, authorIsMe = false, message, dateTime.date, dateTime.time, isRead = false),
+      message = getPreviewPrivateMessage(id, authorIsMe = false, message, dateTime.date, dateTime.time, status = MessageStatus.READ),
       positionInList = positionInList
     )
   }

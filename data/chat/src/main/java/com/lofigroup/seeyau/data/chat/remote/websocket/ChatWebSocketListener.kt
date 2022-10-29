@@ -12,6 +12,8 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.*
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
+import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
+import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,7 +31,6 @@ class ChatWebSocketListener @Inject constructor(
   private val ioDispatcher: CoroutineDispatcher,
   private val profileDataHandler: ProfileDataHandler,
   private val chatDataHandler: ChatDataHandler,
-  private val eventsDataSource: EventsDataSource
 ): WebSocketChannelListener {
 
   init {
@@ -43,18 +44,9 @@ class ChatWebSocketListener @Inject constructor(
       is ErrorWsResponse -> Timber.e(response.errorMessage)
       is NewMessageWsResponse -> {
         chatDataHandler.saveMessage(response)
-        eventsDataSource.onNewMessageEvent(response.messageDto)
       }
       is ChatIsReadWsResponse -> {
-        ioScope.launch(ioDispatcher) {
-          if (response.userId == profileDataHandler.getMyId()) {
-            chatDao.updateChatLastVisited(response.chatId, response.readIn)
-          } else {
-            chatDao.markMessages(response.chatId)
-            chatDao.updateChatPartnerLastVisited(response.chatId, response.readIn)
-            eventsDataSource.onChatIsReadEvent(response)
-          }
-        }
+        chatDataHandler.onChatIsRead(response)
       }
       is UserOnlineStateChangedWsResponse -> {
         ioScope.launch(ioDispatcher) {
@@ -65,6 +57,9 @@ class ChatWebSocketListener @Inject constructor(
       }
       is NewChatIsCreatedWsResponse -> {
         chatDataHandler.pullChatData(response.chatId)
+      }
+      is MessageIsReceivedResponse -> {
+        chatDataHandler.saveLocalMessage(response)
       }
       else -> {}
     }

@@ -38,6 +38,7 @@ android {
 
 dependencies {
   implementation project(":common:ui")
+  implementation project(":common:chat")
   implementation project(":domain:chat")
 
   implementation appCompat

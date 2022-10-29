@@ -9,8 +9,8 @@ class ObserveChatEventsUseCase @Inject constructor(
   private val repository: ChatRepository
 ) {
 
-  operator fun invoke(chatId: Long): Flow<ChatEvent> {
-    return repository.observeChatEvents(chatId)
+  operator fun invoke(): Flow<ChatEvent> {
+    return repository.observeChatEvents()
   }
 
 }

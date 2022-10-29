@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class NewMessageWsResponse(
+data class NewMessageWsResponse(
   @Json(name = "message")
   val messageDto: ChatMessageDto
 ) : ChatWebSocketResponse

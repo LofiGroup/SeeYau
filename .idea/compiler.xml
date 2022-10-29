@@ -4,6 +4,7 @@
     <bytecodeTargetLevel target="1.8">
       <module name="SeeYau.app" target="11" />
       <module name="SeeYau.auth-screen" target="11" />
+      <module name="SeeYau.common.chat" target="11" />
       <module name="SeeYau.common.network.main" target="1.8" />
       <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.ui" target="11" />

@@ -1,4 +1,5 @@
 package com.lofigroup.seeyau.domain.chat.models.events
 
-sealed interface ChatEvent {
-}
+sealed class ChatEvent(
+  val chatId: Long
+)

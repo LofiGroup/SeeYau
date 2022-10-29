@@ -23,7 +23,6 @@ fun AppTheme(
   CompositionLocalProvider(
     LocalExtendedColors provides extendedColors(SolidColor(MaterialTheme.colors.secondary)),
     LocalSpacing provides Spacing(),
-    LocalIconsSize provides IconsSize(),
     LocalSize provides Size()
   ) {
     MaterialTheme(

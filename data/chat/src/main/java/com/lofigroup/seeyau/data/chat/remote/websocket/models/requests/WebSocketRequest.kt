@@ -13,6 +13,7 @@ sealed interface WebSocketRequest {
       return when (webSocketRequest) {
         is SendMessageWsRequest -> sendMessageAdapter.toJson(webSocketRequest)
         is MarkChatAsRead -> markChatAsReadAdapter.toJson(webSocketRequest)
+        else -> { "" }
       }
     }
   }

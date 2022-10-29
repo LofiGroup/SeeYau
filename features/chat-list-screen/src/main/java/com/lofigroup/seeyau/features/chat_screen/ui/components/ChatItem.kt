@@ -16,9 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.components.UserIcon
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
-import com.lofigroup.seeyau.domain.chat.models.ChatDraft
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
+import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.R
 import com.sillyapps.core.ui.components.OneLiner
@@ -195,13 +196,10 @@ fun RowScope.PlainChatItemContent(
       OneLiner(text = plainMessage.message)
     },
     messageInfoPlaceholder = {
-      val resId = if (plainMessage.isRead) CommonR.drawable.ic_check_mark_read
-      else CommonR.drawable.ic_check_mark_received
+      MessageStatusIcon(messageStatus = plainMessage.status)
 
-      Image(
-        painter = painterResource(id = resId),
-        contentDescription = null
-      )
+      Spacer(modifier = Modifier.width(LocalSpacing.current.extraSmall))
+      
       Text(
         text = getLocalTimeFromMillis(plainMessage.createdIn),
         style = MaterialTheme.typography.caption
@@ -244,7 +242,7 @@ fun ChatItemPreview() {
       message = "Hello!",
       author = 0,
       createdIn = 0L,
-      isRead = true
+      status = MessageStatus.SENT
     ),
     newMessagesCount = 1,
     draft = "",

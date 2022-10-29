@@ -132,7 +132,9 @@ class ChatScreenViewModel @Inject constructor(
   }
 
   private suspend fun observeChatEvents() {
-    observeChatEventsUseCase(chatId).collect() {
+    observeChatEventsUseCase().collect() {
+      if (it.chatId != chatId) return@collect
+
       when (it) {
         is ChatIsRead -> {
 

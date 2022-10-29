@@ -5,15 +5,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-suspend fun safeIOCall(
+suspend fun <T> safeIOCall(
   dispatcher: CoroutineDispatcher,
-  block: suspend () -> Unit
-) {
-  withContext(dispatcher) {
+  block: suspend () -> T
+): T? {
+  return withContext(dispatcher) {
     try {
       block()
     } catch (e: Exception) {
       Timber.e(getErrorMessage(e))
+      null
     }
   }
 }

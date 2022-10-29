@@ -73,7 +73,7 @@ fun UnknownErrorScreen(
     ) {
       Text(
         text = stringResource(id = R.string.try_again),
-        style = MaterialTheme.typography.h3
+        style = MaterialTheme.typography.h4
       )
     }
   }

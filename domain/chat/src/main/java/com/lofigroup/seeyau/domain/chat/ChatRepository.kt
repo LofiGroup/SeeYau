@@ -10,10 +10,11 @@ import kotlinx.coroutines.flow.Flow
 interface ChatRepository {
 
   suspend fun pullData()
+  suspend fun sendLocalMessages()
 
   fun observeChats(): Flow<List<ChatBrief>>
   fun observeChat(chatId: Long): Flow<Chat>
-  fun observeChatEvents(chatId: Long): Flow<ChatEvent>
+  fun observeChatEvents(): Flow<ChatEvent>
 
   suspend fun sendMessage(messageRequest: ChatMessageRequest)
   suspend fun markChatAsRead(chatId: Long)

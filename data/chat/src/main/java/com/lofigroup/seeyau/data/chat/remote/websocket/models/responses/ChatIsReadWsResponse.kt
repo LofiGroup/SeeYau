@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class ChatIsReadWsResponse(
+data class ChatIsReadWsResponse(
   @Json(name = "chat_id")
   val chatId: Long,
   @Json(name = "user_id")

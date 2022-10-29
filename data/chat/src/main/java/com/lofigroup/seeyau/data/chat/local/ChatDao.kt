@@ -37,6 +37,9 @@ interface ChatDao {
   @Query("select createdIn from messages order by createdIn desc limit 1")
   suspend fun getLastMessageCreatedIn(): Long?
 
+  @Query("select * from messages where id = :id")
+  suspend fun getMessage(id: Long): MessageEntity?
+
 
   @Query("update chats set lastVisited = :lastVisited where id = :chatId")
   suspend fun updateChatLastVisited(chatId: Long, lastVisited: Long)
@@ -66,9 +69,28 @@ interface ChatDao {
   suspend fun insertMessage(message: MessageEntity)
 
   @Transaction
-  suspend fun insertOneMessages(messageDto: ChatMessageDto, myId: Long) {
-    val lastVisited = getPartnerLastVisited(messageDto.chatId)
-    insertMessage(messageDto.toMessageEntity(myId, lastVisited))
+  suspend fun popMessage(id: Long): MessageEntity? {
+    val message = getMessage(id) ?: return null
+    deleteMessage(id)
+    return message
+  }
+
+  @Query("delete from messages where id = :id")
+  suspend fun deleteMessage(id: Long)
+
+  @Transaction
+  suspend fun insertNewMessage(message: MessageEntity) {
+    val lastVisited = getPartnerLastVisited(message.chatId)
+    insertMessage(message.copy(isRead = lastVisited > message.createdIn))
+  }
+
+  @Transaction
+  suspend fun insertSentMessage(oldId: Long, newId: Long, createdIn: Long): MessageEntity? {
+    val message = popMessage(oldId) ?: return null
+    val lastVisited = getPartnerLastVisited(message.chatId)
+    val modified = message.copy(id = newId, createdIn = createdIn, isRead = lastVisited > message.createdIn)
+    insertMessage(modified)
+    return modified
   }
 
   @Transaction
@@ -90,5 +112,11 @@ interface ChatDao {
     if (id == -1L)
       updateChat(chat)
   }
+
+  @Query("select id from messages where id >= ${MessageEntity.SEND_ID_OFFSET} order by id desc limit 1")
+  suspend fun getLastLocalMessageId(): Long?
+
+  @Query("select * from messages where id >= ${MessageEntity.SEND_ID_OFFSET} order by createdIn asc")
+  suspend fun getLocalMessages(): List<MessageEntity>
 
 }

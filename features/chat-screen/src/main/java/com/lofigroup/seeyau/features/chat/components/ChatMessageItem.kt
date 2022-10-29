@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
+import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyle
@@ -50,7 +52,8 @@ fun ChatMessageItem(
           style = style,
           text = chatMessage.message,
           dateTime = chatMessage.dateTime,
-          maxLines = maxLines
+          maxLines = maxLines,
+          messageStatus = chatMessage.status
         )
       }
     }
@@ -77,6 +80,7 @@ fun BoxScope.LikeMessage(
 @Composable
 fun BoxScope.ChatMessagePlain(
   style: ChatMessageStyle,
+  messageStatus: MessageStatus,
   text: String,
   dateTime: DateAndTime,
   modifier: Modifier = Modifier,
@@ -114,11 +118,7 @@ fun BoxScope.ChatMessagePlain(
 
       if (style.hasMessageMark) {
         Spacer(modifier = Modifier.width(2.dp))
-        Image(
-          painter = painterResource(id = CommonR.drawable.ic_check_mark_received),
-          contentDescription = null,
-          modifier = Modifier.size(16.dp)
-        )
+        MessageStatusIcon(messageStatus = messageStatus)
       }
     }
   }

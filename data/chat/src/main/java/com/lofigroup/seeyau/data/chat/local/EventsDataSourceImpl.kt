@@ -12,24 +12,20 @@ import javax.inject.Inject
 
 class EventsDataSourceImpl @Inject constructor(): EventsDataSource {
   private val events = MutableSharedFlow<ChatEvent>(extraBufferCapacity = 1)
-  private var mChatId: Long = -1
 
   init {
     Timber.e("New event data source is created!")
   }
 
-  override fun onNewMessageEvent(message: ChatMessageDto) {
-    if (mChatId == message.chatId)
-      events.tryEmit(NewChatMessage(message.author == 0L))
+  override fun onNewMessageEvent(event: NewChatMessage) {
+    events.tryEmit(event)
   }
 
   override fun onChatIsReadEvent(response: ChatIsReadWsResponse) {
-    if (mChatId == response.chatId)
-      events.tryEmit(ChatIsRead)
+    events.tryEmit(ChatIsRead(response.chatId))
   }
 
-  override fun observe(chatId: Long): Flow<ChatEvent> {
-    mChatId = chatId
+  override fun observe(): Flow<ChatEvent> {
     return events
   }
 

@@ -10,6 +10,7 @@ import com.lofigroup.domain.navigator.usecases.ConnectToWebsocketUseCase
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
 import com.lofigroup.seeyau.domain.chat.usecases.PullChatDataUseCase
+import com.lofigroup.seeyau.domain.chat.usecases.SendLocalMessagesUseCase
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.profile.usecases.PullBlacklistDataUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullContactsUseCase
@@ -39,6 +40,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   @Inject lateinit var pullLikesUseCase: PullLikesUseCase
   @Inject lateinit var pullBlacklistDataUseCase: PullBlacklistDataUseCase
   @Inject lateinit var pullContactsUseCase: PullContactsUseCase
+  @Inject lateinit var sendLocalMessagesUseCase: SendLocalMessagesUseCase
 
   @Inject lateinit var connectToWebsocketUseCase: ConnectToWebsocketUseCase
 
@@ -92,6 +94,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
       pullChatDataUseCase()
 
       connectToWebsocketUseCase()
+      sendLocalMessagesUseCase()
       state.value = DataSyncServiceState.SYNCED
     }
   }
