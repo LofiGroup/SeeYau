@@ -2,8 +2,8 @@ package com.lofigroup.seeyau.data.auth
 
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.Resource
+import com.lofigroup.core.util.ResourceState
 import com.lofigroup.core.util.ResourceStateHolder
-import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.data.auth.model.toAccessRequest
 import com.lofigroup.seeyau.data.auth.model.toAuthResponse
 import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
@@ -46,7 +46,7 @@ class AuthRepositoryImpl @Inject constructor(
           retrofitErrorHandler(authApi.authorize(access.toAccessRequest(), token = authOnlyToken!!))
 
         tokenStore.saveToken(response.toTokenDataModel())
-        moduleStateHolder.setIsReady()
+        moduleStateHolder.set(ResourceState.IS_READY)
 
         Resource.Success(response.toAuthResponse())
       },
@@ -76,18 +76,19 @@ class AuthRepositoryImpl @Inject constructor(
       block = {
         retrofitErrorHandler(authApi.check())
 
-        moduleStateHolder.setIsReady()
+        moduleStateHolder.set(ResourceState.IS_READY)
         LoggedInStatus.LoggedIn
       },
       errorBlock = {
         when (it) {
           is EmptyResponseBodyException -> {
-            moduleStateHolder.setIsReady()
+            moduleStateHolder.set(ResourceState.IS_READY)
             LoggedInStatus.LoggedIn
           }
           is HttpException -> {
             when (it.code()) {
               408, 429, 502, 503 -> {
+                moduleStateHolder.set(ResourceState.INITIALIZED)
                 resolveLoggedInState()
               }
               401 -> LoggedInStatus.InvalidToken

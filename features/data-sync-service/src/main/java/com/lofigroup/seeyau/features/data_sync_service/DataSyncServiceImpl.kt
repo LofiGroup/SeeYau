@@ -59,10 +59,13 @@ class DataSyncServiceImpl: Service(), DataSyncService {
     scope.launch {
       authModule.observeState().collect() {
         when (it) {
-          ResourceState.LOADING -> {}
           ResourceState.IS_READY -> {
             init()
           }
+          ResourceState.INITIALIZED -> {
+            state.value = DataSyncServiceState.SYNCED
+          }
+          else -> {}
         }
       }
     }

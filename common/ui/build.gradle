@@ -42,6 +42,8 @@ dependencies {
   implementation appCompat
   implementation coreKtx
 
+  implementation timberDep
+
   testImplementation testDeps.core
   testImplementation testDeps.truth
   androidTestImplementation testDeps.android

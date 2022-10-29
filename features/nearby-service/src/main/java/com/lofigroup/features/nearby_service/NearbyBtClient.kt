@@ -86,8 +86,6 @@ class NearbyBtClient @Inject constructor(
   private var bleScanner: BluetoothLeScanner? = null
 
   init {
-    turnBluetoothOn()
-
     scope.launch {
       val id = getMyIdUseCase()
       Timber.e("My id is $id")
@@ -148,6 +146,7 @@ class NearbyBtClient @Inject constructor(
   }
 
   fun startDiscovery() {
+    turnBluetoothOn()
     if (isDiscovering) return
     if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
 

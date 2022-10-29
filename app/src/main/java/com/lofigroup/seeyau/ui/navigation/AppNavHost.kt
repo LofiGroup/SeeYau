@@ -24,7 +24,6 @@ fun AppNavHost(
   navController: NavHostController,
   appModules: AppModules,
 
-  onAuthorized: () -> Unit,
   onStartNearbyService: () -> Unit,
   modifier: Modifier
 ) {
@@ -49,6 +48,7 @@ fun AppNavHost(
     }
 
     composable(route = Screen.NavigatorScreen.route) {
+      onStartNearbyService()
       NavigatorScreenNavigation(
         navigatorComponent = appModules.navigatorModule.domainComponent,
         chatComponent = appModules.chatModule.domainComponent,

@@ -7,4 +7,6 @@ interface NearbyService {
 
   fun observeState(): Flow<ResourceState>
 
+  fun start()
+
 }

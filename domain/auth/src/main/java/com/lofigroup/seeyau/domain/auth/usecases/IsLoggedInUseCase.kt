@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.domain.auth.usecases
 
-import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.LoggedInStatus
 import javax.inject.Inject

@@ -22,8 +22,8 @@ class AuthModuleImpl(
       tokenStore.getTokenState(),
       moduleStateHolder.observe()
     ) { tokenStoreState, moduleState ->
-      if (tokenStoreState == ResourceState.IS_READY && moduleState == ResourceState.IS_READY)
-        ResourceState.IS_READY
+      if (tokenStoreState == ResourceState.IS_READY)
+        moduleState
       else
         ResourceState.LOADING
     }

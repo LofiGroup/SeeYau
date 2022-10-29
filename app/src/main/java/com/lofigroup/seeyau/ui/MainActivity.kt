@@ -1,7 +1,6 @@
 package com.lofigroup.seeyau.ui
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +13,6 @@ import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 import com.sillyapps.core.ui.service.ServiceModuleConnection
-import com.sillyapps.core.ui.util.hasPermissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,12 +23,14 @@ class MainActivity : ComponentActivity() {
   private val job = Job()
   private val scope = CoroutineScope(Dispatchers.Main + job)
 
+  private val permissionChannel by lazy {
+    (application as App).appModules.appComponent.getPermissionChannel()
+  }
+
   private val nearbyServiceConnection =
     ServiceModuleConnection<NearbyService>(
       NearbyServiceImpl::class.java,
-      serviceIsConnected = {
-        observeNearbyServiceState(it)
-      }
+      serviceIsConnected = {}
     )
   private val dataSyncServiceConnection =
     ServiceModuleConnection<DataSyncService>(
@@ -40,8 +40,9 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    permissionChannel.register(this)
+
     startServices()
-    requestPermissions()
     bindServices()
 
     val app = (application as App)
@@ -51,33 +52,11 @@ class MainActivity : ComponentActivity() {
       AppTheme() {
         RootContainer(
           appModules = app.appModules,
-          onAuthorized = {
-          },
           onStartNearbyService = {
+            nearbyServiceConnection.boundService?.start()
           }
         )
       }
-    }
-  }
-
-  private fun observeNearbyServiceState(service: NearbyService) {
-    scope.launch {
-      service.observeState().collect() {
-        when (it) {
-          ResourceState.LOADING -> {}
-          ResourceState.IS_READY -> {
-
-          }
-        }
-      }
-    }
-  }
-
-  private fun requestPermissions() {
-    if (!hasPermissions(this, RequiredPermissions.permissions) &&
-      Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-    ) {
-      requestPermissions(RequiredPermissions.permissions, 1)
     }
   }
 
@@ -92,6 +71,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onDestroy() {
     unbindServices()
+    permissionChannel.unregister()
     super.onDestroy()
   }
 
