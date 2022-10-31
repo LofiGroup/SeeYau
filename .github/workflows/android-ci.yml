@@ -11,7 +11,7 @@ on:
 jobs:
   run-tests:
     name: Build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
