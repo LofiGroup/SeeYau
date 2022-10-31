@@ -12,7 +12,6 @@ import com.lofigroup.seeyau.ui.navigation.AppNavHost
 @Composable
 fun RootContainer(
   appModules: AppModules,
-  onAuthorized: () -> Unit,
   onStartNearbyService: () -> Unit
 ) {
   val navController = rememberNavController()
@@ -26,7 +25,6 @@ fun RootContainer(
     AppNavHost(
       navController = navController,
       appModules = appModules,
-      onAuthorized = onAuthorized,
       onStartNearbyService = onStartNearbyService,
       modifier = Modifier.padding(it)
     )

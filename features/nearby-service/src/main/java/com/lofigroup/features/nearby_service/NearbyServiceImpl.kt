@@ -7,6 +7,9 @@ import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
+import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannel
+import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannelProvider
+import com.lofigroup.seayau.common.ui.permissions.model.BluetoothPermission
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
@@ -20,6 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -45,10 +50,10 @@ class NearbyServiceImpl : Service(), NearbyService {
     )
 
   private val binder = LocalBinder()
-
-  private var isInitialized: Boolean = false
-
   private val state = MutableStateFlow(ResourceState.LOADING)
+  private val canStart = MutableStateFlow(false)
+
+  private val permissionChannel by lazy { (application as PermissionRequestChannelProvider).providePermissionChannel() }
 
   override fun onBind(p0: Intent?): IBinder {
     return binder
@@ -64,16 +69,22 @@ class NearbyServiceImpl : Service(), NearbyService {
   }
 
   private fun startDiscovery() {
-    if (!isInitialized) {
+    if (state.value == ResourceState.LOADING) {
       Timber.e("Nearby service is not initialized!")
       return
     }
     Timber.e("Starting discovery...")
-    nearbyBtClient?.startDiscovery()
+    scope.launch {
+      val isGranted = permissionChannel.requestPermission(BluetoothPermission)
+      Timber.e("Is granted = $isGranted")
+      if (!isGranted) return@launch
+
+      nearbyBtClient?.startDiscovery()
+    }
   }
 
   private fun stopDiscovery() {
-    if (!isInitialized) {
+    if (state.value != ResourceState.LOADING) {
       Timber.e("Nearby service is not initialized!")
       return
     }
@@ -96,8 +107,13 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   private fun observeVisibilitySetting() {
     scope.launch {
-      getVisibilityUseCase().collect { visibility ->
-        if (visibility.isVisible)
+      Timber.e("Observing visibility")
+      combine(
+        getVisibilityUseCase(),
+        canStart
+      ) { visibility, canStart -> Pair(visibility, canStart) }.collect { (visibility, canStart) ->
+        Timber.e("Visibility: ${visibility.isVisible}, canStart: $canStart")
+        if (visibility.isVisible && canStart)
           startDiscovery()
         else
           stopDiscovery()
@@ -106,7 +122,7 @@ class NearbyServiceImpl : Service(), NearbyService {
   }
 
   private fun init() {
-    if (isInitialized) return
+    if (state.value != ResourceState.LOADING) return
 
     val component = DaggerNearbyServiceComponent.builder()
       .navigatorComponent((application as NavigatorComponentProvider).provideNavigatorComponent())
@@ -117,7 +133,7 @@ class NearbyServiceImpl : Service(), NearbyService {
       .build()
 
     component.inject(this)
-    isInitialized = true
+    state.value = ResourceState.INITIALIZED
     Timber.e("Nearby service is initialized")
 
     observeVisibilitySetting()
@@ -134,5 +150,9 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun observeState(): Flow<ResourceState> {
     return state
+  }
+
+  override fun start() {
+    canStart.value = true
   }
 }

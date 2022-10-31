@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 enum class ResourceState {
-  LOADING, IS_READY
+  LOADING, INITIALIZED, IS_READY
 }
 
 class ResourceStateHolder {
@@ -14,10 +14,8 @@ class ResourceStateHolder {
     return state
   }
 
-  fun setLoading() {
-    state.value = ResourceState.LOADING
+  fun set(resourceState: ResourceState) {
+    state.value = resourceState
   }
-  fun setIsReady() {
-    state.value = ResourceState.IS_READY
-  }
+
 }
