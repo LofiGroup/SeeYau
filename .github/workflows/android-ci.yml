@@ -1,6 +1,7 @@
 name: Android-CI
 
 on:
+  push:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
@@ -26,7 +27,7 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: Chmod gradlew
-          run: chmod +x ./gradlew
+        run: chmod +x ./gradlew
 
       - name: Run unit tests
         run: ./gradlew --no-daemon build
