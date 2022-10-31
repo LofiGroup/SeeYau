@@ -8,6 +8,9 @@ on:
 
 jobs:
   build:
+  
+    env:
+      GRADLE_OPTS: -Dorg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g"
 
     runs-on: self-hosted
 
