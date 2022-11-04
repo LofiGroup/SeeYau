@@ -11,6 +11,12 @@ ext.versions = [
     retrofit       : "2.9.0"
 ]
 
+ext.androidConfigs = [
+    compileSdk: 33,
+    minSdk: 21,
+    targetSdk: 33
+]
+
 ext {
   appCompat = 'androidx.appcompat:appcompat:1.4.2'
   coreKtx = 'androidx.core:core-ktx:1.8.0'
@@ -83,6 +89,7 @@ ext {
       runtime              : "androidx.compose.runtime:runtime:${versions.compose}",
       ui                   : "androidx.compose.ui:ui:${versions.compose}",
       uiTooling            : "androidx.compose.ui:ui-tooling:${versions.compose}",
+      uiToolingPreview     : "androidx.compose.ui:ui-tooling-preview:${versions.compose}",
       foundation           : "androidx.compose.foundation:foundation:${versions.compose}",
       foundationLayout     : "androidx.compose.foundation:foundation-layout:${versions.compose}",
       material             : "androidx.compose.material:material:${versions.compose}",
