@@ -11,13 +11,4 @@ import org.junit.Test
  */
 class WebSocketAdaptersTest {
 
-  @Test
-  fun testMoshiCodeGen() {
-    val testObject = SendMessageWsRequest(message = "", chatId = 0L)
-    val adapter = Moshi.Builder().build().adapter(SendMessageWsRequest::class.java)
-    val json = adapter.toJson(testObject)
-    println(json)
-    assert(!json.contains("\\"))
-  }
-
 }
