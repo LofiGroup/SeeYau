@@ -80,7 +80,7 @@ class AuthRepositoryImpl @Inject constructor(
         LoggedInStatus.LoggedIn
       },
       errorBlock = {
-        when (it) {
+        val state = when (it) {
           is EmptyResponseBodyException -> {
             moduleStateHolder.set(ResourceState.IS_READY)
             LoggedInStatus.LoggedIn
@@ -102,6 +102,8 @@ class AuthRepositoryImpl @Inject constructor(
             LoggedInStatus.UnknownError(it.message ?: "Unknown error")
           }
         }
+        Timber.e("Logged in status is $state")
+        state
       }
     )
   }
