@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: Checkout
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-java@v3
         name: Set up JDK
@@ -29,18 +31,15 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
-      - name: Get previous tag
-        id: previoustag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        with:
-          fallback: v0.0.1
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
 
       - name: Update gradle version for Android
         uses: damienaicheh/update-android-version-gradle-action@v1.0.0
         with:
           build-gradle-path: './app/build.gradle'
           version-code: ${{ env.NUMBER_OF_COMMITS }}
-          version-name: ${{ steps.previoustag.outputs.tag }}
+          version-name: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
           print-file: true
 
       - name: Grant execute permission for gradlew
@@ -67,7 +66,7 @@ jobs:
         uses: fjogeleit/http-request-action@v1
         id: publish_to_server
         with:
-          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
+          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version='${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
           method: POST
           file: ${{ steps.sign_app.signedReleaseFile }}
 
