@@ -13,6 +13,9 @@ android {
     minSdk androidConfigs.minSdk
     targetSdk androidConfigs.targetSdk
 
+    versionCode 1
+    versionName "v0.0.1"
+
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -41,12 +44,20 @@ android {
 import io.github.reactivecircus.appversioning.SemVer
 appVersioning {
   overrideVersionCode { gitTag, providers, variantInfo ->
-    def semVer = SemVer.fromGitTag(gitTag)
-    semVer.major * 1_000_000 + semVer.minor * 1000 + semVer.patch
+    if (gitTag == null) {
+      1
+    } else {
+      def semVer = SemVer.fromGitTag(gitTag)
+      semVer.major * 1_000_000 + semVer.minor * 1000 + semVer.patch
+    }
   }
 
   overrideVersionName { gitTag, providers, variantInfo ->
-
+    if (gitTag == null) {
+      "v0.0.1"
+    } else {
+      gitTag.toString()
+    }
   }
 }
 
