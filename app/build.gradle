@@ -8,10 +8,13 @@ plugins {
 android {
   signingConfigs {
     release {
-      storeFile file('C:\\repositories\\SeeYau\\plum_android.keystore')
-      storePassword 'PD%6:Hi$ygsjR7mWW7{9$2\\pQOA0-hQv%_W)TtMV'
-      keyAlias 'plum_sign_key'
-      keyPassword 'rvl@#JZng_wx<b:>Y:lsTt_nQ=^E6x$2_{xZvi_\''
+      Properties properties = new Properties()
+      properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+      storeFile file(properties.getProperty("keystore.path"))
+      storePassword properties.getProperty("keystore.password")
+      keyAlias properties.getProperty("key.alias")
+      keyPassword properties.getProperty("key.password")
     }
   }
   compileSdk androidConfigs.compileSdk
