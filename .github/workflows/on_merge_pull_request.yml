@@ -31,15 +31,32 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+      - name: Get previous tag
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: v0.0.1
+
+      - name: Extract version code
+        id: version_code_extract
+        run: |
+          previous_tag=${{ steps.previoustag.outputs.tag }}
+          formatted_version=${previous_tag:1}
+          version_parts=(${formatted_version//./ })
+          
+          major_part=${version_parts[0]}
+          minor_part=${version_parts[1]}
+          patch_part=${version_parts[2]}
+          
+          version_code=$(($major_part*10000+$minor_part*100+$patch_part))
+          echo ::set-output name=version_code::$version_code
 
       - name: Update gradle version for Android
         uses: damienaicheh/update-android-version-gradle-action@v1.0.0
         with:
           build-gradle-path: './app/build.gradle'
-          version-code: ${{ env.NUMBER_OF_COMMITS }}
-          version-name: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+          version-code: ${{ steps.version_code_extract.outputs.version_code }}
+          version-name: ${{ steps.previoustag.outputs.tag }}
           print-file: true
 
       - name: Grant execute permission for gradlew
@@ -66,7 +83,7 @@ jobs:
         uses: fjogeleit/http-request-action@v1
         id: publish_to_server
         with:
-          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version='${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
           method: POST
           file: ${{ steps.sign_app.signedReleaseFile }}
 
