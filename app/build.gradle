@@ -5,22 +5,23 @@ plugins {
   id "io.github.reactivecircus.app-versioning" version "1.2.0"
 }
 
+File propertiesFile = project.rootProject.file("local.properties")
+
 android {
-  signingConfigs {
-    release {
-      try {
+  if (propertiesFile.exists()) {
+    signingConfigs {
+      release {
         Properties properties = new Properties()
-        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        properties.load(propertiesFile.newDataInputStream())
 
         storeFile file(properties.getProperty("keystore.path"))
         storePassword properties.getProperty("keystore.password")
         keyAlias properties.getProperty("key.alias")
         keyPassword properties.getProperty("key.password")
-      } catch(Exception e) {
-        println(e)
       }
     }
   }
+
   compileSdk androidConfigs.compileSdk
 
   defaultConfig {
