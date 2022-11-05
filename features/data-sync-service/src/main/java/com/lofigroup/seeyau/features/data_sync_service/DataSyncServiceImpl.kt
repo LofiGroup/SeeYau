@@ -17,7 +17,6 @@ import com.lofigroup.seeyau.domain.profile.usecases.PullContactsUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullLikesUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullProfileDataUseCase
 import com.lofigroup.seeyau.features.data_sync_service.di.DaggerDataSyncServiceComponent
-import com.sillyapps.core.ui.service.ServiceBinder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -77,8 +76,8 @@ class DataSyncServiceImpl: Service(), DataSyncService {
     serviceJob.cancel()
   }
 
-  inner class LocalBinder: Binder(), ServiceBinder<DataSyncService> {
-    override fun getService(): DataSyncService = this@DataSyncServiceImpl
+  inner class LocalBinder: Binder() {
+    fun getService(): DataSyncService = this@DataSyncServiceImpl
   }
 
   override fun sync() {
