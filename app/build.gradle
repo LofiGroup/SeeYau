@@ -2,24 +2,23 @@ plugins {
   id 'com.android.application'
   id 'org.jetbrains.kotlin.android'
   id 'kotlin-kapt'
+  id "io.github.reactivecircus.app-versioning" version "1.2.0"
 }
 
 android {
-  compileSdk 32
+  compileSdk androidConfigs.compileSdk
 
   defaultConfig {
     applicationId "com.lofigroup.seeyau"
-    minSdk 21
-    targetSdk 32
-    versionCode 1
-    versionName "1.0"
+    minSdk androidConfigs.minSdk
+    targetSdk androidConfigs.targetSdk
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
@@ -36,6 +35,18 @@ android {
   }
   composeOptions {
     kotlinCompilerExtensionVersion = versions.composeCompiler
+  }
+}
+
+import io.github.reactivecircus.appversioning.SemVer
+appVersioning {
+  overrideVersionCode { gitTag, providers, variantInfo ->
+    def semVer = SemVer.fromGitTag(gitTag)
+    semVer.major * 1_000_000 + semVer.minor * 1000 + semVer.patch
+  }
+
+  overrideVersionName { gitTag, providers, variantInfo ->
+
   }
 }
 
@@ -77,6 +88,7 @@ dependencies {
   implementation composeDeps.runtime
   implementation composeDeps.ui
   debugImplementation composeDeps.uiTooling
+  implementation composeDeps.uiToolingPreview
   implementation composeDeps.foundation
   implementation composeDeps.foundationLayout
   implementation composeDeps.material
