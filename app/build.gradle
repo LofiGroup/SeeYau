@@ -6,6 +6,14 @@ plugins {
 }
 
 android {
+  signingConfigs {
+    release {
+      storeFile file('C:\\repositories\\SeeYau\\plum_android.keystore')
+      storePassword 'PD%6:Hi$ygsjR7mWW7{9$2\\pQOA0-hQv%_W)TtMV'
+      keyAlias 'plum_sign_key'
+      keyPassword 'rvl@#JZng_wx<b:>Y:lsTt_nQ=^E6x$2_{xZvi_\''
+    }
+  }
   compileSdk androidConfigs.compileSdk
 
   defaultConfig {
@@ -17,6 +25,7 @@ android {
     versionName "v0.0.1"
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    signingConfig signingConfigs.release
   }
 
   buildTypes {
