@@ -35,7 +35,13 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Create local.properties file
-        run: touch local.properties
+        run: |
+          touch local.properties
+          echo "" > local.properties
+          
+          echo "keystore.password=password" >> local.properties
+          echo "key.alias=alias" >> local.properties
+          echo "key.password=password" >> local.properties
 
       - name: Build Release
         run: |
