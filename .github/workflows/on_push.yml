@@ -47,13 +47,19 @@ jobs:
         run: |
           ./gradlew assembleRelease --stacktrace
 
+      - name: Get previous tag
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: v0.0.1
+
       - name: Publish to dev server
-          uses: JantHsueh/upload-file-action@master
-          id: publish
-          with:
-            url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
-            forms: '{}'
-            fileForms: '{ "file": "app/build/outputs/apk/release/app-release.apk" }'
+        uses: JantHsueh/upload-file-action@master
+        id: publish
+        with:
+          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
+          forms: '{}'
+          fileForms: '{ "file": "app/build/outputs/apk/release/app-release.apk" }'
 
       - name: Show http response
         run: |
