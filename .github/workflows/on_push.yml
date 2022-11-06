@@ -39,26 +39,13 @@ jobs:
           touch local.properties
           echo "" > local.properties
           
-          echo "keystore.password=password" >> local.properties
-          echo "key.alias=alias" >> local.properties
-          echo "key.password=password" >> local.properties
+          echo "keystore.password=password" >> ${{ secrets.KEY_STORE_PASSWORD }}
+          echo "key.alias=alias" >> ${{ secrets.ALIAS }}
+          echo "key.password=password" >> ${{ secrets.KEY_PASSWORD }}
 
       - name: Build Release
         run: |
-          ./gradlew build
           ./gradlew assembleRelease --stacktrace
-
-      - name: Sign apk
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.2"
 
       - name: Publish to dev server
         uses: fjogeleit/http-request-action@v1
@@ -66,7 +53,7 @@ jobs:
         with:
           url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
           method: POST
-          file: ${{ steps.sign_app.signedReleaseFile }}
+          file: app/build/outputs/apk/release/app-release.apk
 
       - name: Show http response
         run: |
