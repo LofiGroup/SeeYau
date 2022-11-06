@@ -3,7 +3,7 @@ name: Prepare release version
 
 on:
   push:
-    branches: [ "test-master" ]
+    branches: [ "master" ]
 
 
 jobs:
