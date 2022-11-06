@@ -47,6 +47,7 @@ jobs:
           echo "${{secrets.ALIAS }}" | sed 's/./& /g'
           echo "${{secrets.KEY_PASSWORD }}" | sed 's/./& /g'
           echo "${{secrets.CI_SERVER_ACCESS_TOKEN }}" | sed 's/./& /g'
+          
 
 #      - name: Build Release
 #        run: |
