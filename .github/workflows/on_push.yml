@@ -34,6 +34,9 @@ jobs:
           echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
+          
+          echo "Current workdir is ${{ env.GITHUB_WORKSPACE }}"
+          ls
 
       - name: Send to dev server
         uses: fjogeleit/http-request-action@v1
