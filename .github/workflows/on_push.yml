@@ -39,15 +39,14 @@ jobs:
           touch local.properties
           echo "" > local.properties
           
-          echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}">>local.properties
-          echo "key.alias=${{ secrets.ALIAS }}">>local.properties
-          echo "key.password=${{ secrets.KEY_PASSWORD }}">>local.properties
+          echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
+          echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
+          echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
           
           echo "${{secrets.KEY_STORE_PASSWORD }}" | sed 's/./& /g'
           echo "${{secrets.ALIAS }}" | sed 's/./& /g'
           echo "${{secrets.KEY_PASSWORD }}" | sed 's/./& /g'
           echo "${{secrets.CI_SERVER_ACCESS_TOKEN }}" | sed 's/./& /g'
-          
 
 #      - name: Build Release
 #        run: |
