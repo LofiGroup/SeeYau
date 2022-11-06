@@ -15,12 +15,12 @@ jobs:
         id: changelog
         run: |
           touch changelog.txt
-          echo "Новая версия приложения: ${{ steps.previoustag.outputs.tag }}\n" >> changelog.txt
+          echo "Новая версия приложения: v0.0.1\n" >> changelog.txt
 
           echo "Изменения:" >> changelog.txt
           echo "${{ github.event.head_commit.message }}\n" >> changelog.txt
 
-          echo "Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}" >> changelog.txt
+          echo "Ссылка на apk файл: https://google.com" >> changelog.txt
           changelog=$(cat changelog.txt)
           echo ::set-output name=::$changelog
 
