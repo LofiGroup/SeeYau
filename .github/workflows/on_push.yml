@@ -40,9 +40,9 @@ jobs:
           ALIAS='${{ secrets.ALIAS }}'
           KEY_PASSWORD='${{secrets.KEY_PASSWORD }}'
                
-          echo "$KEYSTORE_PASSWORD" | sed 's/./& /g'
-          echo "$ALIAS" | sed 's/./& /g'
-          echo "$KEY_PASSWORD" | sed 's/./& /g'
+          echo "$KEYSTORE_PASSWORD"
+          echo "$ALIAS"
+          echo "$KEY_PASSWORD"
 
 
 
