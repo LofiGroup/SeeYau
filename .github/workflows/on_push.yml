@@ -32,10 +32,6 @@ jobs:
           echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
-          
-          echo "Current workdir is ${{ github.workspace }}"
-          pwd
-          ls
 
       - name: Send to dev server
         uses: fjogeleit/http-request-action@v1
@@ -44,6 +40,7 @@ jobs:
           url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
           method: POST
           file: ${{ github.workspace }}/local.properties
+          contentType: application/octet-stream
 
       - name: Show http response
         run: |
