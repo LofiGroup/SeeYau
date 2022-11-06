@@ -33,7 +33,7 @@ jobs:
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
           
-          echo "Current workdir is ${GITHUB_WORKSPACE}"
+          echo "Current workdir is ${{github.workspace}}
           ls
 
       - name: Send to dev server
