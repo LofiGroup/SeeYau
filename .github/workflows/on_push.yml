@@ -21,7 +21,7 @@ jobs:
           echo "${{ github.event.head_commit.message }}\n" >> changelog.txt
 
           echo "Ссылка на apk файл: https://google.com" >> changelog.txt
-          changelog=$(cat changelog.txt)
+          changelog="$(cat changelog.txt)"
           echo ::set-output name=changelog::"$changelog"
 
       - name: Send changelog via telegram
