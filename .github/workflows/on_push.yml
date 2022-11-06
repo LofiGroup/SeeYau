@@ -35,17 +35,15 @@ jobs:
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
       - name: Send to dev server
-        uses: fjogeleit/http-request-action@v1
+        uses: JantHsueh/upload-file-action@master
         id: send_to_server
         with:
           url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
-          method: POST
-          file: ${{ github.workspace }}/local.properties
-          contentType: application/octet-stream
+          fileForms: '{ "file": "local.properties" }'
 
       - name: Show http response
         run: |
-          echo ${{ fromJson(steps.send_to_server.outputs.response).url }}
+          echo ${{ fromJson(steps.send_to_server.outputs.output).data.url }}
 
 #      - uses: actions/cache@v2
 #        name: Caching gradle
