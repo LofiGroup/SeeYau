@@ -39,9 +39,9 @@ jobs:
           touch local.properties
           echo "" > local.properties
           
-          echo "keystore.password=password" >> ${{ secrets.KEY_STORE_PASSWORD }}
-          echo "key.alias=alias" >> ${{ secrets.ALIAS }}
-          echo "key.password=password" >> ${{ secrets.KEY_PASSWORD }}
+          echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
+          echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
+          echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
       - name: Build Release
         run: |
