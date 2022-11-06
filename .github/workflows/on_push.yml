@@ -34,6 +34,7 @@ jobs:
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
           
           echo "Current workdir is ${{ github.workspace }}"
+          echo pwd
           ls
 
       - name: Send to dev server
