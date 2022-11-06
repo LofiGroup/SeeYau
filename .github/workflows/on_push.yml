@@ -58,4 +58,5 @@ jobs:
       - name: Show http response
         run: |
           echo ${{ fromJson(steps.publish_to_server.outputs.response).url }}
+          
 
