@@ -11,59 +11,78 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout
-
-      - uses: actions/setup-java@v3
-        name: Set up JDK
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Create local.properties file
+      - name: Create changelog
+        id: changelog
         run: |
-          touch local.properties
-          echo "" > local.properties
-          
-          echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
-          echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
-          echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
+          touch changelog.txt
+          echo "Новая версия приложения: ${{ steps.previoustag.outputs.tag }}\n" >> changelog.txt
 
-      - uses: actions/cache@v2
-        name: Caching gradle
+          echo "Изменения:" >> changelog.txt
+          echo "${{ github.event.head_commit.message }}\n" >> changelog.txt
+
+          echo "Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}" >> changelog.txt
+          changelog=$(cat changelog.txt)
+          echo ::set-output name=::$changelog
+
+      - name: Send changelog via telegram
+        uses: fjogeleit/http-request-action@v1
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          url: https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
+          data: "{ \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"${{ steps.changelog.outputs.changelog }}\" }"
 
-      - name: Build Release
-        run: |
-          ./gradlew assembleRelease --stacktrace
+#      - uses: actions/checkout@v3
+#        name: Checkout
+#
+#      - uses: actions/setup-java@v3
+#        name: Set up JDK
+#        with:
+#          java-version: '11'
+#          distribution: 'adopt'
+#          cache: gradle
+#
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x ./gradlew
+#
+#      - name: Create local.properties file
+#        run: |
+#          touch local.properties
+#
+#          echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
+#          echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
+#          echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
+#
+#      - uses: actions/cache@v2
+#        name: Caching gradle
+#        with:
+#          path: |
+#            ~/.gradle/caches
+#            ~/.gradle/wrapper
+#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+#          restore-keys: |
+#            ${{ runner.os }}-gradle-
+#
+#      - name: Build Release
+#        run: |
+#          ./gradlew assembleRelease --stacktrace
+#
+#      - name: Get previous tag
+#        id: previoustag
+#        uses: WyriHaximus/github-action-get-previous-tag@v1
+#        with:
+#          fallback: v0.0.1
+#
+#      - name: Publish to dev server
+#        uses: JantHsueh/upload-file-action@master
+#        id: publish
+#        with:
+#          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
+#          forms: '{}'
+#          fileForms: '{ "file": "app/build/outputs/apk/release/app-release.apk" }'
+#
+#      - name: Show http response
+#        run: |
+#          echo ${{ fromJson(steps.publish.outputs.output).data.url }}
 
-      - name: Get previous tag
-        id: previoustag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        with:
-          fallback: v0.0.1
 
-      - name: Publish to dev server
-        uses: JantHsueh/upload-file-action@master
-        id: publish
-        with:
-          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
-          forms: '{}'
-          fileForms: '{ "file": "app/build/outputs/apk/release/app-release.apk" }'
-
-      - name: Show http response
-        run: |
-          echo ${{ fromJson(steps.publish.outputs.output).data.url }}
-          
           
 
