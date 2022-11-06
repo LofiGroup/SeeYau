@@ -9,7 +9,7 @@ on:
 jobs:
   Release:
     runs-on: ubuntu-latest
-      steps:
+    steps:
       - name: Send changelog via telegram
         uses: appleboy/telegram-action@master
         with:
