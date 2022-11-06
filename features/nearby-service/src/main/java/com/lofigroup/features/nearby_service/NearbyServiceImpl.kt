@@ -1,7 +1,10 @@
 package com.lofigroup.features.nearby_service
 
 import android.app.Service
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
@@ -16,8 +19,6 @@ import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceState
-import com.sillyapps.core.ui.service.ServiceBinder
-import com.sillyapps.core.ui.service.ServiceModuleConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,13 +42,18 @@ class NearbyServiceImpl : Service(), NearbyService {
   private val serviceJob = Job()
   private val scope = CoroutineScope(Dispatchers.Main + serviceJob)
 
-  private val dataSyncServiceConnection =
-    ServiceModuleConnection<DataSyncService>(
-      DataSyncServiceImpl::class.java,
-      serviceIsConnected = { service ->
-        observeDataSyncServiceState(service)
-      }
-    )
+  private val connection = object : ServiceConnection {
+    override fun onServiceConnected(className: ComponentName, service: IBinder) {
+      val binder = service as DataSyncServiceImpl.LocalBinder
+      val boundService = binder.getService()
+
+      observeDataSyncServiceState(boundService)
+    }
+
+    override fun onServiceDisconnected(arg0: ComponentName) {
+    }
+  }
+
 
   private val binder = LocalBinder()
   private val state = MutableStateFlow(ResourceState.LOADING)
@@ -59,13 +65,15 @@ class NearbyServiceImpl : Service(), NearbyService {
     return binder
   }
 
-  inner class LocalBinder : Binder(), ServiceBinder<NearbyService> {
-    override fun getService(): NearbyService = this@NearbyServiceImpl
+  inner class LocalBinder : Binder() {
+    fun getService(): NearbyService = this@NearbyServiceImpl
   }
 
   override fun onCreate() {
     super.onCreate()
-    dataSyncServiceConnection.bind(this)
+    Intent(this, DataSyncServiceImpl::class.java).also {
+      bindService(it, connection, Context.BIND_AUTO_CREATE)
+    }
   }
 
   private fun startDiscovery() {
@@ -141,7 +149,7 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun onDestroy() {
     Timber.e("Destroying NearbyService")
-    dataSyncServiceConnection.unbind(this)
+    unbindService(connection)
     nearbyBtClient?.stopDiscovery()
     serviceJob.cancel()
 
