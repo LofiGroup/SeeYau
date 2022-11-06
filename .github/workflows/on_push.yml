@@ -9,26 +9,18 @@ on:
 jobs:
   Release:
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Create changelog
-        id: changelog
-        run: |
-          touch changelog.txt
-          echo "Новая версия приложения: v0.0.1\n" >> changelog.txt
-
-          echo "Изменения:" >> changelog.txt
-          echo "${{ github.event.head_commit.message }}\n" >> changelog.txt
-
-          echo "Ссылка на apk файл: https://google.com" >> changelog.txt
-          changelog="$(cat changelog.txt)"
-          echo ::set-output name=changelog::"$changelog"
-
       - name: Send changelog via telegram
-        uses: fjogeleit/http-request-action@v1
+        uses: appleboy/telegram-action@master
         with:
-          url: https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
-          data: "{ \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"${{ steps.changelog.outputs.changelog }}\" }"
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            Вышла новая версия приложения: v0.0.1
+            
+            Изменения:
+            ${{ github.event.head_commit.message }}
+            
+            Ссылка на apk файл: https://google.com
 
 #      - uses: actions/checkout@v3
 #        name: Checkout
