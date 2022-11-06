@@ -30,7 +30,7 @@ jobs:
 
           echo "keystore.password=${{ secrets.KEY_STORE_PASSWORD }}" >> local.properties
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
-          echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
+          echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties 
 
       - uses: actions/cache@v2
         name: Caching gradle
