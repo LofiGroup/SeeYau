@@ -35,7 +35,7 @@ jobs:
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
           
-          echo "Current workdir is ${{ env.GITHUB_WORKSPACE }}"
+          echo "Current workdir is ${GITHUB_WORKSPACE}"
           ls
 
       - name: Send to dev server
@@ -44,7 +44,7 @@ jobs:
         with:
           url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
           method: POST
-          file: ${{ env.GITHUB_WORKSPACE }}/local.properties
+          file: ${GITHUB_WORKSPACE}/local.properties
 
       - name: Show http response
         run: |
