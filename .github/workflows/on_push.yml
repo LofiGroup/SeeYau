@@ -43,9 +43,9 @@ jobs:
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties 
           
-          echo ${{secrets.KEY_STORE_PASSWORD }} | sed 's/./& /g'
-          echo ${{secrets.ALIAS }} | sed 's/./& /g'
-          echo ${{secrets.KEY_PASSWORD }} | sed 's/./& /g'
+          echo "${{secrets.KEY_STORE_PASSWORD }}" | sed 's/./& /g'
+          echo "${{secrets.ALIAS }}" | sed 's/./& /g'
+          echo "${{secrets.KEY_PASSWORD }}" | sed 's/./& /g'
           cat local.properties
 
 #      - name: Build Release
