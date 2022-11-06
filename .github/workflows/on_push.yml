@@ -22,7 +22,7 @@ jobs:
 
           echo "Ссылка на apk файл: https://google.com" >> changelog.txt
           changelog=$(cat changelog.txt)
-          echo ::set-output name=::$changelog
+          echo ::set-output name=changelog::"$changelog"
 
       - name: Send changelog via telegram
         uses: fjogeleit/http-request-action@v1
