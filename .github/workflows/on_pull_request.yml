@@ -67,8 +67,11 @@ jobs:
           
           if [ -n "${GITHUB_PR_LABEL_RELEASE_MAJOR}" ]; then
             major_part=$((major_part+1))
+            minor_part=0
+            patch_part=0
           elif [ -n "$GITHUB_PR_LABEL_RELEASE_MINOR" ]; then
             minor_part=$((minor_part+1))
+            patch_part=0
           else
             patch_part=$((patch_part+1))
           fi
