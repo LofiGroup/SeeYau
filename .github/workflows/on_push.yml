@@ -21,10 +21,8 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-
 
       - name: Create local.properties file
         run: |
@@ -35,42 +33,30 @@ jobs:
           echo "key.alias=${{ secrets.ALIAS }}" >> local.properties
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
-      - name: Send to dev server
-        uses: JantHsueh/upload-file-action@master
-        id: send_to_server
+      - uses: actions/cache@v2
+        name: Caching gradle
         with:
-          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
-          forms: '{}'
-          fileForms: '{ "file": "local.properties" }'
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Release
+        run: |
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Publish to dev server
+          uses: JantHsueh/upload-file-action@master
+          id: publish
+          with:
+            url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
+            forms: '{}'
+            fileForms: '{ "file": "app/build/outputs/apk/release/app-release.apk" }'
 
       - name: Show http response
         run: |
-          echo ${{ fromJson(steps.send_to_server.outputs.output).data.url }}
-
-#      - uses: actions/cache@v2
-#        name: Caching gradle
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
-#
-#      - name: Build Release
-#        run: |
-#          ./gradlew assembleRelease --stacktrace
-#
-#      - name: Publish to dev server
-#        uses: fjogeleit/http-request-action@v1
-#        id: publish_to_server
-#        with:
-#          url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
-#          method: POST
-#          file: app/build/outputs/apk/release/app-release.apk
-#
-#      - name: Show http response
-#        run: |
-#          echo ${{ fromJson(steps.publish_to_server.outputs.response).url }}
+          echo ${{ fromJson(steps.publish.outputs.output).data.url }}
           
 
