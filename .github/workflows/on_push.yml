@@ -36,14 +36,6 @@ jobs:
 
       - name: Create local.properties file
         run: |
-#          touch local.properties
-#          echo "" > local.properties
-          
-#          echo "keystore.password='${{ secrets.KEY_STORE_PASSWORD }}'" >> local.properties
-#          echo "key.alias='${{ secrets.ALIAS }}'" >> local.properties
-#          echo "key.password='${{ secrets.KEY_PASSWORD }}'" >> local.properties
-#          cat local.properties
-
           KEYSTORE_PASSWORD='${{ secrets.KEY_STORE_PASSWORD }}'
           ALIAS='${{ secrets.ALIAS }}'
           KEY_PASSWORD='${{secrets.KEY_PASSWORD }}'
@@ -51,6 +43,13 @@ jobs:
           echo "$KEYSTORE_PASSWORD" | sed 's/./& /g'
           echo "$ALIAS" | sed 's/./& /g'
           echo "$KEY_PASSWORD" | sed 's/./& /g'
+#          touch local.properties
+#          echo "" > local.properties
+
+#          echo "keystore.password='${{ secrets.KEY_STORE_PASSWORD }}'" >> local.properties
+#          echo "key.alias='${{ secrets.ALIAS }}'" >> local.properties
+#          echo "key.password='${{ secrets.KEY_PASSWORD }}'" >> local.properties
+#          cat local.properties
 
 
 #      - name: Build Release
