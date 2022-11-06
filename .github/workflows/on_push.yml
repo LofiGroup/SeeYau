@@ -10,13 +10,17 @@ jobs:
   Release:
     runs-on: ubuntu-latest
     steps:
+      - name: Create dummy file
+        run: |
+          touch someFile.txt
+
       - name: Publish to dev server
         uses: JantHsueh/upload-file-action@master
         id: publish
         with:
           url: https://${{ secrets.CI_SERVER_DOMAIN_NAME }}/android/upload-apk?access_token=${{ secrets.CI_SERVER_ACCESS_TOKEN }}&version=${{ steps.previoustag.outputs.tag }}
           forms: '{}'
-          fileForms: '{ "file": ".gitignore" }'
+          fileForms: '{ "file": "someFile.txt" }'
 
       - name: Send changelog via telegram
         uses: appleboy/telegram-action@master
