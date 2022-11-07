@@ -33,7 +33,7 @@ fun SplashScreen(
       State.Loading -> LoadingScreen()
       State.ShouldAuthorize -> {
         LaunchedEffect(state) {
-          isLoggedIn(true)
+          isLoggedIn(false)
         }
       }
       is State.UnknownError -> UnknownErrorScreen(

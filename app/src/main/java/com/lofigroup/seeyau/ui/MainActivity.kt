@@ -1,7 +1,11 @@
 package com.lofigroup.seeyau.ui
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
@@ -12,7 +16,6 @@ import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
-import com.sillyapps.core.ui.service.ServiceModuleConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,22 +24,24 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
   private val job = Job()
-  private val scope = CoroutineScope(Dispatchers.Main + job)
 
   private val permissionChannel by lazy {
     (application as App).appModules.appComponent.getPermissionChannel()
   }
 
-  private val nearbyServiceConnection =
-    ServiceModuleConnection<NearbyService>(
-      NearbyServiceImpl::class.java,
-      serviceIsConnected = {}
-    )
-  private val dataSyncServiceConnection =
-    ServiceModuleConnection<DataSyncService>(
-      DataSyncServiceImpl::class.java,
-      serviceIsConnected = {}
-    )
+  private var nearbyService: NearbyService? = null
+
+  private val nearbyServiceConnection = object : ServiceConnection {
+    override fun onServiceConnected(className: ComponentName, service: IBinder) {
+      val binder = service as NearbyServiceImpl.LocalBinder
+      val boundService = binder.getService()
+
+      nearbyService = boundService
+    }
+
+    override fun onServiceDisconnected(arg0: ComponentName) {
+    }
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -53,7 +58,7 @@ class MainActivity : ComponentActivity() {
         RootContainer(
           appModules = app.appModules,
           onStartNearbyService = {
-            nearbyServiceConnection.boundService?.start()
+            nearbyService?.start()
           }
         )
       }
@@ -76,13 +81,13 @@ class MainActivity : ComponentActivity() {
   }
 
   private fun bindServices() {
-    dataSyncServiceConnection.bind(this)
-    nearbyServiceConnection.bind(this)
+    Intent(this, NearbyServiceImpl::class.java).also {
+      bindService(it, nearbyServiceConnection, Context.BIND_AUTO_CREATE)
+    }
   }
 
   private fun unbindServices() {
-    dataSyncServiceConnection.unbind(this)
-    nearbyServiceConnection.unbind(this)
+    unbindService(nearbyServiceConnection)
   }
 
 }
