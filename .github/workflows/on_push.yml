@@ -6,6 +6,7 @@ on:
     workflows: [Bump release version]
     types: [completed]
 
+
 jobs:
   Release:
     runs-on: ubuntu-latest
