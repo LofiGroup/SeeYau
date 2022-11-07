@@ -2,7 +2,7 @@ name: Test
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     branches: [ "test-master" ]
 
 
@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew test
 
       - name: Push tag
-          run: |
-            git tag v0.1.1 -f
-            git push origin v0.1.1 -f
+        run: |
+          git tag v0.1.1 -f
+          git push origin v0.1.1 -f
 
