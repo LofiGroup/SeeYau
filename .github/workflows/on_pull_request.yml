@@ -44,8 +44,3 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
-      - name: Push tag
-        run: |
-          git tag v0.1.1 -f
-          git push origin v0.1.1 -f
-
