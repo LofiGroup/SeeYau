@@ -3,7 +3,7 @@ name: Prepare release version
 
 on:
   workflow_run:
-    workflows: [Bump release version]
+    workflows: ["Bump release version"]
     types: [completed]
 
 jobs:
