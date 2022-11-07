@@ -1,0 +1,59 @@
+name: Bump release version
+
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [ "test-master" ]
+
+jobs:
+  bump-version:
+    name: Bump version
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+
+      - name: Get previous tag
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: v0.0.0
+
+      - name: Get PR labels
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Calculate new version
+        id: newversion
+        run: |
+          previous_tag=${{ steps.previoustag.outputs.tag }}
+          formatted_version=${previous_tag:1}
+          version_parts=(${formatted_version//./ })
+
+          major_part=${version_parts[0]}
+          minor_part=${version_parts[1]}
+          patch_part=${version_parts[2]}
+
+          if [ -n "${GITHUB_PR_LABEL_RELEASE_MAJOR}" ]; then
+            major_part=$((major_part+1))
+            minor_part=0
+            patch_part=0
+          elif [ -n "$GITHUB_PR_LABEL_RELEASE_MINOR" ]; then
+            minor_part=$((minor_part+1))
+            patch_part=0
+          else
+            patch_part=$((patch_part+1))
+          fi
+
+          new_version="v${major_part}.${minor_part}.${patch_part}"
+          echo "New version: ${new_version}"
+          echo ::set-output name=new_version::$new_version
+
+      - name: Set tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ steps.newversion.outputs.new_version }}
+          force_push_tag: true
