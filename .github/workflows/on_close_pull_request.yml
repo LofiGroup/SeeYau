@@ -111,3 +111,4 @@ jobs:
             ${{ github.event.head_commit.message }}
             
             Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}
+            
