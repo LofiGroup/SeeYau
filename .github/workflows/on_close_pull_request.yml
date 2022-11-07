@@ -1,9 +1,9 @@
-name: Bump release version
+name: Create release version
 
 
 on:
   pull_request:
-    branches: [ "test-master" ]
+    branches: [ "master" ]
     types: [closed]
 
 jobs:
