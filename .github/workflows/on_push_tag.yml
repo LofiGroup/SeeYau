@@ -15,6 +15,10 @@ jobs:
       - uses: actions/checkout@v3
         name: Checkout
 
+      - name: Check
+        run: |
+          echo "Github ref is ${{ github.ref }}"
+
       - name: Exit if not on master branch
         if: endsWith(github.ref, 'test-master') == false
         run: exit -1
