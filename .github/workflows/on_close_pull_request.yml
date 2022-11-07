@@ -56,8 +56,8 @@ jobs:
 
       - name: Push tag
         run: |
-          git tag ${{ steps.previoustag.outputs.tag }} -f
-          git push origin ${{ steps.previoustag.outputs.tag }} -f
+          git tag ${{ steps.newversion.outputs.new_version }} -f
+          git push origin ${{ steps.newversion.outputs.new_version }} -f
           
 
   release:
