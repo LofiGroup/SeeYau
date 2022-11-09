@@ -20,6 +20,6 @@ jobs:
 
       - name: Print pull request body
         run: |
-          echo ${{ github.event.pull_request.title }}
+          echo "${{ github.event.pull_request.title }}"
           echo ""
-          echo ${{ github.event.pull_request.body }}
+          echo "${{ github.event.pull_request.body }}"
