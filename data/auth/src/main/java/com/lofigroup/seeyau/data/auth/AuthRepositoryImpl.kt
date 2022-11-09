@@ -91,7 +91,7 @@ class AuthRepositoryImpl @Inject constructor(
                 moduleStateHolder.set(ResourceState.INITIALIZED)
                 resolveLoggedInState()
               }
-              401 -> LoggedInStatus.InvalidToken
+              401, 404 -> LoggedInStatus.InvalidToken
               else -> LoggedInStatus.UnknownError(it.message())
             }
           }

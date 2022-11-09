@@ -155,9 +155,9 @@ class ProfileRepositoryImpl @Inject constructor(
 
   override suspend fun blacklistUser(userId: Long) {
     safeIOCall(ioDispatcher) {
-      val response = retrofitErrorHandler(api.blackListUser(userId))
+      userDao.delete(userId)
 
-      userDao.delete(response.toWhom)
+      val response = retrofitErrorHandler(api.blackListUser(userId))
       blacklistDao.insert(response.toEntity(getMyId()))
     }
   }
