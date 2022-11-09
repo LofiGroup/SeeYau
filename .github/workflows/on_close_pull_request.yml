@@ -128,7 +128,7 @@ jobs:
             Вышла новая версия приложения: ${{ steps.previoustag.outputs.tag }}
             
             Изменения:
-            ${{ github.event.commits[0].message }}
+            ${{ github.event.pull_request.body }}
             
             Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}
             
