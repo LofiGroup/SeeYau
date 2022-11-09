@@ -23,3 +23,17 @@ jobs:
           echo "${{ github.event.pull_request.title }}"
           echo ""
           echo "${{ github.event.pull_request.body }}"
+
+      - name: Send changelog via telegram
+        uses: appleboy/telegram-action@master
+
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            Вышла новая версия приложения: v1.0.0
+            
+            Изменения:
+            ${{ github.event.pull_request.body }}
+            
+            Ссылка на apk файл: https://google.com
