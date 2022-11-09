@@ -3,7 +3,6 @@
   <debug-overrides>
     <trust-anchors>
       <certificates src="@raw/debug_cas"/>
-      <certificates src="@raw/dev_cas"/>
     </trust-anchors>
   </debug-overrides>
 </network-security-config>
