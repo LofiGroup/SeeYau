@@ -23,7 +23,7 @@ jobs:
           echo "${{ github.event.pull_request.title }}"
           echo ""
           echo "${{ github.event.pull_request.body }}"
-
+          
       - name: Send changelog via telegram
         uses: appleboy/telegram-action@master
 
