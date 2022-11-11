@@ -32,9 +32,7 @@ class NavigatorRepositoryImpl @Inject constructor(
 
   override suspend fun notifyUserWithIdWasFound(id: Long) = withContext(ioDispatcher) {
     try {
-      Timber.e("Found user with id: $id")
       if (profileDataHandler.userIsInBlackList(id)) {
-        Timber.e("User in blacklist")
         return@withContext
       }
 
