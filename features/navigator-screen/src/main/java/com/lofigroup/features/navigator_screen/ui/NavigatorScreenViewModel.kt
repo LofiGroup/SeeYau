@@ -3,6 +3,7 @@ package com.lofigroup.features.navigator_screen.ui
 import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lofigroup.core.util.timerFlow
 import com.lofigroup.core.util.transformItemAt
 import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.domain.navigator.usecases.GetNearbyUsersUseCase
@@ -19,7 +20,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class NavigatorScreenViewModel @Inject constructor(
@@ -118,7 +121,10 @@ class NavigatorScreenViewModel @Inject constructor(
   }
 
   private suspend fun observeNearbyUsers() {
-    getNearbyUsersUseCase().collect { users ->
+    combine(
+      getNearbyUsersUseCase(),
+      timerFlow(30 * Time.s)
+    ){ users, update -> users }.collect { users ->
       applyUpdates(users)
     }
   }

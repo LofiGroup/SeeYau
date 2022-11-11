@@ -4,6 +4,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 
 fun timerFlow(interval: Long) = flow {
-  emit(Unit)
-  delay(interval)
+  while (true) {
+    delay(interval)
+    emit(Unit)
+  }
 }

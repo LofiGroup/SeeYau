@@ -31,11 +31,16 @@ interface UserDao {
   @Query("select * from users where id = 0")
   fun observeMe(): Flow<UserEntity>
 
+
   @Query("select * from users where id = :id")
   suspend fun getUser(id: Long): UserEntity?
 
   @Query("select lastContact from users where id = :id")
   suspend fun getLastContact(id: Long): Long?
+
+  @Query("select * from users where id > 0 limit 1")
+  suspend fun getSomeone(): UserEntity?
+
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insert(entities: List<UserEntity>): List<Long>

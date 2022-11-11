@@ -11,15 +11,13 @@ import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_time.Time
 import com.sillyapps.core_time.shouldUpdate
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NavigatorRepositoryImpl @Inject constructor(
   private val ioDispatcher: CoroutineDispatcher,
   private val api: NavigatorApi,
@@ -47,11 +45,9 @@ class NavigatorRepositoryImpl @Inject constructor(
 
       profileDataHandler.insertUser(response.toUserEntity())
       return@withContext
-    }
-    catch (e: HttpException) {
+    } catch (e: HttpException) {
       Timber.e("Couldn't find user with id: $id. Error message ${e.message}")
-    }
-    catch (e: Exception) {
+    } catch (e: Exception) {
       Timber.e(getErrorMessage(e))
     }
   }
@@ -61,21 +57,13 @@ class NavigatorRepositoryImpl @Inject constructor(
   }
 
   override fun getNearbyUsers(): Flow<List<NearbyUser>> {
-    return combine(
-      nearbyUsersFlow(),
-      timerFlow(30 * Time.s)
-    ) { users, update ->
-      users
-    }
-  }
-
-  private fun nearbyUsersFlow() = profileDataHandler.observeAssembledUsers().flatMapLatest { users ->
-    combine(users.map { user ->
-      chatDataHandler.observeUserNewMessages(user.id).map { newMessages ->
-        user.toNearbyUser(newMessages)
+    return profileDataHandler.observeAssembledUsers().flatMapLatest { users ->
+      combine(users.map { user ->
+        chatDataHandler.observeUserNewMessages(user.id).map { newMessages ->
+          user.toNearbyUser(newMessages)
+        }
       }
+      ) { it.asList() }
     }
-    ) { it.asList() }
   }
-
 }
