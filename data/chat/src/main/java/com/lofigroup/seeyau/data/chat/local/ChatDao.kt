@@ -37,7 +37,7 @@ interface ChatDao {
   @Query("select id from chats where partnerId = :userId")
   suspend fun getChatIdFromUserId(userId: Long): Long?
 
-  @Query("select createdIn from messages order by createdIn desc limit 1")
+  @Query("select createdIn from messages where id < ${MessageEntity.SEND_ID_OFFSET} order by createdIn desc limit 1")
   suspend fun getLastMessageCreatedIn(): Long?
 
   @Query("select * from messages where id = :id")
