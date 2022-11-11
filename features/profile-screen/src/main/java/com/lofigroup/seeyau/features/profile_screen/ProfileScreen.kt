@@ -59,15 +59,11 @@ fun ProfileScreen(
       }
     }
 
-  val backgroundColor: Any =
-    if (state.isVisible) LocalExtendedColors.current.backgroundGradient
-    else MaterialTheme.colors.background
-
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
       .fillMaxSize()
-      .universalBackground(backgroundColor)
+      .universalBackground(MaterialTheme.colors.background)
       .systemBarsPadding()
   ) {
     DefaultTopBar(

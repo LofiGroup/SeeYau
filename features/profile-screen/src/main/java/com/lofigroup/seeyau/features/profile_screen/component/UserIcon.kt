@@ -25,8 +25,6 @@ fun UserIcon(
   Box {
     RemoteImage(
       model = imageUri,
-      errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-      placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
       onClick = onClick,
       modifier = Modifier
         .padding(bottom = changeIconSize.width / 2)

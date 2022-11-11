@@ -17,7 +17,7 @@ fun MessageStatusIcon(
   val resId = when (messageStatus) {
     MessageStatus.SENDING -> R.drawable.ic_baseline_history_24
     MessageStatus.SENT -> R.drawable.ic_check_mark_sent
-    MessageStatus.READ -> R.drawable.ic_check_mark_read
+    MessageStatus.READ -> R.drawable.ic_check_mark_received
     MessageStatus.RECEIVED -> R.drawable.ic_check_mark_received
   }
 

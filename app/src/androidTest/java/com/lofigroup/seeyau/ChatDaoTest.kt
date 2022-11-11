@@ -142,7 +142,7 @@ class ChatDaoTest {
     userDao.insert(UserEntity(name = "Ken", id = 0, imageUrl = "", lastConnection = 0, lastContact = 0L, likesCount = 10))
     userDao.insert(UserEntity(name = "Tanaka", id = 2, imageUrl = "", lastConnection = 0, lastContact = 0L, likesCount = 11))
 
-    chatEntity = ChatEntity(id = 1, partnerId = 2, lastVisited = 0L, partnerLastVisited = 0L)
+    chatEntity = ChatEntity(id = 1, partnerId = 2, lastVisited = 0L, partnerLastVisited = 0L, createdIn = 0L)
     messages = listOf(
       createMessage(),
       createMessage(authorId = 2)

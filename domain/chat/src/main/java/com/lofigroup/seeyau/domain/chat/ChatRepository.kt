@@ -1,9 +1,6 @@
 package com.lofigroup.seeyau.domain.chat
 
-import com.lofigroup.seeyau.domain.chat.models.Chat
-import com.lofigroup.seeyau.domain.chat.models.ChatBrief
-import com.lofigroup.seeyau.domain.chat.models.ChatDraft
-import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
+import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
 import kotlinx.coroutines.flow.Flow
 
@@ -13,8 +10,9 @@ interface ChatRepository {
   suspend fun sendLocalMessages()
 
   fun observeChats(): Flow<List<ChatBrief>>
-  fun observeChat(chatId: Long): Flow<Chat>
+  suspend fun getChat(chatId: Long): Chat
   fun observeChatEvents(): Flow<ChatEvent>
+  fun observeChatMessages(chatId: Long): Flow<List<ChatMessage>>
 
   suspend fun sendMessage(messageRequest: ChatMessageRequest)
   suspend fun markChatAsRead(chatId: Long)
@@ -22,6 +20,6 @@ interface ChatRepository {
   suspend fun getUserIdByChatId(chatId: Long): Long?
   suspend fun getChatIdByUserId(userId: Long): Long?
 
-  suspend fun updateChatDraft(chatDraft: ChatDraft)
+  suspend fun updateChatDraft(chatDraftUpdate: ChatDraftUpdate)
 
 }

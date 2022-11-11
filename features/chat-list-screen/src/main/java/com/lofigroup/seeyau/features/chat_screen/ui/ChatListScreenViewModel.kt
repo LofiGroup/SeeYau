@@ -3,7 +3,7 @@ package com.lofigroup.seeyau.features.chat_screen.ui
 import androidx.lifecycle.ViewModel
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.usecases.ObserveChatsUseCase
-import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
+import com.lofigroup.seeyau.features.chat_screen.model.*
 import com.sillyapps.core_time.Time
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,29 +14,27 @@ class ChatListScreenViewModel @Inject constructor(
 ): ViewModel(), ChatListScreenStateHolder {
 
   override fun getState(): Flow<ChatListScreenState> = observeChatsUseCase().map { chats ->
-    val memoryFolder = mutableListOf<ChatBrief>()
-    val likesFolder = mutableListOf<ChatBrief>()
-    val interactionFolder = mutableListOf<ChatBrief>()
+    val ordered = chats.sortedByDescending { it.lastMessage?.createdIn ?: it.createdIn }
 
-    for (chat in chats) {
-      if (chat.draft.isNotBlank()) {
-        memoryFolder.add(chat)
-        continue
+    val memoryFolder = mutableListOf<FolderChat.MemoryChat>()
+    val likesFolder = mutableListOf<FolderChat.LikeChat>()
+
+    for (chat in ordered) {
+      if (chat.draft.message.isNotBlank()) {
+        memoryFolder.add(chat.toMemoryChat())
       }
 
       val likedYouAt = chat.partner.likedYouAt ?: 0L
       if (System.currentTimeMillis() - likedYouAt < Time.d) {
-        likesFolder.add(chat)
-        continue
+        likesFolder.add(chat.toLikeChat())
       }
-      interactionFolder.add(chat)
     }
 
     ChatListScreenState(
-      memoryFolder = memoryFolder,
-      likesFolder = likesFolder,
-      interactionFolder = interactionFolder,
-      newMessagesCount = chats.sumOf { it.newMessagesCount }
+      memoryFolder = memoryFolder.sortedByDescending { it.createdIn },
+      likesFolder = likesFolder.sortedByDescending { it.likedAt },
+      interactionFolder = ordered.map { it.toDefaultChat() },
+      newMessagesCount = ordered.sumOf { it.newMessagesCount }
     )
   }
 

@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.remote.http.models
 
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
+import com.lofigroup.seeyau.data.chat.local.models.Draft
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -11,6 +12,8 @@ data class ChatUpdatesDto(
   val partnerId: Long,
   @Json(name = "new_messages")
   val newMessages: List<ChatMessageDto>,
+  @Json(name = "created_in")
+  val createdIn: Long?,
   @Json(name = "last_visited")
   val lastVisited: Long,
   @Json(name = "partner_last_visited")
@@ -23,5 +26,6 @@ fun ChatUpdatesDto.toChatEntity() =
     partnerId = partnerId,
     lastVisited = lastVisited,
     partnerLastVisited = partnerLastVisited,
-    draft = ""
+    draft = Draft(message = "", 0L),
+    createdIn = createdIn ?: 0L
   )

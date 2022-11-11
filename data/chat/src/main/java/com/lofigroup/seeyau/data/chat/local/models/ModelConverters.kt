@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.chat.local.models
 
+import com.lofigroup.seeyau.domain.chat.models.Chat
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
@@ -26,4 +27,9 @@ fun ChatMessageRequest.toLocalMessage(id: Long) = MessageEntity(
 fun MessageEntity.toNewMessageEvent() = NewChatMessage(
   authorIsMe = author == 0L,
   chatId = chatId
+)
+
+fun ChatEntity.toDomainModel() = Chat(
+  id = id,
+  draft = draft.message
 )

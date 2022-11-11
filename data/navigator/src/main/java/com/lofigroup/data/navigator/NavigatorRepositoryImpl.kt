@@ -1,6 +1,7 @@
 package com.lofigroup.data.navigator
 
 import com.lofigroup.backend_api.websocket.WebSocketChannel
+import com.lofigroup.core.util.timerFlow
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.domain.navigator.model.NearbyUser
 import com.lofigroup.seeyau.data.chat.ChatDataHandler
@@ -8,12 +9,12 @@ import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_time.Time
+import com.sillyapps.core_time.shouldUpdate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
@@ -28,6 +29,9 @@ class NavigatorRepositoryImpl @Inject constructor(
   private val chatDataHandler: ChatDataHandler
 ) : NavigatorRepository {
 
+  private var lastCallToApi = HashMap<Long, Long>()
+  private val callInterval = 4 * Time.s
+
   override suspend fun notifyUserWithIdWasFound(id: Long) = withContext(ioDispatcher) {
     try {
       Timber.e("Found user with id: $id")
@@ -35,6 +39,9 @@ class NavigatorRepositoryImpl @Inject constructor(
         Timber.e("User in blacklist")
         return@withContext
       }
+
+      if (!shouldUpdate(lastCallToApi[id], callInterval)) return@withContext
+      lastCallToApi[id] = System.currentTimeMillis()
 
       val response = retrofitErrorHandler(api.contactedWithUser(id))
 
@@ -54,13 +61,21 @@ class NavigatorRepositoryImpl @Inject constructor(
   }
 
   override fun getNearbyUsers(): Flow<List<NearbyUser>> {
-    return profileDataHandler.observeAssembledUsers().flatMapLatest { users ->
-      combine(users.map { user ->
-        chatDataHandler.observeUserNewMessages(user.id).map { newMessages ->
-          user.toNearbyUser(newMessages)
-        }
-      }) { it.asList() }
+    return combine(
+      nearbyUsersFlow(),
+      timerFlow(30 * Time.s)
+    ) { users, update ->
+      users
     }
+  }
+
+  private fun nearbyUsersFlow() = profileDataHandler.observeAssembledUsers().flatMapLatest { users ->
+    combine(users.map { user ->
+      chatDataHandler.observeUserNewMessages(user.id).map { newMessages ->
+        user.toNearbyUser(newMessages)
+      }
+    }
+    ) { it.asList() }
   }
 
 }

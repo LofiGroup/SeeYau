@@ -70,26 +70,26 @@ class ChatRepositoryImpl @Inject constructor(
             partner = user.toUser(),
             lastMessage = getLastMessage(lastMessage, user.extractLike()),
             newMessagesCount = newMessages.size,
-            draft = chat.draft,
+            draft = chat.draft.toDomainModel(),
+            createdIn = chat.createdIn
           )
         }
       }) { it.asList() }
     }
   }
 
-  override fun observeChat(chatId: Long): Flow<Chat> {
+  override suspend fun getChat(chatId: Long): Chat {
+    return chatDao.getChat(chatId).toDomainModel()
+  }
+
+  override fun observeChatMessages(chatId: Long): Flow<List<ChatMessage>> {
     return chatDao.observeChat(chatId).flatMapLatest { chat ->
       combine(
         chatDao.observeChatMessages(chat.id),
         profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
-        Chat(
-          id = chat.id,
-          messages = messages
-            .map { it.toDomainModel() }
-            .addToOrderedDesc(like?.toChatMessage()) { it.createdIn },
-          draft = chat.draft
-        )
+        messages.map { it.toDomainModel() }
+            .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
       }
     }
   }
@@ -106,9 +106,9 @@ class ChatRepositoryImpl @Inject constructor(
     chatDao.getChatIdFromUserId(userId)
   }
 
-  override suspend fun updateChatDraft(chatDraft: ChatDraft) {
+  override suspend fun updateChatDraft(chatDraftUpdate: ChatDraftUpdate) {
     safeIOCall(ioDispatcher) {
-      chatDao.insertDraft(chatDraft.message, chatDraft.chatId)
+      chatDao.insertDraft(chatDraftUpdate.toDraftUpdate())
     }
   }
 

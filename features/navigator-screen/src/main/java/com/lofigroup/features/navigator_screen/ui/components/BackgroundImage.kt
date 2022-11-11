@@ -21,14 +21,11 @@ fun BackgroundImage(
   selectedUser: UserItemUIModel?,
   isInFullScreenMode: Boolean
 ) {
-  val backgroundColor: Any =
-    if (isVisible) LocalExtendedColors.current.backgroundGradient
-    else MaterialTheme.colors.background
 
   Box(
     modifier = Modifier
       .fillMaxSize()
-      .universalBackground(backgroundColor)
+      .universalBackground(MaterialTheme.colors.background)
   ) {
     if (isVisible && selectedUser != null && isInFullScreenMode) {
       BackgroundCrop(url = selectedUser.imageUrl)
