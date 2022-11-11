@@ -3,7 +3,7 @@ package com.lofigroup.seeyau.features.chat
 import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lofigroup.seeyau.domain.chat.models.ChatDraft
+import com.lofigroup.seeyau.domain.chat.models.ChatDraftUpdate
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.chat.usecases.*
@@ -13,7 +13,6 @@ import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +27,8 @@ class ChatScreenViewModel @Inject constructor(
 
   private val updateChatDraftUseCase: UpdateChatDraftUseCase,
 
-  private val observeChatUseCase: ObserveChatUseCase,
+  private val getChatUseCase: GetChatUseCase,
+  private val observeChatMessages: ObserveChatMessages,
   private val observeChatEventsUseCase: ObserveChatEventsUseCase,
 
   private val sendChatMessageUseCase: SendChatMessageUseCase,
@@ -49,13 +49,18 @@ class ChatScreenViewModel @Inject constructor(
     job = viewModelScope.launch {
       coroutineScope {
         launch {
+          val chat = getChatUseCase(chatId)
+          state.apply { value = value.copy(message = chat.draft) }
+        }
+
+        launch {
           markChatAsReadUseCase(chatId)
         }
         launch {
           observeProfileUpdates()
         }
         launch {
-          observeChatUpdates()
+          observeMessages()
         }
         launch {
           observeChatEvents()
@@ -89,7 +94,7 @@ class ChatScreenViewModel @Inject constructor(
 
   override fun onExit() {
     viewModelScope.launch {
-      updateChatDraftUseCase(ChatDraft(
+      updateChatDraftUseCase(ChatDraftUpdate(
         message = state.value.message,
         chatId = chatId
       ))
@@ -117,12 +122,11 @@ class ChatScreenViewModel @Inject constructor(
     }
   }
 
-  private suspend fun observeChatUpdates() {
-    observeChatUseCase(chatId).collect() { chat ->
+  private suspend fun observeMessages() {
+    observeChatMessages(chatId).collect() { messages ->
       state.apply {
         value = value.copy(
-          message = chat.draft.ifBlank { "" },
-          messages = chat.messages
+          messages = messages
             .map { chatMessage -> chatMessage.toPrivateMessage(resources) }
             .groupBy { it.dateTime.date }
         )

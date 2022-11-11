@@ -1,8 +1,7 @@
 package com.lofigroup.seeyau.data.chat.local
 
 import androidx.room.*
-import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
-import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.chat.local.models.*
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatMessageDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +23,10 @@ interface ChatDao {
 
   @Query("select * from messages where chatId = :chatId order by createdIn desc limit 1")
   fun observeLastMessage(chatId: Long): Flow<MessageEntity?>
+
+
+  @Query("select * from chats where id = :chatId")
+  suspend fun getChat(chatId: Long): ChatEntity
 
   @Query("select partnerLastVisited from chats where id = :chatId")
   suspend fun getPartnerLastVisited(chatId: Long): Long
@@ -59,8 +62,8 @@ interface ChatDao {
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insertChat(chat: ChatEntity): Long
 
-  @Update
-  suspend fun updateChat(chat: ChatEntity)
+  @Update(entity = ChatEntity::class)
+  suspend fun updateChat(chat: ChatUpdate)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertMessages(messages: List<MessageEntity>)
@@ -99,10 +102,10 @@ interface ChatDao {
     insertMessages(messages.map { it.toMessageEntity(myId, lastVisited) })
   }
 
-  @Query("update chats set draft = :draft where id = :chatId")
-  suspend fun insertDraft(draft: String, chatId: Long)
+  @Update(entity = ChatEntity::class)
+  suspend fun insertDraft(update: DraftUpdate)
 
-  @Query("update chats set draft = null where id = :chatId")
+  @Query("update chats set draft_message = null where id = :chatId")
   suspend fun deleteDraft(chatId: Long)
 
   @Transaction
@@ -110,7 +113,7 @@ interface ChatDao {
     val id = insertChat(chat)
 
     if (id == -1L)
-      updateChat(chat)
+      updateChat(chat.toChatUpdate())
   }
 
   @Query("select id from messages where id >= ${MessageEntity.SEND_ID_OFFSET} order by id desc limit 1")

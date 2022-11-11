@@ -22,6 +22,7 @@ import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.R
+import com.lofigroup.seeyau.features.chat_screen.model.FolderChat
 import com.sillyapps.core.ui.components.OneLiner
 import com.sillyapps.core.ui.components.TextLabel
 import com.sillyapps.core.ui.theme.LocalExtendedColors
@@ -32,7 +33,7 @@ import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun ChatItem(
-  chat: ChatBrief,
+  chat: FolderChat,
   onClick: (Long) -> Unit,
   onIconClick: (String?) -> Unit,
 ) {
@@ -53,17 +54,25 @@ fun ChatItem(
         onClick = { onIconClick(chat.partner.imageUrl) }
       )
 
-      val chatDraft = chat.draft
-      val lastMessage = chat.lastMessage
-      if (chatDraft.isNotBlank()) {
-        DraftChatItemContent(draft = chatDraft, chat = chat)
-      } else if (chat.partner.blacklistedYou) {
-        BlacklistedChatItemContent(chat)
-      } else {
-        when (lastMessage) {
-          is ChatMessage.LikeMessage -> LikeChatItemContent(likeMessage = lastMessage, chat = chat)
-          is ChatMessage.PlainMessage -> PlainChatItemContent(plainMessage = lastMessage, chat = chat)
-          null -> DefaultChatItemContent(chat = chat)
+      when (chat) {
+        is FolderChat.LikeChat -> {
+          LikeChatItemContent(chat = chat)
+        }
+        is FolderChat.MemoryChat -> {
+          DraftChatItemContent(chat = chat)
+        }
+        is FolderChat.DefaultChat -> {
+          when (val msg = chat.lastMessage) {
+            is ChatMessage.LikeMessage -> {
+              LikeChatItemContent(chat = chat)
+            }
+            is ChatMessage.PlainMessage -> {
+              PlainChatItemContent(chat = chat, plainMessage = msg)
+            }
+            null -> {
+              DefaultChatItemContent(chat = chat)
+            }
+          }
         }
       }
     }
@@ -72,11 +81,10 @@ fun ChatItem(
 
 @Composable
 fun RowScope.BaseChatItemContent(
-  chat: ChatBrief,
+  chat: FolderChat,
   messagePlaceholder: @Composable () -> Unit,
   messageInfoPlaceholder: @Composable RowScope.() -> Unit = {},
   iconsPlaceholder: @Composable RowScope.() -> Unit = {},
-  showDefaultIcons: Boolean = true,
 ) {
   Column(
     modifier = Modifier
@@ -109,48 +117,19 @@ fun RowScope.BaseChatItemContent(
         .align(Alignment.BottomEnd)
     ) {
       iconsPlaceholder()
-      if (showDefaultIcons && chat.newMessagesCount > 0)
-        TextLabel(
-          text = "+${chat.newMessagesCount}",
-          modifier = Modifier.padding(start = LocalSpacing.current.extraSmall)
-        )
     }
   }
 }
 
 @Composable
-fun RowScope.BlacklistedChatItemContent(
-  chat: ChatBrief
-) {
-  BaseChatItemContent(
-    chat = chat,
-    messagePlaceholder = {
-      OneLiner(
-        text = stringResource(id = CommonR.string.user_is_blacklisted_you),
-        style = MaterialTheme.typography.subtitle2.copy(color = LocalExtendedColors.current.disabled)
-      )
-    },
-    iconsPlaceholder = {
-      Icon(
-        painter = painterResource(id = R.drawable.ic_baseline_warning_24),
-        contentDescription = null,
-        modifier = Modifier.size(LocalSize.current.small)
-      )
-    },
-    showDefaultIcons = false
-  )
-}
-
-@Composable
 fun RowScope.DraftChatItemContent(
-  draft: String,
-  chat: ChatBrief
+  chat: FolderChat.MemoryChat
 ) {
   BaseChatItemContent(
     chat = chat,
     messagePlaceholder = {
       OneLiner(
-        text = draft,
+        text = chat.message,
         style = MaterialTheme.typography.subtitle2.copy(color = Color.Gray)
       )
     },
@@ -165,8 +144,7 @@ fun RowScope.DraftChatItemContent(
 
 @Composable
 fun RowScope.LikeChatItemContent(
-  likeMessage: ChatMessage.LikeMessage,
-  chat: ChatBrief
+  chat: FolderChat
 ) {
   BaseChatItemContent(
     chat = chat,
@@ -188,7 +166,7 @@ fun RowScope.LikeChatItemContent(
 @Composable
 fun RowScope.PlainChatItemContent(
   plainMessage: ChatMessage.PlainMessage,
-  chat: ChatBrief
+  chat: FolderChat.DefaultChat
 ) {
   BaseChatItemContent(
     chat = chat,
@@ -204,13 +182,20 @@ fun RowScope.PlainChatItemContent(
         text = getLocalTimeFromMillis(plainMessage.createdIn),
         style = MaterialTheme.typography.caption
       )
+    },
+    iconsPlaceholder = {
+      if (chat.newMessagesCount > 0)
+        TextLabel(
+          text = "+${chat.newMessagesCount}",
+          modifier = Modifier.padding(start = LocalSpacing.current.extraSmall)
+        )
     }
   )
 }
 
 @Composable
 fun RowScope.DefaultChatItemContent(
-  chat: ChatBrief
+  chat: FolderChat.DefaultChat
 ) {
   BaseChatItemContent(
     chat = chat,
@@ -223,7 +208,7 @@ fun RowScope.DefaultChatItemContent(
 @Preview
 @Composable
 fun ChatItemPreview() {
-  val item = ChatBrief(
+  val item = FolderChat.DefaultChat(
     id = 0,
     partner = User(
       id = 0,
@@ -245,7 +230,7 @@ fun ChatItemPreview() {
       status = MessageStatus.SENT
     ),
     newMessagesCount = 1,
-    draft = "",
+    createdIn = 0L
   )
 
   AppTheme {

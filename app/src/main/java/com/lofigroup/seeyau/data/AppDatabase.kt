@@ -19,7 +19,7 @@ import timber.log.Timber
   entities = [
     UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class, BlacklistEntity::class
   ],
-  version = 17,
+  version = 19,
   exportSchema = true,
   autoMigrations = [
   ]

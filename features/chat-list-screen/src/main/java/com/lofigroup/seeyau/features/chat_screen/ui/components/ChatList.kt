@@ -21,15 +21,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.features.chat_screen.R
+import com.lofigroup.seeyau.features.chat_screen.model.FolderChat
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun ChatList(
-  memoryFolder: List<ChatBrief>,
-  likesFolder: List<ChatBrief>,
-  interactionFolder: List<ChatBrief>,
+  memoryFolder: List<FolderChat.MemoryChat>,
+  likesFolder: List<FolderChat.LikeChat>,
+  interactionFolder: List<FolderChat.DefaultChat>,
 
   onItemClick: (Long) -> Unit,
   onIconClick: (String?) -> Unit,
@@ -79,7 +80,7 @@ fun ChatList(
 fun LazyListScope.FolderItem(
   isExpanded: Boolean,
   setExpanded: (Boolean) -> Unit,
-  content: List<ChatBrief>,
+  content: List<FolderChat>,
   onItemClick: (Long) -> Unit,
   onIconClick: (String?) -> Unit,
   textResId: Int,
