@@ -174,7 +174,8 @@ fun RowScope.PlainChatItemContent(
       OneLiner(text = plainMessage.message)
     },
     messageInfoPlaceholder = {
-      MessageStatusIcon(messageStatus = plainMessage.status)
+      if (plainMessage.author == 0L)
+        MessageStatusIcon(messageStatus = plainMessage.status)
 
       Spacer(modifier = Modifier.width(LocalSpacing.current.extraSmall))
       
