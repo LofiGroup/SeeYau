@@ -18,14 +18,14 @@ jobs:
 
       - uses: actions/setup-java@v3
         name: Set up JDK
-        if: !contains( github.event.pull_request.labels.*.name, 'skip')
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'skip')) }}
         with:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
 
       - name: Create local.properties file
-        if: !contains( github.event.pull_request.labels.*.name, 'skip')
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'skip')) }}
         run: |
           touch local.properties
 
@@ -34,7 +34,7 @@ jobs:
           echo "key.password=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
       - uses: actions/cache@v2
-        if: !contains( github.event.pull_request.labels.*.name, 'skip')
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'skip')) }}
         with:
           path: |
             ~/.gradle/caches
@@ -42,10 +42,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
       - name: Grant execute permission for gradlew
-        if: !contains( github.event.pull_request.labels.*.name, 'Skip')
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'skip')) }}
         run: chmod +x ./gradlew
 
       - name: Run tests
-        if: !contains( github.event.pull_request.labels.*.name, 'Skip')
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'skip')) }}
         run: ./gradlew test
 

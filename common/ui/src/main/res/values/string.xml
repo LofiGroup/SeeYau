@@ -20,6 +20,7 @@
 
   <string name="cancel">Cancel</string>
   <string name="confirm">Confirm</string>
+  <string name="ok">OK</string>
 
   <string name="today">Today</string>
   <string name="yesterday">Yesterday</string>
@@ -33,4 +34,16 @@
   <string name="sent_you_like">Sent you like</string>
 
   <string name="user_is_blacklisted_you">This user is blacklisted you</string>
+
+  <string name="bluetooth_rationale_title_api30">Next permission might look strange</string>
+  <string name="bluetooth_rationale_description_api30">
+"This app rely heavily on Bluetooth for finding people around you.
+
+But to use it the app needs you to give location permissions as Bluetooth can potentially be used for gaining location."
+  </string>
+
+  <string name="bluetooth_rationale_title">Let\'s look for someone to talk to!</string>
+  <string name="bluetooth_rationale_description">
+"This app rely heavily on Bluetooth for finding people around you. Please grant next permissions to use this feature."
+  </string>
 </resources>

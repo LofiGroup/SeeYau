@@ -100,8 +100,6 @@ class NearbyBtClient @Inject constructor(
   }
 
   private fun turnBluetoothOn() {
-    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_CONNECT)) return
-
     btAdapter.enable()
     bleAdvertiser = btAdapter.bluetoothLeAdvertiser
     bleScanner = btAdapter.bluetoothLeScanner

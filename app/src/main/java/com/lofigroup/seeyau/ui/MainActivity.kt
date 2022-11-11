@@ -8,22 +8,20 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
-import com.lofigroup.core.util.ResourceState
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
+import com.lofigroup.seayau.common.ui.components.specific.ExplainPermissionDialog
+import com.lofigroup.seayau.common.ui.permissions.model.PermissionRationale
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-
-  private val job = Job()
 
   private val permissionChannel by lazy {
     (application as App).appModules.appComponent.getPermissionChannel()
@@ -45,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    permissionChannel.register(this)
+    permissionChannel.registerForPermissions(target = this)
 
     startServices()
     bindServices()
@@ -54,11 +52,25 @@ class MainActivity : ComponentActivity() {
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
     setContent {
+      var rationale by remember {
+        mutableStateOf<PermissionRationale?>(null)
+      }
+
+      permissionChannel.registerRationaleCallback { rationale = it }
+
       AppTheme() {
         RootContainer(
           appModules = app.appModules,
           onStartNearbyService = {
             nearbyService?.start()
+          }
+        )
+
+        ExplainPermissionDialog(
+          rationale = rationale,
+          onDismiss = {
+            rationale = null
+            permissionChannel.notifyRationaleIsClosed()
           }
         )
       }
