@@ -47,7 +47,7 @@ fun RemoteImage(
       CircularProgressIndicator(
         modifier = Modifier
           .heightIn(min = 0.dp, max = LocalSize.current.medium)
-          .fillMaxSize(0.8f)
+          .fillMaxSize(0.65f)
           .padding(LocalSpacing.current.small)
       )
     },
