@@ -66,8 +66,6 @@ fun AddPhotoScreen(
 
     RemoteImage(
       model = imageUri,
-      placeholderResId = CommonR.drawable.ic_baseline_account_circle_24,
-      errorPlaceholderResId = CommonR.drawable.ic_baseline_account_circle_24,
       onClick = { pickImageResult.launch(getDefaultImageCropperOptions()) },
       modifier = Modifier
         .fillMaxWidth(0.7f)
