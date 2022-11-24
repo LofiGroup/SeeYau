@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
+import com.lofigroup.seeyau.domain.chat.models.MessageType
 
 @Entity(
   tableName = "messages",
@@ -27,7 +28,12 @@ data class MessageEntity(
   @ColumnInfo(index = true) val author: Long,
   val createdIn: Long,
   @ColumnInfo(defaultValue = "0")
-  val isRead: Boolean
+  val isRead: Boolean,
+
+  @ColumnInfo(defaultValue = "null")
+  val mediaUri: String?,
+  @ColumnInfo(defaultValue = "PLAIN")
+  val type: MessageTypeEntity,
 ) {
   companion object {
 
@@ -35,22 +41,24 @@ data class MessageEntity(
      * Id offset of messages which are not yet received by the backend.
      * It's used to distinguish between messages created locally and by the server.
      *   */
-    const val SEND_ID_OFFSET = 0x7_000_000_000_000_000
+    const val LOCAL_MESSAGES_ID_OFFSET = 0x7_000_000_000_000_000
   }
 }
 
 fun MessageEntity.toDomainModel(): ChatMessage {
-  return ChatMessage.PlainMessage(
+  return ChatMessage(
     id = id,
     message = message,
     author = author,
     createdIn = createdIn,
-    status = getStatus()
+    status = getStatus(),
+    mediaUri = mediaUri,
+    type = type.toMessageType()
   )
 }
 
 fun MessageEntity.getStatus(): MessageStatus {
-  return if (id >= MessageEntity.SEND_ID_OFFSET) MessageStatus.SENDING
+  return if (id >= MessageEntity.LOCAL_MESSAGES_ID_OFFSET) MessageStatus.SENDING
     else if (isRead) MessageStatus.READ
     else MessageStatus.SENT
 }

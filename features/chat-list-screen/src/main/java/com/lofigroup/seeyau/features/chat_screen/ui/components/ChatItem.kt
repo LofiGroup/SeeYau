@@ -20,6 +20,7 @@ import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
+import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.R
 import com.lofigroup.seeyau.features.chat_screen.model.FolderChat
@@ -62,15 +63,15 @@ fun ChatItem(
           DraftChatItemContent(chat = chat)
         }
         is FolderChat.DefaultChat -> {
-          when (val msg = chat.lastMessage) {
-            is ChatMessage.LikeMessage -> {
+          when (chat.lastMessage?.type) {
+            MessageType.LIKE -> {
               LikeChatItemContent(chat = chat)
-            }
-            is ChatMessage.PlainMessage -> {
-              PlainChatItemContent(chat = chat, plainMessage = msg)
             }
             null -> {
               DefaultChatItemContent(chat = chat)
+            }
+            else -> {
+              PlainChatItemContent(chat = chat, plainMessage = chat.lastMessage)
             }
           }
         }
@@ -165,7 +166,7 @@ fun RowScope.LikeChatItemContent(
 
 @Composable
 fun RowScope.PlainChatItemContent(
-  plainMessage: ChatMessage.PlainMessage,
+  plainMessage: ChatMessage,
   chat: FolderChat.DefaultChat
 ) {
   BaseChatItemContent(
@@ -223,12 +224,14 @@ fun ChatItemPreview() {
       blacklistedYou = true,
       likedAt = null
     ),
-    lastMessage = ChatMessage.PlainMessage(
+    lastMessage = ChatMessage(
       id = 0,
       message = "Hello!",
       author = 0,
       createdIn = 0L,
-      status = MessageStatus.SENT
+      status = MessageStatus.SENT,
+      mediaUri = null,
+      type = MessageType.PLAIN
     ),
     newMessagesCount = 1,
     createdIn = 0L

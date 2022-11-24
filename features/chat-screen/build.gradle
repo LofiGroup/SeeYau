@@ -41,6 +41,7 @@ dependencies {
   implementation project(":common:chat")
   implementation project(":domain:chat")
   implementation project(":domain:profile")
+  implementation project(":features:send-media")
 
   implementation appCompat
   implementation coreKtx

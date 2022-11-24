@@ -10,6 +10,7 @@ object BluetoothPermission : AppPermission(
       arrayOf(
         Manifest.permission.BLUETOOTH_SCAN,
         Manifest.permission.BLUETOOTH_ADVERTISE,
+        Manifest.permission.BLUETOOTH_CONNECT
       )
     }
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {

@@ -3,7 +3,6 @@ package com.lofigroup.seeyau.data.profile
 import android.content.ContentResolver
 import android.net.Uri
 import com.lofigroup.core.util.Result
-import com.lofigroup.core.util.getFileExtFromPath
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
@@ -24,6 +23,7 @@ import com.sillyapps.core_network.ContentUriRequestBody
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_network.utils.createMultipartBody
 import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -108,7 +108,7 @@ class ProfileRepositoryImpl @Inject constructor(
       val newProfile = retrofitErrorHandler(
         api.updateProfile(
           form = profile.toUpdateProfileForm(),
-          image = createMultipartBody(profile.imageUrl)
+          image = createMultipartBody("image", profile.imageUrl, contentResolver)
         )
       )
 
@@ -160,20 +160,5 @@ class ProfileRepositoryImpl @Inject constructor(
       val response = retrofitErrorHandler(api.blackListUser(userId))
       blacklistDao.insert(response.toEntity(getMyId()))
     }
-  }
-
-  private fun createMultipartBody(uri: String?): MultipartBody.Part? {
-    val uri = uri ?: return null
-
-    val imageUri = Uri.parse(uri)
-    if (imageUri.scheme != "content" && imageUri.scheme != "file") return null
-
-    val fileExt = getFileExtFromPath(uri)
-
-    return MultipartBody.Part.createFormData(
-      name = "image",
-      filename = "image.$fileExt",
-      body = ContentUriRequestBody(contentResolver, imageUri)
-    )
   }
 }

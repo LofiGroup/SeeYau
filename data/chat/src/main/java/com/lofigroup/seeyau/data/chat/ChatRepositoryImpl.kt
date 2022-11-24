@@ -1,11 +1,17 @@
 package com.lofigroup.seeyau.data.chat
 
+import android.content.Context
 import com.lofigroup.core.util.addToOrderedDesc
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.*
+import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
+import com.lofigroup.seeyau.data.chat.remote.http.models.SendMessageDto
+import com.lofigroup.seeyau.data.chat.remote.http.models.toForm
+import com.lofigroup.seeyau.data.chat.remote.http.models.toSendMessageDto
 import com.lofigroup.seeyau.data.chat.remote.websocket.ChatWebSocketListener
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMessageRequest
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMessageWsRequest
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.model.extractLike
 import com.lofigroup.seeyau.data.profile.local.model.toUser
@@ -13,6 +19,8 @@ import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
 import com.lofigroup.seeyau.domain.profile.model.Like
+import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_network.utils.createMultipartBody
 import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,10 +33,12 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
   private val chatDataHandler: ChatDataHandler,
   private val chatDao: ChatDao,
+  private val chatApi: ChatApi,
   private val profileDataHandler: ProfileDataHandler,
   private val ioDispatcher: CoroutineDispatcher,
   private val chatWebSocket: ChatWebSocketListener,
-  private val eventsDataSource: EventsDataSource
+  private val eventsDataSource: EventsDataSource,
+  private val context: Context
 ) : ChatRepository {
 
   override suspend fun pullData() {
@@ -39,7 +49,10 @@ class ChatRepositoryImpl @Inject constructor(
     safeIOCall(ioDispatcher) {
       val messages = chatDao.getLocalMessages()
       for (message in messages) {
-        chatWebSocket.sendMessage(message.toSendMessageRequest())
+        if (message.type == MessageTypeEntity.PLAIN)
+          chatWebSocket.sendMessage(message.toSendMessageRequest())
+        else
+          sendMessageWithMedia(message.toSendMessageDto())
       }
     }
   }
@@ -47,7 +60,12 @@ class ChatRepositoryImpl @Inject constructor(
   override suspend fun sendMessage(messageRequest: ChatMessageRequest) {
     safeIOCall(ioDispatcher) {
       val request = chatDataHandler.createLocalMessage(messageRequest)
-      chatWebSocket.sendMessage(request)
+
+      if (request.type == "plain") {
+        chatWebSocket.sendMessage(request.toSendMessageWsRequest())
+      } else {
+        sendMessageWithMedia(request)
+      }
     }
   }
 
@@ -89,7 +107,7 @@ class ChatRepositoryImpl @Inject constructor(
         profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
         messages.map { it.toDomainModel() }
-            .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
+          .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
       }
     }
   }
@@ -118,6 +136,18 @@ class ChatRepositoryImpl @Inject constructor(
 
     return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel()
     else like?.toChatMessage()
+  }
+
+  private suspend fun sendMessageWithMedia(request: SendMessageDto) {
+    val multipart = createMultipartBody("media", request.mediaUri, contentResolver = context.contentResolver)
+      ?: return
+
+    val response = retrofitErrorHandler(chatApi.sendChatMedia(
+      form = request.toForm(),
+      media = multipart
+    ))
+
+    chatDataHandler.saveLocalMessage(response)
   }
 
 }

@@ -1,0 +1,73 @@
+plugins {
+  id 'com.android.library'
+  id 'org.jetbrains.kotlin.android'
+  id 'kotlin-kapt'
+}
+
+android {
+  compileSdk androidConfigs.compileSdk
+
+  defaultConfig {
+    minSdk androidConfigs.minSdk
+    targetSdk androidConfigs.targetSdk
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
+  }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_11.toString()
+  }
+  buildFeatures {
+    compose = true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = versions.composeCompiler
+  }
+}
+
+dependencies {
+  implementation project(":common:ui")
+
+  implementation project(":domain:profile")
+  implementation project(":domain:settings")
+
+  implementation appCompat
+  implementation coreKtx
+
+  testImplementation testDeps.core
+  testImplementation testDeps.truth
+  androidTestImplementation testDeps.android
+  androidTestImplementation testDeps.espresso
+
+  implementation composeDeps.runtime
+  implementation composeDeps.ui
+  debugImplementation composeDeps.uiTooling
+  implementation composeDeps.uiToolingPreview
+  implementation composeDeps.foundation
+  implementation composeDeps.foundationLayout
+  implementation composeDeps.material
+  implementation composeDeps.materialIcons
+  implementation composeDeps.materialIconsExtended
+  implementation composeDeps.activity
+  implementation composeDeps.navigation
+  debugImplementation composeDeps.poolingContainer
+
+  implementation daggerDeps.core
+  kapt daggerDeps.annotationProcessor
+
+  implementation timberDep
+  implementation imageCropper
+
+  implementation coilCompose
+}

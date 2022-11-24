@@ -11,7 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 
 @AppScope
-@Component(modules = [PersistenceModule::class, IOModule::class, ChannelModule::class])
+@Component(modules = [PersistenceModule::class, IOModule::class, PermissionModule::class])
 interface AppComponent {
 
   fun getSharedPref(): SharedPreferences

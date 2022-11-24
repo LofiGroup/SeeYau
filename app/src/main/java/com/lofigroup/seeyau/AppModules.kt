@@ -67,7 +67,8 @@ class AppModules(
       chatDao = appComponent.getDatabase().chatDao,
       sharedPreferences = appComponent.getSharedPref(),
       ioScope = appScope,
-      profileDataHandler = profileModule.dataComponent.getProfileDataHandler()
+      profileDataHandler = profileModule.dataComponent.getProfileDataHandler(),
+      context = appContext
     )
   }
 

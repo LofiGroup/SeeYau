@@ -8,11 +8,8 @@ class SendChatMessageUseCase @Inject constructor(
   private val repository: ChatRepository
 ) {
 
-  suspend operator fun invoke(message: String, chatId: Long) {
-    repository.sendMessage(ChatMessageRequest(
-      message = message,
-      chatId = chatId
-    ))
+  suspend operator fun invoke(chatMessageRequest: ChatMessageRequest) {
+    repository.sendMessage(chatMessageRequest)
   }
 
 }

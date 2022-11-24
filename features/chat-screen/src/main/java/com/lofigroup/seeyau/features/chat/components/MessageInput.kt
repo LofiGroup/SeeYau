@@ -1,17 +1,12 @@
 package com.lofigroup.seeyau.features.chat.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +24,8 @@ import com.lofigroup.seayau.common.ui.R as CommonR
 fun MessageInput(
   message: String,
   setMessage: (String) -> Unit,
-  sendMessage: () -> Unit
+  sendMessage: () -> Unit,
+  onClipButtonClick: () -> Unit
 ) {
   Row(
     modifier = Modifier.padding(LocalSpacing.current.medium),
@@ -59,7 +55,7 @@ fun MessageInput(
       },
       leadingIcon = {
         ImageButton(
-          onClick = {  }, 
+          onClick = onClipButtonClick,
           painter = painterResource(id = R.drawable.ic_scab_icon)
         )
       },

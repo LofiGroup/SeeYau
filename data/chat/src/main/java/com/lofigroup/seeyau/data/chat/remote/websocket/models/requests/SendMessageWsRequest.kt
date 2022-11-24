@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.remote.websocket.models.requests
 
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.chat.remote.http.models.SendMessageDto
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -17,6 +18,12 @@ class SendMessageWsRequest(
 
 fun MessageEntity.toSendMessageRequest() = SendMessageWsRequest(
   localId = id,
+  message = message,
+  chatId = chatId
+)
+
+fun SendMessageDto.toSendMessageWsRequest() = SendMessageWsRequest(
+  localId = localId,
   message = message,
   chatId = chatId
 )

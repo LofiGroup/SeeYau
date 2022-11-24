@@ -44,6 +44,7 @@
             <option value="$PROJECT_DIR$/features/navigator-screen" />
             <option value="$PROJECT_DIR$/features/nearby-service" />
             <option value="$PROJECT_DIR$/features/profile-screen" />
+            <option value="$PROJECT_DIR$/features/send-media" />
             <option value="$PROJECT_DIR$/features/splash-screen" />
           </set>
         </option>

@@ -1,11 +1,13 @@
 package com.lofigroup.seeyau.data.chat.remote.http
 
+import com.lofigroup.seeyau.data.chat.remote.http.models.ChatMessageDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatUpdatesDto
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.MessageIsReceivedResponse
+import com.lofigroup.seeyau.domain.chat.models.ChatMessage
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ChatApi {
 
@@ -15,10 +17,11 @@ interface ChatApi {
   @GET("/api/chat/get-chat-updates/{chat_id}")
   suspend fun getChatData(@Path("chat_id") chatId: Long, @Query("from_date") fromDate: Long): Response<ChatUpdatesDto>
 
-  @POST("/api/chat/add-friend/{user_id}")
-  suspend fun addToFriends(@Path("user_id") userId: Int): Response<Unit>
-
-  @POST("/api/chat/remove-friend")
-  suspend fun removeFromFriends(@Path("user_id") userId: Int): Response<Unit>
+  @Multipart
+  @POST("/api/chat/send-chat-media")
+  suspend fun sendChatMedia(
+    @PartMap form: MutableMap<String, RequestBody>,
+    @Part media: MultipartBody.Part
+  ): Response<MessageIsReceivedResponse>
 
 }

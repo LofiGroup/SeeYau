@@ -1,9 +1,11 @@
 package com.lofigroup.seeyau.features.chat
 
 import android.content.res.Resources
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.seeyau.domain.chat.models.ChatDraftUpdate
+import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.chat.usecases.*
@@ -75,18 +77,19 @@ class ChatScreenViewModel @Inject constructor(
     return commands
   }
 
-  override fun sendMessage() {
+  override fun sendMessage(mediaUri: Uri?) {
     val message = state.value.message
-    if (message.isBlank()) {
+    if (message.isBlank() && mediaUri == null) {
       return
     }
 
     state.apply { value = value.copy(message = "") }
 
     viewModelScope.launch {
-      sendChatMessageUseCase(message, chatId)
+      sendChatMessageUseCase(ChatMessageRequest(message, chatId, mediaUri = mediaUri.toString()))
     }
   }
+
 
   override fun setMessage(message: String) {
     state.apply { value = value.copy(message = message) }

@@ -35,12 +35,11 @@ class ContentUriRequestBody(
 
 }
 
-fun Uri.length(contentResolver: ContentResolver)
-    : Long {
-
+fun Uri.length(contentResolver: ContentResolver): Long {
   val assetFileDescriptor = try {
     contentResolver.openAssetFileDescriptor(this, "r")
-  } catch (e: FileNotFoundException) {
+  }
+  catch (e: FileNotFoundException) {
     null
   }
   // uses ParcelFileDescriptor#getStatSize underneath if failed

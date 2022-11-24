@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.chat.di
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.core.util.EventChannel
@@ -31,6 +32,9 @@ interface ChatDataComponent {
   interface Builder {
     @BindsInstance
     fun baseRetrofit(retrofit: Retrofit): Builder
+
+    @BindsInstance
+    fun context(context: Context): Builder
 
     @BindsInstance
     fun webSocketChannel(webSocketChannel: WebSocketChannel): Builder
