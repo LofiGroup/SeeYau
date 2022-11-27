@@ -17,10 +17,10 @@ import com.sillyapps.core.ui.theme.LocalSize
 
 @Composable
 fun ImageContent(
-  message: UIChatMessage
+  content: MessageType.Image
 ) {
   RemoteImage(
-    model = message.mediaUri,
+    model = content.uri,
     shape = MaterialTheme.shapes.small,
     modifier = Modifier.size(width = LocalSize.current.large, height = LocalSize.current.veryLarge)
   )
@@ -32,7 +32,7 @@ fun ImageMessagePreview() {
   AppTheme {
     Box(Modifier.fillMaxSize()) {
       BaseMessage(
-        message = getPreviewPrivateMessage(type = MessageType.IMAGE),
+        message = getPreviewPrivateMessage(type = MessageType.Image(uri = "")),
         style = LocalChatMessageStyles.current.myMessageStyle,
       )
     }

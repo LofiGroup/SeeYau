@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.remote.http.models
 
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.chat.local.models.toMessageType
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
@@ -8,7 +9,6 @@ import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import timber.log.Timber
 
 @JsonClass(generateAdapter = true)
 data class SendMessageDto(
@@ -26,13 +26,15 @@ data class SendMessageDto(
   }
 }
 
-fun MessageEntity.toSendMessageDto() = SendMessageDto(
-  localId = id,
-  message = message,
-  chatId = chatId,
-  type = type.toString().lowercase(),
-  mediaUri = mediaUri
-)
+fun MessageEntity.toSendMessageDto(): SendMessageDto {
+  return SendMessageDto(
+    localId = id,
+    message = message,
+    chatId = chatId,
+    type = type.toString().lowercase(),
+    mediaUri = type.toMessageType(extra).uri
+  )
+}
 
 fun SendMessageDto.toForm(): MutableMap<String, RequestBody> {
   return mutableMapOf(

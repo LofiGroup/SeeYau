@@ -32,7 +32,7 @@ fun ChatMessageItem(
       .padding(bottom = LocalSpacing.current.small)
   ) {
     when (chatMessage.type) {
-      MessageType.LIKE -> {
+      MessageType.Like -> {
         LikeMessage(style = style)
       }
       else -> {

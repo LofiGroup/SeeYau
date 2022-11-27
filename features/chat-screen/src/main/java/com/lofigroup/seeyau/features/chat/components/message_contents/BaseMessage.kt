@@ -35,19 +35,19 @@ fun BoxScope.BaseMessage(
     horizontalAlignment = Alignment.End
   ) {
     when (message.type) {
-      MessageType.PLAIN, MessageType.LIKE -> {}
-      MessageType.AUDIO -> {
+      is MessageType.Audio -> {
 
       }
-      MessageType.VIDEO -> {
+      is MessageType.Video -> {
 
       }
-      MessageType.IMAGE -> {
-        ImageContent(message = message)
+      is MessageType.Image -> {
+        ImageContent(content = message.type)
       }
-      MessageType.CONTACT -> {
+      is MessageType.Contact -> {
 
       }
+      else -> {}
     }
 
     Box {

@@ -6,14 +6,20 @@ data class ChatMessage(
   val createdIn: Long,
   val message: String,
   val status: MessageStatus,
-  val type: MessageType,
-  val mediaUri: String?
+  val type: MessageType
 )
 
 enum class MessageStatus {
   SENDING, SENT, RECEIVED, READ
 }
 
-enum class MessageType {
-  PLAIN, AUDIO, VIDEO, IMAGE, CONTACT, LIKE
+sealed class MessageType(
+  val uri: String? = null
+) {
+  object Plain: MessageType()
+  object Like: MessageType()
+  class Contact: MessageType()
+  class Audio(uri: String): MessageType(uri)
+  class Video(uri: String, val thumbnailUri: String): MessageType(uri)
+  class Image(uri: String): MessageType(uri)
 }

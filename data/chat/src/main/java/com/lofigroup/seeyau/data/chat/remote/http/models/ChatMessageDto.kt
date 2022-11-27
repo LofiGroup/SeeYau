@@ -27,6 +27,6 @@ fun ChatMessageDto.toMessageEntity(myId: Long, readIn: Long) = MessageEntity(
   author = if (author == myId) 0 else author,
   chatId = chatId,
   isRead = createdIn < readIn,
-  mediaUri = mediaUri,
+  extra = mediaUri,
   type = toMessageType(type)
 )

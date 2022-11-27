@@ -9,9 +9,8 @@ fun Like.toChatMessage(): ChatMessage {
     author = userId,
     createdIn = createdIn,
     status = MessageStatus.READ,
-    type = MessageType.LIKE,
+    type = MessageType.Like,
     id = id,
-    mediaUri = null,
     message = ""
   )
 }
@@ -24,7 +23,7 @@ fun ChatMessageRequest.toLocalMessage(id: Long, type: MessageTypeEntity) = Messa
   isRead = false,
   message = message,
   type = type,
-  mediaUri = mediaUri.toString()
+  extra = mediaUri.toString()
 )
 
 fun MessageEntity.toNewMessageEvent() = NewChatMessage(

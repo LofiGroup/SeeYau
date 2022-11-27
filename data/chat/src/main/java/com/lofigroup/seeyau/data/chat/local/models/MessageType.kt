@@ -19,8 +19,20 @@ fun toMessageType(type: String): MessageTypeEntity {
   }
 }
 
-fun MessageTypeEntity.toMessageType(): MessageType {
-  return MessageType.valueOf(this.toString())
+fun MessageTypeEntity.toMessageType(extra: String?): MessageType {
+  return when (this) {
+    MessageTypeEntity.PLAIN -> MessageType.Plain
+    MessageTypeEntity.CONTACT -> MessageType.Contact()
+    MessageTypeEntity.VIDEO -> {
+      val videoExtra = extra?.let { VideoExtra.adapter.fromJson(it) } ?: VideoExtra("", "")
+      MessageType.Video(uri = videoExtra.uri, thumbnailUri = videoExtra.thumbnailUri)
+    }
+    else -> {
+      val uri = extra?.let { MediaExtra.adapter.fromJson(it)?.uri } ?: ""
+      if (this == MessageTypeEntity.AUDIO) MessageType.Audio(uri = uri)
+      else MessageType.Image(uri = uri)
+    }
+  }
 }
 
 fun resolveMessageType(uri: String?, context: Context): MessageTypeEntity {

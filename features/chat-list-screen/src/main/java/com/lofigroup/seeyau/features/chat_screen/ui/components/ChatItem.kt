@@ -64,7 +64,7 @@ fun ChatItem(
         }
         is FolderChat.DefaultChat -> {
           when (chat.lastMessage?.type) {
-            MessageType.LIKE -> {
+            MessageType.Like -> {
               LikeChatItemContent(chat = chat)
             }
             null -> {
@@ -230,8 +230,7 @@ fun ChatItemPreview() {
       author = 0,
       createdIn = 0L,
       status = MessageStatus.SENT,
-      mediaUri = null,
-      type = MessageType.PLAIN
+      type = MessageType.Plain
     ),
     newMessagesCount = 1,
     createdIn = 0L

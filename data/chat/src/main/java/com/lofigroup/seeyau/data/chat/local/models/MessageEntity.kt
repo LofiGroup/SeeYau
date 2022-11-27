@@ -8,6 +8,9 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
 
 @Entity(
   tableName = "messages",
@@ -31,7 +34,7 @@ data class MessageEntity(
   val isRead: Boolean,
 
   @ColumnInfo(defaultValue = "null")
-  val mediaUri: String?,
+  val extra: String?,
   @ColumnInfo(defaultValue = "PLAIN")
   val type: MessageTypeEntity,
 ) {
@@ -45,6 +48,25 @@ data class MessageEntity(
   }
 }
 
+@JsonClass(generateAdapter = true)
+data class MediaExtra(
+  val uri: String
+) {
+  companion object {
+    val adapter: JsonAdapter<MediaExtra> = Moshi.Builder().build().adapter(MediaExtra::class.java)
+  }
+}
+
+@JsonClass(generateAdapter = true)
+data class VideoExtra(
+  val uri: String,
+  val thumbnailUri: String
+) {
+  companion object {
+    val adapter: JsonAdapter<VideoExtra> = Moshi.Builder().build().adapter(VideoExtra::class.java)
+  }
+}
+
 fun MessageEntity.toDomainModel(): ChatMessage {
   return ChatMessage(
     id = id,
@@ -52,8 +74,7 @@ fun MessageEntity.toDomainModel(): ChatMessage {
     author = author,
     createdIn = createdIn,
     status = getStatus(),
-    mediaUri = mediaUri,
-    type = type.toMessageType()
+    type = type.toMessageType(extra)
   )
 }
 
