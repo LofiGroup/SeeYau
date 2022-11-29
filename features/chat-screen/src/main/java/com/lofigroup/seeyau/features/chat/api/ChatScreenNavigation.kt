@@ -21,6 +21,7 @@ fun ChatScreenNavigation(
     .profileComponent(profileComponent)
     .chatId(chatId)
     .resources(LocalContext.current.resources)
+    .context(LocalContext.current)
     .build()
 
   val viewModel = daggerViewModel {

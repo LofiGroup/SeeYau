@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.features.chat.di
 
+import android.content.Context
 import android.content.res.Resources
 import com.lofigroup.seeyau.domain.chat.di.ChatComponent
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
@@ -10,7 +11,8 @@ import dagger.Component
 
 @ScreenScope
 @Component(
-  dependencies = [ChatComponent::class, ProfileComponent::class]
+  dependencies = [ChatComponent::class, ProfileComponent::class],
+  modules = [Media3Module::class, MediaPlayerModule::class]
 )
 interface ChatScreenComponent {
   fun getViewModel(): ChatScreenViewModel
@@ -22,6 +24,9 @@ interface ChatScreenComponent {
 
     @BindsInstance
     fun resources(resources: Resources): Builder
+
+    @BindsInstance
+    fun context(context: Context): Builder
 
     @BindsInstance
     fun chatId(id: Long): Builder

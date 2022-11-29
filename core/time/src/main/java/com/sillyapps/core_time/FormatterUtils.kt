@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 
 
 fun getLocalTimeFromMillis(millis: Long): String {
@@ -48,6 +49,29 @@ fun millisToLastSeen(utcMillis: Long): LastSeen {
     }
   }
 }
+
+fun intervalToString(millis: Long): String {
+  val overallSeconds = millis / 1000
+  val seconds = formatIfNeeded(overallSeconds % 60)
+
+  val overallMinutes = overallSeconds / 60
+  val minutes = formatIfNeeded(overallMinutes % 60)
+
+  val overallHours = overallMinutes / 60
+  val hours = formatIfNeeded(overallHours % 24, true)
+
+  return "$hours$minutes$seconds"
+}
+
+fun formatIfNeeded(time: Long, skipIfZero: Boolean = false): String {
+  return when {
+    skipIfZero && time == 0L -> ""
+    time < 10 -> "0$time"
+    else -> time.toString()
+  }
+}
+
+
 
 data class DateAndTime(
   val date: String,

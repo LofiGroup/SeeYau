@@ -8,7 +8,8 @@ ext.versions = [
     composeCompiler: "1.2.0",
     workManager    : "2.7.1",
     okHttp         : "4.10.0",
-    retrofit       : "2.9.0"
+    retrofit       : "2.9.0",
+    media3: "1.0.0-beta02"
 ]
 
 ext.androidConfigs = [
@@ -113,8 +114,9 @@ ext {
       loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:4.9.3"
   ]
 
-  coilCompose = "io.coil-kt:coil-compose:2.2.1"
+  coilCompose = "io.coil-kt:coil-compose:2.2.2"
   coilTransformations = "com.github.Commit451.coil-transformations:transformations:2.0.2"
+  coilVideo = "io.coil-kt:coil-video:2.2.2"
 
   nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
 
@@ -123,5 +125,12 @@ ext {
   workManagerDeps = [
       core   : "androidx.work:work-runtime-ktx:${versions.workManager}",
       testing: "androidx.work:work-testing:${versions.workManager}"
+  ]
+
+  media3Deps = [
+      exoplayer: "androidx.media3:media3-exoplayer:${versions.media3}",
+      okHttp: "androidx.media3:media3-datasource-okhttp:${versions.media3}",
+      ui: "androidx.media3:media3-ui:${versions.media3}",
+      test: "androidx.media3:media3-test-utils:${versions.media3}"
   ]
 }

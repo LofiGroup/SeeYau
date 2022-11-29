@@ -14,8 +14,7 @@ data class ChatMessageDto(
   @Json(name = "chat_id")
   val chatId: Long,
   val author: Long,
-  @Json(name = "media_uri")
-  val mediaUri: String?,
+  val extra: String?,
   @Json(name = "message_type")
   val type: String
 )
@@ -27,6 +26,6 @@ fun ChatMessageDto.toMessageEntity(myId: Long, readIn: Long) = MessageEntity(
   author = if (author == myId) 0 else author,
   chatId = chatId,
   isRead = createdIn < readIn,
-  extra = mediaUri,
+  extra = extra,
   type = toMessageType(type)
 )

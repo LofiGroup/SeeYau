@@ -11,8 +11,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
-import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
+import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyle
 import com.sillyapps.core.ui.theme.LocalSpacing
 
@@ -21,7 +21,7 @@ fun BoxScope.BaseMessage(
   message: UIChatMessage,
   style: ChatMessageStyle,
   modifier: Modifier = Modifier,
-  maxLines: Int = Int.MAX_VALUE,
+  maxLines: Int = Int.MAX_VALUE
 ) {
   Column(
     modifier = modifier
@@ -34,17 +34,17 @@ fun BoxScope.BaseMessage(
       ),
     horizontalAlignment = Alignment.End
   ) {
-    when (message.type) {
-      is MessageType.Audio -> {
+    when (val typeContent = message.type) {
+      is UIMessageType.Audio -> {
 
       }
-      is MessageType.Video -> {
-
+      is UIMessageType.Video -> {
+        VideoContent(videoItem = typeContent)
       }
-      is MessageType.Image -> {
-        ImageContent(content = message.type)
+      is UIMessageType.Image -> {
+        ImageContent(content = typeContent)
       }
-      is MessageType.Contact -> {
+      is UIMessageType.Contact -> {
 
       }
       else -> {}

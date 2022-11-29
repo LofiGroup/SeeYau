@@ -11,6 +11,7 @@ import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.chat.usecases.*
 import com.lofigroup.seeyau.domain.profile.usecases.BlacklistUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
+import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
@@ -39,7 +40,9 @@ class ChatScreenViewModel @Inject constructor(
   private val blacklistUserUseCase: BlacklistUserUseCase,
 
   private val chatId: Long,
-  private val resources: Resources
+  private val resources: Resources,
+
+  private val mediaPlayer: MediaPlayer
 ) : ViewModel(), ChatScreenStateHolder {
 
   private val state = MutableStateFlow(ChatScreenState())
@@ -93,6 +96,10 @@ class ChatScreenViewModel @Inject constructor(
 
   override fun setMessage(message: String) {
     state.apply { value = value.copy(message = message) }
+  }
+
+  override fun getMediaPlayer(): MediaPlayer {
+    return mediaPlayer
   }
 
   override fun onExit() {
@@ -153,6 +160,11 @@ class ChatScreenViewModel @Inject constructor(
       }
     }
 
+  }
+
+  override fun onCleared() {
+    mediaPlayer.destroy()
+    super.onCleared()
   }
 
 }

@@ -35,13 +35,17 @@ fun RemoteImage(
   contentScale: ContentScale = ContentScale.Crop,
   transformations: List<Transformation> = emptyList(),
 ) {
+  val imageRequest =
+    if (model is ImageRequest) model
+    else ImageRequest.Builder(LocalContext.current)
+      .data(model)
+      .crossfade(true)
+      .transformations(transformations)
+      .build()
+
   Box(modifier = modifier) {
     SubcomposeAsyncImage(
-      model = ImageRequest.Builder(LocalContext.current)
-        .data(model)
-        .crossfade(true)
-        .transformations(transformations)
-        .build(),
+      model = imageRequest,
       contentScale = contentScale,
       contentDescription = null,
       loading = {

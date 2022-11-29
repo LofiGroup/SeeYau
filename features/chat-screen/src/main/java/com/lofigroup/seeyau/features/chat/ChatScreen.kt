@@ -17,12 +17,13 @@ import com.lofigroup.seayau.common.ui.components.specific.BigImage
 import com.lofigroup.seayau.common.ui.components.specific.UserOptionsDialog
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
-import com.lofigroup.seeyau.features.chat.components.ChatMessages
-import com.lofigroup.seeyau.features.chat.components.MessageInput
-import com.lofigroup.seeyau.features.chat.components.TopBar
+import com.lofigroup.seeyau.features.chat.components.*
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
+import com.lofigroup.seeyau.features.chat.media_player.test.FakeMediaPlayer
+import com.lofigroup.seeyau.features.chat.util.LocalPlayerProvider
+import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
 import com.lofigroup.seeyau.features.send_media.SendMediaDialog
 import com.sillyapps.core.ui.components.showToast
 import kotlinx.coroutines.delay
@@ -86,10 +87,12 @@ fun ChatScreen(
       onUserIconClick = { bigImageVisible = true }
     )
 
-    ChatMessages(
-      items = state.messages,
-      listState = listState
-    )
+    LocalPlayerProvider(mediaPlayer = stateHolder.getMediaPlayer()) {
+      ChatMessages(
+        items = state.messages,
+        listState = listState
+      )
+    }
 
     MessageInput(
       message = state.message,
@@ -150,6 +153,10 @@ fun ChatScreenPreview() {
 
     override fun setMessage(message: String) {
       mMessage.value = message
+    }
+
+    override fun getMediaPlayer(): MediaPlayer {
+      return FakeMediaPlayer()
     }
 
     override fun onExit() {

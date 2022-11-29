@@ -9,7 +9,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.lofigroup.seayau.common.ui.theme.SkyBlue
 import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.Purple
+import com.sillyapps.core.ui.theme.PurpleDarker
 
 data class ChatMessageStyles(
   val myMessageStyle: ChatMessageStyle,
@@ -52,7 +55,7 @@ private val myMessageStyleDefault = ChatMessageStyle(
   alignment = Alignment.CenterEnd,
   startPadding = 64.dp,
   endPadding = 16.dp,
-  brush = Brush.linearGradient(),
+  brush = SolidColor(SkyBlue),
   datePadding = 50.dp,
   hasMessageMark = true
 )
@@ -61,7 +64,7 @@ private val partnerMessageStyleDefault = ChatMessageStyle(
   alignment = Alignment.CenterStart,
   startPadding = 16.dp,
   endPadding = 64.dp,
-  brush = Brush.linearGradient(),
+  brush = Brush.horizontalGradient(listOf(Purple, PurpleDarker)),
   datePadding = 30.dp,
   hasMessageMark = false
 )

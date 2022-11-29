@@ -15,16 +15,28 @@ fun Like.toChatMessage(): ChatMessage {
   )
 }
 
-fun ChatMessageRequest.toLocalMessage(id: Long, type: MessageTypeEntity) = MessageEntity(
-  id = id,
-  author = 0L,
-  chatId = chatId,
-  createdIn = System.currentTimeMillis(),
-  isRead = false,
-  message = message,
-  type = type,
-  extra = mediaUri.toString()
-)
+fun ChatMessageRequest.toLocalMessage(id: Long, type: MessageTypeEntity): MessageEntity {
+  val extra = when (type) {
+    MessageTypeEntity.AUDIO, MessageTypeEntity.IMAGE -> {
+      MediaExtra.adapter.toJson(MediaExtra(mediaUri ?: ""))
+    }
+    MessageTypeEntity.VIDEO -> {
+      VideoExtra.adapter.toJson(VideoExtra(mediaUri ?: "", ""))
+    }
+    else -> null
+  }
+
+  return MessageEntity(
+    id = id,
+    author = 0L,
+    chatId = chatId,
+    createdIn = System.currentTimeMillis(),
+    isRead = false,
+    message = message,
+    type = type,
+    extra = extra
+  )
+}
 
 fun MessageEntity.toNewMessageEvent() = NewChatMessage(
   authorIsMe = author == 0L,

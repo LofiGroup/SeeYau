@@ -13,7 +13,7 @@ data class UIChatMessage(
   val dateTime: DateAndTime,
   val status: MessageStatus,
   val message: String,
-  val type: MessageType,
+  val type: UIMessageType,
 )
 
 fun ChatMessage.toPrivateMessage(resources: Resources): UIChatMessage {
@@ -23,7 +23,7 @@ fun ChatMessage.toPrivateMessage(resources: Resources): UIChatMessage {
     id = id,
     status = status,
     message = message,
-    type = type
+    type = type.toUIMessageType()
   )
 }
 
@@ -42,6 +42,6 @@ fun getPreviewPrivateMessage(
     dateTime = DateAndTime(date, time),
     id = id,
     status = status,
-    type = type
+    type = type.toUIMessageType()
   )
 }

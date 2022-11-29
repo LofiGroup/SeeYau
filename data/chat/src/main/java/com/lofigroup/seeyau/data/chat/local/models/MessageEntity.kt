@@ -8,6 +8,7 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
@@ -60,6 +61,7 @@ data class MediaExtra(
 @JsonClass(generateAdapter = true)
 data class VideoExtra(
   val uri: String,
+  @Json(name = "thumbnail_uri")
   val thumbnailUri: String
 ) {
   companion object {

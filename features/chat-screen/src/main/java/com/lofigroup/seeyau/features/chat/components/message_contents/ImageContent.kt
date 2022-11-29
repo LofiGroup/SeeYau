@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
+import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.lofigroup.seeyau.features.chat.styling.LocalChatMessageStyles
 import com.sillyapps.core.ui.components.RemoteImage
@@ -17,7 +18,7 @@ import com.sillyapps.core.ui.theme.LocalSize
 
 @Composable
 fun ImageContent(
-  content: MessageType.Image
+  content: UIMessageType.Image
 ) {
   RemoteImage(
     model = content.uri,
