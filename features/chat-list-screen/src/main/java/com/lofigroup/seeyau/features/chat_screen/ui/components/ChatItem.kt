@@ -7,10 +7,15 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AudioFile
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -90,7 +95,7 @@ fun RowScope.BaseChatItemContent(
   Column(
     modifier = Modifier
       .weight(1f)
-      .padding(start = LocalSpacing.current.small)
+      .padding(start = LocalSpacing.current.small),
   ) {
     Text(
       text = chat.partner.name,
@@ -98,7 +103,11 @@ fun RowScope.BaseChatItemContent(
       modifier = Modifier.padding(bottom = LocalSpacing.current.extraSmall)
     )
 
-    messagePlaceholder()
+    Row(
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      messagePlaceholder()
+    }
   }
 
   Box(
@@ -165,6 +174,17 @@ fun RowScope.LikeChatItemContent(
 }
 
 @Composable
+fun SmallIcon(imageVector: ImageVector) {
+  Icon(
+    imageVector = imageVector,
+    contentDescription = null,
+    modifier = Modifier
+      .size(LocalSize.current.small)
+      .padding(end = LocalSpacing.current.extraSmall)
+  )
+}
+
+@Composable
 fun RowScope.PlainChatItemContent(
   plainMessage: ChatMessage,
   chat: FolderChat.DefaultChat
@@ -172,6 +192,12 @@ fun RowScope.PlainChatItemContent(
   BaseChatItemContent(
     chat = chat,
     messagePlaceholder = {
+      when (plainMessage.type) {
+        is MessageType.Audio -> SmallIcon(imageVector = Icons.Filled.AudioFile)
+        is MessageType.Image -> SmallIcon(imageVector = Icons.Filled.Image)
+        is MessageType.Video -> SmallIcon(imageVector = Icons.Filled.VideoFile)
+        else -> Unit
+      }
       OneLiner(text = plainMessage.message)
     },
     messageInfoPlaceholder = {
