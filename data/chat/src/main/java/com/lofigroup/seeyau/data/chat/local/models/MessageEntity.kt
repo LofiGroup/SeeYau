@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.chat.local.models
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -69,14 +70,14 @@ data class VideoExtra(
   }
 }
 
-fun MessageEntity.toDomainModel(): ChatMessage {
+fun MessageEntity.toDomainModel(context: Context): ChatMessage {
   return ChatMessage(
     id = id,
     message = message,
     author = author,
     createdIn = createdIn,
     status = getStatus(),
-    type = type.toMessageType(extra)
+    type = type.toMessageType(extra, context)
   )
 }
 

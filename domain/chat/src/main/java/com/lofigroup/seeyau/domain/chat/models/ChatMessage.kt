@@ -19,7 +19,7 @@ sealed class MessageType(
   object Plain: MessageType()
   object Like: MessageType()
   class Contact: MessageType()
-  class Audio(uri: String): MessageType(uri)
-  class Video(uri: String, val thumbnailUri: String): MessageType(uri)
+  class Audio(uri: String, val duration: Long): MessageType(uri)
+  class Video(uri: String): MessageType(uri)
   class Image(uri: String): MessageType(uri)
 }

@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.remote.http.models
 
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.chat.local.models.extractMediaUri
 import com.lofigroup.seeyau.data.chat.local.models.toMessageType
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
@@ -32,7 +33,7 @@ fun MessageEntity.toSendMessageDto(): SendMessageDto {
     message = message,
     chatId = chatId,
     type = type.toString().lowercase(),
-    mediaUri = type.toMessageType(extra).uri
+    mediaUri = extractMediaUri(extra)
   )
 }
 

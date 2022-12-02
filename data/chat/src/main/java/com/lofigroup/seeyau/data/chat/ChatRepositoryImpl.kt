@@ -106,7 +106,7 @@ class ChatRepositoryImpl @Inject constructor(
         chatDao.observeChatMessages(chat.id),
         profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
-        messages.map { it.toDomainModel() }
+        messages.map { it.toDomainModel(context) }
           .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
       }
     }
@@ -134,7 +134,7 @@ class ChatRepositoryImpl @Inject constructor(
     val lastMessageCreatedIn = lastMessage?.createdIn ?: 0L
     val likeCreatedIn = like?.createdIn ?: 0L
 
-    return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel()
+    return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel(context)
     else like?.toChatMessage()
   }
 

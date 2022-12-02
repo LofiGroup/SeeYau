@@ -87,7 +87,7 @@ fun VideoMessagePreview() {
     Surface() {
       ChatMessageItem(
         chatMessage = getPreviewPrivateMessage(
-          type = MessageType.Video("", "")
+          type = MessageType.Video("")
         )
       )
     }

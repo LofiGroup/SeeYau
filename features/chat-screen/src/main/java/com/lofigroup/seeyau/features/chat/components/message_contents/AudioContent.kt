@@ -76,9 +76,8 @@ fun AudioContent(
         )
       }
 
-
       Text(
-        text = "${state.progressData.progress} / ${state.progressData.duration}",
+        text = "${state.progressData.progress} / ${audioContent.duration}",
         style = MaterialTheme.typography.caption,
         modifier = Modifier
           // TODO not adaptive
@@ -86,8 +85,6 @@ fun AudioContent(
           .align(Alignment.CenterEnd)
       )
     }
-
-
   }
 }
 
@@ -112,7 +109,7 @@ fun AudioMessagePreview() {
   AppTheme {
     Surface {
       ChatMessageItem(chatMessage = getPreviewPrivateMessage(
-        type = MessageType.Audio(uri = ""),
+        type = MessageType.Audio(uri = "", duration = 0L),
       ))
     }
   }
