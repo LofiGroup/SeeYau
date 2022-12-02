@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.features.chat
 
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,15 +20,16 @@ import com.lofigroup.seeyau.features.chat.components.*
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
-import com.lofigroup.seeyau.features.chat.media_player.test.FakeMediaPlayer
-import com.lofigroup.seeyau.features.chat.util.LocalPlayerProvider
-import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
+import com.lofigroup.seeyau.features.chat.media_player.ui.LocalPlayerProvider
+import com.lofigroup.seeyau.features.chat.media_player.MediaPlayerControls
 import com.lofigroup.seeyau.features.send_media.SendMediaDialog
+import com.lofigroup.seeyau.features.chat.media_player.FakeMediaPlayerControls
 import com.sillyapps.core.ui.components.showToast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 @Composable
 fun ChatScreen(
@@ -73,6 +73,7 @@ fun ChatScreen(
       }
     }
   }
+  Timber.e("Recomposition in ChatScreen")
 
   Column(
     modifier = Modifier
@@ -87,10 +88,11 @@ fun ChatScreen(
       onUserIconClick = { bigImageVisible = true }
     )
 
-    LocalPlayerProvider(mediaPlayer = stateHolder.getMediaPlayer()) {
+    LocalPlayerProvider(mediaPlayer = stateHolder.getMediaPlayerControls()) {
       ChatMessages(
         items = state.messages,
-        listState = listState
+        listState = listState,
+        currentItemPos = state.currentItemPos
       )
     }
 
@@ -147,24 +149,12 @@ fun ChatScreenPreview() {
       return flow {  }
     }
 
-    override fun sendMessage(mediaUri: Uri?) {
-
-    }
-
     override fun setMessage(message: String) {
       mMessage.value = message
     }
 
-    override fun getMediaPlayer(): MediaPlayer {
-      return FakeMediaPlayer()
-    }
-
-    override fun onExit() {
-
-    }
-
-    override fun onIgnoreUser() {
-
+    override fun getMediaPlayerControls(): MediaPlayerControls {
+      return FakeMediaPlayerControls
     }
   }
   
@@ -183,9 +173,9 @@ private fun getPreviewModel(): ChatScreenState {
   return ChatScreenState(
     partner = getUserPreviewModel(),
     messages = listOf(
-      getPreviewPrivateMessage(),
-      getPreviewPrivateMessage(authorIsMe = false),
-      getPreviewPrivateMessage(message = "Very very very very very very very very very very long message.")
+      getPreviewPrivateMessage(pos = 0),
+      getPreviewPrivateMessage(authorIsMe = false, pos = 1),
+      getPreviewPrivateMessage(message = "Very very very very very very very very very very long message.", pos = 2)
     ).groupBy { it.dateTime.date }
   )
 }

@@ -51,8 +51,10 @@ fun millisToLastSeen(utcMillis: Long): LastSeen {
 }
 
 fun intervalToString(millis: Long): String {
+  val millis = if (millis < 0) 0 else millis
+
   val overallSeconds = millis / 1000
-  val seconds = formatIfNeeded(overallSeconds % 60)
+  val seconds = formatIfNeeded(overallSeconds % 60, addColon = false)
 
   val overallMinutes = overallSeconds / 60
   val minutes = formatIfNeeded(overallMinutes % 60)
@@ -63,11 +65,12 @@ fun intervalToString(millis: Long): String {
   return "$hours$minutes$seconds"
 }
 
-fun formatIfNeeded(time: Long, skipIfZero: Boolean = false): String {
+fun formatIfNeeded(time: Long, skipIfZero: Boolean = false, addColon: Boolean = true): String {
+  val colon = if (addColon) ":" else ""
   return when {
     skipIfZero && time == 0L -> ""
-    time < 10 -> "0$time"
-    else -> time.toString()
+    time < 10 -> "0$time$colon"
+    else -> "$time$colon"
   }
 }
 

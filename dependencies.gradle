@@ -118,6 +118,8 @@ ext {
   coilTransformations = "com.github.Commit451.coil-transformations:transformations:2.0.2"
   coilVideo = "io.coil-kt:coil-video:2.2.2"
 
+  shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.3"
+
   nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
 
   imageCropper = "com.github.CanHub:Android-Image-Cropper:4.3.2"

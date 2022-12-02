@@ -9,18 +9,22 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.sillyapps.core.ui.util.lastVisibleItemKey
+import com.sillyapps.core.ui.util.rememberLastItemKey
 import kotlinx.coroutines.delay
+import timber.log.Timber
+
+val defaultMediaState = MediaPlayerState()
 
 @Composable
 fun ColumnScope.ChatMessages(
   listState: LazyListState,
-  items: Map<String, List<UIChatMessage>>
+  items: Map<String, List<UIChatMessage>>,
+  currentItemPos: Int
 ) {
-
   ChatMessageStyleProvider() {
     Box(modifier = Modifier
       .weight(1f)) {
@@ -36,7 +40,8 @@ fun ColumnScope.ChatMessages(
             contentType = { "chatMessageItem" }
           ) { message ->
             ChatMessageItem(
-              chatMessage = message
+              chatMessage = message,
+              isCurrentItem = currentItemPos == message.pos
             )
           }
           item(
@@ -47,12 +52,12 @@ fun ColumnScope.ChatMessages(
         }
       }
 
-      val lastItemKey = listState.lastVisibleItemKey()
-      val date = if (lastItemKey is String)
-        lastItemKey.split("_")[0]
+      val lastItemKey by listState.rememberLastItemKey()
+      val key = lastItemKey
+      val date = if (key is String)
+        key.split("_")[0]
       else
         null
-
 
       DateStickyLabel(
         date = date,

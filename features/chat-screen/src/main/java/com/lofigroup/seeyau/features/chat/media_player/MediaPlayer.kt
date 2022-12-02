@@ -4,19 +4,24 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 interface MediaPlayer {
 
-  fun observeState(): Flow<MediaPlayerState>
+  fun observePlaybackState(): Flow<MediaPlayerState>
 
-  fun playMedia(mediaItem: MediaItem)
-  fun isPlayingMediaItem(mediaItem: MediaItem): Boolean
+  fun playMedia(mediaItem: MediaItem) {}
+  fun resume() {}
+  fun pause() {}
+  fun stop() {}
 
-  fun pause()
-  fun stop()
+  fun obtainPlayer(): Player? = null
+  fun seekTo(relativePosition: Float) {}
 
-  fun obtainPlayer(): Player?
+  fun destroy() {}
 
-  fun destroy()
+}
 
+object FakeMediaPlayer: MediaPlayer {
+  override fun observePlaybackState(): Flow<MediaPlayerState> = flow {  }
 }

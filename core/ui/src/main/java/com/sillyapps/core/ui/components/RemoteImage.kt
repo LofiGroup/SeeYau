@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +26,7 @@ import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.conditional
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun RemoteImage(
@@ -34,6 +36,7 @@ fun RemoteImage(
   shape: Shape = CircleShape,
   contentScale: ContentScale = ContentScale.Crop,
   transformations: List<Transformation> = emptyList(),
+  shimmerColor: Color = LocalExtendedColors.current.disabled
 ) {
   val imageRequest =
     if (model is ImageRequest) model
@@ -43,25 +46,24 @@ fun RemoteImage(
       .transformations(transformations)
       .build()
 
-  Box(modifier = modifier) {
+  Box(
+    modifier = modifier,
+    contentAlignment = Alignment.Center
+  ) {
     SubcomposeAsyncImage(
       model = imageRequest,
       contentScale = contentScale,
       contentDescription = null,
       loading = {
-        Box(contentAlignment = Alignment.Center) {
-          CircularProgressIndicator(
-            modifier = Modifier
-              .fillMaxSize(0.6f)
-          )
-        }
+        Spacer(modifier = Modifier
+          .fillMaxSize()
+          .shimmer()
+          .background(shimmerColor))
       },
       error = {
-        Box(contentAlignment = Alignment.Center) {
-          Spacer(modifier = Modifier
-            .fillMaxSize()
-            .background(LocalExtendedColors.current.disabled))
-        }
+        Spacer(modifier = Modifier
+          .fillMaxSize()
+          .background(LocalExtendedColors.current.disabled))
       },
       modifier = Modifier
         .fillMaxSize()

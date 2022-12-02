@@ -31,6 +31,7 @@ class ContentUriRequestBody(
     inputStream.source().use { source ->
       sink.writeAll(source)
     }
+    inputStream.close()
   }
 
 }

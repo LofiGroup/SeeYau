@@ -19,6 +19,7 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 @Composable
 fun BoxScope.BaseMessage(
   message: UIChatMessage,
+  isCurrentItem: Boolean,
   style: ChatMessageStyle,
   modifier: Modifier = Modifier,
   maxLines: Int = Int.MAX_VALUE
@@ -36,10 +37,10 @@ fun BoxScope.BaseMessage(
   ) {
     when (val typeContent = message.type) {
       is UIMessageType.Audio -> {
-
+        AudioContent(audioContent = typeContent, isCurrentItem = isCurrentItem, pos = message.pos)
       }
       is UIMessageType.Video -> {
-        VideoContent(videoItem = typeContent)
+        VideoContent(videoItem = typeContent, isPlaying = isCurrentItem, pos = message.pos)
       }
       is UIMessageType.Image -> {
         ImageContent(content = typeContent)

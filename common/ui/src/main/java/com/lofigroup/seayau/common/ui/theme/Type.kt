@@ -60,8 +60,7 @@ val Typography = Typography(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 18.sp,
-    lineHeight = 21.sp,
-    color = DarkGray
+    lineHeight = 21.sp
   ),
   subtitle2 = TextStyle(
     fontFamily = FontFamily.Default,

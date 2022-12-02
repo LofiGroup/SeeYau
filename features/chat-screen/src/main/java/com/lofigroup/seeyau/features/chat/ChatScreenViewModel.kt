@@ -4,6 +4,8 @@ import android.content.res.Resources
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import com.lofigroup.core.util.set
 import com.lofigroup.seeyau.domain.chat.models.ChatDraftUpdate
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
@@ -12,9 +14,12 @@ import com.lofigroup.seeyau.domain.chat.usecases.*
 import com.lofigroup.seeyau.domain.profile.usecases.BlacklistUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
+import com.lofigroup.seeyau.features.chat.media_player.MediaPlayerControls
+import com.lofigroup.seeyau.features.chat.media_player.MediaPlayerControlsImpl
+import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
-import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
+import com.lofigroup.seeyau.features.chat.model.toUIMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -49,6 +54,19 @@ class ChatScreenViewModel @Inject constructor(
   private val commands = MutableSharedFlow<ChatScreenCommand>()
 
   private val job: Job
+
+  private val mediaPlayerControls = MediaPlayerControlsImpl(
+    mediaPlayer = mediaPlayer,
+    onCurrentItemPosChanged = { pos, mediaItem ->
+      if (state.value.currentItemPos == pos) {
+        mediaPlayer.resume()
+      }
+      else {
+        state.set { it.copy(currentItemPos = pos) }
+        mediaPlayer.playMedia(mediaItem)
+      }
+    }
+  )
 
   init {
     job = viewModelScope.launch {
@@ -98,8 +116,8 @@ class ChatScreenViewModel @Inject constructor(
     state.apply { value = value.copy(message = message) }
   }
 
-  override fun getMediaPlayer(): MediaPlayer {
-    return mediaPlayer
+  override fun getMediaPlayerControls(): MediaPlayerControls {
+    return mediaPlayerControls
   }
 
   override fun onExit() {
@@ -137,7 +155,7 @@ class ChatScreenViewModel @Inject constructor(
       state.apply {
         value = value.copy(
           messages = messages
-            .map { chatMessage -> chatMessage.toPrivateMessage(resources) }
+            .mapIndexed { pos, chatMessage -> chatMessage.toUIMessage(resources, pos) }
             .groupBy { it.dateTime.date }
         )
       }

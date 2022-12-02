@@ -5,7 +5,7 @@ import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
-import com.lofigroup.seeyau.features.chat.model.toPrivateMessage
+import com.lofigroup.seeyau.features.chat.model.toUIMessage
 import com.sillyapps.core_time.DateAndTime
 
 data class PreviewMessage(
@@ -29,7 +29,7 @@ data class PreviewMessage(
 
 fun ChatMessage.toPreviewMessage(resources: Resources, positionInList: Int): PreviewMessage {
   return PreviewMessage(
-    message = toPrivateMessage(resources),
+    message = toUIMessage(resources, pos = positionInList),
     positionInList = positionInList
   )
 }

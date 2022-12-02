@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.chat.components.message_contents
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -19,16 +20,20 @@ import coil.request.ImageRequest
 import com.lofigroup.seayau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.components.ChatMessageItem
+import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
-import com.lofigroup.seeyau.features.chat.util.LocalMediaPlayer
+import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
+import timber.log.Timber
 
 @Composable
 fun VideoContent(
-  videoItem: UIMessageType.Video
+  videoItem: UIMessageType.Video,
+  pos: Int,
+  isPlaying: Boolean
 ) {
   val mediaPlayer = LocalMediaPlayer.current
 
@@ -38,7 +43,7 @@ fun VideoContent(
       .aspectRatio(9 / 16f)
       .padding(bottom = LocalSpacing.current.extraSmall)
   ) {
-    if (mediaPlayer.isPlayingMediaItem(videoItem.mediaItem)) {
+    if (isPlaying) {
       AndroidView(
         factory = { context ->
           PlayerView(context).also {
@@ -56,12 +61,13 @@ fun VideoContent(
           .decoderFactory { result, options, _ -> VideoFrameDecoder(result.source, options) }
           .build(),
         shape = RectangleShape,
+        shimmerColor = MaterialTheme.colors.onBackground,
         modifier = Modifier
           .fillMaxSize()
       )
 
       IconButton(
-        onClick = { mediaPlayer.playMedia(videoItem.mediaItem) },
+        onClick = { mediaPlayer.playMedia(videoItem.mediaItem, pos) },
         modifier = Modifier.align(Alignment.Center)
       ) {
         Icon(

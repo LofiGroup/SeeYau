@@ -8,12 +8,10 @@ sealed interface UIMessageType {
   object Like: UIMessageType
   object Contact: UIMessageType
   class Video(
-    val mediaItem: MediaItem,
-    val thumbnailUri: String,
-    val isPlaying: Boolean = false
+    val mediaItem: MediaItem
   ): UIMessageType
   class Audio(
-    val mediaItem: MediaItem,
+    val mediaItem: MediaItem
   ): UIMessageType
   class Image(
     val uri: String
@@ -28,7 +26,7 @@ fun MessageType.toUIMessageType(): UIMessageType {
     is MessageType.Plain -> UIMessageType.Plain
 
     is MessageType.Image -> UIMessageType.Image(uri)
-    is MessageType.Audio -> UIMessageType.Audio(MediaItem.fromUri(uri))
-    is MessageType.Video -> UIMessageType.Video(mediaItem = MediaItem.fromUri(uri), thumbnailUri = thumbnailUri)
+    is MessageType.Audio -> UIMessageType.Audio(mediaItem = MediaItem.fromUri(uri))
+    is MessageType.Video -> UIMessageType.Video(mediaItem = MediaItem.fromUri(uri))
   }
 }

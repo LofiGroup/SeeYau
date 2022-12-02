@@ -14,16 +14,18 @@ data class UIChatMessage(
   val status: MessageStatus,
   val message: String,
   val type: UIMessageType,
+  val pos: Int
 )
 
-fun ChatMessage.toPrivateMessage(resources: Resources): UIChatMessage {
+fun ChatMessage.toUIMessage(resources: Resources, pos: Int): UIChatMessage {
   return UIChatMessage(
     authorIsMe = author == 0L,
     dateTime = getLocalizedDatedAndTimeFromMillis(createdIn, resources),
     id = id,
     status = status,
     message = message,
-    type = type.toUIMessageType()
+    type = type.toUIMessageType(),
+    pos = pos
   )
 }
 
@@ -34,7 +36,8 @@ fun getPreviewPrivateMessage(
   date: String = "Today",
   time: String = "14:20",
   status: MessageStatus = MessageStatus.READ,
-  type: MessageType = MessageType.Plain
+  type: MessageType = MessageType.Plain,
+  pos: Int = 0
 ): UIChatMessage {
   return UIChatMessage(
     authorIsMe = authorIsMe,
@@ -42,6 +45,7 @@ fun getPreviewPrivateMessage(
     dateTime = DateAndTime(date, time),
     id = id,
     status = status,
-    type = type.toUIMessageType()
+    type = type.toUIMessageType(),
+    pos = pos
   )
 }
