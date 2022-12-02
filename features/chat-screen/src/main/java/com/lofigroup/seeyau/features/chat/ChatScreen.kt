@@ -29,7 +29,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
-import timber.log.Timber
 
 @Composable
 fun ChatScreen(
@@ -73,7 +72,6 @@ fun ChatScreen(
       }
     }
   }
-  Timber.e("Recomposition in ChatScreen")
 
   Column(
     modifier = Modifier

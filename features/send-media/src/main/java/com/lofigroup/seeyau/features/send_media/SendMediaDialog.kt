@@ -35,13 +35,13 @@ fun SendMediaDialog(
   modifier: Modifier = Modifier,
 ) {
   val context = LocalContext.current.applicationContext
-  val tempImageUri = remember {
-    initTempUri(context)
+  var tempImageUri by remember {
+    mutableStateOf(initTempUri(context))
   }
 
   val getContent =
     rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
-      if (it != null){
+      if (it != null) {
         context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         onSendMessage(it)
       }
@@ -52,9 +52,11 @@ fun SendMediaDialog(
 
     }
 
-  val takePicture =
-    rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
-
+  val cameraLauncher =
+    rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) { success ->
+      if (success)
+        onSendMessage(tempImageUri)
+      tempImageUri = initTempUri(context)
     }
 
   if (isVisible) {
@@ -97,7 +99,7 @@ fun SendMediaDialog(
           SendMediaItem(
             onClick = {
               onDismiss()
-              getContent.launch(arrayOf("application/pdf"))
+              getContent.launch(documentMimeTypes)
             },
             imageVector = Icons.Filled.FileCopy,
             title = stringResource(id = R.string.file)
@@ -109,7 +111,10 @@ fun SendMediaDialog(
           modifier = Modifier.fillMaxWidth()
         ) {
           SendMediaItem(
-            onClick = { onDismiss() },
+            onClick = {
+              cameraLauncher.launch(tempImageUri)
+              onDismiss()
+            },
             imageVector = Icons.Filled.Camera,
             title = stringResource(id = R.string.camera)
           )

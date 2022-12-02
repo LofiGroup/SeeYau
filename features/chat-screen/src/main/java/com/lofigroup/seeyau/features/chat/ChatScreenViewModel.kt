@@ -4,7 +4,6 @@ import android.content.res.Resources
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
 import com.lofigroup.core.util.set
 import com.lofigroup.seeyau.domain.chat.models.ChatDraftUpdate
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
@@ -16,7 +15,6 @@ import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayerControls
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayerControlsImpl
-import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.toUIMessage

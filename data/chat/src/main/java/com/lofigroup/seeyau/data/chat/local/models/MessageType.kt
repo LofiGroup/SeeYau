@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.data.chat.local.models
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import timber.log.Timber
 
