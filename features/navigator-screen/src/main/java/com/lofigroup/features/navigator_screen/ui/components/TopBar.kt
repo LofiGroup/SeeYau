@@ -1,11 +1,9 @@
 package com.lofigroup.features.navigator_screen.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,9 +14,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.previewProfile
-import com.lofigroup.seayau.common.ui.components.DefaultTopBar
-import com.lofigroup.seayau.common.ui.components.LikesLabel
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
+import com.lofigroup.seeyau.common.ui.components.LikesLabel
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.components.RemoteImage

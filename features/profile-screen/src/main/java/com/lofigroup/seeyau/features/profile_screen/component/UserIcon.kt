@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.lofigroup.seeyau.features.profile_screen.R
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
-import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun UserIcon(

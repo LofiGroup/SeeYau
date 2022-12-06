@@ -9,13 +9,13 @@ data class AuthScreenFlowModel(
   val code: String = "",
   val verifyCodeScreenState: VerifyCodeScreenState = VerifyCodeScreenState.TYPING,
   val enterNumberScreenState: EnterNumberScreenState = EnterNumberScreenState.TYPING,
-  val routePoint: RoutePoint = RoutePoint.EnterPhone,
+  val routePoint: RoutePoint = RoutePoint.Welcome,
   val imageUri: String = "",
   val allDataIsValid: Boolean = false,
 )
 
 enum class RoutePoint {
-  EnterName, EnterPhone, VerifyPhone, PickPicture, AlreadyRegistered
+  Welcome, EnterName, EnterPhone, VerifyPhone, PickPicture, AlreadyRegistered
 }
 
 enum class VerifyCodeScreenState {

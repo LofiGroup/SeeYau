@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.profile_screen.R
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun VisibilitySwitch(

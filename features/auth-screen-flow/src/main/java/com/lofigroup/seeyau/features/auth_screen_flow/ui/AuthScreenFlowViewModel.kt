@@ -86,7 +86,8 @@ class AuthScreenFlowViewModel @Inject constructor(
       if (result is Resource.Success)
         state.value = state.value.copy(
           routePoint = RoutePoint.VerifyPhone,
-          enterNumberScreenState = EnterNumberScreenState.TYPING
+          enterNumberScreenState = EnterNumberScreenState.TYPING,
+          verifyCodeScreenState = VerifyCodeScreenState.TYPING
         )
       else {
         state.value = state.value.copy(

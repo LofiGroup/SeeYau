@@ -17,7 +17,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.components.ChatMessageItem
 import com.lofigroup.seeyau.features.chat.components.defaultMediaState
@@ -27,7 +27,6 @@ import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
-import timber.log.Timber
 
 
 @Composable

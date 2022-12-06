@@ -1,7 +1,7 @@
 package com.lofigroup.seeyau.features.chat.model
 
 import android.content.res.Resources
-import com.lofigroup.seayau.common.ui.getLocalizedDatedAndTimeFromMillis
+import com.lofigroup.seeyau.common.ui.getLocalizedDatedAndTimeFromMillis
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.domain.chat.models.MessageType

@@ -4,14 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.media3.exoplayer.ExoPlayer
-import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.chat.components.message_contents.BaseMessage
 import com.lofigroup.seeyau.features.chat.components.message_contents.LikeMessage
-import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage

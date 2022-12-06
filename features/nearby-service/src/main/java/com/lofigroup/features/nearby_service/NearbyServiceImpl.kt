@@ -10,9 +10,8 @@ import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannel
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannelProvider
-import com.lofigroup.seayau.common.ui.permissions.model.BluetoothPermission
+import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannelProvider
+import com.lofigroup.seeyau.common.ui.permissions.model.BluetoothPermission
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
@@ -24,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber

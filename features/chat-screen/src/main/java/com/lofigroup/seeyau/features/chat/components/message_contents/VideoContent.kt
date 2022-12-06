@@ -17,17 +17,15 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.ui.PlayerView
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.components.ChatMessageItem
-import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
-import timber.log.Timber
 
 @Composable
 fun VideoContent(
@@ -61,7 +59,6 @@ fun VideoContent(
           .decoderFactory { result, options, _ -> VideoFrameDecoder(result.source, options) }
           .build(),
         shape = RectangleShape,
-        shimmerColor = MaterialTheme.colors.onBackground,
         modifier = Modifier
           .fillMaxSize()
       )

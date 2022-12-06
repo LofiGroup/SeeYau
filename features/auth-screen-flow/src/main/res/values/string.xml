@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="whats_your_name">What\'s your name?</string>
+  <string name="how_can_people_address_you">This name will be visible to other users</string>
+
   <string name="next">Next</string>
   <string name="authorization">Authorization</string>
+
   <string name="enter_your_phone_number">Enter your phone number</string>
-  <string name="verify_phone">Verify phone</string>
-  <string name="code_is_sent_to">Code is sent to %1$s</string>
+  <string name="account_will_link_to">Your account will be linked to this number</string>
+
+  <string name="verify_phone">Enter Verification code</string>
+  <string name="code_is_sent_to">
+    "Enter a 4-digit code sent to %1$s"
+  </string>
   <string name="code_is_not_correct">Code is not correct</string>
   <string name="code_is_correct">Code is correct</string>
-  <string name="be_recognizable">Be recognizable</string>
-  <string name="add_photo">Add photo</string>
+  <string name="resend_code">We will resend code again after 00:30 seconds</string>
+
+  <string name="lets_go">Let\'s Go</string>
+  <string name="add_photo_so_people_can_recongize_you">Add photo so people can recognize you</string>
   <string name="something_went_wrong">Something went wrong</string>
 
   <string name="skip">Skip</string>
-  <string name="already_registered">An account for this number is already exists. It should load soon.</string>
+  <string name="already_registered">This number is already linked to an account. It should load soon.</string>
+
+  <string name="first_screen_title">Social metaspace environment</string>
+  <string name="first_screen_text">
+"Often we don't have enough opportunity to communicate with the people around us.
+
+Now we can do it.
+Here you can see the people who are nearby you and talk to them.
+
+Remember, your main avatar is you. Be yourself and look around.
+
+The app uses Bluetooth technology to search for people in your field of vision."
+  </string>
 </resources>

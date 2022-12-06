@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.PreviewMessage
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.chat.components.ChatMessageItem
 import com.lofigroup.seeyau.features.chat.components.DateHeader
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider

@@ -1,18 +1,15 @@
 package com.lofigroup.seeyau.features.auth_screen_flow.ui
 
 import android.net.Uri
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.components.DefaultTopBar
-import com.lofigroup.seayau.common.ui.components.UpButton
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
+import com.lofigroup.seeyau.common.ui.components.UpButton
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
 import com.lofigroup.seeyau.features.auth_screen_flow.model.AuthScreenFlowModel
 import com.lofigroup.seeyau.features.auth_screen_flow.model.EnterNumberScreenState
@@ -42,13 +39,16 @@ fun AuthScreenRoot(
   Surface(
     modifier = Modifier
   ) {
-    Column(
+    Box(
       modifier = Modifier
         .fillMaxSize()
-        .systemBarsPadding()
-        .imePadding()
     ) {
       when (state.routePoint) {
+        RoutePoint.Welcome -> FirstScreen(
+          onNextButtonClick = {
+            stateHolder.setRoutePoint(RoutePoint.EnterPhone)
+          }
+        )
         RoutePoint.EnterName -> {
           EnterNameScreen(
             isDone = {
@@ -71,7 +71,6 @@ fun AuthScreenRoot(
 
         RoutePoint.VerifyPhone -> {
           VerifyPhoneNumberScreen(
-            code = state.code,
             setCode = stateHolder::setCode,
             phoneNumber = state.number,
             state = state.verifyCodeScreenState,
@@ -95,21 +94,6 @@ fun AuthScreenRoot(
   }
 
 }
-
-@Composable
-fun TopBar(
-  onUpButtonClick: () -> Unit = NO_UP_BUTTON
-) {
-  DefaultTopBar(
-    title = stringResource(id = R.string.authorization),
-    leftContent = {
-      if (onUpButtonClick != NO_UP_BUTTON)
-        UpButton(onClick = onUpButtonClick)
-    }
-  )
-}
-
-private val NO_UP_BUTTON = {}
 
 @Preview
 @Composable

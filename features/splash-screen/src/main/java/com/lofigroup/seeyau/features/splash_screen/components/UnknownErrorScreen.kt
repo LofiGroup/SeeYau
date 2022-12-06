@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.features.splash_screen.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -8,14 +7,12 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.splash_screen.R
 import com.sillyapps.core.ui.theme.LocalSize
-import com.lofigroup.seayau.common.ui.R as CommonR
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable

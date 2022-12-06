@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.lofigroup.seayau.common.ui.theme.SkyBlue
+import com.lofigroup.seeyau.common.ui.theme.SkyBlue
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.Purple
 import com.sillyapps.core.ui.theme.PurpleDarker

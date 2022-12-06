@@ -1,10 +1,7 @@
 package com.lofigroup.seeyau.features.chat.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import com.lofigroup.seayau.common.ui.R
-import com.lofigroup.seayau.common.ui.components.UserIcon
-import com.lofigroup.seayau.common.ui.getLocalizedLastSeen
+import com.lofigroup.seeyau.common.ui.components.UserIcon
+import com.lofigroup.seeyau.common.ui.getLocalizedLastSeen
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSpacing
+import com.lofigroup.seeyau.common.ui.R
 
 @Composable
 fun TopBar(

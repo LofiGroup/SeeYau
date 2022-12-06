@@ -15,9 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
-import com.lofigroup.seayau.common.ui.components.specific.ExplainPermissionDialog
-import com.lofigroup.seayau.common.ui.permissions.model.PermissionRationale
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.specific.ExplainPermissionDialog
+import com.lofigroup.seeyau.common.ui.permissions.model.PermissionRationale
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
 

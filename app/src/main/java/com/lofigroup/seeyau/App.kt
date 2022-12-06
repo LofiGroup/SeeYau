@@ -3,8 +3,8 @@ package com.lofigroup.seeyau
 import android.app.Application
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.NavigatorComponent
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannel
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannelProvider
+import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannel
+import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannelProvider
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider

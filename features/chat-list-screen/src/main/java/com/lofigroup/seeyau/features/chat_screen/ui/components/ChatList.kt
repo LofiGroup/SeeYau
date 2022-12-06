@@ -19,12 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.features.chat_screen.R
 import com.lofigroup.seeyau.features.chat_screen.model.FolderChat
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun ChatList(

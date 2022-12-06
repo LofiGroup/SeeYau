@@ -46,4 +46,6 @@ But to use it the app needs you to give location permissions as Bluetooth can po
   <string name="bluetooth_rationale_description">
 "This app rely heavily on Bluetooth for finding people around you. Please grant next permissions to use this feature."
   </string>
+
+  <string name="next">Next</string>
 </resources>

@@ -3,7 +3,6 @@ package com.lofigroup.features.nearby_service.di
 import android.content.Context
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannel
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
 import com.sillyapps.core.di.FeatureScope

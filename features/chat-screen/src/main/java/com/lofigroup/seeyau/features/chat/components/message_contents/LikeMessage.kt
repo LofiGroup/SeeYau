@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.lofigroup.seayau.common.ui.R
+import com.lofigroup.seeyau.common.ui.R
 import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyle
 import com.sillyapps.core.ui.theme.LocalSpacing
 

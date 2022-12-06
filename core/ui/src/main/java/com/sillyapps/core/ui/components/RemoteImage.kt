@@ -36,7 +36,8 @@ fun RemoteImage(
   shape: Shape = CircleShape,
   contentScale: ContentScale = ContentScale.Crop,
   transformations: List<Transformation> = emptyList(),
-  shimmerColor: Color = LocalExtendedColors.current.disabled
+  loadingPlaceholder: @Composable () -> Unit = { DefaultLoadingPlaceholder() },
+  errorPlaceholder: @Composable () -> Unit = { DefaultErrorPlaceholder() },
 ) {
   val imageRequest =
     if (model is ImageRequest) model
@@ -54,17 +55,8 @@ fun RemoteImage(
       model = imageRequest,
       contentScale = contentScale,
       contentDescription = null,
-      loading = {
-        Spacer(modifier = Modifier
-          .fillMaxSize()
-          .shimmer()
-          .background(shimmerColor))
-      },
-      error = {
-        Spacer(modifier = Modifier
-          .fillMaxSize()
-          .background(LocalExtendedColors.current.disabled))
-      },
+      loading = { loadingPlaceholder() },
+      error = { errorPlaceholder() },
       modifier = Modifier
         .fillMaxSize()
         .clip(shape)
@@ -73,6 +65,21 @@ fun RemoteImage(
         }
     )
   }
+}
+
+@Composable
+private fun DefaultLoadingPlaceholder() {
+  Spacer(modifier = Modifier
+    .fillMaxSize()
+    .shimmer()
+    .background(LocalExtendedColors.current.disabled))
+}
+
+@Composable
+private fun DefaultErrorPlaceholder() {
+  Spacer(modifier = Modifier
+    .fillMaxSize()
+    .background(LocalExtendedColors.current.disabled))
 }
 
 private val NOT_CLICKABLE = {}

@@ -15,21 +15,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.canhub.cropper.CropImageContract
-import com.lofigroup.seayau.common.ui.components.DefaultTopBar
-import com.lofigroup.seayau.common.ui.components.LikesLabel
-import com.lofigroup.seayau.common.ui.components.UpButton
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
+import com.lofigroup.seeyau.common.ui.components.LikesLabel
+import com.lofigroup.seeyau.common.ui.components.UpButton
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.profile_screen.component.SettingButton
 import com.lofigroup.seeyau.features.profile_screen.component.UserIcon
 import com.lofigroup.seeyau.features.profile_screen.component.VisibilitySwitch
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
-import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import com.sillyapps.core.ui.util.universalBackground
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun ProfileScreen(

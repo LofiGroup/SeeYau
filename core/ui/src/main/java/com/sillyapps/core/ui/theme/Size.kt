@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
 data class Size(
   val veryLarge: Dp = 120.dp,
   val large: Dp = 80.dp,
+  val bigMedium: Dp = 64.dp,
   val medium: Dp = 44.dp,
   val small: Dp = 24.dp,
   val verySmall: Dp = 14.dp

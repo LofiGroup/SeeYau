@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.lofigroup.seeyau.features.chat.R
 import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun MessageInput(

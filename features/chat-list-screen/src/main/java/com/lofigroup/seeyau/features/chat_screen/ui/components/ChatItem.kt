@@ -19,10 +19,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.components.UserIcon
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.UserIcon
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
-import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
 import com.lofigroup.seeyau.domain.chat.models.MessageType
@@ -31,11 +30,10 @@ import com.lofigroup.seeyau.features.chat_screen.R
 import com.lofigroup.seeyau.features.chat_screen.model.FolderChat
 import com.sillyapps.core.ui.components.OneLiner
 import com.sillyapps.core.ui.components.TextLabel
-import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core_time.getLocalTimeFromMillis
-import com.lofigroup.seayau.common.ui.R as CommonR
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun ChatItem(

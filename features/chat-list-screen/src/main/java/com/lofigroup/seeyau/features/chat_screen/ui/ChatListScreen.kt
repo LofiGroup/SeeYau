@@ -8,11 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.components.specific.BigImage
-import com.lofigroup.seayau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.domain.chat.models.ChatBrief
-import com.lofigroup.seeyau.domain.chat.models.ChatMessage
-import com.lofigroup.seeyau.domain.profile.model.User
+import com.lofigroup.seeyau.common.ui.components.specific.BigImage
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
 import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatList
 import com.lofigroup.seeyau.features.chat_screen.ui.components.TopBar
