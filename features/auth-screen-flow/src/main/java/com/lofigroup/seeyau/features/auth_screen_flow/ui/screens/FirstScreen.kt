@@ -30,11 +30,9 @@ fun FirstScreen(
     modifier = Modifier.fillMaxSize()
   ) {
     val (text, plumIcon, button) = createRefs()
-    
-    FullScreenImage(painter = painterResource(id = R.drawable.welcome_screen))
 
     Image(
-      painter = painterResource(id = R.drawable.plum_frame),
+      painter = painterResource(id = R.drawable.bluetooth),
       contentDescription = null,
       modifier = Modifier
         .padding(end = LocalSpacing.current.large)

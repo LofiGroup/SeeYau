@@ -17,4 +17,6 @@ interface AuthRepository {
 
   suspend fun check(): LoggedInStatus
 
+  suspend fun quickAuth(imageUri: String): Resource<Unit>
+
 }

@@ -35,8 +35,9 @@ dependencies {
   implementation project(":core:util")
 
   implementation project(":common:network")
+  implementation project(':data:base')
+  implementation project(':data:profile')
 
-  implementation project(":data:backend-api")
 
   implementation project(":domain:auth")
 

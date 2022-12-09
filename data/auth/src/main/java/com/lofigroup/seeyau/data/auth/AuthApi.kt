@@ -4,11 +4,9 @@ import com.lofigroup.seeyau.data.auth.model.AccessRequest
 import com.lofigroup.seeyau.data.auth.model.StartAuthRequest
 import com.lofigroup.seeyau.data.auth.model.TokenResponse
 import com.lofigroup.seeyau.data.auth.model.VerifyResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface AuthApi {
 
@@ -20,5 +18,9 @@ interface AuthApi {
 
   @GET("/api/auth/check")
   suspend fun check(): Response<Unit>
+
+  @Multipart
+  @POST("/api/auth/quick-auth")
+  suspend fun quickAuth(@Part image: MultipartBody.Part?): Response<TokenResponse>
 
 }

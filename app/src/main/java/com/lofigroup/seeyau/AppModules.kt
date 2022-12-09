@@ -1,7 +1,7 @@
 package com.lofigroup.seeyau
 
 import android.content.Context
-import com.lofigroup.backend_api.di.DaggerBackendApiComponent
+import com.lofigroup.backend_api.api.BaseDataModule
 import com.lofigroup.data.navigator.api.NavigatorModule
 import com.lofigroup.seeyau.data.auth.api.AuthModuleImpl
 import com.lofigroup.seeyau.data.chat.api.ChatModule
@@ -21,10 +21,10 @@ class AppModules(
       .build()
   }
 
-  private val backend by lazy {
-    DaggerBackendApiComponent.builder()
-      .sharedPref(appComponent.getSharedPref())
-      .build()
+  val baseDataModule by lazy {
+    BaseDataModule(
+      sharedPref = appComponent.getSharedPref()
+    )
   }
 
   val navigatorModule by lazy {
@@ -34,24 +34,26 @@ class AppModules(
       profileDataHandler = profileModule.dataComponent.getProfileDataHandler(),
       sharedPreferences = appComponent.getSharedPref(),
       appScope = appScope,
-      baseRetrofit = backend.getRetrofit(),
+      baseRetrofit = baseDataModule.component.getRetrofit(),
       profileRepository = profileModule.dataComponent.getRepository(),
-      webSocketChannel = backend.getWebSocketChannel()
+      webSocketChannel = baseDataModule.component.getWebSocketChannel()
     )
   }
 
   val authModuleImpl by lazy {
     AuthModuleImpl(
-      baseRetrofit = backend.getRetrofit(),
-      tokenStore = backend.tokenStore()
+      baseRetrofit = baseDataModule.component.getRetrofit(),
+      tokenStore = baseDataModule.component.tokenStore(),
+      context = appContext,
+      userDao = appComponent.getDatabase().userDao
     )
   }
 
   val profileModule by lazy {
     ProfileModule(
       appScope = appScope,
-      baseRetrofit = backend.getRetrofit(),
-      webSocketChannel = backend.getWebSocketChannel(),
+      baseRetrofit = baseDataModule.component.getRetrofit(),
+      webSocketChannel = baseDataModule.component.getWebSocketChannel(),
       userDao = appComponent.getDatabase().userDao,
       likeDao = appComponent.getDatabase().likeDao,
       blacklistDao = appComponent.getDatabase().blacklistDao,
@@ -62,8 +64,8 @@ class AppModules(
 
   val chatModule by lazy {
     ChatModule(
-      baseRetrofit = backend.getRetrofit(),
-      webSocketChannel = backend.getWebSocketChannel(),
+      baseRetrofit = baseDataModule.component.getRetrofit(),
+      webSocketChannel = baseDataModule.component.getWebSocketChannel(),
       chatDao = appComponent.getDatabase().chatDao,
       sharedPreferences = appComponent.getSharedPref(),
       ioScope = appScope,

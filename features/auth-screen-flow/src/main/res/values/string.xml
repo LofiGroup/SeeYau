@@ -18,8 +18,12 @@
   <string name="resend_code">We will resend code again after 00:30 seconds</string>
 
   <string name="lets_go">Let\'s Go</string>
-  <string name="add_photo_so_people_can_recongize_you">Add photo so people can recognize you</string>
-  <string name="something_went_wrong">Something went wrong</string>
+  <string name="add_photo_so_people_can_recongize_you">Add a photo so people can recognize you</string>
+  <string name="connect_with_people">
+"Connect, talk and share with people around you.
+Remember, your main avatar is you. Be yourself and look around."
+  </string>
+  <string name="something_went_wrong">Something went wrong, please try again</string>
 
   <string name="skip">Skip</string>
   <string name="already_registered">This number is already linked to an account. It should load soon.</string>
@@ -30,8 +34,6 @@
 
 Now we can do it.
 Here you can see the people who are nearby you and talk to them.
-
-Remember, your main avatar is you. Be yourself and look around.
 
 The app uses Bluetooth technology to search for people in your field of vision."
   </string>

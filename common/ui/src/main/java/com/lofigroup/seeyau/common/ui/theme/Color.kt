@@ -24,6 +24,7 @@ val SkyBlueVariant = Color(0XFF3CD0FF)
 val Red = Color(0xFFFF2222)
 val RedVariant = Color(0xFFFF2D55)
 val DarkViolet = Color(0xFF5D29A1)
+val PurpleRed = Color(0xFFFF0090)
 
 val GrayVariant = Color(0xFF404040)
 
@@ -59,11 +60,11 @@ val DarkerGray = Color(0xFF282726)
 val DarkestGray = Color(0xFF1C1C1E)
 
 internal val DarkColorPalette = darkColors(
-  primary = Violet,
+  primary = PurpleRed,
   onPrimary = Color.White,
   onSecondary = Color.White,
-  primaryVariant = Violet,
-  secondary = Violet,
+  primaryVariant = PurpleRed,
+  secondary = PurpleRed,
   error = Red,
   background = Color.Black
 )

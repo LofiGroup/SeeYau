@@ -91,7 +91,6 @@ class ProfileRepositoryImpl @Inject constructor(
       userDao.observeMe(),
       likeDao.observeLikesCount()
     ) { profile, likesCount ->
-      Timber.e("Likes count is $likesCount")
       profile.toProfile(likesCount)
     }
   }

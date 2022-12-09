@@ -39,6 +39,8 @@ dependencies {
   implementation project(":domain:chat")
   implementation project(":domain:auth")
 
+  implementation project(":domain:base")
+
   implementation appCompat
 
   implementation nearbyDep

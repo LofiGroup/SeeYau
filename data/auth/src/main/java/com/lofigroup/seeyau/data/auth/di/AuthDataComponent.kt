@@ -1,7 +1,9 @@
 package com.lofigroup.seeyau.data.auth.di
 
+import android.content.Context
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.ResourceStateHolder
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
@@ -28,6 +30,12 @@ interface AuthDataComponent {
 
     @BindsInstance
     fun tokenStore(tokenStore: TokenStore): Builder
+
+    @BindsInstance
+    fun userDao(userDao: UserDao): Builder
+
+    @BindsInstance
+    fun context(context: Context): Builder
 
     fun build(): AuthDataComponent
   }

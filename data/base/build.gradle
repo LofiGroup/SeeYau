@@ -36,6 +36,7 @@ dependencies {
   implementation project(":core:di")
 
   implementation project(":common:network")
+  implementation project(":domain:base")
 
   implementation appCompat
   implementation coreKtx

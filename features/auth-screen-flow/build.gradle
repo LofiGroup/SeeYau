@@ -43,6 +43,8 @@ dependencies {
   implementation project(":domain:auth")
   implementation project(":domain:profile")
 
+  implementation project(":domain:base")
+
   implementation appCompat
   implementation coreKtx
 

@@ -19,9 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.canhub.cropper.CropImageContract
 import com.lofigroup.seeyau.common.ui.components.ButtonWithText
-import com.lofigroup.seeyau.common.ui.components.FullScreenImage
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
+import com.lofigroup.seeyau.features.auth_screen_flow.model.AuthFlowState
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.components.TopBar
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalExtendedColors
@@ -36,9 +36,9 @@ fun BoxScope.AddPhotoScreen(
   setImageUri: (Uri) -> Unit,
   throwError: (String) -> Unit,
   update: () -> Unit,
+  flowState: AuthFlowState,
   onUpButtonClick: () -> Unit
 ) {
-
   val context = LocalContext.current
 
   val pickImageResult =
@@ -53,57 +53,98 @@ fun BoxScope.AddPhotoScreen(
       }
     }
 
-  FullScreenImage(painter = painterResource(id = R.drawable.profile_picture_background))
+  Column(modifier = Modifier.align(Alignment.Center)) {
+    TopBar(onUpButtonClick = onUpButtonClick)
+    Box(
+      modifier = Modifier
+        .weight(1f)
+        .fillMaxWidth()
+    ) {
+      Box(modifier = Modifier.align(Alignment.Center)) {
+        RemoteImage(
+          model = imageUri,
+          onClick = { pickImageResult.launch(getDefaultImageCropperOptions()) },
+          loadingPlaceholder = {
+            Box(
+              modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+              contentAlignment = Alignment.Center
+            ) {
+              CircularProgressIndicator(modifier = Modifier.size(LocalSize.current.bigMedium))
+            }
+          },
+          errorPlaceholder = {
+            Box(
+              contentAlignment = Alignment.Center,
+              modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .border(
+                  width = 2.dp,
+                  brush = LocalExtendedColors.current.secondaryVerticalGradient,
+                  shape = CircleShape
+                )
+            ) {
+              Image(painter = painterResource(id = R.drawable.ic_camera), contentDescription = null)
+            }
+          },
+          modifier = Modifier
+            .padding(bottom = LocalSize.current.small / 2)
+            .fillMaxWidth(0.7f)
+            .aspectRatio(1f)
+        )
 
-  TopBar(onUpButtonClick = onUpButtonClick)
+        if (imageUri.isNotBlank())
+          Icon(
+            painter = painterResource(id = CommonR.drawable.ic_change_photo_icon),
+            contentDescription = null,
+            modifier = Modifier
+              .size(LocalSize.current.small)
+              .align(Alignment.BottomCenter)
+          )
+      }
 
-  RemoteImage(
-    model = imageUri,
-    onClick = { pickImageResult.launch(getDefaultImageCropperOptions()) },
-    loadingPlaceholder = {
       Box(
         modifier = Modifier
-          .fillMaxSize()
-          .background(Color.White),
-        contentAlignment = Alignment.Center
+          .align(Alignment.BottomCenter)
+          .padding(bottom = LocalSpacing.current.medium)
+          .padding(horizontal = LocalSpacing.current.medium)
       ) {
-        CircularProgressIndicator(modifier = Modifier.size(LocalSize.current.bigMedium))
-      }
-    },
-    errorPlaceholder = {
-      Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-          .fillMaxSize()
-          .background(Color.White)
-          .border(width = 2.dp, brush = LocalExtendedColors.current.secondaryVerticalGradient, shape = CircleShape)
-      ) {
-        Image(painter = painterResource(id = R.drawable.ic_camera), contentDescription = null)
-      }
-    },
-    modifier = Modifier
-      .fillMaxWidth(0.7f)
-      .aspectRatio(1f)
-      .padding(8.dp)
-      .align(Alignment.Center)
-  )
+        when (flowState) {
+          AuthFlowState.WAITING_FOR_INPUT -> {
+            Text(
+              text = stringResource(
+                id = if (imageUri.isBlank()) R.string.add_photo_so_people_can_recongize_you
+                else R.string.connect_with_people
+              ),
+              modifier = Modifier
+                .fillMaxWidth()
 
-  Column(
-    modifier = Modifier
-      .align(Alignment.BottomCenter)
-      .padding(bottom = LocalSpacing.current.large)
-      .padding(horizontal = LocalSpacing.current.medium)
-      .navigationBarsPadding()
-  ) {
-    Text(text = stringResource(id = R.string.add_photo_so_people_can_recongize_you))
-
-    Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
+            )
+          }
+          AuthFlowState.SYNCING_DATA, AuthFlowState.ALL_DATA_IS_VALID -> {
+            CircularProgressIndicator()
+          }
+          AuthFlowState.ERROR -> {
+            Text(
+              text = stringResource(R.string.something_went_wrong),
+              modifier = Modifier.fillMaxWidth()
+            )
+          }
+        }
+      }
+    }
 
     ButtonWithText(
       text = stringResource(id = R.string.lets_go),
       onClick = update,
-      enabled = imageUri.isNotBlank(),
-      backgroundColor = LocalExtendedColors.current.secondaryGradient
+      enabled = imageUri.isNotBlank() && flowState != AuthFlowState.SYNCING_DATA,
+      backgroundColor = LocalExtendedColors.current.secondaryGradient,
+      modifier = Modifier
+        .padding(bottom = LocalSpacing.current.large)
+        .padding(horizontal = LocalSpacing.current.medium)
+        .navigationBarsPadding()
     )
   }
 }
@@ -113,13 +154,14 @@ fun BoxScope.AddPhotoScreen(
 fun AddPhotoScreenPreview() {
   AppTheme() {
     Surface() {
-      Box() {
+      Box(Modifier.fillMaxSize()) {
         AddPhotoScreen(
-          imageUri = "",
+          imageUri = "fds",
           setImageUri = {},
           throwError = {},
           update = {},
-          onUpButtonClick = {}
+          onUpButtonClick = {},
+          flowState = AuthFlowState.WAITING_FOR_INPUT
         )
       }
     }

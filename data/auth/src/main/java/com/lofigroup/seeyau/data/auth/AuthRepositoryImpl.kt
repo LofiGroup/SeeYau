@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.auth
 
+import android.content.Context
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.ResourceState
@@ -8,6 +9,7 @@ import com.lofigroup.seeyau.data.auth.model.toAccessRequest
 import com.lofigroup.seeyau.data.auth.model.toAuthResponse
 import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
 import com.lofigroup.seeyau.data.auth.model.toTokenDataModel
+import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.Access
 import com.lofigroup.seeyau.domain.auth.model.AuthResponse
@@ -16,6 +18,7 @@ import com.lofigroup.seeyau.domain.auth.model.StartAuth
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_network.utils.createMultipartBody
 import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -29,7 +32,9 @@ class AuthRepositoryImpl @Inject constructor(
   private val authApi: AuthApi,
   private val ioDispatcher: CoroutineDispatcher,
   private val tokenStore: TokenStore,
-  private val moduleStateHolder: ResourceStateHolder
+  private val moduleStateHolder: ResourceStateHolder,
+  private val context: Context,
+  private val userDao: UserDao
 ) : AuthRepository {
 
   private var authOnlyToken: String? = null
@@ -86,6 +91,7 @@ class AuthRepositoryImpl @Inject constructor(
             LoggedInStatus.LoggedIn
           }
           is HttpException -> {
+            Timber.e("Http error code is ${it.code()}")
             when (it.code()) {
               408, 429, 502, 503 -> {
                 moduleStateHolder.set(ResourceState.INITIALIZED)
@@ -108,8 +114,30 @@ class AuthRepositoryImpl @Inject constructor(
     )
   }
 
-  private fun resolveLoggedInState(): LoggedInStatus {
-    return if (tokenStore.isEmpty()) LoggedInStatus.InvalidToken
+  override suspend fun quickAuth(imageUri: String): Resource<Unit> {
+    return safeIOCall(
+      ioDispatcher,
+      block = {
+        val response = retrofitErrorHandler(authApi.quickAuth(createMultipartBody("image", imageUri, context.contentResolver)))
+
+        context.deleteDatabase("seeyau_database.db")
+
+        tokenStore.saveToken(response.toTokenDataModel())
+        moduleStateHolder.set(ResourceState.IS_READY)
+        Resource.Success(Unit)
+      },
+      errorBlock = {
+        Timber.e(it)
+        Resource.Error(it.message ?: "Unknown error")
+      }
+    )
+  }
+
+  private suspend fun resolveLoggedInState(): LoggedInStatus {
+    val me = userDao.getUser(0)
+    Timber.e("Me is $me")
+
+    return if (tokenStore.isEmpty() || me == null) LoggedInStatus.InvalidToken
     else LoggedInStatus.CantAccessServer
   }
 }

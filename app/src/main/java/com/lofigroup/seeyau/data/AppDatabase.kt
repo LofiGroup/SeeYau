@@ -7,6 +7,7 @@ import androidx.room.RenameColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.lofigroup.core.util.toIntArray
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
@@ -51,7 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
           instance = Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
-            "seayau_database"
+            "seeyau_database"
           )
             .addMigrations(migration21To22)
             .fallbackToDestructiveMigrationFrom(*(1..19).toIntArray())

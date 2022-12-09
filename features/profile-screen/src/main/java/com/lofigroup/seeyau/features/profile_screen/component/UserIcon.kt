@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.lofigroup.seeyau.features.profile_screen.R
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun UserIcon(
@@ -31,7 +32,7 @@ fun UserIcon(
         .align(Alignment.TopCenter)
     )
     Image(
-      painter = painterResource(id = R.drawable.ic_change_photo_icon),
+      painter = painterResource(id = CommonR.drawable.ic_change_photo_icon),
       contentDescription = null,
       modifier = Modifier
         .size(changeIconSize)

@@ -8,7 +8,8 @@ import com.lofigroup.seeyau.common.ui.components.UpButton
 
 @Composable
 fun TopBar(
-  onUpButtonClick: () -> Unit = NO_UP_BUTTON
+  modifier: Modifier = Modifier,
+  onUpButtonClick: () -> Unit = NO_UP_BUTTON,
 ) {
   DefaultTopBar(
     title = "",
@@ -16,7 +17,7 @@ fun TopBar(
       if (onUpButtonClick != NO_UP_BUTTON)
         UpButton(onClick = onUpButtonClick)
     },
-    modifier = Modifier.statusBarsPadding()
+    modifier = modifier.statusBarsPadding()
   )
 }
 

@@ -11,7 +11,7 @@
       <module name="SeeYau.core.network" target="11" />
       <module name="SeeYau.core.ui" target="11" />
       <module name="SeeYau.data.auth" target="11" />
-      <module name="SeeYau.data.backend-api" target="11" />
+      <module name="SeeYau.data.base" target="11" />
       <module name="SeeYau.data.chat" target="11" />
       <module name="SeeYau.data.navigator" target="11" />
       <module name="SeeYau.data.profile" target="11" />
