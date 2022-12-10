@@ -27,6 +27,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import timber.log.Timber
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -83,13 +84,14 @@ class ChatRepositoryImpl @Inject constructor(
           chatDao.observeLastMessage(chat.id),
           chatDao.observeUserNewMessages(chat.partnerId),
         ) { user, lastMessage, newMessages ->
+          Timber.e("Update in data: user: $user, lastmessage: $lastMessage")
           ChatBrief(
             id = chat.id,
             partner = user.toUser(),
             lastMessage = getLastMessage(lastMessage, user.extractLike()),
             newMessagesCount = newMessages.size,
             draft = chat.draft.toDomainModel(),
-            createdIn = chat.createdIn
+            createdIn = chat.createdIn,
           )
         }
       }) { it.asList() }

@@ -3,25 +3,31 @@ package com.lofigroup.seeyau.features.chat_screen.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seeyau.common.ui.components.specific.BigImage
+import com.lofigroup.seeyau.common.ui.R
+import com.lofigroup.seeyau.common.ui.components.ChoiceDialog
+import com.lofigroup.seeyau.common.ui.components.ChoiceDialogItem
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
 import com.lofigroup.seeyau.features.chat_screen.ui.components.ChatList
+import com.lofigroup.seeyau.features.chat_screen.ui.components.CloseUserProfileDialog
 import com.lofigroup.seeyau.features.chat_screen.ui.components.TopBar
-import com.sillyapps.core.ui.components.ShowToast
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun ChatListScreen(
   stateHolder: ChatListScreenStateHolder,
-  onItemClick: (Long) -> Unit,
-  onUpButtonClick: () -> Unit,
+  onNavigateToChatScreen: (Long) -> Unit,
+  onNavigateToSettingsScreen: () -> Unit,
   initialState: ChatListScreenState = ChatListScreenState()
 ) {
 
@@ -29,11 +35,11 @@ fun ChatListScreen(
     stateHolder.getState()
   }.collectAsState(initial = initialState)
 
-  var bigImageVisible by rememberSaveable {
+  var deleteUserDialogVisible by rememberSaveable() {
     mutableStateOf(false)
   }
-  var bigImageUrl by rememberSaveable() {
-    mutableStateOf<String?>(null)
+  var userToBlacklist by rememberSaveable() {
+    mutableStateOf(0L)
   }
 
   Surface(
@@ -44,33 +50,51 @@ fun ChatListScreen(
       modifier = Modifier.systemBarsPadding()
     ) {
       TopBar(
-        totalNewMessages = state.newMessagesCount,
-        onUpButtonClick = onUpButtonClick
+        profile = state.profile,
+        onProfileButtonClick = onNavigateToSettingsScreen
       )
 
       ChatList(
-        memoryFolder = state.memoryFolder,
-        likesFolder = state.likesFolder,
-        interactionFolder = state.interactionFolder,
-        onItemClick = onItemClick,
-        onIconClick = {
-          bigImageUrl = it
-          bigImageVisible = true
-        },
-        modifier = Modifier.weight(1f)
+        nearby = state.nearbyFolder,
+        metToday = state.metFolder,
+        chats = state.interactionFolder,
+        onItemClick = onNavigateToChatScreen,
+        onGridItemClick = stateHolder::setCurrentChat,
+        modifier = Modifier.weight(1f),
+        onDeleteChat = {
+          deleteUserDialogVisible = true
+          userToBlacklist = it
+        }
       )
     }
   }
 
-  BigImage(
-    isVisible = bigImageVisible,
-    onDismiss = { bigImageVisible = false },
-    url = bigImageUrl
+  CloseUserProfileDialog(
+    chat = state.currentItem,
+    likeUser = stateHolder::likeUser,
+    onDismiss = { stateHolder.setCurrentChat(null) },
+    onChatButtonClick = onNavigateToChatScreen
   )
 
-  val errorMessage = state.errorMessage
-  if (errorMessage != null) {
-    ShowToast(message = errorMessage)
+  ChoiceDialog(
+    visible = deleteUserDialogVisible,
+    onDismiss = { deleteUserDialogVisible = false },
+    title = stringResource(id = R.string.are_you_sure),
+    details = stringResource(id = R.string.ignore_user_detail)
+  ) {
+    ChoiceDialogItem(
+      text = stringResource(id = R.string.cancel),
+      onClick = { deleteUserDialogVisible = false },
+      color = LocalExtendedColors.current.disabled
+    )
+    ChoiceDialogItem(
+      text = stringResource(id = R.string.confirm),
+      onClick = {
+        deleteUserDialogVisible = false
+        stateHolder.blacklistUser(userToBlacklist)
+      },
+      color = MaterialTheme.colors.error
+    )
   }
 
 }
@@ -82,14 +106,25 @@ fun ChatListScreenPreview() {
 
   val stateHolder = object : ChatListScreenStateHolder {
     override fun getState(): Flow<ChatListScreenState> = state
+    override fun blacklistUser(userId: Long) {
+
+    }
+
+    override fun setCurrentChat(chatBrief: ChatBrief?) {
+
+    }
+
+    override fun likeUser(isLiked: Boolean, userId: Long) {
+
+    }
   }
 
   AppTheme() {
     Surface() {
       ChatListScreen(
         stateHolder = stateHolder,
-        onItemClick = {},
-        onUpButtonClick = {},
+        onNavigateToChatScreen = {},
+        onNavigateToSettingsScreen = {},
         initialState = previewState
       )
     }

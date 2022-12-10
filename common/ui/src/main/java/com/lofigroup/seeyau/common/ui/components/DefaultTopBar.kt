@@ -19,8 +19,8 @@ import com.lofigroup.seeyau.common.ui.R
 
 @Composable
 fun DefaultTopBar(
-  title: String,
   modifier: Modifier = Modifier,
+  title: String = "",
   leftContent: @Composable RowScope.() -> Unit = {},
   rightContent: @Composable RowScope.() -> Unit = {},
 ) {

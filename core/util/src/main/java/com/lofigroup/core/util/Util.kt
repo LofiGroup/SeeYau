@@ -56,3 +56,13 @@ fun IntRange.toIntArray(): IntArray {
     result[index++] = element
   return result
 }
+
+fun<T> List<T>.indexOfFirstFrom(
+  index: Int,
+  isRightItem: (T) -> Boolean
+): Int {
+  for (i in index until size) {
+    if (isRightItem(get(i))) return i
+  }
+  return size
+}

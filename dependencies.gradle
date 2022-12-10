@@ -125,6 +125,10 @@ ext {
 
   imageCropper = "com.github.CanHub:Android-Image-Cropper:4.3.2"
 
+  accompanistDeps = [
+      pager: "com.google.accompanist:accompanist-pager:0.25.1"
+  ]
+
   workManagerDeps = [
       core   : "androidx.work:work-runtime-ktx:${versions.workManager}",
       testing: "androidx.work:work-testing:${versions.workManager}"

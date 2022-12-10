@@ -5,6 +5,7 @@ fun getUserPreviewModel() = User(
   name = "York",
   imageUrl = "",
   isNear = true,
+  lastContact = 0L,
   lastConnection = 0,
   isOnline = true,
 

@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
@@ -38,6 +39,7 @@ fun RemoteImage(
   transformations: List<Transformation> = emptyList(),
   loadingPlaceholder: @Composable () -> Unit = { DefaultLoadingPlaceholder() },
   errorPlaceholder: @Composable () -> Unit = { DefaultErrorPlaceholder() },
+  elevation: Dp = 4.dp,
 ) {
   val imageRequest =
     if (model is ImageRequest) model
@@ -47,23 +49,28 @@ fun RemoteImage(
       .transformations(transformations)
       .build()
 
-  Box(
-    modifier = modifier,
-    contentAlignment = Alignment.Center
+  Surface(
+    elevation = elevation,
+    shape = shape,
+    modifier = modifier
   ) {
-    SubcomposeAsyncImage(
-      model = imageRequest,
-      contentScale = contentScale,
-      contentDescription = null,
-      loading = { loadingPlaceholder() },
-      error = { errorPlaceholder() },
-      modifier = Modifier
-        .fillMaxSize()
-        .clip(shape)
-        .conditional(onClick != NOT_CLICKABLE) {
-          clickable(onClick = onClick)
-        }
-    )
+    Box(
+      contentAlignment = Alignment.Center
+    ) {
+      SubcomposeAsyncImage(
+        model = imageRequest,
+        contentScale = contentScale,
+        contentDescription = null,
+        loading = { loadingPlaceholder() },
+        error = { errorPlaceholder() },
+        modifier = Modifier
+          .fillMaxSize()
+          .clip(shape)
+          .conditional(onClick != NOT_CLICKABLE) {
+            clickable(onClick = onClick)
+          }
+      )
+    }
   }
 }
 
@@ -87,7 +94,9 @@ private val NOT_CLICKABLE = {}
 @Preview
 @Composable
 fun RemoteImagePreview() {
-  Surface(modifier = Modifier.fillMaxSize()) {
+  Surface(
+    modifier = Modifier.fillMaxSize()
+  ) {
     Box(contentAlignment = Alignment.Center) {
       RemoteImage(
         model = "",

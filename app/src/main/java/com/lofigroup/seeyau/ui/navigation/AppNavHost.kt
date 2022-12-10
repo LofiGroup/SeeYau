@@ -39,7 +39,7 @@ fun AppNavHost(
         authComponent = appModules.authModuleImpl.domainComponent(),
         isLoggedIn = { isLoggedIn ->
           if (isLoggedIn) {
-            navController.navigateToTopDestination(Screen.NavigatorScreen.route)
+            navController.navigateToTopDestination(Screen.PagerScreen.route)
           } else {
             navController.navigateToTopDestination(Screen.AuthScreen.route)
           }
@@ -47,18 +47,10 @@ fun AppNavHost(
       )
     }
 
-    composable(route = Screen.NavigatorScreen.route) {
+    composable(route = Screen.PagerScreen.route) {
       onStartNearbyService()
-      NavigatorScreenNavigation(
-        navigatorComponent = appModules.navigatorModule.domainComponent,
-        chatComponent = appModules.chatModule.domainComponent,
-        profileComponent = appModules.profileModule.domainComponent,
-        settingsComponent = appModules.settingsModule.domainComponent,
-        onNavigateToChatList = { navController.navigate(Screen.ChatListScreen.route) },
-        onNavigateToSettings = { navController.navigate(Screen.SettingsScreen.route) },
-        onNavigateToChat = {
-          navController.navigate("${Screen.ChatScreen.route}/$it")
-        }
+      NavigationPager(
+        appModules = appModules,
       )
     }
 
@@ -68,52 +60,7 @@ fun AppNavHost(
         profileComponent = appModules.profileModule.domainComponent,
         baseComponent = appModules.baseDataModule.domainComponent,
         isDone = {
-          navController.navigateToTopDestination(Screen.NavigatorScreen.route)
-        }
-      )
-    }
-
-    composable(route = Screen.SettingsScreen.route) {
-      ProfileScreenNavigation(
-        profileComponent = appModules.profileModule.domainComponent,
-        settingsComponent = appModules.settingsModule.domainComponent,
-        onUpButtonClick = { navController.popBackStack() }
-      )
-    }
-
-    composable(
-      route = "${Screen.ChatScreen.route}/{chatId}",
-      arguments = listOf(navArgument(name = "chatId") {
-        type = NavType.LongType
-      })
-    ) {
-      val chatId = it.arguments?.getLong("chatId")
-
-      if (chatId == null) {
-        LaunchedEffect(chatId) {
-          Timber.e("Malformed argument: chatId")
-          navController.popBackStack()
-        }
-      }
-      else {
-        ChatScreenNavigation(
-          chatComponent = appModules.chatModule.domainComponent,
-          profileComponent = appModules.profileModule.domainComponent,
-          chatId = chatId,
-          onUpButtonClick = {
-            navController.navigateBackTo(Screen.ChatListScreen.route)
-          }
-        )
-      }
-
-    }
-
-    composable(route = Screen.ChatListScreen.route) {
-      ChatListScreenNavigation(
-        chatComponent = appModules.chatModule.domainComponent,
-        onItemClick = { navController.navigate("${Screen.ChatScreen.route}/$it") },
-        onUpButtonClick = {
-          navController.navigateBackTo(Screen.ChatListScreen.route)
+          navController.navigateToTopDestination(Screen.PagerScreen.route)
         }
       )
     }

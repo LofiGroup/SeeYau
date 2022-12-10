@@ -54,10 +54,11 @@ val PurpleRedVerticalGradient = Brush.verticalGradient(
 
 val TransparentGray = Color(0x82E5E5E5)
 val TransparentDarkerGray = Color(0x82404040)
+val GrayVariant1 = Color(0xFFA3A3A3)
 val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
-val DarkerGray = Color(0xFF282726)
-val DarkestGray = Color(0xFF1C1C1E)
+val DarkerGray = Color(0xFF404040)
+val DarkestGray = Color(0xFF121212)
 
 internal val DarkColorPalette = darkColors(
   primary = PurpleRed,
@@ -66,7 +67,8 @@ internal val DarkColorPalette = darkColors(
   primaryVariant = PurpleRed,
   secondary = PurpleRed,
   error = Red,
-  background = Color.Black
+  surface = DarkestGray,
+  background = DarkestGray
 )
 
 @Composable
@@ -78,8 +80,8 @@ fun extendedColors() = ExtendedColors(
   secondaryVerticalGradient = PurpleRedVerticalGradient,
   secondaryTransparentGradient = PurpleRedTransparentGradient,
   backgroundGradient = PurpleVioletVerticalGradient,
-  lightBackground = DarkerGray,
-  darkBackground = DarkestGray,
+  lightBackground = GrayVariant1,
+  darkBackground = DarkerGray,
   secondaryAsBrush = SolidColor(MaterialTheme.colors.secondary)
 )
 
