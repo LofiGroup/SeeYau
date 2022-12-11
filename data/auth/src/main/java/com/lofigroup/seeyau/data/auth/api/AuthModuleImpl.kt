@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.data.auth.api
 
 import android.content.Context
 import com.lofigroup.backend_api.TokenStore
+import com.lofigroup.backend_api.data.DatabaseHandler
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.seeyau.data.auth.di.DaggerAuthDataComponent
@@ -15,9 +16,11 @@ import retrofit2.Retrofit
 
 class AuthModuleImpl(
   baseRetrofit: Retrofit,
+  dataSyncStateHolder: ResourceStateHolder,
   private val tokenStore: TokenStore,
   context: Context,
-  private val userDao: UserDao
+  userDao: UserDao,
+  databaseHandler: DatabaseHandler
 ) : AuthModule {
 
   private val moduleStateHolder = ResourceStateHolder()
@@ -39,6 +42,8 @@ class AuthModuleImpl(
     .moduleStateHolder(moduleStateHolder)
     .context(context)
     .userDao(userDao)
+    .databaseHandler(databaseHandler)
+    .dataSyncStateHolder(dataSyncStateHolder)
     .build()
 
   private val domainComponent = DaggerAuthComponent.builder()

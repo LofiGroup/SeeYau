@@ -45,7 +45,9 @@ class AppModules(
       baseRetrofit = baseDataModule.component.getRetrofit(),
       tokenStore = baseDataModule.component.tokenStore(),
       context = appContext,
-      userDao = appComponent.getDatabase().userDao
+      userDao = appComponent.getDatabase().userDao,
+      databaseHandler = appComponent.getDatabase(),
+      dataSyncStateHolder = baseDataModule.component.syncStateHolder()
     )
   }
 

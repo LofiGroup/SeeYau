@@ -34,7 +34,8 @@ import kotlinx.coroutines.flow.flow
 fun ChatScreen(
   stateHolder: ChatScreenStateHolder,
   onUpButtonClick: () -> Unit,
-  initialState: ChatScreenState = ChatScreenState()
+  isFocused: Boolean,
+  initialState: ChatScreenState = ChatScreenState(),
 ) {
 
   val state by remember(stateHolder) {
@@ -102,10 +103,11 @@ fun ChatScreen(
     )
   }
 
-  BackHandler {
-    stateHolder.onExit()
-    onUpButtonClick()
-  }
+  if (isFocused)
+    BackHandler {
+      stateHolder.onExit()
+      onUpButtonClick()
+    }
 
   UserOptionsDialog(
     isVisible = optionsDialogVisible,
@@ -161,7 +163,8 @@ fun ChatScreenPreview() {
       ChatScreen(
         stateHolder = stateHolder,
         onUpButtonClick = {},
-        initialState = getPreviewModel()
+        initialState = getPreviewModel(),
+        isFocused = true
       )
     }
   }

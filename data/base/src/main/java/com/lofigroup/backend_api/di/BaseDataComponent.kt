@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import javax.inject.Qualifier
 
 @AppScope
 @Component(modules = [ApiModule::class, TokenStoreModule::class])
@@ -19,7 +20,7 @@ interface BaseDataComponent {
 
   fun getWebSocketChannel(): WebSocketChannel
   fun tokenStore(): TokenStore
-  fun syncStateHolder(): ResourceStateHolder
+  @DataSyncStateHolder fun syncStateHolder(): ResourceStateHolder
 
   @Component.Builder
   interface Builder {
@@ -27,9 +28,12 @@ interface BaseDataComponent {
     fun sharedPref(sharedPreferences: SharedPreferences): Builder
 
     @BindsInstance
-    fun moduleStateHolder(moduleStateHolder: ResourceStateHolder): Builder
+    fun moduleStateHolder(@DataSyncStateHolder moduleStateHolder: ResourceStateHolder): Builder
 
     fun build(): BaseDataComponent
   }
 
 }
+
+@Qualifier
+annotation class DataSyncStateHolder

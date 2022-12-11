@@ -8,6 +8,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.lofigroup.backend_api.data.DatabaseHandler
 import com.lofigroup.core.util.toIntArray
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
@@ -30,7 +31,7 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
     AutoMigration(from = 20, to = 21, spec = AppDatabase.Migration20To21::class)
   ]
 )
-abstract class AppDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase(), DatabaseHandler {
 
   abstract val userDao: UserDao
   abstract val chatDao: ChatDao
@@ -39,6 +40,10 @@ abstract class AppDatabase : RoomDatabase() {
 
   @RenameColumn(tableName = "messages", fromColumnName = "mediaUri", toColumnName = "extra")
   class Migration20To21 : AutoMigrationSpec
+
+  override fun clearTables() {
+    clearAllTables()
+  }
 
   companion object {
     @Volatile

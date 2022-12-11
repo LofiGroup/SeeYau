@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthScreenFlowViewModel @Inject constructor(
@@ -106,6 +107,7 @@ class AuthScreenFlowViewModel @Inject constructor(
 
   private suspend fun observeDataSyncState() {
     moduleStateHolder.observe().collect() {
+      Timber.e("Data sync state is $it")
       when (it) {
         ResourceState.LOADING, ResourceState.INITIALIZED -> Unit
         ResourceState.IS_READY -> {

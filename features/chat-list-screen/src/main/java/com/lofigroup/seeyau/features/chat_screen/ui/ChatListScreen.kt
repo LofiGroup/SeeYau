@@ -11,8 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seeyau.common.ui.R
-import com.lofigroup.seeyau.common.ui.components.ChoiceDialog
-import com.lofigroup.seeyau.common.ui.components.ChoiceDialogItem
+import com.lofigroup.seeyau.common.ui.components.YesNoChoiceDialog
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.features.chat_screen.model.ChatListScreenState
@@ -76,26 +75,13 @@ fun ChatListScreen(
     onChatButtonClick = onNavigateToChatScreen
   )
 
-  ChoiceDialog(
+  YesNoChoiceDialog(
     visible = deleteUserDialogVisible,
+    onConfirm = { stateHolder.blacklistUser(userToBlacklist) },
     onDismiss = { deleteUserDialogVisible = false },
     title = stringResource(id = R.string.are_you_sure),
     details = stringResource(id = R.string.ignore_user_detail)
-  ) {
-    ChoiceDialogItem(
-      text = stringResource(id = R.string.cancel),
-      onClick = { deleteUserDialogVisible = false },
-      color = LocalExtendedColors.current.disabled
-    )
-    ChoiceDialogItem(
-      text = stringResource(id = R.string.confirm),
-      onClick = {
-        deleteUserDialogVisible = false
-        stateHolder.blacklistUser(userToBlacklist)
-      },
-      color = MaterialTheme.colors.error
-    )
-  }
+  )
 
 }
 

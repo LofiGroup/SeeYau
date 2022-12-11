@@ -1,11 +1,8 @@
 package com.lofigroup.seeyau.common.ui.components.specific
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.lofigroup.seeyau.common.ui.R
-import com.lofigroup.seeyau.common.ui.components.ChoiceDialog
-import com.lofigroup.seeyau.common.ui.components.ChoiceDialogItem
+import com.lofigroup.seeyau.common.ui.components.ConfirmDialog
 import com.lofigroup.seeyau.common.ui.permissions.model.PermissionRationale
 
 @Composable
@@ -14,13 +11,11 @@ fun ExplainPermissionDialog(
   onDismiss: () -> Unit
 ) {
   if (rationale != null) {
-    ChoiceDialog(
+    ConfirmDialog(
       visible = true,
       onDismiss = onDismiss,
       title = stringResource(id = rationale.titleResId),
       details = stringResource(id = rationale.descriptionResId)
-    ) {
-      ChoiceDialogItem(text = stringResource(id = R.string.ok), onClick = onDismiss, color = MaterialTheme.colors.primary)
-    }
+    )
   }
 }

@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.profile_screen
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lofigroup.seeyau.domain.auth.usecases.LogoutUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UpdateProfileUseCase
 import com.lofigroup.seeyau.domain.settings.model.Visibility
@@ -22,7 +23,8 @@ class ProfileScreenViewModel @Inject constructor(
   private val getProfileUseCase: GetProfileUseCase,
   private val updateProfileUseCase: UpdateProfileUseCase,
   private val getVisibilityUseCase: GetVisibilityUseCase,
-  private val setVisibilityUseCase: SetVisibilityUseCase
+  private val setVisibilityUseCase: SetVisibilityUseCase,
+  private val logoutUseCase: LogoutUseCase
 ): ViewModel(), ProfileScreenStateHolder {
 
   private val state = MutableStateFlow(ProfileScreenState())
@@ -86,6 +88,12 @@ class ProfileScreenViewModel @Inject constructor(
     viewModelScope.launch {
       setVisibilityUseCase(Visibility(isVisible))
       state.apply { value = value.copy(isVisible = isVisible) }
+    }
+  }
+
+  override fun deleteAccount() {
+    viewModelScope.launch {
+      logoutUseCase()
     }
   }
 

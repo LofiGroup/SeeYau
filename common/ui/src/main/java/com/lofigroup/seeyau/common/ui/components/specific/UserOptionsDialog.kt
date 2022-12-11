@@ -3,8 +3,7 @@ package com.lofigroup.seeyau.common.ui.components.specific
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
-import com.lofigroup.seeyau.common.ui.components.ChoiceDialog
-import com.lofigroup.seeyau.common.ui.components.ChoiceDialogItem
+import com.lofigroup.seeyau.common.ui.components.YesNoChoiceDialog
 import com.lofigroup.seeyau.common.ui.components.OptionsDialog
 import com.lofigroup.seeyau.common.ui.components.OptionsDialogItem
 import com.sillyapps.core.ui.theme.LocalExtendedColors
@@ -38,24 +37,11 @@ fun UserOptionsDialog(
     )
   }
 
-  ChoiceDialog(
+  YesNoChoiceDialog(
     visible = confirmationDialogVisible,
     onDismiss = { confirmationDialogVisible = false },
+    onConfirm = { onIgnoreUser() },
     title = stringResource(id = R.string.are_you_sure),
     details = stringResource(id = R.string.ignore_user_detail)
-  ) {
-    ChoiceDialogItem(
-      text = stringResource(id = R.string.cancel),
-      onClick = { confirmationDialogVisible = false },
-      color = LocalExtendedColors.current.disabled
-    )
-    ChoiceDialogItem(
-      text = stringResource(id = R.string.confirm),
-      onClick = {
-        confirmationDialogVisible = false
-        onIgnoreUser()
-      },
-      color = MaterialTheme.colors.error
-    )
-  }
+  )
 }

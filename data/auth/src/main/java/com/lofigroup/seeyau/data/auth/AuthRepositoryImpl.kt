@@ -2,9 +2,12 @@ package com.lofigroup.seeyau.data.auth
 
 import android.content.Context
 import com.lofigroup.backend_api.TokenStore
+import com.lofigroup.backend_api.data.DatabaseHandler
+import com.lofigroup.backend_api.di.DataSyncStateHolder
 import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.core.util.ResourceStateHolder
+import com.lofigroup.seeyau.data.auth.di.AuthDataStateHolder
 import com.lofigroup.seeyau.data.auth.model.toAccessRequest
 import com.lofigroup.seeyau.data.auth.model.toAuthResponse
 import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
@@ -32,15 +35,18 @@ class AuthRepositoryImpl @Inject constructor(
   private val authApi: AuthApi,
   private val ioDispatcher: CoroutineDispatcher,
   private val tokenStore: TokenStore,
-  private val moduleStateHolder: ResourceStateHolder,
+  @AuthDataStateHolder private val moduleStateHolder: ResourceStateHolder,
+  @DataSyncStateHolder private val dataSyncStateHolder: ResourceStateHolder,
   private val context: Context,
-  private val userDao: UserDao
+  private val userDao: UserDao,
+  private val databaseHandler: DatabaseHandler
 ) : AuthRepository {
 
   private var authOnlyToken: String? = null
 
   override suspend fun logout() {
     tokenStore.forgetToken()
+    dataSyncStateHolder.set(ResourceState.LOADING)
   }
 
   override suspend fun authorize(access: Access): Resource<AuthResponse> {
@@ -119,8 +125,7 @@ class AuthRepositoryImpl @Inject constructor(
       ioDispatcher,
       block = {
         val response = retrofitErrorHandler(authApi.quickAuth(createMultipartBody("image", imageUri, context.contentResolver)))
-
-        context.deleteDatabase("seeyau_database.db")
+        databaseHandler.clearTables()
 
         tokenStore.saveToken(response.toTokenDataModel())
         moduleStateHolder.set(ResourceState.IS_READY)

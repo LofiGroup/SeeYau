@@ -1,28 +1,29 @@
 package com.lofigroup.seeyau.features.profile_screen
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.canhub.cropper.CropImageContract
+import com.lofigroup.seeyau.common.ui.components.YesNoChoiceDialog
 import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
 import com.lofigroup.seeyau.common.ui.components.LikesLabel
 import com.lofigroup.seeyau.common.ui.components.UpButton
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.features.profile_screen.component.SettingButton
-import com.lofigroup.seeyau.features.profile_screen.component.UserIcon
-import com.lofigroup.seeyau.features.profile_screen.component.VisibilitySwitch
+import com.lofigroup.seeyau.features.profile_screen.component.*
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.getDefaultImageCropperOptions
 import com.sillyapps.core.ui.util.universalBackground
@@ -34,11 +35,21 @@ import com.lofigroup.seeyau.common.ui.R as CommonR
 fun ProfileScreen(
   stateHolder: ProfileScreenStateHolder,
   onUpButtonClick: () -> Unit,
+  onNavigateToAuthScreen: () -> Unit,
+  isFocused: Boolean
 ) {
 
   val state by remember(stateHolder) {
     stateHolder.getState()
   }.collectAsState(initial = ProfileScreenState())
+
+  var faqVisible by rememberSaveable() {
+    mutableStateOf(false)
+  }
+
+  var deleteAccountDialogVisible by rememberSaveable() {
+    mutableStateOf(false)
+  }
 
   val context = LocalContext.current
 
@@ -66,44 +77,44 @@ fun ProfileScreen(
       .systemBarsPadding()
   ) {
     DefaultTopBar(
-      title = stringResource(id = R.string.settings),
       leftContent = { UpButton(onClick = onUpButtonClick) }
     )
-    
+
     Spacer(modifier = Modifier.height(LocalSpacing.current.large))
-    
+
     UserIcon(
       imageUri = state.imageUrl,
       onClick = { pickImageResult.launch(getDefaultImageCropperOptions()) }
     )
-    
+
     Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
-    
+
     LikesLabel(count = state.likesCount)
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.medium))
 
     SettingButton(
-      onClick = {  },
-      iconResId = R.drawable.ic_fluent_person_edit_24_filled,
+      onClick = { faqVisible = true },
+      iconResId = R.drawable.ic_faq,
+      label = stringResource(id = R.string.faq)
+    )
+
+    Spacer(modifier = Modifier.height(LocalSpacing.current.extraSmall))
+
+    SettingFolder(
+      iconResId = R.drawable.ic_account_edit,
       label = stringResource(id = R.string.account)
-    )
-
-    Spacer(modifier = Modifier.height(LocalSpacing.current.extraSmall))
-
-    SettingButton(
-      onClick = {  },
-      iconResId = R.drawable.ic_fluent_person_key_20_filled,
-      label = stringResource(id = R.string.privacy_policy)
-    )
-
-    Spacer(modifier = Modifier.height(LocalSpacing.current.extraSmall))
-
-    SettingButton(
-      onClick = {  },
-      iconResId = R.drawable.ic_fluent_person_star_48_filled,
-      label = stringResource(id = R.string.about_app)
-    )
+    ) {
+      TextButton(
+        onClick = { deleteAccountDialogVisible = true }
+      ) {
+        Text(
+          text = stringResource(id = R.string.delete_account),
+          style = MaterialTheme.typography.h4,
+          color = LocalExtendedColors.current.darkBackground
+        )
+      }
+    }
 
     Spacer(modifier = Modifier.weight(1f))
 
@@ -115,6 +126,23 @@ fun ProfileScreen(
     Spacer(modifier = Modifier.height(LocalSpacing.current.large))
 
   }
+
+  YesNoChoiceDialog(
+    visible = deleteAccountDialogVisible,
+    onConfirm = {
+      stateHolder.deleteAccount()
+      onNavigateToAuthScreen()
+    },
+    onDismiss = { deleteAccountDialogVisible = false },
+    title = stringResource(id = R.string.delete_account_question)
+  )
+
+  if (faqVisible) {
+    FaqScreen(onUpButtonClick = { faqVisible = false })
+  }
+
+  if (isFocused)
+    BackHandler(onBack = onUpButtonClick)
 
 }
 
@@ -144,13 +172,19 @@ fun ProfileScreenPreview() {
 
     }
 
+    override fun deleteAccount() {
+
+    }
+
   }
 
   AppTheme() {
     Surface() {
       ProfileScreen(
         stateHolder = stateHolder,
-        onUpButtonClick = {}
+        onUpButtonClick = {},
+        onNavigateToAuthScreen = {},
+        isFocused = true
       )
     }
   }

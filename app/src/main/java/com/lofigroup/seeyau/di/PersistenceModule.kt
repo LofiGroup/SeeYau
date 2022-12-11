@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.lofigroup.backend_api.data.DatabaseHandler
 import com.lofigroup.seeyau.data.AppDatabase
 import com.sillyapps.core.di.AppScope
 import dagger.Module

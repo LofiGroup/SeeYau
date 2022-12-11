@@ -13,7 +13,8 @@ fun ChatScreenNavigation(
   chatComponent: ChatComponent,
   profileComponent: ProfileComponent,
   chatId: Long,
-  onUpButtonClick: () -> Unit
+  onUpButtonClick: () -> Unit,
+  isFocused: Boolean
 ) {
 
   val component = DaggerChatScreenComponent.builder()
@@ -30,7 +31,8 @@ fun ChatScreenNavigation(
 
   ChatScreen(
     stateHolder = viewModel,
-    onUpButtonClick = onUpButtonClick
+    onUpButtonClick = onUpButtonClick,
+    isFocused = isFocused
   )
 
 }

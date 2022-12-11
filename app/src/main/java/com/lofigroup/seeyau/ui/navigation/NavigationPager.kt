@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.ui.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -15,7 +16,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NavigationPager(
-  appModules: AppModules
+  appModules: AppModules,
+  navigateTo: (String) -> Unit,
+  onBackButtonClick: () -> Unit
 ) {
   val coroutineScope = rememberCoroutineScope()
   val pagerState = rememberPagerState(initialPage = 1)
@@ -32,9 +35,12 @@ fun NavigationPager(
         ProfileScreenNavigation(
           profileComponent = appModules.profileModule.domainComponent,
           settingsComponent = appModules.settingsModule.domainComponent,
+          authComponent = appModules.authModuleImpl.domainComponent(),
           onUpButtonClick = {
             coroutineScope.launch { pagerState.animateScrollToPage(1) }
-          }
+          },
+          onNavigateToAuthScreen = { navigateTo(Screen.AuthScreen.route) },
+          isFocused = currentPage == page
         )
       }
       MAIN_SCREEN -> {
@@ -58,7 +64,8 @@ fun NavigationPager(
             chatId = currentChatId,
             onUpButtonClick = {
               coroutineScope.launch { pagerState.animateScrollToPage(1) }
-            }
+            },
+            isFocused = currentPage == page
           )
         }
       }
