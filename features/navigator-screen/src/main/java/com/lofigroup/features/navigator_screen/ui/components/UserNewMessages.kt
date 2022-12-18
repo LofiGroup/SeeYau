@@ -28,10 +28,10 @@ import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.PreviewMessage
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.features.chat.components.ChatMessageItem
-import com.lofigroup.seeyau.features.chat.components.DateHeader
-import com.lofigroup.seeyau.features.chat.styling.ChatMessageStyleProvider
-import com.lofigroup.seeyau.features.chat.styling.LocalChatMessageStyles
+import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
+import com.lofigroup.seeyau.features.chat.ui.components.DateHeader
+import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
+import com.lofigroup.seeyau.features.chat.ui.providers.LocalChatMessageStyles
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.dpToPx
@@ -51,9 +51,7 @@ fun UserNewMessages(
     mutableStateOf(-1)
   }
 
-  ChatMessageStyleProvider(
-    partnerMessageStyleBrush = LocalExtendedColors.current.secondaryTransparentGradient
-  ) {
+  ChatMessageStyleProvider() {
     if (selectedUser.messagesIsCollapsed) {
       Column(
         modifier = modifier

@@ -39,6 +39,7 @@ android {
 dependencies {
   implementation project(":common:ui")
   implementation project(":common:chat")
+  implementation project(":core:audio-recorder")
   implementation project(":domain:chat")
   implementation project(":domain:profile")
   implementation project(":features:send-media")

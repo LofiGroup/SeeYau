@@ -16,7 +16,7 @@ import androidx.core.view.WindowCompat
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
 import com.lofigroup.seeyau.common.ui.components.specific.ExplainPermissionDialog
-import com.lofigroup.seeyau.common.ui.permissions.model.PermissionRationale
+import com.lofigroup.core.permission.model.PermissionRationale
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
     WindowCompat.setDecorFitsSystemWindows(window, false)
     setContent {
       var rationale by remember {
-        mutableStateOf<PermissionRationale?>(null)
+        mutableStateOf<com.lofigroup.core.permission.model.PermissionRationale?>(null)
       }
 
       permissionChannel.registerRationaleCallback { rationale = it }

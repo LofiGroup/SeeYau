@@ -3,7 +3,7 @@ package com.lofigroup.seeyau.di
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
-import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannel
+import com.lofigroup.core.permission.PermissionRequestChannel
 import com.lofigroup.seeyau.data.AppDatabase
 import com.lofigroup.seeyau.ui.MainViewModel
 import com.sillyapps.core.di.AppScope
@@ -22,7 +22,7 @@ interface AppComponent {
 
   fun getContentResolver(): ContentResolver
 
-  fun getPermissionChannel(): PermissionRequestChannel
+  fun getPermissionChannel(): com.lofigroup.core.permission.PermissionRequestChannel
 
   @Component.Builder
   interface Builder {

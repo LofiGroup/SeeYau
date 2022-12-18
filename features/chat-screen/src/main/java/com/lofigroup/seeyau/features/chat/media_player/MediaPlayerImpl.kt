@@ -15,15 +15,14 @@ import kotlin.math.abs
 class MediaPlayerImpl @Inject constructor(
   private val player: Player
 ): MediaPlayer {
-  private val playbackStateFlow = MutableStateFlow(PlaybackState.PAUSED)
-  private val progressFlow = MutableStateFlow(ProgressData())
+  private val state = MutableStateFlow(MediaPlayerState())
 
   private var progressJob: Job? = null
   private val scope = CoroutineScope(Dispatchers.Main)
 
   private val listener = object : Player.Listener {
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-      playbackStateFlow.set { if (isPlaying) PlaybackState.PLAYING else PlaybackState.PAUSED }
+      state.set { it.copy(playbackState = if (isPlaying) PlaybackState.PLAYING else PlaybackState.PAUSED) }
     }
   }
 
@@ -32,24 +31,28 @@ class MediaPlayerImpl @Inject constructor(
     player.addListener(listener)
   }
 
-  override fun observePlaybackState(): Flow<MediaPlayerState> = combine(playbackStateFlow, progressFlow) { playbackState, progressData ->
-    MediaPlayerState(
-      playbackState = playbackState,
-      progressData = progressData
-    )
-  }
+  override fun observePlaybackState(): Flow<MediaPlayerState> = state
 
   override fun seekTo(relativePosition: Float) {
+    Timber.e("Seeking to $relativePosition")
     player.seekTo((player.duration * relativePosition).toLong())
     setProgressData()
   }
 
-  override fun playMedia(mediaItem: MediaItem) {
-    player.setMediaItem(mediaItem)
-    play()
+  override fun playMedia(mediaItem: MediaItem, id: Int) {
+    Timber.e("Play media")
+    if (state.value.currentItemId == id) {
+      resume()
+    }
+    else {
+      player.setMediaItem(mediaItem)
+      state.set { it.copy(currentItemId = id) }
+      play()
+    }
   }
 
   override fun resume() {
+    Timber.e("Resume: currentPosition: ${player.currentPosition}, duration: ${player.duration}")
     if (abs(player.currentPosition - player.duration) <= 20) {
       player.seekToDefaultPosition()
     }
@@ -86,7 +89,11 @@ class MediaPlayerImpl @Inject constructor(
     }
   }
 
+  override fun isCurrentItem(itemId: Int): Boolean {
+    return state.value.currentItemId == itemId
+  }
+
   private fun setProgressData() {
-    progressFlow.set { ProgressData(progress = player.currentPosition, duration = player.duration) }
+    state.set { it.copy(progressData = ProgressData(progress = player.currentPosition, duration = player.duration)) }
   }
 }

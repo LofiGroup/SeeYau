@@ -61,6 +61,7 @@ fun NavigationPager(
           ChatScreenNavigation(
             chatComponent = appModules.chatModule.domainComponent,
             profileComponent = appModules.profileModule.domainComponent,
+            permissionChannel = appModules.appComponent.getPermissionChannel(),
             chatId = currentChatId,
             onUpButtonClick = {
               coroutineScope.launch { pagerState.animateScrollToPage(1) }

@@ -10,10 +10,12 @@ interface MediaPlayer {
 
   fun observePlaybackState(): Flow<MediaPlayerState>
 
-  fun playMedia(mediaItem: MediaItem) {}
+  fun playMedia(mediaItem: MediaItem, id: Int) {}
   fun resume() {}
   fun pause() {}
   fun stop() {}
+
+  fun isCurrentItem(itemId: Int): Boolean = false
 
   fun obtainPlayer(): Player? = null
   fun seekTo(relativePosition: Float) {}

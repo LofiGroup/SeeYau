@@ -4,11 +4,14 @@
     <bytecodeTargetLevel target="1.8">
       <module name="SeeYau.app" target="11" />
       <module name="SeeYau.auth-screen" target="11" />
+      <module name="SeeYau.common.audio-recorder" target="11" />
       <module name="SeeYau.common.chat" target="11" />
       <module name="SeeYau.common.network.main" target="1.8" />
       <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.ui" target="11" />
+      <module name="SeeYau.core.audio-recorder" target="11" />
       <module name="SeeYau.core.network" target="11" />
+      <module name="SeeYau.core.permission" target="11" />
       <module name="SeeYau.core.ui" target="11" />
       <module name="SeeYau.data.auth" target="11" />
       <module name="SeeYau.data.base" target="11" />

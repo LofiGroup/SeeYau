@@ -38,6 +38,7 @@ android {
 dependencies {
   api project(":core:time")
   api project(":core:ui")
+  api project(":core:permission")
 
   implementation appCompat
   implementation coreKtx

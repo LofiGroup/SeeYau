@@ -7,8 +7,8 @@ import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
-import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannelProvider
-import com.lofigroup.seeyau.common.ui.permissions.model.BluetoothPermission
+import com.lofigroup.core.permission.PermissionRequestChannelProvider
+import com.lofigroup.core.permission.model.BluetoothPermission
 import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
@@ -40,7 +40,7 @@ class NearbyServiceImpl : Service(), NearbyService {
   private val state = MutableStateFlow(ResourceState.LOADING)
   private val canStart = MutableStateFlow(false)
 
-  private val permissionChannel by lazy { (application as PermissionRequestChannelProvider).providePermissionChannel() }
+  private val permissionChannel by lazy { (application as com.lofigroup.core.permission.PermissionRequestChannelProvider).providePermissionChannel() }
 
   override fun onBind(p0: Intent?): IBinder {
     return binder
@@ -62,7 +62,7 @@ class NearbyServiceImpl : Service(), NearbyService {
     }
     Timber.e("Starting discovery...")
     scope.launch {
-      val isGranted = permissionChannel.requestPermission(BluetoothPermission)
+      val isGranted = permissionChannel.requestPermission(com.lofigroup.core.permission.model.BluetoothPermission)
       Timber.e("Is granted = $isGranted")
       if (!isGranted) return@launch
 

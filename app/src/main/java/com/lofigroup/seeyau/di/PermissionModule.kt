@@ -1,6 +1,6 @@
 package com.lofigroup.seeyau.di
 
-import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannel
+import com.lofigroup.core.permission.PermissionRequestChannel
 import com.sillyapps.core.di.AppScope
 import dagger.Module
 import dagger.Provides
@@ -10,8 +10,8 @@ object PermissionModule {
 
   @AppScope
   @Provides
-  fun providePermissionRequestChannel(): PermissionRequestChannel {
-    return PermissionRequestChannel()
+  fun providePermissionRequestChannel(): com.lofigroup.core.permission.PermissionRequestChannel {
+    return com.lofigroup.core.permission.PermissionRequestChannel()
   }
 
 }

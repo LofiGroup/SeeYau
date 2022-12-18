@@ -2,4 +2,6 @@
 <resources>
   <string name="last_seen_in">Last seen</string>
   <string name="message">Message…</string>
+  <string name="recording">Recording…</string>
+  <string name="delete">Delete</string>
 </resources>

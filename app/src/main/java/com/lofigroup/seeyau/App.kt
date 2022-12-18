@@ -1,11 +1,10 @@
 package com.lofigroup.seeyau
 
 import android.app.Application
-import com.lofigroup.backend_api.di.BaseDataComponent
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.NavigatorComponent
-import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannel
-import com.lofigroup.seeyau.common.ui.permissions.PermissionRequestChannelProvider
+import com.lofigroup.core.permission.PermissionRequestChannel
+import com.lofigroup.core.permission.PermissionRequestChannelProvider
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
@@ -19,7 +18,8 @@ import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
 import kotlinx.coroutines.MainScope
 import timber.log.Timber
 
-class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider, PermissionRequestChannelProvider, BaseComponentProvider {
+class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider,
+  com.lofigroup.core.permission.PermissionRequestChannelProvider, BaseComponentProvider {
 
   private val appScope = MainScope()
 
@@ -61,7 +61,7 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
     return appModules.settingsModule.domainComponent
   }
 
-  override fun providePermissionChannel(): PermissionRequestChannel {
+  override fun providePermissionChannel(): com.lofigroup.core.permission.PermissionRequestChannel {
     return appModules.appComponent.getPermissionChannel()
   }
 
