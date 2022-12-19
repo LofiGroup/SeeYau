@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
+import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
@@ -21,6 +22,9 @@ fun ColumnScope.ChatMessages(
   listState: LazyListState,
   items: Map<String, List<UIChatMessage>>
 ) {
+  val mediaPlayer = LocalMediaPlayer.current
+
+
   ChatMessageStyleProvider() {
     Box(modifier = Modifier
       .weight(1f)) {

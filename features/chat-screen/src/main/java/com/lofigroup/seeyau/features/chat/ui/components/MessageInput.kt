@@ -285,7 +285,7 @@ fun RowScope.RecordingFinishedMessageInput(
     AudioPlayerControls(
       audioContent = UIMessageType.Audio(
         mediaItem = MediaItem.fromUri(audioUri),
-        duration = intervalToString(getAudioFileDuration(audioUri.toString(), context))
+        duration = getAudioFileDuration(audioUri.toString(), context)
       ),
       id = -2
     )

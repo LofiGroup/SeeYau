@@ -21,6 +21,7 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 fun ChatMessageItem(
   chatMessage: UIChatMessage,
   modifier: Modifier = Modifier,
+  isFocused: Boolean = false,
   maxLines: Int = Int.MAX_VALUE
 ) {
   val style =

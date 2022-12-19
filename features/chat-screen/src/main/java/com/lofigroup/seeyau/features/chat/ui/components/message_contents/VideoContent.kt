@@ -7,7 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +24,7 @@ import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
+import com.lofigroup.seeyau.features.chat.ui.components.defaultMediaState
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
@@ -34,7 +35,18 @@ fun VideoContent(
   id: Int
 ) {
   val mediaPlayer = LocalMediaPlayer.current
-  val isPlaying = mediaPlayer.isCurrentItem(id)
+
+  var state by remember {
+    mutableStateOf(defaultMediaState)
+  }
+
+  LaunchedEffect(Unit) {
+    mediaPlayer.registerState(id = id).collect() { state = it }
+  }
+
+  DisposableEffect(key1 = Unit) {
+    onDispose { mediaPlayer.unregisterState(id) }
+  }
 
   Box(
     modifier = Modifier
@@ -43,7 +55,7 @@ fun VideoContent(
       .padding(bottom = LocalSpacing.current.extraSmall)
       .clip(MaterialTheme.shapes.medium)
   ) {
-    if (isPlaying) {
+    if (state.isCurrentItem) {
       AndroidView(
         factory = { context ->
           PlayerView(context).also {

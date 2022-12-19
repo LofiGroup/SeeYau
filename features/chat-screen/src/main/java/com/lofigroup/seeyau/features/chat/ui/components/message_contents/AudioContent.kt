@@ -6,7 +6,9 @@ import com.lofigroup.seeyau.features.chat.model.UIMessageType
 
 @Composable
 fun AudioContent(
-  audioContent: UIMessageType.Audio
+  audioContent: UIMessageType.Audio,
+  isFocused: Boolean,
+  id: Int
 ) {
 
   Box(

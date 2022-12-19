@@ -14,7 +14,7 @@ sealed interface UIMessageType {
   ): UIMessageType
   class Audio(
     val mediaItem: MediaItem,
-    val duration: String
+    val duration: Long
   ): UIMessageType
   class Image(
     val uri: String
@@ -29,7 +29,7 @@ fun MessageType.toUIMessageType(): UIMessageType {
     is MessageType.Plain -> UIMessageType.Plain
 
     is MessageType.Image -> UIMessageType.Image(uri)
-    is MessageType.Audio -> UIMessageType.Audio(mediaItem = MediaItem.fromUri(uri), duration = intervalToString(duration))
+    is MessageType.Audio -> UIMessageType.Audio(mediaItem = MediaItem.fromUri(uri), duration = duration)
     is MessageType.Video -> UIMessageType.Video(mediaItem = MediaItem.fromUri(uri))
   }
 }

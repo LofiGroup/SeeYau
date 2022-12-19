@@ -8,14 +8,13 @@ import kotlinx.coroutines.flow.flow
 
 interface MediaPlayer {
 
-  fun observePlaybackState(): Flow<MediaPlayerState>
+  fun registerState(id: Int, duration: Long = 0L): Flow<MediaPlayerState>
+  fun unregisterState(id: Int) {}
 
   fun playMedia(mediaItem: MediaItem, id: Int) {}
   fun resume() {}
   fun pause() {}
   fun stop() {}
-
-  fun isCurrentItem(itemId: Int): Boolean = false
 
   fun obtainPlayer(): Player? = null
   fun seekTo(relativePosition: Float) {}
@@ -25,5 +24,5 @@ interface MediaPlayer {
 }
 
 object FakeMediaPlayer: MediaPlayer {
-  override fun observePlaybackState(): Flow<MediaPlayerState> = flow {  }
+  override fun registerState(id: Int, duration: Long): Flow<MediaPlayerState> = flow {}
 }

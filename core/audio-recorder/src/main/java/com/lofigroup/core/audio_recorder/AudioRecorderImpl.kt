@@ -52,7 +52,7 @@ class AudioRecorderImpl @Inject constructor(
   private fun setOutputFile() {
     val recordingsDir = File(context.filesDir, context.getString(R.string.audio_records_dir))
     recordingsDir.mkdir()
-    audioFile =  File(recordingsDir,  "${System.currentTimeMillis()}.aac")
+    audioFile = File(recordingsDir,  "${System.currentTimeMillis()}.mp3")
     mediaRecorder.setOutputFile(audioFile.path)
   }
 
@@ -60,8 +60,8 @@ class AudioRecorderImpl @Inject constructor(
     mediaRecorder.apply {
       tryReset()
       setAudioSource(MediaRecorder.AudioSource.MIC)
-      setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
-      setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+      setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+      setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
 
       setMaxFileSize(2_000_000)
 
