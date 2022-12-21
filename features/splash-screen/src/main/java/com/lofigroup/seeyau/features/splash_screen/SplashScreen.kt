@@ -23,24 +23,22 @@ fun SplashScreen(
     stateHolder.getState()
   }.collectAsState(initial = SplashScreenState())
 
-  Surface {
-    when (val screenState = state.state) {
-      State.IsLoggedIn -> {
-        LaunchedEffect(state) {
-          isLoggedIn(true)
-        }
+  when (val screenState = state.state) {
+    State.IsLoggedIn -> {
+      LaunchedEffect(state) {
+        isLoggedIn(true)
       }
-      State.Loading -> LoadingScreen()
-      State.ShouldAuthorize -> {
-        LaunchedEffect(state) {
-          isLoggedIn(false)
-        }
-      }
-      is State.UnknownError -> UnknownErrorScreen(
-        message = screenState.message,
-        onTryAgain = stateHolder::load
-      )
     }
+    State.Loading -> LoadingScreen()
+    State.ShouldAuthorize -> {
+      LaunchedEffect(state) {
+        isLoggedIn(false)
+      }
+    }
+    is State.UnknownError -> UnknownErrorScreen(
+      message = screenState.message,
+      onTryAgain = stateHolder::load
+    )
   }
 
 }
