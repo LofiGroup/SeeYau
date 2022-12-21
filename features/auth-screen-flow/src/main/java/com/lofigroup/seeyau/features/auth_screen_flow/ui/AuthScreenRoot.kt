@@ -29,63 +29,60 @@ fun AuthScreenRoot(
     }
   }
 
-  Surface(
+  Box(
     modifier = Modifier
+      .fillMaxSize()
   ) {
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-    ) {
-      when (state.routePoint) {
-        RoutePoint.Welcome -> FirstScreen(
-          onNextButtonClick = {
+    when (state.routePoint) {
+      RoutePoint.Welcome -> FirstScreen(
+        onNextButtonClick = {
+          stateHolder.setRoutePoint(RoutePoint.PickPicture)
+        }
+      )
+      RoutePoint.EnterName -> {
+        EnterNameScreen(
+          isDone = {
+            stateHolder.setName(it)
             stateHolder.setRoutePoint(RoutePoint.PickPicture)
-          }
+          },
+          name = state.name
         )
-        RoutePoint.EnterName -> {
-          EnterNameScreen(
-            isDone = {
-              stateHolder.setName(it)
-              stateHolder.setRoutePoint(RoutePoint.PickPicture)
-            },
-            name = state.name
-          )
-        }
-        RoutePoint.EnterPhone -> {
-          EnterPhoneNumberScreen(
-            isDone = {
-              stateHolder.startAuth()
-            },
-            phoneNumber = state.number,
-            setPhoneNumber = stateHolder::setNumber,
-            state = state.enterNumberScreenState
-          )
-        }
+      }
+      RoutePoint.EnterPhone -> {
+        EnterPhoneNumberScreen(
+          isDone = {
+            stateHolder.startAuth()
+          },
+          phoneNumber = state.number,
+          setPhoneNumber = stateHolder::setNumber,
+          state = state.enterNumberScreenState
+        )
+      }
 
-        RoutePoint.VerifyPhone -> {
-          VerifyPhoneNumberScreen(
-            setCode = stateHolder::setCode,
-            phoneNumber = state.number,
-            state = state.verifyCodeScreenState,
-            onUpButtonClick = { stateHolder.setRoutePoint(RoutePoint.EnterPhone) }
-          )
-        }
-        RoutePoint.PickPicture -> {
-          AddPhotoScreen(
-            imageUri = state.imageUri,
-            setImageUri = stateHolder::setImageUri,
-            throwError = stateHolder::throwError,
-            update = stateHolder::quickAuth,
-            flowState = state.flowState,
-            onUpButtonClick = { stateHolder.setRoutePoint(RoutePoint.Welcome) }
-          )
-        }
-        RoutePoint.AlreadyRegistered -> {
-          AlreadyRegisteredScreen()
-        }
+      RoutePoint.VerifyPhone -> {
+        VerifyPhoneNumberScreen(
+          setCode = stateHolder::setCode,
+          phoneNumber = state.number,
+          state = state.verifyCodeScreenState,
+          onUpButtonClick = { stateHolder.setRoutePoint(RoutePoint.EnterPhone) }
+        )
+      }
+      RoutePoint.PickPicture -> {
+        AddPhotoScreen(
+          imageUri = state.imageUri,
+          setImageUri = stateHolder::setImageUri,
+          throwError = stateHolder::throwError,
+          update = stateHolder::quickAuth,
+          flowState = state.flowState,
+          onUpButtonClick = { stateHolder.setRoutePoint(RoutePoint.Welcome) }
+        )
+      }
+      RoutePoint.AlreadyRegistered -> {
+        AlreadyRegisteredScreen()
       }
     }
   }
+
 
 }
 

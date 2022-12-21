@@ -56,20 +56,17 @@ fun ChatItem(
     background = { SwipeToDismissBackground() },
     directions = setOf(DismissDirection.EndToStart)
   ) {
-    Surface(
+    Row(
       modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colors.background)
         .clickable { onClick(chat.id) }
+        .padding(LocalSpacing.current.medium)
+        .height(IntrinsicSize.Min),
+      verticalAlignment = Alignment.CenterVertically
     ) {
-      Row(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(LocalSpacing.current.medium)
-          .height(IntrinsicSize.Min),
-        verticalAlignment = Alignment.CenterVertically
-      ) {
 
-        BaseChatItemContent(chat = chat)
-      }
+      BaseChatItemContent(chat = chat)
     }
   }
 }
@@ -85,7 +82,7 @@ fun SwipeToDismissBackground() {
       modifier = Modifier
         .fillMaxWidth(0.5f)
         .fillMaxHeight()
-        .background(MaterialTheme.colors.error)
+        .background(MaterialTheme.colors.surface)
     )
     Row(
       verticalAlignment = Alignment.CenterVertically,
