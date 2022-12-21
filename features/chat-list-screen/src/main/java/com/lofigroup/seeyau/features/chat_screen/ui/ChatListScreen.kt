@@ -41,33 +41,29 @@ fun ChatListScreen(
     mutableStateOf(0L)
   }
 
-  Surface(
-    modifier = Modifier
-      .fillMaxSize()
+  Column(
+    modifier = Modifier.systemBarsPadding()
   ) {
-    Column(
-      modifier = Modifier.systemBarsPadding()
-    ) {
-      TopBar(
-        profile = state.profile,
-        onProfileButtonClick = onNavigateToSettingsScreen
-      )
+    TopBar(
+      profile = state.profile,
+      onProfileButtonClick = onNavigateToSettingsScreen
+    )
 
-      ChatList(
-        nearby = state.nearbyFolder,
-        metToday = state.metFolder,
-        chats = state.interactionFolder,
-        isVisible = state.isVisible,
-        onItemClick = onNavigateToChatScreen,
-        onGridItemClick = stateHolder::setCurrentChat,
-        modifier = Modifier.weight(1f),
-        onDeleteChat = {
-          deleteUserDialogVisible = true
-          userToBlacklist = it
-        }
-      )
-    }
+    ChatList(
+      nearby = state.nearbyFolder,
+      metToday = state.metFolder,
+      chats = state.interactionFolder,
+      isVisible = state.isVisible,
+      onItemClick = onNavigateToChatScreen,
+      onGridItemClick = stateHolder::setCurrentChat,
+      modifier = Modifier.weight(1f),
+      onDeleteChat = {
+        deleteUserDialogVisible = true
+        userToBlacklist = it
+      }
+    )
   }
+
 
   CloseUserProfileDialog(
     chat = state.currentItem,

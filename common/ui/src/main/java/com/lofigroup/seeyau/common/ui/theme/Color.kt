@@ -60,7 +60,7 @@ val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
 val DarkerGray = Color(0xFF404040)
 val DarkestGray = Color(0xFF141414)
-val MostDarkestGray = Color(0xFF121212)
+val MostDarkestGray = Color(0xFF292929)
 
 internal val DarkColorPalette = darkColors(
   primary = PurpleRed,

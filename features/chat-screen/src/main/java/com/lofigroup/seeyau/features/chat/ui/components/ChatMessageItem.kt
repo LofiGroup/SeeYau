@@ -59,7 +59,7 @@ fun ChatMessageItem(
             audioContent = chatMessage.type,
             modifier = Modifier
               .clip(MaterialTheme.shapes.large)
-              .background(MaterialTheme.colors.primaryVariant)
+              .background(style.color)
           )
         }
         else -> {
@@ -69,7 +69,7 @@ fun ChatMessageItem(
             maxLines = maxLines,
             modifier = Modifier
               .clip(MaterialTheme.shapes.large)
-              .background(MaterialTheme.colors.primaryVariant)
+              .background(style.color)
           )
         }
       }

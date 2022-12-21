@@ -31,7 +31,6 @@ fun FaqScreen(
     modifier = Modifier
       .fillMaxSize()
       .systemBarsPadding()
-      .background(MaterialTheme.colors.surface)
   ) {
     DefaultTopBar(
       title = stringResource(id = R.string.faq),
