@@ -57,6 +57,7 @@ fun ChatListScreen(
         nearby = state.nearbyFolder,
         metToday = state.metFolder,
         chats = state.interactionFolder,
+        isVisible = state.isVisible,
         onItemClick = onNavigateToChatScreen,
         onGridItemClick = stateHolder::setCurrentChat,
         modifier = Modifier.weight(1f),

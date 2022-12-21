@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,9 +22,11 @@ import com.lofigroup.seeyau.common.ui.R
 fun TopBar(
   partner: User,
   onUpButtonClick: () -> Unit,
-  onMoreButtonClick: () -> Unit,
   onUserIconClick: () -> Unit
 ) {
+  val context = LocalContext.current
+  val lastSeen = remember(partner.lastConnection) { getLocalizedLastSeen(partner.lastConnection, context.resources) }
+
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier
@@ -45,23 +49,9 @@ fun TopBar(
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
-    Column(
-      modifier = Modifier
-        .weight(1f)
-    ) {
-      Text(
-        text = partner.name,
-        style = MaterialTheme.typography.body2
-      )
-      Text(
-        text = getLocalizedLastSeen(partner.lastConnection, LocalContext.current.resources),
-        style = MaterialTheme.typography.subtitle2
-      )
-    }
-
-    ImageButton(
-      onClick = onMoreButtonClick,
-      painter = painterResource(id = R.drawable.ic_more_1_icon),
+    Text(
+      text = lastSeen,
+      style = MaterialTheme.typography.subtitle2
     )
   }
 }

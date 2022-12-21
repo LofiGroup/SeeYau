@@ -24,7 +24,8 @@ import com.sillyapps.core.ui.util.gridItems
 
 fun LazyListScope.GridChatList(
   items: List<ChatBrief>,
-  onItemClick: (ChatBrief) -> Unit
+  onItemClick: (ChatBrief) -> Unit,
+  keyPrefix: String
 ) {
   if (items.isEmpty()) {
     item { EmptyFolderContent() }
@@ -32,6 +33,7 @@ fun LazyListScope.GridChatList(
     gridItems(
       data = items,
       columnCount = 4,
+      keyPrefix = keyPrefix,
       modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
       GridChatItem(

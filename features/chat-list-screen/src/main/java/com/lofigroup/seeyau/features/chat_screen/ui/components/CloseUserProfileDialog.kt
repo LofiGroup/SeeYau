@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.features.chat_screen.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,6 +11,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.lofigroup.seeyau.common.ui.components.SwipeableBox
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.profile.model.User
@@ -31,6 +32,7 @@ import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.components.showToast
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -43,52 +45,24 @@ fun CloseUserProfileDialog(
   onChatButtonClick: (Long) -> Unit,
   likeUser: (Boolean, Long) -> Unit
 ) {
+  val coroutineScope = rememberCoroutineScope()
+  val swipeableState = rememberSwipeableState(initialValue = 1)
+
   if (chat != null) {
     Dialog(
       properties = DialogProperties(
         usePlatformDefaultWidth = false
       ),
-      onDismissRequest = onDismiss
+      onDismissRequest = { coroutineScope.launch { swipeableState.animateTo(1) } }
     ) {
-      val coroutineScope = rememberCoroutineScope()
-      var height by remember {
-        mutableStateOf(1f)
-      }
-      val swipeableState = rememberSwipeableState(initialValue = 0)
-      val anchors = mapOf(0f to 0, height to 1)
-
-      LaunchedEffect(swipeableState.isAnimationRunning) {
-        if (!swipeableState.isAnimationRunning && swipeableState.currentValue == 1) {
-          onDismiss()
-        }
-      }
-
-      Box(
-        modifier = Modifier
-          .fillMaxSize()
-          .swipeable(
-            state = swipeableState,
-            anchors = anchors,
-            orientation = Orientation.Vertical,
-            thresholds = { _, _ -> FractionalThreshold(0.5f) }
-          )
-          .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = {
-              coroutineScope.launch { swipeableState.animateTo(1) }
-            }
-          )
-          .onSizeChanged {
-            height = it.height.toFloat()
-          }
+      SwipeableBox(
+        onDismiss = onDismiss,
+        swipeableState = swipeableState,
+        height = LocalConfiguration.current.screenHeightDp.dp
       ) {
-
         Column(
           modifier = Modifier
             .clip(MaterialTheme.shapes.large)
-            .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) }
-            .align(Alignment.BottomCenter)
         ) {
           ProfilePicture(
             user = chat.partner,
@@ -97,7 +71,11 @@ fun CloseUserProfileDialog(
           )
 
           TextButton(
-            onClick = { onChatButtonClick(chat.id) },
+            onClick = {
+              onChatButtonClick(chat.id)
+              coroutineScope.launch { swipeableState.snapTo(1) }
+              onDismiss()
+            },
             modifier = Modifier
               .padding(LocalSpacing.current.small)
               .fillMaxWidth()

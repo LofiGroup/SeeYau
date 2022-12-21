@@ -13,10 +13,6 @@ import javax.inject.Inject
 class EventsDataSourceImpl @Inject constructor(): EventsDataSource {
   private val events = MutableSharedFlow<ChatEvent>(extraBufferCapacity = 1)
 
-  init {
-    Timber.e("New event data source is created!")
-  }
-
   override fun onNewMessageEvent(event: NewChatMessage) {
     events.tryEmit(event)
   }

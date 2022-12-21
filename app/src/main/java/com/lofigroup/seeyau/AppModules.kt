@@ -72,6 +72,7 @@ class AppModules(
       sharedPreferences = appComponent.getSharedPref(),
       ioScope = appScope,
       profileDataHandler = profileModule.dataComponent.getProfileDataHandler(),
+      userNotificationChannel = baseDataModule.domainComponent.getUserNotificationChannel(),
       context = appContext
     )
   }

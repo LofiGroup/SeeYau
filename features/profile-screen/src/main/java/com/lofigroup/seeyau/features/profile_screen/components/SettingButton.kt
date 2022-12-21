@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.features.profile_screen.component
+package com.lofigroup.seeyau.features.profile_screen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.features.profile_screen.component
+package com.lofigroup.seeyau.features.profile_screen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.lofigroup.seeyau.features.profile_screen.R
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSize
 import com.lofigroup.seeyau.common.ui.R as CommonR

@@ -3,81 +3,68 @@ package com.lofigroup.seeyau.features.chat.ui.components
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.res.painterResource
 import androidx.media3.common.MediaItem
+import com.lofigroup.seeyau.features.chat.R
 import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.media_player.model.PlaybackState
-import com.lofigroup.seeyau.features.chat.media_player.model.ProgressData
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
+import com.lofigroup.seeyau.features.chat.media_player.ui.rememberMediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 val defaultMediaState = MediaPlayerState()
 
 @Composable
 fun AudioPlayerControls(
   audioContent: UIMessageType.Audio,
-  id: Int
+  id: Long
 ) {
-  val mediaPlayer = LocalMediaPlayer.current
-
-  var state by remember {
-    mutableStateOf(defaultMediaState)
-  }
-
-  LaunchedEffect(Unit) {
-    mediaPlayer.registerState(id = id, duration = audioContent.duration).collect() { state = it }
-  }
-
-  DisposableEffect(key1 = Unit) {
-    onDispose { mediaPlayer.unregisterState(id) }
-  }
+  val state = rememberMediaPlayerState(id = id, duration = audioContent.duration)
 
   Row(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = LocalSpacing.current.medium, end = LocalSpacing.current.small),
     verticalAlignment = Alignment.CenterVertically
   ) {
-    PlaybackControls(
-      onPlayButtonClick = { mediaPlayer.playMedia(mediaItem = audioContent.mediaItem, id = id) },
-      onPauseButtonClick = { mediaPlayer.pause() },
-      isPlaying = state.playbackState == PlaybackState.PLAYING
+    PlayerProgressBar(
+      state = state
     )
 
-    PlayerProgressBar(
-      isPlaying = state.isCurrentItem,
-      progressData = state.progressData,
-      onSeekTo = { mediaPlayer.seekTo(it) }
+    PlaybackControls(
+      mediaItem = audioContent.mediaItem,
+      state = state,
+      id = id
     )
   }
 }
 
 @Composable
 fun PlaybackControls(
-  onPlayButtonClick: () -> Unit,
-  onPauseButtonClick: () -> Unit,
-  isPlaying: Boolean
+  mediaItem: MediaItem,
+  state: MediaPlayerState,
+  id: Long
 ) {
-  IconButton(onClick = { if (isPlaying) onPauseButtonClick() else onPlayButtonClick() }) {
+  val mediaPlayer = LocalMediaPlayer.current
+  val isPlaying = state.playbackState == PlaybackState.PLAYING
+
+  IconButton(onClick = {
+    if (isPlaying)
+      mediaPlayer.pause()
+    else
+      mediaPlayer.playMedia(mediaItem, id)
+  }) {
     Icon(
-      imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+      painter = painterResource(id = if (isPlaying) R.drawable.ic_pause_rounded else R.drawable.ic_play_arrow_rounded),
       contentDescription = null,
       modifier = Modifier.size(LocalSize.current.medium)
     )
@@ -86,26 +73,26 @@ fun PlaybackControls(
 
 @Composable
 fun RowScope.PlayerProgressBar(
-  isPlaying: Boolean,
-  progressData: ProgressData,
-  onSeekTo: (Float) -> Unit
+  state: MediaPlayerState
 ) {
+  val mediaPlayer = LocalMediaPlayer.current
+
   BoxWithConstraints(
     modifier = Modifier.weight(1f)
   ) {
     Box(
       modifier = Modifier
         .align(Alignment.Center)
-        .pointerInput(isPlaying) {
+        .pointerInput(state.isCurrentItem) {
           detectTapGestures { offset: Offset ->
-            if (isPlaying) {
-              onSeekTo(offset.x / maxWidth.toPx())
+            if (state.isCurrentItem) {
+              mediaPlayer.seekTo(offset.x / maxWidth.toPx())
             }
           }
         }
     ) {
       LinearProgressIndicator(
-        progress = progressData.relativeProgress,
+        progress = state.progressData.relativeProgress,
         color = MaterialTheme.colors.onBackground,
         backgroundColor = Color.LightGray,
         modifier = Modifier
@@ -113,14 +100,5 @@ fun RowScope.PlayerProgressBar(
           .padding(vertical = LocalSpacing.current.extraSmall)
       )
     }
-
-    Text(
-      text = "${progressData.progress} / ${progressData.duration}",
-      style = MaterialTheme.typography.caption,
-      modifier = Modifier
-        // TODO not adaptive
-        .padding(top = 20.dp)
-        .align(Alignment.CenterEnd)
-    )
   }
 }

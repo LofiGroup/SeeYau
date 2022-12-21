@@ -90,7 +90,6 @@ class AudioRecorderImpl @Inject constructor(
     if (state.value !is AudioRecorderState.Recording) return
 
     try {
-      Timber.e("Stopping mediaRecorder")
       mediaRecorder.stop()
 
       val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", audioFile)
@@ -105,7 +104,6 @@ class AudioRecorderImpl @Inject constructor(
     job?.cancel()
 
     if (!canRecordAudio()) {
-      Timber.e("This phone doesn't have mic!")
       return
     }
 
@@ -121,7 +119,6 @@ class AudioRecorderImpl @Inject constructor(
       }
       catch (e: Exception) {
         Timber.e(e)
-        Timber.e("Catch exception in start()")
         mediaRecorder.reset()
         state.set { AudioRecorderState.Waiting }
       }
@@ -132,18 +129,14 @@ class AudioRecorderImpl @Inject constructor(
 
 
   override fun deleteRecording() {
-    Timber.e("Deleting recording")
     try {
       audioFile.delete()
     } catch (e: IOException) {
-      Timber.e("IOException on delete")
     }
-    job?.cancel()
-    state.set { AudioRecorderState.Waiting }
+    reset()
   }
 
   override fun release() {
-    Timber.e("Releasing recording")
     job?.cancel()
     tryReset()
     deleteRecording()
@@ -151,7 +144,6 @@ class AudioRecorderImpl @Inject constructor(
   }
 
   override fun reset() {
-    Timber.e("Resetting recording")
     job?.cancel()
     tryReset()
     audioFile = File("")

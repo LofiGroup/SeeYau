@@ -4,4 +4,7 @@
   <string name="message">Message…</string>
   <string name="recording">Recording…</string>
   <string name="delete">Delete</string>
+
+  <string name="say_hello">Say Hello</string>
+  <string name="hello">Hello &#128075;</string>
 </resources>

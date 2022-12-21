@@ -29,7 +29,7 @@ fun ChatMessage.toUIMessage(resources: Resources, pos: Int): UIChatMessage {
   )
 }
 
-fun getPreviewPrivateMessage(
+fun getPreviewMessage(
   id: Long = 1,
   authorIsMe: Boolean = true,
   message: String = "Hello!",

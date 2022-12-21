@@ -40,7 +40,6 @@ class ChatScreenViewModel @Inject constructor(
 
   private val blacklistUserUseCase: BlacklistUserUseCase,
 
-  private val chatId: Long,
   private val resources: Resources,
 
   private val mediaPlayer: MediaPlayer,
@@ -51,21 +50,27 @@ class ChatScreenViewModel @Inject constructor(
   private val state = MutableStateFlow(ChatScreenState())
   private val commands = MutableSharedFlow<ChatScreenCommand>()
 
-  private val job: Job
+  private var observeChatJob: Job? = null
 
-  init {
-    job = viewModelScope.launch {
-      coroutineScope {
-        launch {
-          val chat = getChatUseCase(chatId)
-          state.apply { value = value.copy(message = chat.draft) }
-        }
+  private var currentChatId = -1L
 
-        launch { markChatAsReadUseCase(chatId) }
-        launch { observeProfileUpdates() }
-        launch { observeMessages() }
-        launch { observeChatEvents() }
+  fun setChatId(chatId: Long) {
+    observeChatJob?.cancel()
+    currentChatId = chatId
+    audioRecorder.deleteRecording()
+
+    observeChatJob = viewModelScope.launch {
+      launch { observeProfileUpdates(chatId) }
+
+      launch {
+        val chat = getChatUseCase(chatId)
+        state.apply { value = value.copy(message = chat.draft) }
       }
+
+      launch { markChatAsReadUseCase(chatId) }
+
+      launch { observeMessages(chatId) }
+      launch { observeChatEvents(chatId) }
     }
   }
 
@@ -84,7 +89,7 @@ class ChatScreenViewModel @Inject constructor(
     state.apply { value = value.copy(message = "") }
 
     viewModelScope.launch {
-      sendChatMessageUseCase(ChatMessageRequest(message, chatId, mediaUri = mediaUri.toString()))
+      sendChatMessageUseCase(ChatMessageRequest(message, currentChatId, mediaUri = mediaUri.toString()))
     }
   }
 
@@ -99,13 +104,13 @@ class ChatScreenViewModel @Inject constructor(
     viewModelScope.launch {
       updateChatDraftUseCase(ChatDraftUpdate(
         message = state.value.message,
-        chatId = chatId
+        chatId = currentChatId
       ))
     }
   }
 
   override fun onIgnoreUser() {
-    job.cancel()
+    observeChatJob?.cancel()
     viewModelScope.launch {
       blacklistUserUseCase(state.value.partner.id)
       commands.emit(ChatScreenCommand.Exit)
@@ -116,7 +121,7 @@ class ChatScreenViewModel @Inject constructor(
     return audioRecorder
   }
 
-  private suspend fun observeProfileUpdates() {
+  private suspend fun observeProfileUpdates(chatId: Long) {
     val profileId = getUserIdByChatIdUseCase(chatId)
 
     if (profileId == null) {
@@ -129,7 +134,7 @@ class ChatScreenViewModel @Inject constructor(
     }
   }
 
-  private suspend fun observeMessages() {
+  private suspend fun observeMessages(chatId: Long) {
     observeChatMessages(chatId).collect() { messages ->
       state.apply {
         value = value.copy(
@@ -141,7 +146,7 @@ class ChatScreenViewModel @Inject constructor(
     }
   }
 
-  private suspend fun observeChatEvents() {
+  private suspend fun observeChatEvents(chatId: Long) {
     observeChatEventsUseCase().collect() {
       if (it.chatId != chatId) return@collect
 

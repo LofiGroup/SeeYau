@@ -41,6 +41,7 @@ dependencies {
 
   implementation project(":domain:chat")
   implementation project(":domain:profile")
+  implementation project(":domain:base")
 
   implementation appCompat
   implementation coreKtx

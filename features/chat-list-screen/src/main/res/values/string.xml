@@ -12,4 +12,12 @@
 
   <string name="sent_you_message">Sent you message</string>
   <string name="chat_">Chat…</string>
+
+  <string name="not_visible_info">
+    "You are currently invisible to other people
+
+    Unfortunately you can't see new people
+
+    Disable this feature in settings and look around"
+  </string>
 </resources>

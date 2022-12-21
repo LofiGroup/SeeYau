@@ -13,6 +13,7 @@ import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
+import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificationChannel
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
@@ -50,6 +51,9 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun ioScope(scope: CoroutineScope): Builder
+
+    @BindsInstance
+    fun userNotificationChannel(userNotificationChannel: UserNotificationChannel): Builder
 
     fun build(): ChatDataComponent
   }

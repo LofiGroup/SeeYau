@@ -13,6 +13,7 @@ data class ChatListScreenState(
   val metFolder: List<ChatBrief> = listOf(),
   val interactionFolder: List<ChatBrief> = listOf(),
   val newMessagesCount: Int = 0,
+  val isVisible: Boolean = true,
 
   val currentItem: ChatBrief? = null
 )

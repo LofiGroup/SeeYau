@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.features.auth_screen_flow.ui.screens
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -147,6 +148,8 @@ fun BoxScope.AddPhotoScreen(
         .navigationBarsPadding()
     )
   }
+
+  BackHandler(onBack = onUpButtonClick)
 }
 
 @Preview

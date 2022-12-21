@@ -1,18 +1,18 @@
 package com.lofigroup.seeyau.features.chat.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.features.chat.ui.components.message_contents.BaseMessage
-import com.lofigroup.seeyau.features.chat.ui.components.message_contents.LikeMessage
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
-import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
-import com.lofigroup.seeyau.features.chat.ui.components.message_contents.ImageContent
-import com.lofigroup.seeyau.features.chat.ui.components.message_contents.VideoContent
+import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
+import com.lofigroup.seeyau.features.chat.ui.components.message_contents.*
 import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
 import com.lofigroup.seeyau.features.chat.ui.providers.LocalChatMessageStyles
 import com.sillyapps.core.ui.theme.LocalSpacing
@@ -21,7 +21,6 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 fun ChatMessageItem(
   chatMessage: UIChatMessage,
   modifier: Modifier = Modifier,
-  isFocused: Boolean = false,
   maxLines: Int = Int.MAX_VALUE
 ) {
   val style =
@@ -34,24 +33,45 @@ fun ChatMessageItem(
       .padding(start = style.startPadding, end = style.endPadding)
       .padding(bottom = LocalSpacing.current.small)
   ) {
-    when (chatMessage.type) {
-      UIMessageType.Like -> {
-        LikeMessage(style = style)
-      }
-      is UIMessageType.Video -> {
-        VideoContent(
-          videoItem = chatMessage.type,
-          id = chatMessage.pos
-        )
-      }
-      is UIMessageType.Image -> {
-        ImageContent(
-          content = chatMessage.type,
-          createdIn = chatMessage.dateTime.time
-        )
-      }
-      else -> {
-        BaseMessage(message = chatMessage, style = style, maxLines = maxLines)
+    Box(
+      modifier = Modifier
+        .align(style.alignment)
+    ) {
+      when (chatMessage.type) {
+        UIMessageType.Like -> {
+          LikeMessage(style = style)
+        }
+        is UIMessageType.Video -> {
+          VideoContent(
+            videoItem = chatMessage.type,
+            message = chatMessage
+          )
+        }
+        is UIMessageType.Image -> {
+          ImageContent(
+            content = chatMessage.type,
+            message = chatMessage
+          )
+        }
+        is UIMessageType.Audio -> {
+          AudioContent(
+            message = chatMessage,
+            audioContent = chatMessage.type,
+            modifier = Modifier
+              .clip(MaterialTheme.shapes.large)
+              .background(MaterialTheme.colors.primaryVariant)
+          )
+        }
+        else -> {
+          PlainMessage(
+            message = chatMessage,
+            style = style,
+            maxLines = maxLines,
+            modifier = Modifier
+              .clip(MaterialTheme.shapes.large)
+              .background(MaterialTheme.colors.primaryVariant)
+          )
+        }
       }
     }
   }
@@ -64,7 +84,7 @@ fun ChatMyMessagePreview() {
     Surface() {
       ChatMessageStyleProvider() {
         ChatMessageItem(
-          chatMessage = getPreviewPrivateMessage()
+          chatMessage = getPreviewMessage()
         )
       }
     }
@@ -78,7 +98,7 @@ fun ChatPartnerMessagePreview() {
     Surface() {
       ChatMessageStyleProvider() {
         ChatMessageItem(
-          chatMessage = getPreviewPrivateMessage(authorIsMe = false)
+          chatMessage = getPreviewMessage(authorIsMe = false)
         )
       }
     }

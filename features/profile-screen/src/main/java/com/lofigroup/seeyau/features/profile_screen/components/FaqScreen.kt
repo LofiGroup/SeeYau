@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.features.profile_screen.component
+package com.lofigroup.seeyau.features.profile_screen.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -14,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
 import com.lofigroup.seeyau.common.ui.components.UpButton
 import com.lofigroup.seeyau.common.ui.theme.AppTheme

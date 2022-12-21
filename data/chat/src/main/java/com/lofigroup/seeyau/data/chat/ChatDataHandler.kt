@@ -92,6 +92,10 @@ class ChatDataHandler @Inject constructor(
     return messageEntity.toSendMessageDto()
   }
 
+  suspend fun deleteMessage(messageId: Long) {
+    chatDao.deleteMessage(messageId)
+  }
+
   fun saveMessage(webSocketResponse: NewMessageWsResponse) {
     ioScope.launch(ioDispatcher) {
       val message = webSocketResponse.messageDto.toMessageEntity(

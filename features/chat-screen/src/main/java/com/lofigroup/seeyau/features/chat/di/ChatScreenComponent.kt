@@ -33,9 +33,6 @@ interface ChatScreenComponent {
     @BindsInstance
     fun context(context: Context): Builder
 
-    @BindsInstance
-    fun chatId(id: Long): Builder
-
     fun build(): ChatScreenComponent
   }
 }

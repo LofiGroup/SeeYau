@@ -1,10 +1,7 @@
 package com.lofigroup.seeyau.features.chat.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
@@ -18,14 +15,16 @@ import com.lofigroup.seeyau.common.ui.components.specific.BigImage
 import com.lofigroup.seeyau.common.ui.components.specific.UserOptionsDialog
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
+import com.lofigroup.seeyau.features.chat.R
 import com.lofigroup.seeyau.features.chat.media_player.FakeMediaPlayer
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
-import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
+import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalPlayerProvider
 import com.lofigroup.seeyau.features.send_media.SendMediaDialog
 import com.lofigroup.seeyau.features.chat.ui.components.ChatMessages
 import com.lofigroup.seeyau.features.chat.ui.components.MessageInput
+import com.lofigroup.seeyau.features.chat.ui.components.SayHelloButton
 import com.lofigroup.seeyau.features.chat.ui.components.TopBar
 import com.sillyapps.core.ui.components.showToast
 import kotlinx.coroutines.delay
@@ -47,10 +46,6 @@ fun ChatScreen(
 
   val context = LocalContext.current
   val listState = rememberLazyListState()
-
-  var optionsDialogVisible by rememberSaveable {
-    mutableStateOf(false)
-  }
 
   var bigImageVisible by rememberSaveable {
     mutableStateOf(false)
@@ -87,15 +82,26 @@ fun ChatScreen(
       TopBar(
         partner = state.partner,
         onUpButtonClick = onUpButtonClick,
-        onMoreButtonClick = { optionsDialogVisible = true },
         onUserIconClick = { bigImageVisible = true }
       )
 
+      Box(
+        modifier = Modifier.weight(1f)
+      ) {
+        ChatMessages(
+          items = state.messages,
+          listState = listState,
+        )
 
-      ChatMessages(
-        items = state.messages,
-        listState = listState,
-      )
+        if (state.messages.isEmpty()) {
+          SayHelloButton(
+            onSayHelloButtonClick = {
+              stateHolder.setMessage(context.getString(R.string.hello))
+              stateHolder.sendMessage()
+            }
+          )
+        }
+      }
 
       MessageInput(
         message = state.message,
@@ -112,17 +118,6 @@ fun ChatScreen(
       stateHolder.onExit()
       onUpButtonClick()
     }
-
-  UserOptionsDialog(
-    isVisible = optionsDialogVisible,
-    setVisible = { optionsDialogVisible = it },
-    onWriteMessage = {},
-    onIgnoreUser = {
-      optionsDialogVisible = false
-      stateHolder.onIgnoreUser()
-    },
-    onNavigateToChatOptionEnabled = false
-  )
 
   BigImage(
     isVisible = bigImageVisible,
@@ -178,9 +173,9 @@ private fun getPreviewModel(): ChatScreenState {
   return ChatScreenState(
     partner = getUserPreviewModel(),
     messages = listOf(
-      getPreviewPrivateMessage(pos = 0),
-      getPreviewPrivateMessage(authorIsMe = false, pos = 1),
-      getPreviewPrivateMessage(message = "Very very very very very very very very very very long message.", pos = 2)
+      getPreviewMessage(pos = 0),
+      getPreviewMessage(authorIsMe = false, pos = 1),
+      getPreviewMessage(message = "Very very very very very very very very very very long message.", pos = 2)
     ).groupBy { it.dateTime.date }
   )
 }

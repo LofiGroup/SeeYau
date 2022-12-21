@@ -29,12 +29,17 @@ fun Modifier.universalBackground(background: Any) = run {
 fun <T> LazyListScope.gridItems(
   data: List<T>,
   columnCount: Int,
+  keyPrefix: String,
   modifier: Modifier = Modifier,
   content: @Composable (T) -> Unit
 ) {
   val rowsCount = ceilingDivision(data.size, columnCount)
 
-  items(rowsCount) { rowIndex ->
+  items(
+    count = rowsCount,
+    key = { "${keyPrefix}_$it" },
+    contentType = { "grid_row" }
+  ) { rowIndex ->
     Row(
       horizontalArrangement = Arrangement.SpaceEvenly,
       modifier = modifier

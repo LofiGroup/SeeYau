@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.features.chat.ui.components.message_contents
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -22,49 +23,46 @@ import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
-import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
+import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
-import com.lofigroup.seeyau.features.chat.ui.components.defaultMediaState
+import com.lofigroup.seeyau.features.chat.media_player.ui.rememberMediaPlayerState
+import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.sillyapps.core.ui.components.RemoteImage
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun VideoContent(
   videoItem: UIMessageType.Video,
-  id: Int
+  message: UIChatMessage
 ) {
   val mediaPlayer = LocalMediaPlayer.current
-
-  var state by remember {
-    mutableStateOf(defaultMediaState)
-  }
-
-  LaunchedEffect(Unit) {
-    mediaPlayer.registerState(id = id).collect() { state = it }
-  }
-
-  DisposableEffect(key1 = Unit) {
-    onDispose { mediaPlayer.unregisterState(id) }
-  }
+  val state = rememberMediaPlayerState(id = message.id)
 
   Box(
     modifier = Modifier
       .fillMaxWidth()
       .aspectRatio(9 / 16f)
       .padding(bottom = LocalSpacing.current.extraSmall)
-      .clip(MaterialTheme.shapes.medium)
+      .clip(MaterialTheme.shapes.large)
   ) {
     if (state.isCurrentItem) {
-      AndroidView(
-        factory = { context ->
-          PlayerView(context).also {
-            it.player = mediaPlayer.obtainPlayer()
-          }
-        },
+      Box(
         modifier = Modifier
-          .fillMaxSize()
-      )
+          .clip(MaterialTheme.shapes.large)
+          .background(LocalExtendedColors.current.darkBackground.copy(alpha = 0.2f))
+      ) {
+        AndroidView(
+          factory = { context ->
+            PlayerView(context).also {
+              it.player = mediaPlayer.obtainPlayer()
+            }
+          },
+          modifier = Modifier
+            .fillMaxSize()
+        )
+      }
     } else {
       RemoteImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -78,7 +76,7 @@ fun VideoContent(
       )
 
       IconButton(
-        onClick = { mediaPlayer.playMedia(videoItem.mediaItem, id) },
+        onClick = { mediaPlayer.playMedia(videoItem.mediaItem, message.id) },
         modifier = Modifier.align(Alignment.Center)
       ) {
         Icon(
@@ -88,6 +86,13 @@ fun VideoContent(
         )
       }
     }
+
+    MessageDate(
+      message = message,
+      modifier = Modifier
+        .align(Alignment.BottomEnd)
+        .padding(LocalSpacing.current.small)
+    )
   }
 }
 
@@ -97,7 +102,7 @@ fun VideoMessagePreview() {
   AppTheme {
     Surface() {
       ChatMessageItem(
-        chatMessage = getPreviewPrivateMessage(
+        chatMessage = getPreviewMessage(
           type = MessageType.Video("")
         )
       )

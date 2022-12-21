@@ -47,28 +47,28 @@ fun NavigationPager(
         ChatListScreenNavigation(
           chatComponent = appModules.chatModule.domainComponent,
           profileComponent = appModules.profileModule.domainComponent,
+          settingsComponent = appModules.settingsModule.domainComponent,
           onNavigateToChatScreen = {
             currentChatId = it
-            coroutineScope.launch { pagerState.animateScrollToPage(2) }
+            coroutineScope.launch { pagerState.animateScrollToPage(CHAT_SCREEN) }
           },
           onNavigateToSettingsScreen = {
-            coroutineScope.launch { pagerState.animateScrollToPage(0) }
+            coroutineScope.launch { pagerState.animateScrollToPage(PROFILE_SCREEN) }
           }
         )
       }
       CHAT_SCREEN -> {
-        if (currentChatId != 0L) {
-          ChatScreenNavigation(
-            chatComponent = appModules.chatModule.domainComponent,
-            profileComponent = appModules.profileModule.domainComponent,
-            permissionChannel = appModules.appComponent.getPermissionChannel(),
-            chatId = currentChatId,
-            onUpButtonClick = {
-              coroutineScope.launch { pagerState.animateScrollToPage(1) }
-            },
-            isFocused = currentPage == page
-          )
-        }
+        ChatScreenNavigation(
+          chatComponent = appModules.chatModule.domainComponent,
+          profileComponent = appModules.profileModule.domainComponent,
+          permissionChannel = appModules.appComponent.getPermissionChannel(),
+          chatId = currentChatId,
+          onUpButtonClick = {
+            coroutineScope.launch { pagerState.animateScrollToPage(MAIN_SCREEN) }
+          },
+          isFocused = currentPage == page
+        )
+
       }
     }
   }

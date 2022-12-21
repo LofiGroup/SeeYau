@@ -15,6 +15,8 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMes
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.model.extractLike
 import com.lofigroup.seeyau.data.profile.local.model.toUser
+import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificationChannel
+import com.lofigroup.seeyau.domain.base.user_notification_channel.model.UserNotification
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
@@ -27,6 +29,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,7 +42,8 @@ class ChatRepositoryImpl @Inject constructor(
   private val ioDispatcher: CoroutineDispatcher,
   private val chatWebSocket: ChatWebSocketListener,
   private val eventsDataSource: EventsDataSource,
-  private val context: Context
+  private val context: Context,
+  private val userNotificationChannel: UserNotificationChannel
 ) : ChatRepository {
 
   override suspend fun pullData() {
@@ -144,12 +148,22 @@ class ChatRepositoryImpl @Inject constructor(
     val multipart = createMultipartBody("media", request.mediaUri, contentResolver = context.contentResolver)
       ?: return
 
-    val response = retrofitErrorHandler(chatApi.sendChatMedia(
-      form = request.toForm(),
-      media = multipart
-    ))
+    try {
+      val response = retrofitErrorHandler(chatApi.sendChatMedia(
+        form = request.toForm(),
+        media = multipart
+      ))
 
-    chatDataHandler.saveLocalMessage(response)
+      chatDataHandler.saveLocalMessage(response)
+    } catch (e: HttpException) {
+      if (e.code() == 413) {
+        chatDataHandler.deleteMessage(request.localId)
+        userNotificationChannel.sendNotification(UserNotification(message = context.getString(R.string.file_is_too_large)))
+      }
+      else throw e
+    }
+
+
   }
 
 }

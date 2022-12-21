@@ -21,7 +21,7 @@ import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
 import com.lofigroup.seeyau.common.ui.components.LikesLabel
 import com.lofigroup.seeyau.common.ui.components.UpButton
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
-import com.lofigroup.seeyau.features.profile_screen.component.*
+import com.lofigroup.seeyau.features.profile_screen.components.*
 import com.lofigroup.seeyau.features.profile_screen.model.ProfileScreenState
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSpacing

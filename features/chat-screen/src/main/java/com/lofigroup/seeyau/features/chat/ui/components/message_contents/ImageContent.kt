@@ -10,16 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
-import com.lofigroup.seeyau.features.chat.model.getPreviewPrivateMessage
-import com.lofigroup.seeyau.features.chat.ui.providers.LocalChatMessageStyles
+import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
+import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun ImageContent(
   content: UIMessageType.Image,
-  createdIn: String
+  message: UIChatMessage
 ) {
   Box() {
     RemoteImage(
@@ -31,9 +32,8 @@ fun ImageContent(
         .padding(bottom = LocalSpacing.current.extraSmall)
     )
 
-    Text(
-      text = createdIn,
-      style = MaterialTheme.typography.caption,
+    MessageDate(
+      message = message,
       modifier = Modifier
         .align(Alignment.BottomEnd)
         .padding(LocalSpacing.current.small)
@@ -46,7 +46,9 @@ fun ImageContent(
 fun ImageMessagePreview() {
   AppTheme {
     Surface(modifier = Modifier.fillMaxSize()) {
-      ImageContent(content = UIMessageType.Image(uri = ""), createdIn = "00:00")
+      ChatMessageItem(
+        chatMessage = getPreviewMessage(type = MessageType.Image(uri = ""))
+      )
     }
   }
 }

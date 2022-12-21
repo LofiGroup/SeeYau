@@ -119,23 +119,19 @@ fun TrailingIcon(
       .pointerInput(Unit) {
         detectTapGestures(
           onLongPress = {
-            Timber.e("Recording started")
             isRecording = true
             audioRecorder.start()
           },
           onPress = {
-            Timber.e("Button pressed")
             tryAwaitRelease()
-            Timber.e("Just released")
             audioRecorder.stop()
             isRecording = false
             draggedOffset = IntOffset.Zero
           })
       }
       .pointerInput(Unit) {
-        detectHorizontalDragGestures { change, dragAmount ->
+        detectDragGesturesAfterLongPress { change, _ ->
           if (isRecording) {
-            Timber.e("Dragging...")
             val offsetX = change.position.x.toInt()
             if (offsetX < -500) {
               audioRecorder.stop()
@@ -256,7 +252,7 @@ fun RowScope.RecordingMessageInput(
 
     Text(
       text = intervalToString(duration),
-      style = MaterialTheme.typography.subtitle1
+      style = MaterialTheme.typography.body1
     )
 
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
@@ -287,7 +283,7 @@ fun RowScope.RecordingFinishedMessageInput(
         mediaItem = MediaItem.fromUri(audioUri),
         duration = getAudioFileDuration(audioUri.toString(), context)
       ),
-      id = -2
+      id = -2L
     )
   }
 }

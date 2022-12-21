@@ -55,6 +55,7 @@ fun FolderHeader(
     modifier = Modifier.conditional(setExpanded != notFoldable) {
       clickable(onClick = { setExpanded(!isExpanded) })
     }
+      .padding(top = LocalSpacing.current.small)
   ) {
     Spacer(modifier = Modifier.width(LocalSpacing.current.small))
     Icon(

@@ -10,6 +10,7 @@ import com.lofigroup.seeyau.domain.profile.usecases.BlacklistUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.GetProfileUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.LikeUserUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.UnLikeUserUseCase
+import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
 import com.lofigroup.seeyau.features.chat_screen.model.*
 import com.sillyapps.core_time.Time
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,8 @@ class ChatListScreenViewModel @Inject constructor(
   private val getProfileUseCase: GetProfileUseCase,
   private val blacklistUserUseCase: BlacklistUserUseCase,
   private val likeUserUseCase: LikeUserUseCase,
-  private val unLikeUserUseCase: UnLikeUserUseCase
+  private val unLikeUserUseCase: UnLikeUserUseCase,
+  private val getVisibilityUseCase: GetVisibilityUseCase
 ): ViewModel(), ChatListScreenStateHolder {
 
   private val state = MutableStateFlow(ChatListScreenState())
@@ -34,6 +36,9 @@ class ChatListScreenViewModel @Inject constructor(
       }
       launch {
         observeProfile()
+      }
+      launch {
+        observeVisibility()
       }
     }
   }
@@ -63,6 +68,12 @@ class ChatListScreenViewModel @Inject constructor(
   private suspend fun observeProfile() {
     getProfileUseCase().collect() { profile ->
       state.set { it.copy(profile = profile) }
+    }
+  }
+
+  private suspend fun observeVisibility() {
+    getVisibilityUseCase().collect() { visibility ->
+      state.set { it.copy(isVisible = visibility.isVisible) }
     }
   }
 

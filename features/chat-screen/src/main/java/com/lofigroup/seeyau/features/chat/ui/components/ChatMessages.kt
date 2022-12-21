@@ -18,16 +18,14 @@ import com.sillyapps.core.ui.util.rememberLastItemKey
 import kotlinx.coroutines.delay
 
 @Composable
-fun ColumnScope.ChatMessages(
+fun ChatMessages(
   listState: LazyListState,
   items: Map<String, List<UIChatMessage>>
 ) {
-  val mediaPlayer = LocalMediaPlayer.current
-
 
   ChatMessageStyleProvider() {
     Box(modifier = Modifier
-      .weight(1f)) {
+      .fillMaxSize()) {
       LazyColumn(
         reverseLayout = true,
         state = listState,

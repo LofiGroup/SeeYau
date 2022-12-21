@@ -13,8 +13,8 @@ import kotlin.math.abs
 class MediaPlayerImpl @Inject constructor(
   private val player: Player
 ) : MediaPlayer {
-  private val states = HashMap<Int, MutableStateFlow<MediaPlayerState>>()
-  private var currentItemId = -1
+  private val states = HashMap<Long, MutableStateFlow<MediaPlayerState>>()
+  private var currentItemId = -1L
 
   private var progressJob: Job? = null
   private val scope = CoroutineScope(Dispatchers.Main)
@@ -30,19 +30,18 @@ class MediaPlayerImpl @Inject constructor(
     player.addListener(listener)
   }
 
-  override fun registerState(id: Int, duration: Long): Flow<MediaPlayerState> {
-    Timber.e("Registering state with id: $id")
+  override fun registerState(id: Long, duration: Long): Flow<MediaPlayerState> {
     val isCurrentItem = currentItemId == id
     val initialState =
       if (isCurrentItem)
         MediaPlayerState(
-          progressData = ProgressData.calculate(progress = player.currentPosition, duration = duration),
+          progressData = ProgressData(player.currentPosition, duration),
           playbackState = if (player.isPlaying) PlaybackState.PLAYING else PlaybackState.PAUSED,
           isCurrentItem = true
         )
       else
         MediaPlayerState(
-          progressData = ProgressData.calculate(duration = duration)
+          progressData = ProgressData(durationValue = duration)
         )
 
     val state = MutableStateFlow(initialState)
@@ -50,19 +49,17 @@ class MediaPlayerImpl @Inject constructor(
     return state
   }
 
-  override fun unregisterState(id: Int) {
-    Timber.e("Unregistering state with id: $id")
+  override fun unregisterState(id: Long) {
     states.remove(id)
   }
 
   override fun seekTo(relativePosition: Float) {
-    Timber.e("Player duration is ${player.duration}, seekTo: ${player.duration * relativePosition}, relative pos is $relativePosition")
     player.seekTo((player.duration * relativePosition).toLong())
     setProgressData()
   }
 
-  override fun playMedia(mediaItem: MediaItem, id: Int) {
-    Timber.e("Play media")
+  override fun playMedia(mediaItem: MediaItem, id: Long) {
+    Timber.e("Play media with id: $id")
     if (currentItemId == id) {
       resume()
     } else {
@@ -76,7 +73,6 @@ class MediaPlayerImpl @Inject constructor(
   }
 
   override fun resume() {
-    Timber.e("Resume: currentPosition: ${player.currentPosition}, duration: ${player.duration}")
     if (abs(player.currentPosition - player.duration) <= 50) {
       player.seekToDefaultPosition()
     }
@@ -120,10 +116,7 @@ class MediaPlayerImpl @Inject constructor(
   private fun setProgressData() {
     states[currentItemId]?.set {
       it.copy(
-        progressData = ProgressData.calculate(
-          progress = player.currentPosition,
-          duration = player.duration
-        )
+        progressData = it.progressData.update(player.currentPosition)
       )
     }
   }
