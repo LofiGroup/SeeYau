@@ -11,6 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class SplashScreenViewModel @Inject constructor(
@@ -39,7 +40,9 @@ class SplashScreenViewModel @Inject constructor(
   }
 
   private suspend fun checkToken(): State {
-    return when (val result = isLoggedInUseCase()) {
+    val result = isLoggedInUseCase()
+
+    return when (result) {
       LoggedInStatus.CantAccessServer -> State.IsLoggedIn
       LoggedInStatus.InvalidToken -> State.ShouldAuthorize
       LoggedInStatus.LoggedIn -> State.IsLoggedIn

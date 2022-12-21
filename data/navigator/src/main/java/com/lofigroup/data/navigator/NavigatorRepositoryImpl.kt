@@ -1,5 +1,6 @@
 package com.lofigroup.data.navigator
 
+import android.content.Context
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.core.util.timerFlow
 import com.lofigroup.domain.navigator.NavigatorRepository
@@ -24,7 +25,8 @@ class NavigatorRepositoryImpl @Inject constructor(
   private val ioScope: CoroutineScope,
   private val webSocketChannel: WebSocketChannel,
   private val profileDataHandler: ProfileDataHandler,
-  private val chatDataHandler: ChatDataHandler
+  private val chatDataHandler: ChatDataHandler,
+  private val context: Context
 ) : NavigatorRepository {
 
   private var lastCallToApi = HashMap<Long, Long>()
@@ -58,7 +60,7 @@ class NavigatorRepositoryImpl @Inject constructor(
     return profileDataHandler.observeAssembledUsers().flatMapLatest { users ->
       combine(users.map { user ->
         chatDataHandler.observeUserNewMessages(user.id).map { newMessages ->
-          user.toNearbyUser(newMessages)
+          user.toNearbyUser(newMessages, context)
         }
       }
       ) { it.asList() }

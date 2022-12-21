@@ -1,30 +1,23 @@
 package com.lofigroup.features.nearby_service
 
 import android.app.Service
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Binder
 import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannel
-import com.lofigroup.seayau.common.ui.permissions.PermissionRequestChannelProvider
-import com.lofigroup.seayau.common.ui.permissions.model.BluetoothPermission
+import com.lofigroup.core.permission.PermissionRequestChannelProvider
+import com.lofigroup.core.permission.model.BluetoothPermission
+import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncService
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,24 +35,12 @@ class NearbyServiceImpl : Service(), NearbyService {
   private val serviceJob = Job()
   private val scope = CoroutineScope(Dispatchers.Main + serviceJob)
 
-  private val connection = object : ServiceConnection {
-    override fun onServiceConnected(className: ComponentName, service: IBinder) {
-      val binder = service as DataSyncServiceImpl.LocalBinder
-      val boundService = binder.getService()
-
-      observeDataSyncServiceState(boundService)
-    }
-
-    override fun onServiceDisconnected(arg0: ComponentName) {
-    }
-  }
-
 
   private val binder = LocalBinder()
   private val state = MutableStateFlow(ResourceState.LOADING)
   private val canStart = MutableStateFlow(false)
 
-  private val permissionChannel by lazy { (application as PermissionRequestChannelProvider).providePermissionChannel() }
+  private val permissionChannel by lazy { (application as com.lofigroup.core.permission.PermissionRequestChannelProvider).providePermissionChannel() }
 
   override fun onBind(p0: Intent?): IBinder {
     return binder
@@ -71,9 +52,7 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun onCreate() {
     super.onCreate()
-    Intent(this, DataSyncServiceImpl::class.java).also {
-      bindService(it, connection, Context.BIND_AUTO_CREATE)
-    }
+    observeDataSyncState()
   }
 
   private fun startDiscovery() {
@@ -83,7 +62,7 @@ class NearbyServiceImpl : Service(), NearbyService {
     }
     Timber.e("Starting discovery...")
     scope.launch {
-      val isGranted = permissionChannel.requestPermission(BluetoothPermission)
+      val isGranted = permissionChannel.requestPermission(com.lofigroup.core.permission.model.BluetoothPermission)
       Timber.e("Is granted = $isGranted")
       if (!isGranted) return@launch
 
@@ -100,11 +79,12 @@ class NearbyServiceImpl : Service(), NearbyService {
     nearbyBtClient?.stopDiscovery()
   }
 
-  private fun observeDataSyncServiceState(service: DataSyncService) {
+  private fun observeDataSyncState() {
+    val baseComponent = (application as BaseComponentProvider).provideBaseComponent()
     scope.launch {
-      service.getState().collect() { state ->
+      baseComponent.moduleStateHolder().observe().collect()  { state ->
         when (state) {
-          DataSyncServiceState.SYNCED -> {
+          ResourceState.IS_READY -> {
             init()
           }
           else -> {}
@@ -149,7 +129,6 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun onDestroy() {
     Timber.e("Destroying NearbyService")
-    unbindService(connection)
     nearbyBtClient?.stopDiscovery()
     serviceJob.cancel()
 

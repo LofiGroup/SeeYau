@@ -6,17 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.model.NavigatorScreenState
 import com.lofigroup.features.navigator_screen.ui.components.*
-import com.lofigroup.seayau.common.ui.components.OptionsDialog
-import com.lofigroup.seayau.common.ui.components.OptionsDialogItem
-import com.lofigroup.seayau.common.ui.components.specific.UserOptionsDialog
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.specific.UserOptionsDialog
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ShowToast
 import kotlinx.coroutines.launch
-import com.lofigroup.seayau.common.ui.R as CommonR
 
 @Composable
 fun NavigatorScreen(

@@ -6,12 +6,6 @@ import com.squareup.moshi.JsonClass
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-@JsonClass(generateAdapter = true)
-data class UpdateProfileRequest(
-  @Json(name = "name")
-  val name: String?
-)
-
 fun ProfileUpdate.toUpdateProfileForm() = mutableMapOf(
   Pair("name", (name ?: "").toRequestBody("text/plain".toMediaType()))
 )

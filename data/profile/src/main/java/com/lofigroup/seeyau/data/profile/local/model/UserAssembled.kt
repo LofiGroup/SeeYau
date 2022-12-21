@@ -24,7 +24,9 @@ fun UserAssembled.toUser() = User(
   lastConnection = lastConnection,
   isNear = lastContact > System.currentTimeMillis() - Time.m,
   likedYouAt = likedYouAt,
-  likedAt = likedAt
+  likedAt = likedAt,
+  lastContact = lastContact,
+  likesCount = likesCount
 )
 
 fun UserAssembled.extractLike() = run {

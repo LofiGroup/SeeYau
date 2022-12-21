@@ -22,7 +22,7 @@ suspend fun <T> safeIOCall(
 suspend fun <T> safeIOCall(
   dispatcher: CoroutineDispatcher,
   block: suspend () -> T,
-  errorBlock: (Exception) -> T,
+  errorBlock: suspend (Exception) -> T,
 ): T {
   return withContext(dispatcher) {
     try {

@@ -1,5 +1,10 @@
 package com.sillyapps.core.ui.theme
 
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -23,6 +28,7 @@ val DarkestGray = Color(0xFF1C1C1E)
 
 data class ExtendedColors(
   val disabled: Color = DarkGray,
+  val disabledDarker: Color = DarkerGray,
 
   val primaryGradient: Brush = BluePurpleGradient,
 
@@ -35,7 +41,7 @@ data class ExtendedColors(
   val lightBackground: Color = DarkerGray,
   val darkBackground: Color = DarkestGray,
 
-  val secondaryAsBrush: Brush
+  val secondaryAsBrush: Brush,
 )
 
 

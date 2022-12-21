@@ -1,12 +1,5 @@
 package com.lofigroup.core.util
 
-fun getFileExtFromPath(path: String): String {
-  val startIndex = path.lastIndexOf(".")
-  if (startIndex == -1) return ""
-
-  return path.substring(startIndex + 1, path.length)
-}
-
 fun<T> List<T>.transformItemAt(index: Int, transform: (T) -> T): List<T> {
   if (index > lastIndex) return this
 
@@ -51,4 +44,25 @@ fun <T> List<T>.splitInTwo(
   }
 
   return Pair(mainList, otherList)
+}
+
+fun IntRange.toIntArray(): IntArray {
+  if (last < first)
+    return IntArray(0)
+
+  val result = IntArray(last - first + 1)
+  var index = 0
+  for (element in this)
+    result[index++] = element
+  return result
+}
+
+fun<T> List<T>.indexOfFirstFrom(
+  index: Int,
+  isRightItem: (T) -> Boolean
+): Int {
+  for (i in index until size) {
+    if (isRightItem(get(i))) return i
+  }
+  return size
 }

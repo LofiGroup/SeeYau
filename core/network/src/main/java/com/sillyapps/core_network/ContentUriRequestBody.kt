@@ -31,16 +31,16 @@ class ContentUriRequestBody(
     inputStream.source().use { source ->
       sink.writeAll(source)
     }
+    inputStream.close()
   }
 
 }
 
-fun Uri.length(contentResolver: ContentResolver)
-    : Long {
-
+fun Uri.length(contentResolver: ContentResolver): Long {
   val assetFileDescriptor = try {
     contentResolver.openAssetFileDescriptor(this, "r")
-  } catch (e: FileNotFoundException) {
+  }
+  catch (e: FileNotFoundException) {
     null
   }
   // uses ParcelFileDescriptor#getStatSize underneath if failed

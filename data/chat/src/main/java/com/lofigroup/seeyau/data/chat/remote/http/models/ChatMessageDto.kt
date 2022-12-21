@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.data.chat.remote.http.models
 
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.chat.local.models.toMessageType
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -12,7 +13,10 @@ data class ChatMessageDto(
   val createdIn: Long,
   @Json(name = "chat_id")
   val chatId: Long,
-  val author: Long
+  val author: Long,
+  val extra: String?,
+  @Json(name = "message_type")
+  val type: String
 )
 
 fun ChatMessageDto.toMessageEntity(myId: Long, readIn: Long) = MessageEntity(
@@ -22,4 +26,6 @@ fun ChatMessageDto.toMessageEntity(myId: Long, readIn: Long) = MessageEntity(
   author = if (author == myId) 0 else author,
   chatId = chatId,
   isRead = createdIn < readIn,
+  extra = extra,
+  type = toMessageType(type)
 )

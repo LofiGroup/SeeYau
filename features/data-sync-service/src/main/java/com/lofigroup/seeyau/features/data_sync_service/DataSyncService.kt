@@ -6,6 +6,4 @@ interface DataSyncService {
 
   fun sync()
 
-  fun getState(): Flow<DataSyncServiceState>
-
 }

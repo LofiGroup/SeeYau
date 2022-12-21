@@ -43,6 +43,8 @@ dependencies {
   implementation project(":domain:auth")
   implementation project(":domain:profile")
 
+  implementation project(":domain:base")
+
   implementation appCompat
   implementation coreKtx
 
@@ -62,6 +64,7 @@ dependencies {
   implementation composeDeps.materialIconsExtended
   implementation composeDeps.activity
   implementation composeDeps.navigation
+  implementation composeDeps.constraintLayout
   debugImplementation composeDeps.poolingContainer
 
   implementation daggerDeps.core

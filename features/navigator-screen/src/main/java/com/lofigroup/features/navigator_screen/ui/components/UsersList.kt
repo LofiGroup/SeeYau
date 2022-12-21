@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ImageWrap
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize

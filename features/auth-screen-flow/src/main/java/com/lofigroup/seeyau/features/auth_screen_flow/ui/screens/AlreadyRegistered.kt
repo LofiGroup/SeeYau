@@ -10,18 +10,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.FullScreenImage
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
-import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
+import com.lofigroup.seeyau.features.auth_screen_flow.ui.components.TopBar
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
 fun AlreadyRegisteredScreen() {
-  TopBar()
-
+  FullScreenImage(painter = painterResource(id = R.drawable.name_background))
+  
   Column(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,

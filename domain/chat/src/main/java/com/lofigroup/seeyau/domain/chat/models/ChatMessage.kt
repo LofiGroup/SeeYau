@@ -1,37 +1,25 @@
 package com.lofigroup.seeyau.domain.chat.models
 
-sealed class ChatMessage(
+data class ChatMessage(
   val id: Long,
   val author: Long,
   val createdIn: Long,
-  val status: MessageStatus
-) {
-
-  class PlainMessage(
-    val message: String,
-    id: Long,
-    author: Long,
-    createdIn: Long,
-    status: MessageStatus
-  ): ChatMessage(
-    id = id,
-    author = author,
-    createdIn = createdIn,
-    status = status
-  )
-
-  class LikeMessage(
-    author: Long,
-    createdIn: Long,
-    status: MessageStatus
-  ): ChatMessage(
-    id = 0L,
-    author = author,
-    createdIn = createdIn,
-    status = status
-  )
-}
+  val message: String,
+  val status: MessageStatus,
+  val type: MessageType
+)
 
 enum class MessageStatus {
   SENDING, SENT, RECEIVED, READ
+}
+
+sealed class MessageType(
+  val uri: String? = null
+) {
+  object Plain: MessageType()
+  object Like: MessageType()
+  class Contact: MessageType()
+  class Audio(uri: String, val duration: Long): MessageType(uri)
+  class Video(uri: String): MessageType(uri)
+  class Image(uri: String): MessageType(uri)
 }

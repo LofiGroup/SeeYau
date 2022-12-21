@@ -1,215 +1,200 @@
 package com.lofigroup.seeyau.features.chat_screen.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AudioFile
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.components.UserIcon
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.UserIcon
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
+import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.features.chat_screen.R
-import com.lofigroup.seeyau.features.chat_screen.model.FolderChat
 import com.sillyapps.core.ui.components.OneLiner
-import com.sillyapps.core.ui.components.TextLabel
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
-import com.sillyapps.core_time.getLocalTimeFromMillis
-import com.lofigroup.seayau.common.ui.R as CommonR
+import timber.log.Timber
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ChatItem(
-  chat: FolderChat,
+  chat: ChatBrief,
   onClick: (Long) -> Unit,
-  onIconClick: (String?) -> Unit,
+  onDeleteChat: (Long) -> Unit,
 ) {
-  Surface(
-    modifier = Modifier
-      .clickable { onClick(chat.id) }
-  ) {
-    Row(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(LocalSpacing.current.medium)
-        .height(IntrinsicSize.Min),
-      verticalAlignment = Alignment.CenterVertically
-    ) {
-      UserIcon(
-        imageUri = chat.partner.imageUrl,
-        isOnline = chat.partner.isOnline,
-        onClick = { onIconClick(chat.partner.imageUrl) }
-      )
+  val dismissState = rememberDismissState()
+  val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
 
-      when (chat) {
-        is FolderChat.LikeChat -> {
-          LikeChatItemContent(chat = chat)
-        }
-        is FolderChat.MemoryChat -> {
-          DraftChatItemContent(chat = chat)
-        }
-        is FolderChat.DefaultChat -> {
-          when (val msg = chat.lastMessage) {
-            is ChatMessage.LikeMessage -> {
-              LikeChatItemContent(chat = chat)
-            }
-            is ChatMessage.PlainMessage -> {
-              PlainChatItemContent(chat = chat, plainMessage = msg)
-            }
-            null -> {
-              DefaultChatItemContent(chat = chat)
-            }
-          }
-        }
+  LaunchedEffect(isDismissed) {
+    if (isDismissed) {
+      dismissState.reset()
+      onDeleteChat(chat.partner.id)
+    }
+  }
+
+  SwipeToDismiss(
+    state = dismissState,
+    background = { SwipeToDismissBackground() },
+    directions = setOf(DismissDirection.EndToStart)
+  ) {
+    Surface(
+      modifier = Modifier
+        .clickable { onClick(chat.id) }
+    ) {
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(LocalSpacing.current.medium)
+          .height(IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+
+        BaseChatItemContent(chat = chat)
       }
     }
   }
 }
 
 @Composable
-fun RowScope.BaseChatItemContent(
-  chat: FolderChat,
-  messagePlaceholder: @Composable () -> Unit,
-  messageInfoPlaceholder: @Composable RowScope.() -> Unit = {},
-  iconsPlaceholder: @Composable RowScope.() -> Unit = {},
-) {
-  Column(
-    modifier = Modifier
-      .weight(1f)
-      .padding(start = LocalSpacing.current.small)
-  ) {
-    Text(
-      text = chat.partner.name,
-      style = MaterialTheme.typography.body2,
-      modifier = Modifier.padding(bottom = LocalSpacing.current.extraSmall)
-    )
-
-    messagePlaceholder()
-  }
-
+fun SwipeToDismissBackground() {
   Box(
-    modifier = Modifier.fillMaxHeight()
+    contentAlignment = Alignment.CenterEnd,
+    modifier = Modifier
+      .fillMaxSize()
   ) {
+    Spacer(
+      modifier = Modifier
+        .fillMaxWidth(0.5f)
+        .fillMaxHeight()
+        .background(MaterialTheme.colors.error)
+    )
     Row(
       verticalAlignment = Alignment.CenterVertically,
       modifier = Modifier
-        .padding(bottom = LocalSpacing.current.small)
-        .align(Alignment.TopEnd)
+        .padding(end = LocalSpacing.current.small)
     ) {
-      messageInfoPlaceholder()
-    }
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier
-        .align(Alignment.BottomEnd)
-    ) {
-      iconsPlaceholder()
+      Text(text = stringResource(id = R.string.delete))
+      Spacer(modifier = Modifier.width(LocalSpacing.current.small))
+      Icon(painter = painterResource(id = R.drawable.trash), contentDescription = null)
     }
   }
 }
 
 @Composable
-fun RowScope.DraftChatItemContent(
-  chat: FolderChat.MemoryChat
+fun RowScope.BaseChatItemContent(
+  chat: ChatBrief,
 ) {
-  BaseChatItemContent(
-    chat = chat,
-    messagePlaceholder = {
-      OneLiner(
-        text = chat.message,
-        style = MaterialTheme.typography.subtitle2.copy(color = Color.Gray)
-      )
-    },
-    messageInfoPlaceholder = {
-      Text(
-        text = stringResource(id = R.string.draft),
-        style = MaterialTheme.typography.caption,
-      )
-    },
+  UserIcon(
+    imageUri = chat.partner.imageUrl,
+    isOnline = chat.partner.isOnline,
+    onClick = {}
   )
+
+  MessageContent(lastMessage = chat.lastMessage, draft = chat.draft.message)
+
+  IconContent(messageType = chat.lastMessage?.type, newMessagesCount = chat.newMessagesCount)
 }
 
 @Composable
-fun RowScope.LikeChatItemContent(
-  chat: FolderChat
+fun RowScope.MessageContent(
+  lastMessage: ChatMessage?,
+  draft: String
 ) {
-  BaseChatItemContent(
-    chat = chat,
-    messagePlaceholder = {
-      OneLiner(
-        text = stringResource(id = CommonR.string.sent_you_like),
-        style = MaterialTheme.typography.subtitle2.copy(color = Color.Gray)
-      )
-    },
-    iconsPlaceholder = {
-      Image(
-        painter = painterResource(id = CommonR.drawable.ic_like),
-        contentDescription = null
-      )
+  Row(
+    Modifier
+      .weight(1f)
+      .padding(horizontal = LocalSpacing.current.small)
+  ) {
+    when {
+      draft.isNotBlank() -> {
+        InformationText(text = stringResource(id = R.string.draft))
+        OneLiner(text = draft)
+      }
+      lastMessage == null -> OneLiner(text = stringResource(id = R.string.say_hello))
+      lastMessage.type is MessageType.Like -> OneLiner(text = stringResource(id = CommonR.string.sent_you_like))
+      else -> {
+        if (lastMessage.author == 0L) InformationText(text = stringResource(id = R.string.you))
+        when (lastMessage.type) {
+          is MessageType.Audio -> SmallIcon(imageVector = Icons.Filled.AudioFile)
+          is MessageType.Image -> SmallIcon(imageVector = Icons.Filled.Image)
+          is MessageType.Video -> SmallIcon(imageVector = Icons.Filled.VideoFile)
+          else -> Unit
+        }
+        OneLiner(text = lastMessage.message)
+      }
     }
+  }
+}
+
+@Composable
+fun RowScope.InformationText(
+  text: String,
+) {
+  Text(
+    text = text,
+    color = LocalExtendedColors.current.darkBackground,
+    modifier = Modifier.padding(end = LocalSpacing.current.extraSmall)
   )
 }
 
 @Composable
-fun RowScope.PlainChatItemContent(
-  plainMessage: ChatMessage.PlainMessage,
-  chat: FolderChat.DefaultChat
+fun IconContent(
+  messageType: MessageType?,
+  newMessagesCount: Int
 ) {
-  BaseChatItemContent(
-    chat = chat,
-    messagePlaceholder = {
-      OneLiner(text = plainMessage.message)
-    },
-    messageInfoPlaceholder = {
-      if (plainMessage.author == 0L)
-        MessageStatusIcon(messageStatus = plainMessage.status)
-
-      Spacer(modifier = Modifier.width(LocalSpacing.current.extraSmall))
-      
-      Text(
-        text = getLocalTimeFromMillis(plainMessage.createdIn),
-        style = MaterialTheme.typography.caption
-      )
-    },
-    iconsPlaceholder = {
-      if (chat.newMessagesCount > 0)
-        TextLabel(
-          text = "+${chat.newMessagesCount}",
-          modifier = Modifier.padding(start = LocalSpacing.current.extraSmall)
+  Box(
+    modifier = Modifier.size(LocalSize.current.verySmall)
+  ) {
+    when {
+      messageType == MessageType.Like -> Image(
+        painter = painterResource(id = CommonR.drawable.ic_like_new),
+        contentDescription = null,
+        modifier = Modifier.fillMaxSize()
         )
+      newMessagesCount > 0 -> Icon(
+        painter = painterResource(id = R.drawable.ic_indicator),
+        contentDescription = null,
+        modifier = Modifier.fillMaxSize()
+      )
     }
-  )
+  }
+  
 }
 
 @Composable
-fun RowScope.DefaultChatItemContent(
-  chat: FolderChat.DefaultChat
-) {
-  BaseChatItemContent(
-    chat = chat,
-    messagePlaceholder = {
-      OneLiner(text = stringResource(id = R.string.say_hello))
-    }
+fun SmallIcon(imageVector: ImageVector) {
+  Icon(
+    imageVector = imageVector,
+    contentDescription = null,
+    modifier = Modifier
+      .size(LocalSize.current.small)
+      .padding(end = LocalSpacing.current.extraSmall)
   )
 }
 
 @Preview
 @Composable
 fun ChatItemPreview() {
-  val item = FolderChat.DefaultChat(
+  val item = ChatBrief(
     id = 0,
     partner = User(
       id = 0,
@@ -221,14 +206,16 @@ fun ChatItemPreview() {
 
       likedYouAt = null,
       blacklistedYou = true,
-      likedAt = null
+      likedAt = null,
+      lastContact = 0L
     ),
-    lastMessage = ChatMessage.PlainMessage(
+    lastMessage = ChatMessage(
       id = 0,
       message = "Hello!",
       author = 0,
       createdIn = 0L,
-      status = MessageStatus.SENT
+      status = MessageStatus.SENT,
+      type = MessageType.Like
     ),
     newMessagesCount = 1,
     createdIn = 0L
@@ -238,7 +225,7 @@ fun ChatItemPreview() {
     ChatItem(
       chat = item,
       onClick = {},
-      onIconClick = {}
+      onDeleteChat = {}
     )
   }
 }

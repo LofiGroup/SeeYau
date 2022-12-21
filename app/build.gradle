@@ -29,6 +29,15 @@ android {
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     signingConfig signingConfigs.release
+
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments += [
+            "room.schemaLocation":"$projectDir/schemas".toString(),
+            "room.incremental":"true",
+            "room.expandProjection":"true"]
+      }
+    }
   }
 
   buildTypes {
@@ -85,12 +94,13 @@ dependencies {
   implementation project(":domain:profile")
   implementation project(":domain:chat")
   implementation project(":domain:settings")
+  implementation project(":domain:base")
 
   implementation project(":data:navigator")
   implementation project(":data:auth")
   implementation project(":data:profile")
   implementation project(":data:chat")
-  implementation project(":data:backend-api")
+  implementation project(':data:base')
   implementation project(":data:settings")
 
   implementation project(":features:navigator-screen")
@@ -101,6 +111,8 @@ dependencies {
   implementation project(":features:data-sync-service")
   implementation project(":features:chat-screen")
   implementation project(":features:auth-screen-flow")
+
+  implementation accompanistDeps.pager
 
   implementation appCompat
   implementation coreKtx

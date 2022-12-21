@@ -25,8 +25,6 @@ import javax.inject.Inject
 @AppScope
 class ChatWebSocketListener @Inject constructor(
   private val webSocketChannel: WebSocketChannel,
-  private val chatDao: ChatDao,
-  private val chatApi: ChatApi,
   private val ioScope: CoroutineScope,
   private val ioDispatcher: CoroutineDispatcher,
   private val profileDataHandler: ProfileDataHandler,

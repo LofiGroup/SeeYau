@@ -14,38 +14,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.ButtonWithText
+import com.lofigroup.seeyau.common.ui.components.FullScreenImage
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.auth_screen_flow.R
-import com.lofigroup.seeyau.features.auth_screen_flow.ui.TopBar
+import com.lofigroup.seeyau.features.auth_screen_flow.model.EnterNumberScreenState
+import com.lofigroup.seeyau.features.auth_screen_flow.ui.components.Description
+import com.lofigroup.seeyau.features.auth_screen_flow.ui.components.TopBar
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
-fun EnterNameScreen(
+fun BoxScope.EnterNameScreen(
   name: String,
   isDone: (String) -> Unit
 ) {
-  TopBar()
-
   val (text, setText) = rememberSaveable {
     mutableStateOf(name)
   }
 
   val focusRequester = remember { FocusRequester() }
 
+  FullScreenImage(painter = painterResource(id = R.drawable.name_background))
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
       .fillMaxSize()
-      .padding(top = LocalSpacing.current.extraLarge, bottom = LocalSpacing.current.large)
   ) {
-    Text(
-      text = stringResource(id = R.string.whats_your_name),
-      style = MaterialTheme.typography.h2
+    TopBar()
+    Spacer(modifier = Modifier.height(LocalSpacing.current.large))
+
+    Description(
+      title = stringResource(id = R.string.whats_your_name),
+      caption = stringResource(id = R.string.how_can_people_address_you)
     )
 
     Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
@@ -53,10 +60,8 @@ fun EnterNameScreen(
     TextField(
       value = text,
       onValueChange = setText,
-      textStyle = MaterialTheme.typography.h2.copy(textAlign = TextAlign.Center),
-      colors = TextFieldDefaults.textFieldColors(
-        backgroundColor = Color.Transparent
-      ),
+      textStyle = MaterialTheme.typography.h4.copy(textAlign = TextAlign.Center),
+      colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
       singleLine = true,
       keyboardOptions = KeyboardOptions(
         imeAction = ImeAction.Next,
@@ -69,20 +74,18 @@ fun EnterNameScreen(
       ),
       modifier = Modifier.focusRequester(focusRequester)
     )
-
-    Spacer(modifier = Modifier.weight(1f))
-
-    if (text.length > 1) {
-      TextButton(
-        onClick = { isDone(text) },
-      ) {
-        Text(
-          text = stringResource(id = R.string.next),
-          style = MaterialTheme.typography.h3
-        )
-      }
-    }
   }
+
+  ButtonWithText(
+    text = stringResource(id = R.string.next),
+    onClick = { isDone(text) },
+    enabled = text.length > 1,
+    modifier = Modifier
+      .padding(horizontal = LocalSpacing.current.medium, vertical = LocalSpacing.current.large)
+      .navigationBarsPadding()
+      .imePadding()
+      .align(Alignment.BottomCenter)
+  )
 
   LaunchedEffect(Unit) {
     focusRequester.requestFocus()
@@ -94,7 +97,7 @@ fun EnterNameScreen(
 fun EnterNameScreenPreview() {
   AppTheme() {
     Surface() {
-      Column() {
+      Box() {
         EnterNameScreen(
           name = "Jacov",
           isDone = {}

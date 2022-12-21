@@ -10,4 +10,24 @@
   <string name="make_me_invisible">Make me invisible</string>
   <string name="make_me_visible">Make me visible</string>
 
+  <string name="delete_account">Delete account</string>
+  <string name="delete_account_question">Delete account?</string>
+  <string name="faq">FAQ</string>
+
+  <!--FAQ-->
+  <string name="ploom_app">Ploom app</string>
+  <string name="ploom_app_description">The app was created in order to connect people nearby using Bluetooth technology</string>
+
+  <string name="people_in_field_of_vision">People in your field of vision</string>
+  <string name="people_in_field_of_vision_description">People who are near you in the radius 10 meters and fall into your field of vision.</string>
+
+  <string name="people_you_met_today">People you met today</string>
+  <string name="people_you_met_today_description">People you\'ve met in the last 24 hours</string>
+
+  <string name="chats">Chats</string>
+  <string name="chats_description">Chats list with people you started communicating with</string>
+
+  <string name="make_me_invisible_description">Hides you from the view of other people in the app</string>
+  <!--FAQ_END-->
+
 </resources>

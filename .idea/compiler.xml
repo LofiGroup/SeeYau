@@ -4,14 +4,17 @@
     <bytecodeTargetLevel target="1.8">
       <module name="SeeYau.app" target="11" />
       <module name="SeeYau.auth-screen" target="11" />
+      <module name="SeeYau.common.audio-recorder" target="11" />
       <module name="SeeYau.common.chat" target="11" />
       <module name="SeeYau.common.network.main" target="1.8" />
       <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.ui" target="11" />
+      <module name="SeeYau.core.audio-recorder" target="11" />
       <module name="SeeYau.core.network" target="11" />
+      <module name="SeeYau.core.permission" target="11" />
       <module name="SeeYau.core.ui" target="11" />
       <module name="SeeYau.data.auth" target="11" />
-      <module name="SeeYau.data.backend-api" target="11" />
+      <module name="SeeYau.data.base" target="11" />
       <module name="SeeYau.data.chat" target="11" />
       <module name="SeeYau.data.navigator" target="11" />
       <module name="SeeYau.data.profile" target="11" />
@@ -26,6 +29,7 @@
       <module name="SeeYau.features.nearby-service" target="11" />
       <module name="SeeYau.features.pick-image" target="11" />
       <module name="SeeYau.features.profile-screen" target="11" />
+      <module name="SeeYau.features.send-media" target="11" />
       <module name="SeeYau.features.splash-screen" target="11" />
     </bytecodeTargetLevel>
   </component>

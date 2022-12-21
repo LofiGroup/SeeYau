@@ -1,14 +1,15 @@
 package com.lofigroup.seeyau.data.chat
 
+import android.content.Context
+import android.net.Uri
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
+import com.lofigroup.seeyau.data.chat.local.models.resolveMessageType
 import com.lofigroup.seeyau.data.chat.local.models.toLocalMessage
 import com.lofigroup.seeyau.data.chat.local.models.toNewMessageEvent
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
-import com.lofigroup.seeyau.data.chat.remote.http.models.ChatUpdatesDto
-import com.lofigroup.seeyau.data.chat.remote.http.models.toChatEntity
-import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
+import com.lofigroup.seeyau.data.chat.remote.http.models.*
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.SendMessageWsRequest
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ChatIsReadWsResponse
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.MessageIsReceivedResponse
@@ -20,7 +21,6 @@ import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
-import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -36,16 +36,15 @@ class ChatDataHandler @Inject constructor(
   private val profileDataHandler: ProfileDataHandler,
   private val ioDispatcher: CoroutineDispatcher,
   private val ioScope: CoroutineScope,
-  private val eventsDataSource: EventsDataSource
+  private val eventsDataSource: EventsDataSource,
+  private val context: Context
 ) {
 
   suspend fun pullData() = withContext(ioDispatcher) {
     try {
       val fromDate = chatDao.getLastMessageCreatedIn() ?: 0L
-      Timber.e("From date: $fromDate")
 
       val response = retrofitErrorHandler(chatApi.getChatUpdates(fromDate))
-      Timber.e("Chat updates: $response")
       for (chatUpdate in response)
         insertUpdates(chatUpdate)
     }
@@ -83,12 +82,18 @@ class ChatDataHandler @Inject constructor(
     }
   }
 
-  suspend fun createLocalMessage(request: ChatMessageRequest): SendMessageWsRequest {
-    val id = (chatDao.getLastLocalMessageId() ?: (MessageEntity.SEND_ID_OFFSET - 1)) + 1
-    chatDao.insertMessage(request.toLocalMessage(id))
-    eventsDataSource.onNewMessageEvent(NewChatMessage(authorIsMe = true, chatId = request.chatId))
+  suspend fun createLocalMessage(request: ChatMessageRequest): SendMessageDto {
+    val id = (chatDao.getLastLocalMessageId() ?: (MessageEntity.LOCAL_MESSAGES_ID_OFFSET - 1)) + 1
 
-    return request.toWebSocketRequest(id)
+    val messageType = resolveMessageType(request.mediaUri, context)
+    val messageEntity = request.toLocalMessage(id = id, type = messageType)
+    insertMessage(messageEntity)
+
+    return messageEntity.toSendMessageDto()
+  }
+
+  suspend fun deleteMessage(messageId: Long) {
+    chatDao.deleteMessage(messageId)
   }
 
   fun saveMessage(webSocketResponse: NewMessageWsResponse) {
@@ -108,6 +113,11 @@ class ChatDataHandler @Inject constructor(
       val message = chatDao.insertSentMessage(response.localId, response.realId, response.createdIn) ?: return@launch
       eventsDataSource.onNewMessageEvent(message.toNewMessageEvent())
     }
+  }
+
+  private suspend fun insertMessage(message: MessageEntity) {
+    chatDao.insertMessage(message)
+    eventsDataSource.onNewMessageEvent(NewChatMessage(authorIsMe = true, chatId = message.chatId))
   }
 
   private suspend fun insertUpdates(chatUpdates: ChatUpdatesDto) {

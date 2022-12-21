@@ -9,24 +9,9 @@ sealed class Screen(
   val imageVector: ImageVector
   ) {
 
-  object NavigatorScreen: Screen(
-    route = "navigator_screen",
+  object PagerScreen: Screen(
+    route = "pager_screen",
     imageVector = Icons.Filled.Search
-  )
-
-  object ChatListScreen: Screen(
-    route = "chat_list_screen",
-    imageVector = Icons.Filled.Message
-  )
-
-  object ChatScreen: Screen(
-    route = "chat_screen",
-    imageVector = Icons.Filled.Message
-  )
-
-  object SettingsScreen: Screen(
-    route = "settings_screen",
-    imageVector = Icons.Filled.Settings
   )
 
   object AuthScreen: Screen(

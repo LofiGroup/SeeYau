@@ -7,8 +7,10 @@ data class User(
   val isOnline: Boolean,
   val lastConnection: Long,
   val isNear: Boolean,
+  val lastContact: Long,
 
   val blacklistedYou: Boolean = false,
   val likedYouAt: Long? = null,
-  val likedAt: Long? = null
+  val likedAt: Long? = null,
+  val likesCount: Int = 0
 )

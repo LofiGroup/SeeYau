@@ -36,7 +36,7 @@ dependencies {
   implementation project(":core:time")
 
   implementation project(":common:network")
-  implementation project(":data:backend-api")
+  implementation project(':data:base')
   implementation project(":domain:profile")
 
   implementation appCompat

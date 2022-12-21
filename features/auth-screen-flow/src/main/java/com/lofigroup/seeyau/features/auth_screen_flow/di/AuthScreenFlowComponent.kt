@@ -1,13 +1,14 @@
 package com.lofigroup.seeyau.features.auth_screen_flow.di
 
 import com.lofigroup.seeyau.domain.auth.di.AuthComponent
+import com.lofigroup.seeyau.domain.base.di.BaseModuleComponent
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.features.auth_screen_flow.ui.AuthScreenFlowViewModel
 import com.sillyapps.core.di.ScreenScope
 import dagger.Component
 
 @ScreenScope
-@Component(dependencies = [AuthComponent::class, ProfileComponent::class])
+@Component(dependencies = [AuthComponent::class, ProfileComponent::class, BaseModuleComponent::class])
 interface AuthScreenFlowComponent {
 
   fun getViewModel(): AuthScreenFlowViewModel
@@ -16,6 +17,8 @@ interface AuthScreenFlowComponent {
     fun authComponent(authComponent: AuthComponent): Builder
 
     fun profileComponent(profileComponent: ProfileComponent): Builder
+
+    fun baseComponent(baseModuleComponent: BaseModuleComponent): Builder
 
     fun build(): AuthScreenFlowComponent
   }

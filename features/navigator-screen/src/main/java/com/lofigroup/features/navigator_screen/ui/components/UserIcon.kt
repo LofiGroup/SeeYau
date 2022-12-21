@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.lofigroup.seayau.common.ui.R
+import com.lofigroup.seeyau.common.ui.R
 import com.sillyapps.core.ui.components.RemoteImage
 import com.sillyapps.core.ui.theme.LocalExtendedColors
 import com.sillyapps.core.ui.theme.LocalSize
@@ -30,8 +30,6 @@ fun UserIcon(
   ) {
     RemoteImage(
       model = imageUri,
-      placeholderResId = R.drawable.ic_baseline_account_circle_24,
-      errorPlaceholderResId = R.drawable.ic_baseline_account_circle_24,
       onClick = onClick,
       modifier = Modifier
         .size(LocalSize.current.large)

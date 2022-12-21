@@ -5,9 +5,12 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import com.lofigroup.core.util.ResourceState
+import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.usecases.ConnectToWebsocketUseCase
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
+import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
+import com.lofigroup.seeyau.domain.base.di.BaseModuleComponent
 import com.lofigroup.seeyau.domain.chat.api.ChatComponentProvider
 import com.lofigroup.seeyau.domain.chat.usecases.PullChatDataUseCase
 import com.lofigroup.seeyau.domain.chat.usecases.SendLocalMessagesUseCase
@@ -16,10 +19,10 @@ import com.lofigroup.seeyau.domain.profile.usecases.PullBlacklistDataUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullContactsUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullLikesUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullProfileDataUseCase
-import com.lofigroup.seeyau.features.data_sync_service.di.DaggerDataSyncServiceComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import com.lofigroup.seeyau.features.data_sync_service.di.DaggerDataSyncServiceComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -43,7 +46,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
 
   @Inject lateinit var connectToWebsocketUseCase: ConnectToWebsocketUseCase
 
-  private val state = MutableStateFlow(DataSyncServiceState.LOADING)
+  @Inject lateinit var syncStateHolder: ResourceStateHolder
 
   override fun onBind(intent: Intent?): IBinder {
     return binder
@@ -62,7 +65,6 @@ class DataSyncServiceImpl: Service(), DataSyncService {
             init()
           }
           ResourceState.INITIALIZED -> {
-            state.value = DataSyncServiceState.SYNCED
           }
           else -> {}
         }
@@ -81,10 +83,6 @@ class DataSyncServiceImpl: Service(), DataSyncService {
   }
 
   override fun sync() {
-    if (state.value == DataSyncServiceState.LOADING) {
-      Timber.e("DataSync service is not initialized!")
-      return
-    }
     Timber.d("Syncing data...")
     if (syncing) return
     scope.launch {
@@ -97,26 +95,21 @@ class DataSyncServiceImpl: Service(), DataSyncService {
 
       connectToWebsocketUseCase()
       sendLocalMessagesUseCase()
-      state.value = DataSyncServiceState.SYNCED
+
+      syncStateHolder.set(ResourceState.IS_READY)
     }
   }
 
-  override fun getState(): Flow<DataSyncServiceState> {
-    return state
-  }
-
   private fun init() {
-    if (state.value == DataSyncServiceState.INITIALIZED) return
-
     val component = DaggerDataSyncServiceComponent.builder()
       .chatComponent((application as ChatComponentProvider).provideChatComponent())
       .profileComponent((application as ProfileComponentProvider).provideProfileComponent())
       .navigatorComponent((application as NavigatorComponentProvider).provideNavigatorComponent())
+      .baseComponent((application as BaseComponentProvider).provideBaseComponent())
       .build()
 
     component.inject(this)
     Timber.e("DataSyncService is initialized")
-    state.value = DataSyncServiceState.INITIALIZED
     sync()
   }
 }

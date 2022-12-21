@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.chat.local.models
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -7,6 +8,11 @@ import androidx.room.PrimaryKey
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
+import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
 
 @Entity(
   tableName = "messages",
@@ -27,7 +33,12 @@ data class MessageEntity(
   @ColumnInfo(index = true) val author: Long,
   val createdIn: Long,
   @ColumnInfo(defaultValue = "0")
-  val isRead: Boolean
+  val isRead: Boolean,
+
+  @ColumnInfo(defaultValue = "null")
+  val extra: String?,
+  @ColumnInfo(defaultValue = "PLAIN")
+  val type: MessageTypeEntity,
 ) {
   companion object {
 
@@ -35,22 +46,43 @@ data class MessageEntity(
      * Id offset of messages which are not yet received by the backend.
      * It's used to distinguish between messages created locally and by the server.
      *   */
-    const val SEND_ID_OFFSET = 0x7_000_000_000_000_000
+    const val LOCAL_MESSAGES_ID_OFFSET = 0x7_000_000_000_000_000
   }
 }
 
-fun MessageEntity.toDomainModel(): ChatMessage {
-  return ChatMessage.PlainMessage(
+@JsonClass(generateAdapter = true)
+data class MediaExtra(
+  val uri: String
+) {
+  companion object {
+    val adapter: JsonAdapter<MediaExtra> = Moshi.Builder().build().adapter(MediaExtra::class.java)
+  }
+}
+
+@JsonClass(generateAdapter = true)
+data class VideoExtra(
+  val uri: String,
+  @Json(name = "thumbnail_uri")
+  val thumbnailUri: String
+) {
+  companion object {
+    val adapter: JsonAdapter<VideoExtra> = Moshi.Builder().build().adapter(VideoExtra::class.java)
+  }
+}
+
+fun MessageEntity.toDomainModel(context: Context): ChatMessage {
+  return ChatMessage(
     id = id,
     message = message,
     author = author,
     createdIn = createdIn,
-    status = getStatus()
+    status = getStatus(),
+    type = type.toMessageType(extra, context)
   )
 }
 
 fun MessageEntity.getStatus(): MessageStatus {
-  return if (id >= MessageEntity.SEND_ID_OFFSET) MessageStatus.SENDING
+  return if (id >= MessageEntity.LOCAL_MESSAGES_ID_OFFSET) MessageStatus.SENDING
     else if (isRead) MessageStatus.READ
     else MessageStatus.SENT
 }

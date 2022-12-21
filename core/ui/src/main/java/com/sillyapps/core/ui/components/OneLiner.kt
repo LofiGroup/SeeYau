@@ -5,6 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 
 @Composable
 fun OneLiner(
@@ -15,6 +16,7 @@ fun OneLiner(
     text = text,
     style = style,
     maxLines = 1,
-    overflow = TextOverflow.Ellipsis
+    overflow = TextOverflow.Ellipsis,
+    color = LocalExtendedColors.current.lightBackground
   )
 }

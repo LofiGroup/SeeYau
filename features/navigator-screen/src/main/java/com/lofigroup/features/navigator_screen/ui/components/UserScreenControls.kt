@@ -1,6 +1,5 @@
 package com.lofigroup.features.navigator_screen.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.features.navigator_screen.R
 import com.lofigroup.features.navigator_screen.model.UserItemUIModel
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.sillyapps.core.ui.components.ImageButton
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing

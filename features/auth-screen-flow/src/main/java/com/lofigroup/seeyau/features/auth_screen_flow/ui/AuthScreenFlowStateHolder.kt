@@ -21,7 +21,7 @@ interface AuthScreenFlowStateHolder {
 
   fun setImageUri(uri: Uri)
 
-  fun updateProfile()
+  fun quickAuth()
 
   fun throwError(errorMessage: String)
 

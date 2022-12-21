@@ -3,7 +3,7 @@ package com.lofigroup.seeyau.features.splash_screen
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.splash_screen.components.LoadingScreen
 import com.lofigroup.seeyau.features.splash_screen.components.UnknownErrorScreen
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState

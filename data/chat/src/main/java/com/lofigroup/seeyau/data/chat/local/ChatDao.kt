@@ -37,7 +37,7 @@ interface ChatDao {
   @Query("select id from chats where partnerId = :userId")
   suspend fun getChatIdFromUserId(userId: Long): Long?
 
-  @Query("select createdIn from messages where id < ${MessageEntity.SEND_ID_OFFSET} order by createdIn desc limit 1")
+  @Query("select createdIn from messages where id < ${MessageEntity.LOCAL_MESSAGES_ID_OFFSET} order by createdIn desc limit 1")
   suspend fun getLastMessageCreatedIn(): Long?
 
   @Query("select * from messages where id = :id")
@@ -116,10 +116,10 @@ interface ChatDao {
       updateChat(chat.toChatUpdate())
   }
 
-  @Query("select id from messages where id >= ${MessageEntity.SEND_ID_OFFSET} order by id desc limit 1")
+  @Query("select id from messages where id >= ${MessageEntity.LOCAL_MESSAGES_ID_OFFSET} order by id desc limit 1")
   suspend fun getLastLocalMessageId(): Long?
 
-  @Query("select * from messages where id >= ${MessageEntity.SEND_ID_OFFSET} order by createdIn asc")
+  @Query("select * from messages where id >= ${MessageEntity.LOCAL_MESSAGES_ID_OFFSET} order by createdIn asc")
   suspend fun getLocalMessages(): List<MessageEntity>
 
 }

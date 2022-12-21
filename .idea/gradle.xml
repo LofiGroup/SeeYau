@@ -18,20 +18,23 @@
             <option value="$PROJECT_DIR$/common/network" />
             <option value="$PROJECT_DIR$/common/ui" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/audio-recorder" />
             <option value="$PROJECT_DIR$/core/di" />
             <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/permission" />
             <option value="$PROJECT_DIR$/core/time" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/core/util" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/auth" />
-            <option value="$PROJECT_DIR$/data/backend-api" />
+            <option value="$PROJECT_DIR$/data/base" />
             <option value="$PROJECT_DIR$/data/chat" />
             <option value="$PROJECT_DIR$/data/navigator" />
             <option value="$PROJECT_DIR$/data/profile" />
             <option value="$PROJECT_DIR$/data/settings" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/auth" />
+            <option value="$PROJECT_DIR$/domain/base" />
             <option value="$PROJECT_DIR$/domain/chat" />
             <option value="$PROJECT_DIR$/domain/navigator" />
             <option value="$PROJECT_DIR$/domain/profile" />
@@ -44,6 +47,7 @@
             <option value="$PROJECT_DIR$/features/navigator-screen" />
             <option value="$PROJECT_DIR$/features/nearby-service" />
             <option value="$PROJECT_DIR$/features/profile-screen" />
+            <option value="$PROJECT_DIR$/features/send-media" />
             <option value="$PROJECT_DIR$/features/splash-screen" />
           </set>
         </option>

@@ -35,12 +35,13 @@ dependencies {
   implementation project(":core:util")
 
   implementation project(":common:network")
+  implementation project(':data:base')
 
-  implementation project(":data:backend-api")
   implementation project(":data:profile")
 
   implementation project(":domain:chat")
   implementation project(":domain:profile")
+  implementation project(":domain:base")
 
   implementation appCompat
   implementation coreKtx

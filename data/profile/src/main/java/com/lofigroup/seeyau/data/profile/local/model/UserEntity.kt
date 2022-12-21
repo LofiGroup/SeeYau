@@ -27,7 +27,9 @@ fun UserEntity.toDomainModel(): User {
 
     blacklistedYou = false,
     likedYouAt = null,
-    likedAt = null
+    likedAt = null,
+    lastContact = lastContact,
+    likesCount = likesCount
   )
 }
 

@@ -8,18 +8,17 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
-import com.lofigroup.seayau.common.ui.components.specific.ExplainPermissionDialog
-import com.lofigroup.seayau.common.ui.permissions.model.PermissionRationale
-import com.lofigroup.seayau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.common.ui.components.specific.ExplainPermissionDialog
+import com.lofigroup.core.permission.model.PermissionRationale
+import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
+import com.sillyapps.core.ui.components.showToast
 
 class MainActivity : ComponentActivity() {
 
@@ -57,6 +56,14 @@ class MainActivity : ComponentActivity() {
       }
 
       permissionChannel.registerRationaleCallback { rationale = it }
+
+      val context = LocalContext.current
+      LaunchedEffect(Unit) {
+        val baseComponent = app.appModules.baseDataModule.domainComponent
+        baseComponent.getUserNotificationChannel().observe().collect() {
+          showToast(context, it.message)
+        }
+      }
 
       AppTheme() {
         RootContainer(

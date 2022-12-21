@@ -3,9 +3,21 @@
   <string name="chats">Chats</string>
   <string name="say_hello">Say Hello…</string>
 
-  <string name="memory">Memory +%1$d</string>
-  <string name="likes">Likes +%1$d</string>
-  <string name="Interaction">Interaction +%1$d</string>
+  <string name="nearby">People in your field of vision</string>
+  <string name="met">People you met today</string>
 
-  <string name="draft">Draft</string>
+  <string name="draft">Draft:</string>
+  <string name="you">You:</string>
+  <string name="delete">Delete</string>
+
+  <string name="sent_you_message">Sent you message</string>
+  <string name="chat_">Chat…</string>
+
+  <string name="not_visible_info">
+    "You are currently invisible to other people
+
+    Unfortunately you can't see new people
+
+    Disable this feature in settings and look around"
+  </string>
 </resources>

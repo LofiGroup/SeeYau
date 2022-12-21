@@ -4,23 +4,25 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.util.Resource
-import com.lofigroup.core.util.Result
+import com.lofigroup.core.util.ResourceState
+import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.seeyau.domain.auth.model.AuthResponse
 import com.lofigroup.seeyau.domain.auth.usecases.AuthorizeUseCase
+import com.lofigroup.seeyau.domain.auth.usecases.QuickAuthUseCase
 import com.lofigroup.seeyau.domain.auth.usecases.StartAuthUseCase
-import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
-import com.lofigroup.seeyau.domain.profile.usecases.UpdateProfileUseCase
 import com.lofigroup.seeyau.features.auth_screen_flow.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthScreenFlowViewModel @Inject constructor(
   private val authorizeUseCase: AuthorizeUseCase,
   private val startAuthUseCase: StartAuthUseCase,
-  private val updateProfileUseCase: UpdateProfileUseCase
+  private val quickAuthUseCase: QuickAuthUseCase,
+  private val moduleStateHolder: ResourceStateHolder
 ) : ViewModel(), AuthScreenFlowStateHolder {
 
   private val state = MutableStateFlow(AuthScreenFlowModel())
@@ -62,12 +64,18 @@ class AuthScreenFlowViewModel @Inject constructor(
     )
   }
 
-  override fun updateProfile() {
+  override fun quickAuth() {
     viewModelScope.launch {
-      val result = updateProfileUseCase(ProfileUpdate(name = state.value.name, imageUrl = state.value.imageUri))
+      state.value = state.value.copy(flowState = AuthFlowState.SYNCING_DATA)
+      val result = quickAuthUseCase(state.value.imageUri)
 
-      if (result is Result.Success) {
-        state.value = state.value.copy(allDataIsValid = true)
+      when (result) {
+        is Resource.Success -> {
+          observeDataSyncState()
+        }
+        else -> {
+          state.value = state.value.copy(flowState = AuthFlowState.ERROR)
+        }
       }
     }
   }
@@ -86,12 +94,25 @@ class AuthScreenFlowViewModel @Inject constructor(
       if (result is Resource.Success)
         state.value = state.value.copy(
           routePoint = RoutePoint.VerifyPhone,
-          enterNumberScreenState = EnterNumberScreenState.TYPING
+          enterNumberScreenState = EnterNumberScreenState.TYPING,
+          verifyCodeScreenState = VerifyCodeScreenState.TYPING
         )
       else {
         state.value = state.value.copy(
           enterNumberScreenState = EnterNumberScreenState.ERROR
         )
+      }
+    }
+  }
+
+  private suspend fun observeDataSyncState() {
+    moduleStateHolder.observe().collect() {
+      Timber.e("Data sync state is $it")
+      when (it) {
+        ResourceState.LOADING, ResourceState.INITIALIZED -> Unit
+        ResourceState.IS_READY -> {
+          state.value = state.value.copy(flowState = AuthFlowState.ALL_DATA_IS_VALID)
+        }
       }
     }
   }
@@ -119,7 +140,7 @@ class AuthScreenFlowViewModel @Inject constructor(
     if (authResponse.exists) {
       state.value = state.value.copy(routePoint = RoutePoint.AlreadyRegistered)
       delay(2000L)
-      state.value = state.value.copy(allDataIsValid = true)
+      state.value = state.value.copy(flowState = AuthFlowState.ALL_DATA_IS_VALID)
     } else {
       state.value = state.value.copy(routePoint = RoutePoint.EnterName)
     }

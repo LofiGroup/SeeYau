@@ -16,4 +16,6 @@ interface ProfileScreenStateHolder {
 
   fun setVisibility(isVisible: Boolean)
 
+  fun deleteAccount()
+
 }
