@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lofigroup.seeyau.common.ui.components.DefaultTopBar
 import com.lofigroup.seeyau.common.ui.components.UpButton
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
@@ -30,6 +31,7 @@ fun FaqScreen(
   Column(
     modifier = Modifier
       .fillMaxSize()
+      .background(MaterialTheme.colors.background)
       .systemBarsPadding()
   ) {
     DefaultTopBar(
@@ -54,18 +56,13 @@ fun FaqDescription(
     Row(
       verticalAlignment = Alignment.CenterVertically
     ) {
-      Box(
+      Icon(
+        painter = painterResource(id = faqItem.iconResId),
+        contentDescription = null,
         modifier = Modifier
-          .size(LocalSize.current.medium)
-          .padding(LocalSpacing.current.small)
-      ) {
-        Icon(
-          painter = painterResource(id = faqItem.iconResId),
-          contentDescription = null,
-          modifier = Modifier
-            .fillMaxSize()
-        )
-      }
+          .size(42.dp)
+      )
+
       Text(
         text = stringResource(id = faqItem.titleResId),
         style = MaterialTheme.typography.h6
@@ -95,7 +92,7 @@ data class FaqItem(
 
 private val faqItems = listOf(
   FaqItem(
-    iconResId = CommonR.drawable.ploom_icon,
+    iconResId = CommonR.drawable.ic_ploom,
     titleResId = R.string.ploom_app,
     descriptionResId = R.string.ploom_app_description
   ),
@@ -105,7 +102,7 @@ private val faqItems = listOf(
     descriptionResId = R.string.people_in_field_of_vision_description
   ),
   FaqItem(
-    iconResId = CommonR.drawable.history,
+    iconResId = CommonR.drawable.ic_history,
     titleResId = R.string.people_you_met_today,
     descriptionResId = R.string.people_you_met_today_description
   ),
@@ -115,13 +112,13 @@ private val faqItems = listOf(
     descriptionResId = R.string.chats_description
   ),
   FaqItem(
-    iconResId = CommonR.drawable.ic_bx_hide,
+    iconResId = CommonR.drawable.ic_hide,
     titleResId = R.string.make_me_invisible,
     descriptionResId = R.string.make_me_invisible_description
   ),
 )
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun FaqScreenPreview() {
   AppTheme {

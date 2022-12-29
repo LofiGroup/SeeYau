@@ -30,9 +30,7 @@ fun LoadingScreen() {
   ) {
     Text(
       text = stringResource(id = R.string.ploom),
-      style = MaterialTheme.typography.h1.copy(
-        fontFamily = FontFamily(Font(R.font.swis721blkbtrusbyme_black)),
-      ),
+      style = MaterialTheme.typography.h1,
       modifier = Modifier
         .align(Alignment.Center)
     )

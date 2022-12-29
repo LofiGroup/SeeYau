@@ -24,16 +24,5 @@ fun UserIcon(
       modifier = Modifier
         .size(LocalSize.current.medium)
     )
-
-    if (isOnline) {
-      Image(
-        painter = painterResource(
-          id = R.drawable.ic_online_small
-        ),
-        contentDescription = null,
-        modifier = Modifier
-          .align(Alignment.BottomEnd)
-      )
-    }
   }
 }

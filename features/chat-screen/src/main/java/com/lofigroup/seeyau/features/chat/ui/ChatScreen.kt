@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.core.audio_recorder.AudioRecorder
 import com.lofigroup.core.audio_recorder.FakeAudioRecorder
 import com.lofigroup.seeyau.common.ui.components.specific.BigImage
-import com.lofigroup.seeyau.common.ui.components.specific.UserOptionsDialog
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
 import com.lofigroup.seeyau.features.chat.R
@@ -21,16 +20,14 @@ import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalPlayerProvider
+import com.lofigroup.seeyau.features.chat.ui.components.*
 import com.lofigroup.seeyau.features.send_media.SendMediaDialog
-import com.lofigroup.seeyau.features.chat.ui.components.ChatMessages
-import com.lofigroup.seeyau.features.chat.ui.components.MessageInput
-import com.lofigroup.seeyau.features.chat.ui.components.SayHelloButton
-import com.lofigroup.seeyau.features.chat.ui.components.TopBar
 import com.sillyapps.core.ui.components.showToast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import com.lofigroup.seeyau.common.ui.R as CommonR
 
 @Composable
 fun ChatScreen(
@@ -52,6 +49,10 @@ fun ChatScreen(
   }
 
   var sendMediaVisible by rememberSaveable() {
+    mutableStateOf(false)
+  }
+
+  var closeUpImageVisible by remember {
     mutableStateOf(false)
   }
 
@@ -91,6 +92,13 @@ fun ChatScreen(
         ChatMessages(
           items = state.messages,
           listState = listState,
+          onImageClick = {
+            stateHolder.setCloseUpImage(it)
+            closeUpImageVisible = true
+          },
+          onVideoClick = {
+            showToast(context, context.getString(CommonR.string.not_implemented_yet))
+          }
         )
 
         if (state.messages.isEmpty()) {
@@ -112,6 +120,12 @@ fun ChatScreen(
       )
     }
   }
+
+  CloseUpImage(
+    imageUri = state.currentCloseUpImage,
+    visible = closeUpImageVisible,
+    onDismiss = { closeUpImageVisible = false }
+  )
 
   if (isFocused)
     BackHandler {

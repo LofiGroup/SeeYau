@@ -25,7 +25,6 @@ fun ProfileSettingsButton(
     modifier = Modifier
       .padding(start = LocalSpacing.current.small)
       .clip(CircleShape)
-      .background(Color.Black.copy(alpha = 0.3f))
       .clickable(onClick = onClick)
       .padding(LocalSpacing.current.extraSmall)
   ) {

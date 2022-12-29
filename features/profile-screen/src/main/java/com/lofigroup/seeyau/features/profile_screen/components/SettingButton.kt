@@ -27,36 +27,37 @@ fun SettingButton(
   onClick: () -> Unit,
   trailingContent: @Composable () -> Unit = {}
 ) {
-  Row(
-    verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier
-      .padding(horizontal = LocalSpacing.current.medium, vertical = LocalSpacing.current.small)
-      .fillMaxWidth()
-      .clickable { onClick() }
-  ) {
+  Box(modifier = Modifier.clickable { onClick() }) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier
+        .padding(horizontal = LocalSpacing.current.medium, vertical = LocalSpacing.current.small)
+        .fillMaxWidth()
+    ) {
 
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
+      Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
-    Image(
-      painter = painterResource(id = iconResId),
-      contentDescription = null,
-      modifier = Modifier.size(LocalSize.current.small)
-    )
+      Image(
+        painter = painterResource(id = iconResId),
+        contentDescription = null,
+        modifier = Modifier.size(LocalSize.current.small)
+      )
 
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
+      Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
-    Text(
-      text = label,
-      style = MaterialTheme.typography.h4,
-      modifier = Modifier.weight(1f)
-    )
+      Text(
+        text = label,
+        style = MaterialTheme.typography.h4,
+        modifier = Modifier.weight(1f)
+      )
 
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
+      Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
-    trailingContent()
+      trailingContent()
 
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
+      Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
+    }
   }
 
 }

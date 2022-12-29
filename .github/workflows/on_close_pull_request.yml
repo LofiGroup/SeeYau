@@ -130,6 +130,4 @@ jobs:
             Изменения:
             ${{ github.event.pull_request.body }}
             
-            Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}
-            
-            
+            Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}    

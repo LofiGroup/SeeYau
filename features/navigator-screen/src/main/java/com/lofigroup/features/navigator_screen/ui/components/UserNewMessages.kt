@@ -174,7 +174,8 @@ fun UserMessage(message: PreviewMessage) {
   ChatMessageItem(
     message.message,
     modifier = Modifier.layoutId(message.positionInList),
-    maxLines = 4
+    maxLines = 4,
+    onImageClick = {}
   )
 }
 

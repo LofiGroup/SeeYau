@@ -97,6 +97,7 @@ class DataSyncServiceImpl: Service(), DataSyncService {
       sendLocalMessagesUseCase()
 
       syncStateHolder.set(ResourceState.IS_READY)
+      syncing = false
     }
   }
 

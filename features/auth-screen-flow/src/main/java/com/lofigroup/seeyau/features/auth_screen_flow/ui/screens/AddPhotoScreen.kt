@@ -114,16 +114,32 @@ fun BoxScope.AddPhotoScreen(
       ) {
         when (flowState) {
           AuthFlowState.WAITING_FOR_INPUT -> {
-            Text(
-              text = stringResource(
-                id = if (imageUri.isBlank()) R.string.add_photo_so_people_can_recongize_you
-                else R.string.connect_with_people
-              ),
-              modifier = Modifier
-                .fillMaxWidth()
-
-            )
+            if (imageUri.isBlank()) {
+              Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+              ) {
+                Text(
+                  text = stringResource(
+                    id = R.string.add_photo_so_people_can_recongize_you
+                  ),
+                )
+                Spacer(modifier = Modifier.width(LocalSpacing.current.small))
+                Icon(
+                  painter = painterResource(id = R.drawable.ic_plus),
+                  contentDescription = null
+                )
+              }
+            } 
+            else {
+              Text(
+                text = stringResource(id = R.string.connect_with_people),
+                modifier = Modifier
+                  .fillMaxWidth()
+              )
+            }
           }
+          
           AuthFlowState.SYNCING_DATA, AuthFlowState.ALL_DATA_IS_VALID -> {
             CircularProgressIndicator()
           }

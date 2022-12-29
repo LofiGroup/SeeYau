@@ -10,14 +10,17 @@ sealed interface UIMessageType {
   object Like: UIMessageType
   object Contact: UIMessageType
   class Video(
-    val mediaItem: MediaItem
+    val mediaItem: MediaItem,
+    val aspectRatio: Float,
+    val duration: Long
   ): UIMessageType
   class Audio(
     val mediaItem: MediaItem,
     val duration: Long
   ): UIMessageType
   class Image(
-    val uri: String
+    val uri: String,
+    val aspectRatio: Float
   ): UIMessageType
 }
 
@@ -28,8 +31,15 @@ fun MessageType.toUIMessageType(): UIMessageType {
     is MessageType.Like -> UIMessageType.Like
     is MessageType.Plain -> UIMessageType.Plain
 
-    is MessageType.Image -> UIMessageType.Image(uri)
+    is MessageType.Image -> UIMessageType.Image(
+      uri = uri,
+      aspectRatio = width.toFloat() / height
+    )
     is MessageType.Audio -> UIMessageType.Audio(mediaItem = MediaItem.fromUri(uri), duration = duration)
-    is MessageType.Video -> UIMessageType.Video(mediaItem = MediaItem.fromUri(uri))
+    is MessageType.Video -> UIMessageType.Video(
+      mediaItem = MediaItem.fromUri(uri),
+      aspectRatio = width.toFloat() / height,
+      duration = duration
+    )
   }
 }

@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.features.splash_screen
 
-import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.lofigroup.seeyau.common.ui.theme.AppTheme

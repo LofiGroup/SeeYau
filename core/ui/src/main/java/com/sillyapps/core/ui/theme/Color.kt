@@ -42,6 +42,7 @@ data class ExtendedColors(
   val darkBackground: Color = DarkestGray,
 
   val secondaryAsBrush: Brush,
+  val itemsColors: Color = DarkerGray
 )
 
 

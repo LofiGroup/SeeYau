@@ -131,7 +131,7 @@ class AudioRecorderImpl @Inject constructor(
   override fun deleteRecording() {
     try {
       audioFile.delete()
-    } catch (e: IOException) {
+    } catch (_: IOException) {
     }
     reset()
   }

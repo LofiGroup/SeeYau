@@ -51,11 +51,6 @@ fun MessageDate(
     verticalAlignment = Alignment.CenterVertically,
     modifier = modifier
   ) {
-    if (message.authorIsMe) {
-      MessageStatusIcon(messageStatus = message.status)
-      Spacer(modifier = Modifier.width(2.dp))
-    }
-
     Text(
       text = message.dateTime.time,
       style = MaterialTheme.typography.body1,

@@ -64,8 +64,8 @@ fun RemoteImage(
         loading = { loadingPlaceholder() },
         error = { errorPlaceholder() },
         modifier = Modifier
-          .fillMaxSize()
           .clip(shape)
+          .fillMaxWidth()
           .conditional(onClick != NOT_CLICKABLE) {
             clickable(onClick = onClick)
           }

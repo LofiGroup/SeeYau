@@ -36,7 +36,7 @@ fun ChatMessageStyleProvider(
   CompositionLocalProvider(
     LocalChatMessageStyles provides ChatMessageStyles(
       myMessageStyleDefault.copy(color = MaterialTheme.colors.primaryVariant),
-      partnerMessageStyleDefault.copy(color = MaterialTheme.colors.surface)
+      partnerMessageStyleDefault.copy(color = LocalExtendedColors.current.itemsColors)
     )
   ) {
     content()
@@ -55,7 +55,7 @@ private val myMessageStyleDefault = ChatMessageStyle(
   startPadding = 64.dp,
   endPadding = 16.dp,
   color = Color.DarkGray,
-  datePadding = 50.dp,
+  datePadding = 35.dp,
   hasMessageMark = true
 )
 

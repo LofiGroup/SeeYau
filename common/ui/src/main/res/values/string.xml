@@ -39,4 +39,6 @@
   <string name="user_is_blacklisted_you">This user is blacklisted you</string>
 
   <string name="next">Next</string>
+
+  <string name="not_implemented_yet">Not implemented yet</string>
 </resources>
