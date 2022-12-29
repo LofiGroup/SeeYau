@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.core.audio_recorder.AudioRecorder
+import com.lofigroup.core.util.set
 import com.lofigroup.seeyau.domain.chat.models.ChatDraftUpdate
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
 import com.lofigroup.seeyau.domain.chat.models.events.ChatIsRead
@@ -15,6 +16,7 @@ import com.lofigroup.seeyau.domain.profile.usecases.GetUserUseCase
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
+import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.toUIMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -54,8 +56,14 @@ class ChatScreenViewModel @Inject constructor(
 
   private var currentChatId = -1L
 
+  init {
+    Timber.e("New chat screen viewModel is created")
+  }
+
   fun setChatId(chatId: Long) {
+    if (chatId == 0L || chatId == currentChatId) return
     observeChatJob?.cancel()
+
     currentChatId = chatId
     audioRecorder.deleteRecording()
 
@@ -119,6 +127,18 @@ class ChatScreenViewModel @Inject constructor(
 
   override fun getRecorder(): AudioRecorder {
     return audioRecorder
+  }
+
+  override fun setCloseUpImage(imageUri: String?) {
+    state.set {
+      it.copy(currentCloseUpImage = imageUri)
+    }
+  }
+
+  override fun setCloseUpVideo(video: UIMessageType.Video) {
+    state.set {
+      it.copy(currentCloseUpVideo = video)
+    }
   }
 
   private suspend fun observeProfileUpdates(chatId: Long) {

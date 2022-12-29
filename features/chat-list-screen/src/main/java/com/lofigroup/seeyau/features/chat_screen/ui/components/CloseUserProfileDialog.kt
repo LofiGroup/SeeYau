@@ -1,23 +1,28 @@
 package com.lofigroup.seeyau.features.chat_screen.ui.components
 
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.os.Build
+import android.widget.ImageView
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.lofigroup.seeyau.common.ui.components.SwipeableBox
@@ -25,17 +30,13 @@ import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.ChatBrief
 import com.lofigroup.seeyau.domain.profile.model.User
 import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
-import com.sillyapps.core.ui.components.RemoteImage
 import com.lofigroup.seeyau.common.ui.R as CommonR
 import com.lofigroup.seeyau.features.chat_screen.R
-import com.sillyapps.core.ui.components.ImageButton
-import com.sillyapps.core.ui.components.showToast
+import com.sillyapps.core.ui.components.*
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -83,6 +84,7 @@ fun CloseUserProfileDialog(
             Text(
               text = stringResource(id = R.string.chat_),
               style = MaterialTheme.typography.h2,
+              color = MaterialTheme.colors.onSurface,
               modifier = Modifier
                 .padding(LocalSpacing.current.medium)
             )
@@ -132,7 +134,6 @@ fun ProfilePicture(
         .align(Alignment.BottomEnd)
         .padding(LocalSpacing.current.small)
     )
-
   }
 }
 
@@ -143,14 +144,26 @@ fun LikeButton(
   onClick: (Boolean) -> Unit,
   modifier: Modifier = Modifier
 ) {
+  val animationState = rememberStateImageView(
+    transitions = StateTransitions.TransitionBuilder()
+      .add(
+        from = R.drawable.ic_like_disabled,
+        to = R.drawable.ic_like_enabled_new,
+        anim = R.drawable.anim_like
+      )
+      .build()
+  )
+
   Column(
-    modifier = modifier.clickable { onClick(!isPressed) },
+    modifier = modifier,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    ImageButton(
-      onClick = { onClick(!isPressed) },
-      painter = painterResource(id = if (isPressed) R.drawable.ic_like_enabled else R.drawable.ic_like_disabled),
-      modifier = Modifier.size(LocalSize.current.medium)
+    StateImageView(
+      state = animationState,
+      modifier = Modifier
+        .clip(CircleShape)
+        .clickable { onClick(!isPressed) },
+      currentState = if (isPressed) R.drawable.ic_like_enabled_new else R.drawable.ic_like_disabled
     )
 
     Text(

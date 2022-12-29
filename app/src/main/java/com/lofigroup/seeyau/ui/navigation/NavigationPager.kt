@@ -9,9 +9,13 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.lofigroup.seeyau.AppModules
 import com.lofigroup.seeyau.features.chat.api.ChatScreenNavigation
+import com.lofigroup.seeyau.features.chat.api.rememberChatScreenComponent
 import com.lofigroup.seeyau.features.chat_screen.api.ChatListScreenNavigation
+import com.lofigroup.seeyau.features.chat_screen.api.rememberChatListScreenComponent
 import com.lofigroup.seeyau.features.profile_screen.api.ProfileScreenNavigation
+import com.lofigroup.seeyau.features.profile_screen.api.rememberProfileScreenComponent
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -26,16 +30,33 @@ fun NavigationPager(
     mutableStateOf(0L)
   }
 
+  val profileScreenComponent = rememberProfileScreenComponent(
+    profileComponent = appModules.profileModule.domainComponent,
+    settingsComponent = appModules.settingsModule.domainComponent,
+    authComponent = appModules.authModuleImpl.domainComponent()
+  )
+
+  val chatListScreenComponent = rememberChatListScreenComponent(
+    chatComponent = appModules.chatModule.domainComponent,
+    profileComponent = appModules.profileModule.domainComponent,
+    settingsComponent = appModules.settingsModule.domainComponent
+  )
+
+  val chatScreenComponent = rememberChatScreenComponent(
+    chatComponent = appModules.chatModule.domainComponent,
+    profileComponent = appModules.profileModule.domainComponent,
+    permissionChannel = appModules.appComponent.getPermissionChannel()
+  )
+
   HorizontalPager(
     state = pagerState,
+    key = { it },
     count = if (currentChatId != 0L) 3 else 2
   ) { page ->
     when (page) {
       PROFILE_SCREEN -> {
         ProfileScreenNavigation(
-          profileComponent = appModules.profileModule.domainComponent,
-          settingsComponent = appModules.settingsModule.domainComponent,
-          authComponent = appModules.authModuleImpl.domainComponent(),
+          component = profileScreenComponent,
           onUpButtonClick = {
             coroutineScope.launch { pagerState.animateScrollToPage(1) }
           },
@@ -45,9 +66,7 @@ fun NavigationPager(
       }
       MAIN_SCREEN -> {
         ChatListScreenNavigation(
-          chatComponent = appModules.chatModule.domainComponent,
-          profileComponent = appModules.profileModule.domainComponent,
-          settingsComponent = appModules.settingsModule.domainComponent,
+          component = chatListScreenComponent,
           onNavigateToChatScreen = {
             currentChatId = it
             coroutineScope.launch { pagerState.animateScrollToPage(CHAT_SCREEN) }
@@ -59,16 +78,13 @@ fun NavigationPager(
       }
       CHAT_SCREEN -> {
         ChatScreenNavigation(
-          chatComponent = appModules.chatModule.domainComponent,
-          profileComponent = appModules.profileModule.domainComponent,
-          permissionChannel = appModules.appComponent.getPermissionChannel(),
+          component = chatScreenComponent,
           chatId = currentChatId,
           onUpButtonClick = {
             coroutineScope.launch { pagerState.animateScrollToPage(MAIN_SCREEN) }
           },
           isFocused = currentPage == page
         )
-
       }
     }
   }

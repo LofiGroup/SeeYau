@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.lofigroup.seeyau.domain.chat.models.Chat
@@ -40,6 +41,7 @@ fun ChatList(
   val (metExpanded, setMetExpanded) = rememberSaveable() {
     mutableStateOf(true)
   }
+  val context = LocalContext.current
 
   LazyColumn(modifier = modifier) {
     FolderItem(
@@ -55,8 +57,8 @@ fun ChatList(
       },
       expanded = nearbyExpanded,
       setExpanded = setNearbyExpanded,
-      textResId = R.string.nearby,
-      imageResId = R.drawable.ic_nearby_icon,
+      title = context.getString(R.string.folder_title_nearby),
+      imageResId = CommonR.drawable.nearby_icon,
     )
     FolderItem(
       content = {
@@ -68,8 +70,8 @@ fun ChatList(
       },
       expanded = metExpanded,
       setExpanded = setMetExpanded,
-      textResId = R.string.met,
-      imageResId = R.drawable.ic_met_icon,
+      title = context.getString(R.string.folder_title_met),
+      imageResId = CommonR.drawable.ic_history,
     )
     FolderItem(
       content = {
@@ -88,7 +90,7 @@ fun ChatList(
           Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
         }
       },
-      textResId = R.string.chats,
+      title = context.getString(R.string.chats),
       imageResId = CommonR.drawable.ic_interaction
     )
   }

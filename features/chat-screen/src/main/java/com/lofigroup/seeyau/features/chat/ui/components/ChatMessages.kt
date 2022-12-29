@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.features.chat.ui.components
 
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
+import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.rememberLastItemKey
@@ -20,7 +22,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun ChatMessages(
   listState: LazyListState,
-  items: Map<String, List<UIChatMessage>>
+  items: Map<String, List<UIChatMessage>>,
+  onImageClick: (String) -> Unit,
+  onVideoClick: (UIMessageType.Video) -> Unit
 ) {
 
   ChatMessageStyleProvider() {
@@ -38,7 +42,9 @@ fun ChatMessages(
             contentType = { "chatMessageItem" }
           ) { message ->
             ChatMessageItem(
-              chatMessage = message
+              chatMessage = message,
+              onImageClick = onImageClick,
+              onVideoClick = onVideoClick
             )
           }
           item(

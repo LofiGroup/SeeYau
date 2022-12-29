@@ -29,12 +29,8 @@ Remember, your main avatar is you. Be yourself and look around."
   <string name="already_registered">This number is already linked to an account. It should load soon.</string>
 
   <string name="first_screen_title">Social metaspace environment</string>
-  <string name="first_screen_text">
-"Often we don't have enough opportunity to communicate with the people around us.
 
-Now we can do it.
-Here you can see the people who are nearby you and talk to them.
-
-The app uses Bluetooth technology to search for people in your field of vision."
-  </string>
+  <string name="first_screen_text_part_1">"The app uses "</string>
+  <string name="first_screen_text_part_2">"Bluetooth "</string>
+  <string name="first_screen_text_part_3">"search for people in your field of vision."</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.features.chat.ui.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -21,6 +22,9 @@ import com.sillyapps.core.ui.theme.LocalSpacing
 fun ChatMessageItem(
   chatMessage: UIChatMessage,
   modifier: Modifier = Modifier,
+
+  onImageClick: (String) -> Unit = {},
+  onVideoClick: (UIMessageType.Video) -> Unit = {},
   maxLines: Int = Int.MAX_VALUE
 ) {
   val style =
@@ -44,13 +48,15 @@ fun ChatMessageItem(
         is UIMessageType.Video -> {
           VideoContent(
             videoItem = chatMessage.type,
-            message = chatMessage
+            message = chatMessage,
+            onVideoClick = onVideoClick
           )
         }
         is UIMessageType.Image -> {
           ImageContent(
             content = chatMessage.type,
-            message = chatMessage
+            message = chatMessage,
+            onImageClick = onImageClick
           )
         }
         is UIMessageType.Audio -> {
@@ -84,7 +90,7 @@ fun ChatMyMessagePreview() {
     Surface() {
       ChatMessageStyleProvider() {
         ChatMessageItem(
-          chatMessage = getPreviewMessage()
+          chatMessage = getPreviewMessage(),
         )
       }
     }
@@ -98,7 +104,7 @@ fun ChatPartnerMessagePreview() {
     Surface() {
       ChatMessageStyleProvider() {
         ChatMessageItem(
-          chatMessage = getPreviewMessage(authorIsMe = false)
+          chatMessage = getPreviewMessage(authorIsMe = false),
         )
       }
     }

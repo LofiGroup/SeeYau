@@ -60,7 +60,7 @@ val Gray = Color(0xFFA3A3A3)
 val DarkGray = Color(0xFF616161)
 val DarkerGray = Color(0xFF404040)
 val DarkestGray = Color(0xFF141414)
-val MostDarkestGray = Color(0xFF292929)
+val DarkerGray2 = Color(0xFF292929)
 
 internal val DarkColorPalette = darkColors(
   primary = PurpleRed,
@@ -69,7 +69,7 @@ internal val DarkColorPalette = darkColors(
   primaryVariant = PurpleRedVariant,
   secondary = PurpleRed,
   error = Red,
-  surface = MostDarkestGray,
+  surface = DarkestGray,
   background = DarkestGray
 )
 
@@ -84,7 +84,8 @@ fun extendedColors() = ExtendedColors(
   backgroundGradient = PurpleVioletVerticalGradient,
   lightBackground = GrayVariant1,
   darkBackground = DarkerGray,
-  secondaryAsBrush = SolidColor(MaterialTheme.colors.secondary)
+  secondaryAsBrush = SolidColor(MaterialTheme.colors.secondary),
+  itemsColors = DarkerGray2
 )
 
 @Composable

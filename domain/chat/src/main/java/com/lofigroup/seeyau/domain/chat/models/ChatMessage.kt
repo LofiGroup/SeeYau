@@ -20,6 +20,15 @@ sealed class MessageType(
   object Like: MessageType()
   class Contact: MessageType()
   class Audio(uri: String, val duration: Long): MessageType(uri)
-  class Video(uri: String): MessageType(uri)
-  class Image(uri: String): MessageType(uri)
+  class Video(
+    uri: String,
+    val width: Int = 1,
+    val height: Int = 1,
+    val duration: Long = 0L
+  ): MessageType(uri)
+  class Image(
+    uri: String,
+    val width: Int = 1,
+    val height: Int = 1
+  ): MessageType(uri)
 }

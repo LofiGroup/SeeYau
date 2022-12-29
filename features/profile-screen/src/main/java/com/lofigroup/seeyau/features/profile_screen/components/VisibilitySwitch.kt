@@ -30,7 +30,7 @@ fun VisibilitySwitch(
     .padding(horizontal = LocalSpacing.current.medium)
   ) {
     Image(
-      painter = painterResource(id = CommonR.drawable.ic_bx_hide),
+      painter = painterResource(id = CommonR.drawable.ic_hide),
       contentDescription = null
     )
     

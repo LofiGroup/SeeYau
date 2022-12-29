@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.media_player.ui.rememberMediaPlayerState
@@ -31,7 +32,7 @@ fun AudioContent(
 
   Column(
     modifier = modifier
-      .padding(start = LocalSpacing.current.small, end = LocalSpacing.current.medium)
+      .padding(start = LocalSpacing.current.small, end = 10.dp)
       .padding(top = LocalSpacing.current.small)
   ) {
     Row(
@@ -46,7 +47,8 @@ fun AudioContent(
       Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
       PlayerProgressBar(
-        state = state
+        state = state,
+        modifier = Modifier.weight(1f)
       )
 
       Spacer(modifier = Modifier.width(LocalSpacing.current.medium))
@@ -57,7 +59,10 @@ fun AudioContent(
     Text(
       text = "${state.progressData.progress} / ${state.progressData.duration}",
       style = MaterialTheme.typography.caption,
-      modifier = Modifier.padding(start = LocalSpacing.current.small, bottom = LocalSpacing.current.small)
+      modifier = Modifier.padding(
+        start = LocalSpacing.current.small,
+        bottom = LocalSpacing.current.small
+      )
     )
   }
 }
@@ -68,7 +73,7 @@ fun AudioContentPreview() {
   AppTheme {
     Surface() {
       ChatMessageItem(chatMessage = getPreviewMessage(
-        type = MessageType.Audio(uri = "", duration = 10000L)
+        type = MessageType.Audio(uri = "", duration = 10000L),
       ))
     }
   }

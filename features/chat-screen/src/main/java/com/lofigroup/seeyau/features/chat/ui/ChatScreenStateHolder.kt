@@ -5,6 +5,7 @@ import com.lofigroup.core.audio_recorder.AudioRecorder
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
+import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import kotlinx.coroutines.flow.Flow
 
 interface ChatScreenStateHolder {
@@ -24,5 +25,9 @@ interface ChatScreenStateHolder {
   fun getMediaPlayer(): MediaPlayer
 
   fun getRecorder(): AudioRecorder
+
+  fun setCloseUpImage(imageUri: String?) {}
+
+  fun setCloseUpVideo(video: UIMessageType.Video) {}
 
 }

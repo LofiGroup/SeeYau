@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.lofigroup.seeyau.common.ui.components.ButtonWithText
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.splash_screen.R
 import com.sillyapps.core.ui.theme.LocalSize
@@ -61,18 +62,15 @@ fun UnknownErrorScreen(
       )
     }
 
-    TextButton(
+    ButtonWithText(
+      text = stringResource(id = R.string.try_again),
       onClick = onTryAgain,
       modifier = Modifier
-        .systemBarsPadding()
-        .padding(bottom = LocalSpacing.current.small)
+        .navigationBarsPadding()
+        .fillMaxWidth()
+        .padding(LocalSpacing.current.medium)
         .align(Alignment.BottomCenter)
-    ) {
-      Text(
-        text = stringResource(id = R.string.try_again),
-        style = MaterialTheme.typography.h4
-      )
-    }
+    )
   }
 
 }

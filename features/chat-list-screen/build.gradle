@@ -61,6 +61,7 @@ dependencies {
   implementation composeDeps.materialIconsExtended
   implementation composeDeps.activity
   implementation composeDeps.navigation
+  implementation composeDeps.animation
   debugImplementation composeDeps.poolingContainer
 
   implementation daggerDeps.core

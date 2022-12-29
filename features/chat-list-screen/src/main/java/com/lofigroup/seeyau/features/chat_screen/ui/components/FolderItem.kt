@@ -22,7 +22,7 @@ import com.sillyapps.core.ui.util.conditional
 private val notFoldable: (Boolean) -> Unit = {}
 
 fun LazyListScope.FolderItem(
-  textResId: Int,
+  title: String,
   imageResId: Int,
   content: LazyListScope.() -> Unit,
   expanded: Boolean = true,
@@ -31,7 +31,7 @@ fun LazyListScope.FolderItem(
   item {
     FolderHeader(
       isExpanded = expanded,
-      text = stringResource(id = textResId),
+      text = title,
       painter = painterResource(id = imageResId),
       setExpanded = setExpanded
     )
@@ -57,13 +57,10 @@ fun FolderHeader(
     }
       .padding(top = LocalSpacing.current.small)
   ) {
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
     Icon(
       painter = painter,
       contentDescription = null,
-      modifier = Modifier.size(LocalSize.current.small)
     )
-    Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
     Text(
       text = text,

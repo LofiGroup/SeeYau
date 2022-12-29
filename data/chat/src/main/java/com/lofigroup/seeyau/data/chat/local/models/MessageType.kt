@@ -29,12 +29,36 @@ fun MessageTypeEntity.toMessageType(extra: String?, context: Context): MessageTy
     MessageTypeEntity.VIDEO, MessageTypeEntity.AUDIO, MessageTypeEntity.IMAGE -> {
       val uri = extractMediaUri(extra)
       when (this) {
-        MessageTypeEntity.VIDEO -> MessageType.Video(uri = uri)
-        MessageTypeEntity.AUDIO -> MessageType.Audio(uri = uri, duration = getAudioFileDuration(uri, context))
-        else -> MessageType.Image(uri = uri)
+        MessageTypeEntity.VIDEO -> resolveVideoType(rawUri = uri, context = context)
+        MessageTypeEntity.AUDIO -> MessageType.Audio(
+          uri = uri,
+          duration = getAudioFileDuration(uri, context)
+        )
+        else -> MessageType.Image(uri = uri,)
       }
     }
   }
+}
+
+fun resolveVideoType(rawUri: String, context: Context): MessageType.Video {
+  val mmr = MediaMetadataRetriever()
+  val uri = Uri.parse(rawUri)
+
+  if (uri.scheme == "content") mmr.setDataSource(context, uri)
+  else mmr.setDataSource(rawUri)
+
+  val width = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 1
+  val height = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 1
+  val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
+
+  mmr.release()
+
+  return MessageType.Video(
+    uri = rawUri,
+    width = width,
+    height = height,
+    duration = duration
+  )
 }
 
 fun extractMediaUri(extra: String?): String {
@@ -44,14 +68,20 @@ fun extractMediaUri(extra: String?): String {
 fun getAudioFileDuration(rawUri: String, context: Context): Long {
   if (rawUri.isBlank()) return 0L
 
-  val mmr = MediaMetadataRetriever()
+  return try {
+    val mmr = MediaMetadataRetriever()
 
-  val uri = Uri.parse(rawUri)
-  if (uri.scheme == "content") mmr.setDataSource(context, uri)
-  else mmr.setDataSource(rawUri)
+    val uri = Uri.parse(rawUri)
+    if (uri.scheme == "content") mmr.setDataSource(context, uri)
+    else mmr.setDataSource(rawUri)
 
-  val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) ?: "0"
-  return duration.toLong()
+    val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) ?: "0"
+
+    mmr.release()
+    duration.toLong()
+  } catch (e: Exception) {
+    0L
+  }
 }
 
 fun resolveMessageType(uri: String?, context: Context): MessageTypeEntity {

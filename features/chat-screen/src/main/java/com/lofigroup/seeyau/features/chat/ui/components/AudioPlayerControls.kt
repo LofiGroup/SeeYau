@@ -37,7 +37,9 @@ fun AudioPlayerControls(
     verticalAlignment = Alignment.CenterVertically
   ) {
     PlayerProgressBar(
-      state = state
+      state = state,
+      modifier = Modifier
+        .weight(1f)
     )
 
     PlaybackControls(
@@ -52,17 +54,23 @@ fun AudioPlayerControls(
 fun PlaybackControls(
   mediaItem: MediaItem,
   state: MediaPlayerState,
-  id: Long
+  id: Long,
+  modifier: Modifier = Modifier,
+  notifyInteractedWith: () -> Unit = {},
 ) {
   val mediaPlayer = LocalMediaPlayer.current
   val isPlaying = state.playbackState == PlaybackState.PLAYING
 
-  IconButton(onClick = {
-    if (isPlaying)
-      mediaPlayer.pause()
-    else
-      mediaPlayer.playMedia(mediaItem, id)
-  }) {
+  IconButton(
+    onClick = {
+      notifyInteractedWith()
+      if (isPlaying)
+        mediaPlayer.pause()
+      else
+        mediaPlayer.playMedia(mediaItem, id)
+    },
+    modifier = modifier
+  ) {
     Icon(
       painter = painterResource(id = if (isPlaying) R.drawable.ic_pause_rounded else R.drawable.ic_play_arrow_rounded),
       contentDescription = null,
@@ -72,19 +80,22 @@ fun PlaybackControls(
 }
 
 @Composable
-fun RowScope.PlayerProgressBar(
-  state: MediaPlayerState
+fun PlayerProgressBar(
+  state: MediaPlayerState,
+  modifier: Modifier = Modifier,
+  notifyInteractedWith: () -> Unit = {},
 ) {
   val mediaPlayer = LocalMediaPlayer.current
 
   BoxWithConstraints(
-    modifier = Modifier.weight(1f)
+    modifier = modifier
   ) {
     Box(
       modifier = Modifier
         .align(Alignment.Center)
         .pointerInput(state.isCurrentItem) {
           detectTapGestures { offset: Offset ->
+            notifyInteractedWith()
             if (state.isCurrentItem) {
               mediaPlayer.seekTo(offset.x / maxWidth.toPx())
             }
