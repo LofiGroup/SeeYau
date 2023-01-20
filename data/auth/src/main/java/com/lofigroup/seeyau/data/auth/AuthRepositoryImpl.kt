@@ -1,6 +1,8 @@
 package com.lofigroup.seeyau.data.auth
 
 import android.content.Context
+import com.google.firebase.FirebaseException
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lofigroup.backend_api.TokenStore
 import com.lofigroup.backend_api.data.DatabaseHandler
 import com.lofigroup.backend_api.di.DataSyncStateHolder
@@ -8,10 +10,7 @@ import com.lofigroup.core.util.Resource
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.core.util.ResourceStateHolder
 import com.lofigroup.seeyau.data.auth.di.AuthDataStateHolder
-import com.lofigroup.seeyau.data.auth.model.toAccessRequest
-import com.lofigroup.seeyau.data.auth.model.toAuthResponse
-import com.lofigroup.seeyau.data.auth.model.toStartAuthRequest
-import com.lofigroup.seeyau.data.auth.model.toTokenDataModel
+import com.lofigroup.seeyau.data.auth.model.*
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.domain.auth.AuthRepository
 import com.lofigroup.seeyau.domain.auth.model.Access
@@ -24,6 +23,7 @@ import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_network.utils.createMultipartBody
 import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
@@ -138,9 +138,25 @@ class AuthRepositoryImpl @Inject constructor(
     )
   }
 
+  override suspend fun sendFirebaseToken(token: String?) {
+    safeIOCall(ioDispatcher) {
+      val firebaseToken = try {
+        token ?: FirebaseMessaging.getInstance().token.await()
+      } catch (e: FirebaseException) {
+        Timber.e(e)
+        null
+      } ?: return@safeIOCall
+
+      retrofitErrorHandler(authApi.updateFirebaseToken(
+        FirebaseToken(
+          token = firebaseToken
+        )
+      ))
+    }
+  }
+
   private suspend fun resolveLoggedInState(): LoggedInStatus {
     val me = userDao.getUser(0)
-    Timber.e("Me is $me")
 
     return if (tokenStore.isEmpty() || me == null) LoggedInStatus.InvalidToken
     else LoggedInStatus.CantAccessServer

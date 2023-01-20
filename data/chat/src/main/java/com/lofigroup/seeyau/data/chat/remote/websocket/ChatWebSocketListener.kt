@@ -59,7 +59,6 @@ class ChatWebSocketListener @Inject constructor(
       is MessageIsReceivedResponse -> {
         chatDataHandler.saveLocalMessage(response)
       }
-      else -> {}
     }
   }
 

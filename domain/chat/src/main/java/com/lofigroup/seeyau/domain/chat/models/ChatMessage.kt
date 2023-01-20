@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.domain.chat.models
 data class ChatMessage(
   val id: Long,
   val author: Long,
+  val chatId: Long,
   val createdIn: Long,
   val message: String,
   val status: MessageStatus,

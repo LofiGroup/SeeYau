@@ -1,23 +1,31 @@
 package com.lofigroup.seeyau.ui.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.lofigroup.seeyau.AppModules
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.model.MainScreenEvent
 import com.lofigroup.seeyau.features.auth_screen_flow.api.AuthScreenFlowNavigation
 import com.lofigroup.seeyau.features.splash_screen.api.SplashScreenNavigation
+import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenOptions
 import com.sillyapps.core.ui.util.navigateToTopDestination
 
 @Composable
 fun AppNavHost(
+  mainScreenEvent: MainScreenEvent?,
+
   navController: NavHostController,
   appModules: AppModules,
 
   onStartNearbyService: () -> Unit,
   modifier: Modifier
 ) {
+
+  var event by remember {
+    mutableStateOf(mainScreenEvent)
+  }
 
   NavHost(
     navController = navController,
@@ -34,7 +42,10 @@ fun AppNavHost(
           } else {
             navController.navigateToTopDestination(Screen.AuthScreen.route)
           }
-        }
+        },
+        splashScreenOptions = SplashScreenOptions(
+          withoutDelay = event is MainScreenEvent.OpenChat
+        )
       )
     }
 
@@ -42,12 +53,14 @@ fun AppNavHost(
       onStartNearbyService()
       NavigationPager(
         appModules = appModules,
+        mainScreenEvent = event,
         navigateTo = { navController.navigateToTopDestination(it) },
         onBackButtonClick = { navController.navigateUp() }
       )
     }
 
     composable(route = Screen.AuthScreen.route) {
+      event = null
       AuthScreenFlowNavigation(
         authComponent = appModules.authModuleImpl.domainComponent(),
         profileComponent = appModules.profileModule.domainComponent,

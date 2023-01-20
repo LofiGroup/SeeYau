@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
 
-  suspend fun pullData()
+  suspend fun pullData(returnResult: Boolean): List<ChatNewMessages>
   suspend fun sendLocalMessages()
 
   fun observeChats(): Flow<List<ChatBrief>>

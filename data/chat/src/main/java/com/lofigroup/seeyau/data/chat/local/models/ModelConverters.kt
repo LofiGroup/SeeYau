@@ -4,14 +4,15 @@ import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.profile.model.Like
 
-fun Like.toChatMessage(): ChatMessage {
+fun Like.toChatMessage(chatId: Long): ChatMessage {
   return ChatMessage(
     author = userId,
     createdIn = createdIn,
     status = MessageStatus.READ,
     type = MessageType.Like,
     id = id,
-    message = ""
+    message = "",
+    chatId = chatId
   )
 }
 

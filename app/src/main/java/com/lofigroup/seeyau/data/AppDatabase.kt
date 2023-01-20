@@ -7,13 +7,13 @@ import androidx.room.RenameColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.lofigroup.backend_api.data.DatabaseHandler
 import com.lofigroup.core.util.toIntArray
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.models.ChatEntity
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
-import com.lofigroup.seeyau.data.migrations.migration21To22
+import com.lofigroup.seeyau.data.migrations.Migration21To22
+import com.lofigroup.seeyau.data.migrations.Migration22To23
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
@@ -25,7 +25,7 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
   entities = [
     UserEntity::class, MessageEntity::class, ChatEntity::class, LikeEntity::class, BlacklistEntity::class
   ],
-  version = 22,
+  version = 23,
   exportSchema = true,
   autoMigrations = [
     AutoMigration(from = 20, to = 21, spec = AppDatabase.Migration20To21::class)
@@ -59,7 +59,7 @@ abstract class AppDatabase : RoomDatabase(), DatabaseHandler {
             AppDatabase::class.java,
             "seeyau_database"
           )
-            .addMigrations(migration21To22)
+            .addMigrations(Migration21To22, Migration22To23)
             .fallbackToDestructiveMigrationFrom(*(1..19).toIntArray())
             .build()
 

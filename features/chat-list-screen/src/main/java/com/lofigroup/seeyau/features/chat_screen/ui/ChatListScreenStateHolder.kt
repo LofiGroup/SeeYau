@@ -22,7 +22,7 @@ interface ChatListScreenStateHolder {
 private fun getPreviewChatBrief(message: String = "Hello"): ChatBrief {
   return ChatBrief(
     id = 1,
-    lastMessage = ChatMessage(id = 0, message = message, author = 0, createdIn = 0L, status = MessageStatus.READ, type = MessageType.Plain),
+    lastMessage = ChatMessage(id = 0, message = message, author = 0, createdIn = 0L, status = MessageStatus.READ, type = MessageType.Plain, chatId = 0L),
     partner = getUserPreviewModel(),
     newMessagesCount = 1,
     createdIn = 0L

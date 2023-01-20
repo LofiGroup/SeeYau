@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lofigroup.seeyau.domain.auth.model.LoggedInStatus
 import com.lofigroup.seeyau.domain.auth.usecases.IsLoggedInUseCase
+import com.lofigroup.seeyau.domain.auth.usecases.SendFirebaseTokenUseCase
+import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenOptions
 import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenState
 import com.lofigroup.seeyau.features.splash_screen.model.State
 import kotlinx.coroutines.async
@@ -15,7 +17,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SplashScreenViewModel @Inject constructor(
-  private val isLoggedInUseCase: IsLoggedInUseCase
+  private val isLoggedInUseCase: IsLoggedInUseCase,
+  private val splashScreenOptions: SplashScreenOptions
 ): ViewModel(), SplashScreenStateHolder {
 
   private val state = MutableStateFlow(SplashScreenState())
@@ -30,11 +33,12 @@ class SplashScreenViewModel @Inject constructor(
     state.value = state.value.copy(state = State.Loading)
 
     viewModelScope.launch {
-      val delayDeff = async { delay(2500L) }
+      val delayDeff = async { if (!splashScreenOptions.withoutDelay) delay(2500L) }
       val checkTokenDeff = async { checkToken() }
 
       delayDeff.await()
       val result = checkTokenDeff.await()
+
       state.value = state.value.copy(state = result)
     }
   }

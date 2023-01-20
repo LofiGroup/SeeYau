@@ -208,6 +208,7 @@ fun ChatItemPreview() {
     ),
     lastMessage = ChatMessage(
       id = 0,
+      chatId = 0L,
       message = "Hello!",
       author = 0,
       createdIn = 0L,

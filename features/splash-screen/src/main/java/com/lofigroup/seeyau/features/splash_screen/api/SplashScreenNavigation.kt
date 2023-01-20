@@ -6,17 +6,20 @@ import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.lofigroup.seeyau.features.splash_screen.BleNotSupportedScreen
 import com.lofigroup.seeyau.features.splash_screen.SplashScreen
 import com.lofigroup.seeyau.features.splash_screen.di.DaggerSplashScreenComponent
+import com.lofigroup.seeyau.features.splash_screen.model.SplashScreenOptions
 import com.sillyapps.core.ui.daggerViewModel
 import com.sillyapps.core.ui.util.isBleSupported
 
 @Composable
 fun SplashScreenNavigation(
   authComponent: AuthComponent,
+  splashScreenOptions: SplashScreenOptions,
   isLoggedIn: (Boolean) -> Unit
 ) {
 
   val component = DaggerSplashScreenComponent.builder()
     .authComponent(authComponent)
+    .options(splashScreenOptions)
     .build()
 
   val viewModel = daggerViewModel {

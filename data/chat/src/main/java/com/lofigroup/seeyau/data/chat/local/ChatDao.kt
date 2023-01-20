@@ -4,6 +4,8 @@ import androidx.room.*
 import com.lofigroup.seeyau.data.chat.local.models.*
 import com.lofigroup.seeyau.data.chat.remote.http.models.ChatMessageDto
 import com.lofigroup.seeyau.data.chat.remote.http.models.toMessageEntity
+import com.lofigroup.seeyau.data.profile.local.model.UserEntity
+import com.lofigroup.seeyau.domain.profile.model.Profile
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -42,6 +44,12 @@ interface ChatDao {
 
   @Query("select * from messages where id = :id")
   suspend fun getMessage(id: Long): MessageEntity?
+
+  @Query("select users.* from users, chats where chats.id = :chatId and users.id = chats.partnerId")
+  suspend fun getUserFromChatId(chatId: Long): UserEntity
+
+  @Query("select messages.*, chats.lastVisited from chats, messages where chats.id = messages.chatId and messages.createdIn > chats.lastVisited order by messages.createdIn desc")
+  suspend fun getNewMessages(): List<MessageEntity>
 
 
   @Query("update chats set lastVisited = :lastVisited where id = :chatId")

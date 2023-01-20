@@ -1,18 +1,24 @@
 package com.lofigroup.seeyau.features.data_sync_service.di
 
+import android.content.Context
 import com.lofigroup.domain.navigator.di.NavigatorComponent
+import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannel
+import com.lofigroup.seeyau.domain.auth.api.AuthModule
+import com.lofigroup.seeyau.domain.auth.di.AuthComponent
 import com.lofigroup.seeyau.domain.base.di.BaseModuleComponent
 import com.lofigroup.seeyau.domain.chat.di.ChatComponent
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
+import com.lofigroup.seeyau.features.data_sync_service.DataSyncer
 import com.sillyapps.core.di.FeatureScope
+import dagger.BindsInstance
 import dagger.Component
 
 @FeatureScope
-@Component(dependencies = [ChatComponent::class, NavigatorComponent::class, ProfileComponent::class, BaseModuleComponent::class])
+@Component(dependencies = [ChatComponent::class, NavigatorComponent::class, ProfileComponent::class, BaseModuleComponent::class, AuthComponent::class])
 interface DataSyncServiceComponent {
 
-  fun inject(service: DataSyncServiceImpl)
+  fun getDataSyncer(): DataSyncer
 
   @Component.Builder
   interface Builder {
@@ -20,8 +26,47 @@ interface DataSyncServiceComponent {
     fun navigatorComponent(navigatorComponent: NavigatorComponent): Builder
     fun profileComponent(profileComponent: ProfileComponent): Builder
     fun baseComponent(component: BaseModuleComponent): Builder
+    fun authComponent(component: AuthComponent): Builder
+
+    @BindsInstance
+    fun authModule(authModule: AuthModule): Builder
+
+    @BindsInstance
+    fun context(context: Context): Builder
+
+    @BindsInstance
+    fun notificationRequester(notificationRequester: NotificationRequester): Builder
+
+    @BindsInstance
+    fun mainScreenEventChannel(mainScreenEventChannel: MainScreenEventChannel): Builder
 
     fun build(): DataSyncServiceComponent
   }
 
+}
+
+fun buildDataSyncer(
+  chatComponent: ChatComponent,
+  navigatorComponent: NavigatorComponent,
+  profileComponent: ProfileComponent,
+  baseComponent: BaseModuleComponent,
+  authModule: AuthModule,
+  notificationRequester: NotificationRequester,
+  mainScreenEventChannel: MainScreenEventChannel,
+  context: Context
+): DataSyncer {
+  val dataSyncerComponent = DaggerDataSyncServiceComponent.builder()
+    .baseComponent(baseComponent)
+    .chatComponent(chatComponent)
+    .navigatorComponent(navigatorComponent)
+    .baseComponent(baseComponent)
+    .profileComponent(profileComponent)
+    .authModule(authModule)
+    .authComponent(authModule.domainComponent())
+    .notificationRequester(notificationRequester)
+    .mainScreenEventChannel(mainScreenEventChannel)
+    .context(context)
+    .build()
+
+  return dataSyncerComponent.getDataSyncer()
 }

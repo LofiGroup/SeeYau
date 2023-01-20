@@ -16,10 +16,11 @@ import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider,
-  com.lofigroup.core.permission.PermissionRequestChannelProvider, BaseComponentProvider {
+  PermissionRequestChannelProvider, BaseComponentProvider {
 
   private val appScope = MainScope()
 
@@ -61,7 +62,7 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
     return appModules.settingsModule.domainComponent
   }
 
-  override fun providePermissionChannel(): com.lofigroup.core.permission.PermissionRequestChannel {
+  override fun providePermissionChannel(): PermissionRequestChannel {
     return appModules.appComponent.getPermissionChannel()
   }
 

@@ -7,9 +7,7 @@ import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import kotlinx.coroutines.flow.Flow
 
 interface EventsDataSource {
-  fun onNewMessageEvent(event: NewChatMessage)
-
-  fun onChatIsReadEvent(response: ChatIsReadWsResponse)
+  fun onEvent(event: ChatEvent)
 
   fun observe(): Flow<ChatEvent>
 }

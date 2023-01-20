@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.core.util.EventChannel
+import com.lofigroup.notifications.NotificationRequester
 import com.lofigroup.seeyau.data.chat.ChatDataHandler
 import com.lofigroup.seeyau.data.chat.ChatRepositoryImpl
 import com.lofigroup.seeyau.data.chat.local.ChatDao
@@ -54,6 +55,9 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun userNotificationChannel(userNotificationChannel: UserNotificationChannel): Builder
+
+    @BindsInstance
+    fun notificationRequester(notificationRequester: NotificationRequester): Builder
 
     fun build(): ChatDataComponent
   }

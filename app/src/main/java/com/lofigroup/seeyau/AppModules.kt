@@ -8,7 +8,9 @@ import com.lofigroup.seeyau.data.chat.api.ChatModule
 import com.lofigroup.seeyau.data.profile.api.ProfileModule
 import com.lofigroup.seeyau.data.settings.api.SettingsModule
 import com.lofigroup.seeyau.di.DaggerAppComponent
+import com.lofigroup.seeyau.features.data_sync_service.di.buildDataSyncer
 import kotlinx.coroutines.CoroutineScope
+import com.lofigroup.seeyau.di.DaggerMainActivityComponent
 
 class AppModules(
   private val appScope: CoroutineScope,
@@ -21,9 +23,30 @@ class AppModules(
       .build()
   }
 
+  val mainActivityComponent by lazy {
+    DaggerMainActivityComponent.builder()
+      .dataSyncer(dataSyncer)
+      .build()
+  }
+
+  val dataSyncer by lazy {
+    buildDataSyncer(
+      chatComponent = chatModule.domainComponent,
+      navigatorComponent = navigatorModule.domainComponent,
+      profileComponent = profileModule.domainComponent,
+      baseComponent = baseDataModule.domainComponent,
+      authModule = authModuleImpl,
+      notificationRequester = appComponent.getNotificationRequester(),
+      context = appContext,
+      mainScreenEventChannel = appComponent.getMainScreenEventChannel()
+    )
+  }
+
   val baseDataModule by lazy {
     BaseDataModule(
-      sharedPref = appComponent.getSharedPref()
+      sharedPref = appComponent.getSharedPref(),
+      appScope = appScope,
+      context = appContext
     )
   }
 
@@ -60,7 +83,8 @@ class AppModules(
       likeDao = appComponent.getDatabase().likeDao,
       blacklistDao = appComponent.getDatabase().blacklistDao,
       sharedPref = appComponent.getSharedPref(),
-      contentResolver = appComponent.getContentResolver()
+      contentResolver = appComponent.getContentResolver(),
+      fileDownloader = baseDataModule.component.getFileDownloader()
     )
   }
 
@@ -73,7 +97,8 @@ class AppModules(
       ioScope = appScope,
       profileDataHandler = profileModule.dataComponent.getProfileDataHandler(),
       userNotificationChannel = baseDataModule.domainComponent.getUserNotificationChannel(),
-      context = appContext
+      context = appContext,
+      notificationRequester = appComponent.getNotificationRequester()
     )
   }
 

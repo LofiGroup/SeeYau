@@ -10,7 +10,9 @@
       <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.ui" target="11" />
       <module name="SeeYau.core.audio-recorder" target="11" />
+      <module name="SeeYau.core.firebase-messaging" target="11" />
       <module name="SeeYau.core.network" target="11" />
+      <module name="SeeYau.core.notifications" target="11" />
       <module name="SeeYau.core.permission" target="11" />
       <module name="SeeYau.core.ui" target="11" />
       <module name="SeeYau.data.auth" target="11" />
@@ -25,6 +27,7 @@
       <module name="SeeYau.features.chat-screen" target="11" />
       <module name="SeeYau.features.data-sync-service" target="11" />
       <module name="SeeYau.features.dialog-screen" target="11" />
+      <module name="SeeYau.features.firebase-messaging-service" target="11" />
       <module name="SeeYau.features.navigator-screen" target="11" />
       <module name="SeeYau.features.nearby-service" target="11" />
       <module name="SeeYau.features.pick-image" target="11" />

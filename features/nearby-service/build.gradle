@@ -44,8 +44,6 @@ dependencies {
 
   implementation appCompat
 
-  implementation nearbyDep
-
   implementation daggerDeps.core
   kapt daggerDeps.annotationProcessor
 

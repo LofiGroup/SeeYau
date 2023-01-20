@@ -1,5 +1,8 @@
 package com.lofigroup.core.util
 
+import java.util.Random
+import kotlin.math.abs
+
 fun<T> List<T>.transformItemAt(index: Int, transform: (T) -> T): List<T> {
   if (index > lastIndex) return this
 
@@ -65,4 +68,8 @@ fun<T> List<T>.indexOfFirstFrom(
     if (isRightItem(get(i))) return i
   }
   return size
+}
+
+fun generateRandomString(): String {
+  return "${System.currentTimeMillis()}_${abs(kotlin.random.Random.nextInt())}"
 }

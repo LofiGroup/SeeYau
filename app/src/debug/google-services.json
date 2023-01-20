@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "525899780747",
+    "project_id": "ploom-debug",
+    "storage_bucket": "ploom-debug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525899780747:android:e99b7a717128ff66d13a8e",
+        "android_client_info": {
+          "package_name": "com.lofigroup.seeyau.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525899780747-75sqk4c30pjqcn2k41nqpaait4bp838t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHpvwZ54G1EokwuE5gIGJb-ijx0mEWdeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525899780747-75sqk4c30pjqcn2k41nqpaait4bp838t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

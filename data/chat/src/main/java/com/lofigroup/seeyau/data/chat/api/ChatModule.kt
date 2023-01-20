@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.data.chat.api
 import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
+import com.lofigroup.notifications.NotificationRequester
 import com.lofigroup.seeyau.data.chat.di.DaggerChatDataComponent
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
@@ -19,7 +20,8 @@ class ChatModule(
   ioScope: CoroutineScope,
   profileDataHandler: ProfileDataHandler,
   userNotificationChannel: UserNotificationChannel,
-  context: Context
+  context: Context,
+  notificationRequester: NotificationRequester
 ) {
 
   val dataComponent = DaggerChatDataComponent.builder()
@@ -31,6 +33,7 @@ class ChatModule(
     .webSocketChannel(webSocketChannel)
     .context(context)
     .userNotificationChannel(userNotificationChannel)
+    .notificationRequester(notificationRequester)
     .build()
 
   val domainComponent = DaggerChatComponent.builder()

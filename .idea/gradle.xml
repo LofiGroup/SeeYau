@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/core/audio-recorder" />
             <option value="$PROJECT_DIR$/core/di" />
             <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/notifications" />
             <option value="$PROJECT_DIR$/core/permission" />
             <option value="$PROJECT_DIR$/core/time" />
             <option value="$PROJECT_DIR$/core/ui" />

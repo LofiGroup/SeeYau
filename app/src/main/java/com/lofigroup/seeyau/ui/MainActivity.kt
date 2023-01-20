@@ -17,8 +17,10 @@ import com.lofigroup.seeyau.common.ui.components.specific.ExplainPermissionDialo
 import com.lofigroup.core.permission.model.PermissionRationale
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.App
-import com.lofigroup.seeyau.features.data_sync_service.DataSyncServiceImpl
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.model.MainScreenEvent
+import com.lofigroup.seeyau.main_screen_event_channel.MainScreenEventChannelImpl
 import com.sillyapps.core.ui.components.showToast
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
@@ -27,6 +29,8 @@ class MainActivity : ComponentActivity() {
   }
 
   private var nearbyService: NearbyService? = null
+
+  @Inject lateinit var viewModel: MainViewModel
 
   private val nearbyServiceConnection = object : ServiceConnection {
     override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -47,7 +51,11 @@ class MainActivity : ComponentActivity() {
     startServices()
     bindServices()
 
+    val mainScreenEvent = getMainScreenEvent()
+
     val app = (application as App)
+
+    app.appModules.mainActivityComponent.inject(this)
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
     setContent {
@@ -70,7 +78,8 @@ class MainActivity : ComponentActivity() {
           appModules = app.appModules,
           onStartNearbyService = {
             nearbyService?.start()
-          }
+          },
+          mainScreenEvent = mainScreenEvent
         )
 
         ExplainPermissionDialog(
@@ -84,11 +93,12 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  private fun getMainScreenEvent(): MainScreenEvent? {
+    return MainScreenEvent.deserialize(intent.getStringExtra(MainScreenEventChannelImpl.INTENT_EXTRA_ID))
+  }
+
   private fun startServices() {
     Intent(this, NearbyServiceImpl::class.java).also { intent ->
-      startService(intent)
-    }
-    Intent(this, DataSyncServiceImpl::class.java).also { intent ->
       startService(intent)
     }
   }
