@@ -69,4 +69,8 @@ dependencies {
 
   implementation okHttp.core
   implementation okHttp.loggingInterceptor
+
+  implementation platform(firebaseDeps.bom)
+  implementation firebaseDeps.messaging
+  implementation firebaseDeps.coroutines
 }

@@ -19,4 +19,6 @@ interface AuthRepository {
 
   suspend fun quickAuth(imageUri: String): Resource<Unit>
 
+  suspend fun sendFirebaseToken(token: String?)
+
 }

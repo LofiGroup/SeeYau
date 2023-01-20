@@ -13,12 +13,8 @@ import javax.inject.Inject
 class EventsDataSourceImpl @Inject constructor(): EventsDataSource {
   private val events = MutableSharedFlow<ChatEvent>(extraBufferCapacity = 1)
 
-  override fun onNewMessageEvent(event: NewChatMessage) {
+  override fun onEvent(event: ChatEvent) {
     events.tryEmit(event)
-  }
-
-  override fun onChatIsReadEvent(response: ChatIsReadWsResponse) {
-    events.tryEmit(ChatIsRead(response.chatId))
   }
 
   override fun observe(): Flow<ChatEvent> {

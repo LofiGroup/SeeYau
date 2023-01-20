@@ -11,11 +11,15 @@ import com.lofigroup.seeyau.data.profile.remote.http.model.BlackListDto
 import com.lofigroup.seeyau.data.profile.remote.http.model.toEntity
 import com.lofigroup.seeyau.domain.profile.model.Like
 import com.sillyapps.core.di.AppScope
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -26,15 +30,17 @@ class ProfileDataHandler @Inject constructor(
   private val profileDataSource: ProfileDataSource,
   private val blacklistDao: BlacklistDao,
   private val api: ProfileApi,
-  private val ioDispatcher: CoroutineDispatcher
+  private val ioDispatcher: CoroutineDispatcher,
+  private val fileDownloader: FileDownloader,
+  private val scope: CoroutineScope
 ) {
 
   suspend fun pullUserData(userId: Long) {
     safeIOCall(ioDispatcher) {
-      if (userId == 0L || userId == getMyId()) {
-        return@safeIOCall
-      }
+      if (userId == 0L || userId == getMyId()) return@safeIOCall
+
       val response = retrofitErrorHandler(api.getUser(userId))
+      downloadUserPicture(userId, response.imageUrl)
 
       userDao.upsert(response.toUserEntity())
     }
@@ -43,6 +49,10 @@ class ProfileDataHandler @Inject constructor(
   suspend fun pullContacts() {
     safeIOCall(ioDispatcher) {
       val response = retrofitErrorHandler(api.getContacts())
+
+      for (user in response) {
+        downloadUserPicture(user.id, user.imageUrl)
+      }
       userDao.upsert(response.map { it.toUserEntity() })
     }
   }
@@ -102,5 +112,32 @@ class ProfileDataHandler @Inject constructor(
 
   private suspend fun removeBlacklist(toDelete: List<BlackListDto>) {
     blacklistDao.delete(toDelete.map { it.toEntity(getMyId()) })
+  }
+
+  private fun downloadUserPicture(userId: Long, imageUrl: String?) {
+    if (imageUrl == null) return
+
+    scope.launch(Dispatchers.IO) {
+      val localUser = userDao.getUser(userId)
+
+      if (localUser == null || localUser.imageRemoteUrl != imageUrl) {
+        Timber.e("Starting download for user with id: $userId, imageUri: $imageUrl")
+        val uri = fileDownloader.downloadToInternalStorage(imageUrl) ?: return@launch
+
+        try {
+          userDao.updateImageUrl(
+            UpdateUserImage(
+              id = userId,
+              imageContentUri = uri,
+              imageRemoteUrl = imageUrl
+            )
+          )
+          Timber.e("Download is completed for user with id: $userId, new imageUri: $uri")
+        } catch (e: Exception) {
+          Timber.e(e)
+        }
+      }
+    }
+
   }
 }

@@ -1,4 +1,5 @@
 ext.versions = [
+    androidxcore      : "1.6.0",
     lifecycle         : "2.5.0",
     dagger            : "2.43",
     room              : "2.4.2",
@@ -21,7 +22,7 @@ ext.androidConfigs = [
 ]
 
 ext {
-  appCompat = 'androidx.appcompat:appcompat:1.4.2'
+  appCompat = "androidx.appcompat:appcompat:${versions.androidxcore}"
   coreKtx = 'androidx.core:core-ktx:1.8.0'
 
   testDeps = [
@@ -124,8 +125,6 @@ ext {
 
   shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.3"
 
-  nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
-
   imageCropper = "com.github.CanHub:Android-Image-Cropper:4.3.2"
 
   accompanistDeps = [
@@ -142,5 +141,11 @@ ext {
       okHttp   : "androidx.media3:media3-datasource-okhttp:${versions.media3}",
       ui       : "androidx.media3:media3-ui:${versions.media3}",
       test     : "androidx.media3:media3-test-utils:${versions.media3}"
+  ]
+
+  firebaseDeps = [
+      bom       : 'com.google.firebase:firebase-bom:31.1.1',
+      messaging : "com.google.firebase:firebase-messaging",
+      coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
   ]
 }

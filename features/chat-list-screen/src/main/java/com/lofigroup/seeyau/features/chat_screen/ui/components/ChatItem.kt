@@ -82,7 +82,7 @@ fun SwipeToDismissBackground() {
       modifier = Modifier
         .fillMaxWidth(0.5f)
         .fillMaxHeight()
-        .background(MaterialTheme.colors.surface)
+        .background(MaterialTheme.colors.error)
     )
     Row(
       verticalAlignment = Alignment.CenterVertically,

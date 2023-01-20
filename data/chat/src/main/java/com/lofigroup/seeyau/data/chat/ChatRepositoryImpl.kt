@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.data.chat
 
 import android.content.Context
 import com.lofigroup.core.util.addToOrderedDesc
+import com.lofigroup.notifications.NotificationRequester
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.*
@@ -43,11 +44,12 @@ class ChatRepositoryImpl @Inject constructor(
   private val chatWebSocket: ChatWebSocketListener,
   private val eventsDataSource: EventsDataSource,
   private val context: Context,
-  private val userNotificationChannel: UserNotificationChannel
+  private val userNotificationChannel: UserNotificationChannel,
+  private val notificationRequester: NotificationRequester
 ) : ChatRepository {
 
-  override suspend fun pullData() {
-    chatDataHandler.pullData()
+  override suspend fun pullData(returnResult: Boolean): List<ChatNewMessages> {
+    return chatDataHandler.pullData(returnResult)
   }
 
   override suspend fun sendLocalMessages() {
@@ -77,6 +79,7 @@ class ChatRepositoryImpl @Inject constructor(
   override suspend fun markChatAsRead(chatId: Long) {
     safeIOCall(ioDispatcher) {
       chatWebSocket.markChatAsRead(chatId)
+      notificationRequester.removeNotification("CHAT_MESSAGES", chatId.toInt())
     }
   }
 
@@ -92,7 +95,7 @@ class ChatRepositoryImpl @Inject constructor(
           ChatBrief(
             id = chat.id,
             partner = user.toUser(),
-            lastMessage = getLastMessage(lastMessage, user.extractLike()),
+            lastMessage = getLastMessage(lastMessage, user.extractLike(), chat.id),
             newMessagesCount = newMessages.size,
             draft = chat.draft.toDomainModel(),
             createdIn = chat.createdIn,
@@ -113,7 +116,7 @@ class ChatRepositoryImpl @Inject constructor(
         profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
         messages.map { it.toDomainModel(context) }
-          .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
+          .addToOrderedDesc(like?.toChatMessage(chatId)) { it.createdIn }
       }
     }
   }
@@ -136,12 +139,12 @@ class ChatRepositoryImpl @Inject constructor(
     }
   }
 
-  private fun getLastMessage(lastMessage: MessageEntity?, like: Like?): ChatMessage? {
+  private fun getLastMessage(lastMessage: MessageEntity?, like: Like?, chatId: Long): ChatMessage? {
     val lastMessageCreatedIn = lastMessage?.createdIn ?: 0L
     val likeCreatedIn = like?.createdIn ?: 0L
 
     return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel(context)
-    else like?.toChatMessage()
+    else like?.toChatMessage(chatId)
   }
 
   private suspend fun sendMessageWithMedia(request: SendMessageDto) {

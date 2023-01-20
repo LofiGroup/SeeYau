@@ -6,7 +6,7 @@ import com.lofigroup.seeyau.data.chat.local.models.MediaExtra
 import com.lofigroup.seeyau.data.chat.local.models.MessageTypeEntity
 import com.lofigroup.seeyau.data.chat.local.models.VideoExtra
 
-val migration21To22 = object : Migration(21, 22) {
+object Migration21To22 : Migration(21, 22) {
   override fun migrate(database: SupportSQLiteDatabase) {
     val cursor = database.query("select * from messages")
     while (cursor.moveToNext()) {

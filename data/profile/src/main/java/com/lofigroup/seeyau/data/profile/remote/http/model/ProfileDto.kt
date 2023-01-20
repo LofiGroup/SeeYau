@@ -19,7 +19,7 @@ data class ProfileDto(
 fun ProfileDto.toUserEntity() = UserEntity(
   id = 0,
   name = name,
-  imageUrl = imageUrl,
+  imageContentUri = imageUrl,
   lastConnection = 0L,
   lastContact = 0L,
   likesCount = 0

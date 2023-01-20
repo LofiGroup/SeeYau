@@ -10,7 +10,7 @@ import com.sillyapps.core_time.Time
 fun UserAssembled.toNearbyUser(newMessages: List<MessageEntity>, context: Context) = NearbyUser(
   id = id,
   name = name,
-  imageUrl = imageUrl,
+  imageUrl = imageContentUri,
   isLikedByMe = likedAt != null,
   likesCount = likesCount,
   lastContact = lastContact,

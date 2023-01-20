@@ -10,6 +10,7 @@ import com.lofigroup.seeyau.data.profile.local.LikeDao
 import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.domain.profile.di.DaggerProfileComponent
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import kotlinx.coroutines.CoroutineScope
 import retrofit2.Retrofit
 
@@ -21,7 +22,8 @@ class ProfileModule(
   likeDao: LikeDao,
   blacklistDao: BlacklistDao,
   sharedPref: SharedPreferences,
-  contentResolver: ContentResolver
+  contentResolver: ContentResolver,
+  fileDownloader: FileDownloader
 ) {
 
   val eventChannel = EventChannel<ProfileChannelEvent>()
@@ -36,6 +38,7 @@ class ProfileModule(
     .sharedPref(sharedPref)
     .contentResolver(contentResolver)
     .eventChannel(eventChannel)
+    .fileDownloader(fileDownloader)
     .build()
 
   val domainComponent = DaggerProfileComponent.builder()
