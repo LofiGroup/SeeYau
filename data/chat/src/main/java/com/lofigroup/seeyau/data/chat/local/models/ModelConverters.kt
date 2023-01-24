@@ -1,5 +1,7 @@
 package com.lofigroup.seeyau.data.chat.local.models
 
+import android.content.Context
+import com.lofigroup.seeyau.data.chat.R
 import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.lofigroup.seeyau.domain.profile.model.Like
@@ -47,4 +49,17 @@ fun MessageEntity.toNewMessageEvent() = NewChatMessage(
 fun ChatEntity.toDomainModel() = Chat(
   id = id,
   draft = draft.message
+)
+
+fun MessageEntity.toTextMessage(context: Context) = TextMessage(
+  id = id,
+  chatId = chatId,
+  createdIn = createdIn,
+  text = when (type) {
+    MessageTypeEntity.PLAIN -> message
+    MessageTypeEntity.AUDIO -> context.getString(R.string.headphones)
+    MessageTypeEntity.IMAGE -> context.getString(R.string.picture)
+    MessageTypeEntity.CONTACT -> ""
+    MessageTypeEntity.VIDEO -> context.getString(R.string.video)
+  }
 )

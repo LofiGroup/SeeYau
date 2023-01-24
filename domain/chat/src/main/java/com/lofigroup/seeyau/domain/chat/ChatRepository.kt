@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
 
-  suspend fun pullData(returnResult: Boolean): List<ChatNewMessages>
+  suspend fun pullData()
   suspend fun sendLocalMessages()
 
   fun observeChats(): Flow<List<ChatBrief>>
@@ -19,6 +19,7 @@ interface ChatRepository {
 
   suspend fun getUserIdByChatId(chatId: Long): Long?
   suspend fun getChatIdByUserId(userId: Long): Long?
+  suspend fun getNewMessages(): List<ChatNewMessages>
 
   suspend fun updateChatDraft(chatDraftUpdate: ChatDraftUpdate)
 

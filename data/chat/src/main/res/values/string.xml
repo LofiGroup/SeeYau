@@ -3,4 +3,8 @@
 
   <string name="file_is_too_large">This file is too large</string>
 
+  <string name="headphones">&#127911;</string>
+  <string name="picture">&#128444;</string>
+  <string name="video">&#127909;</string>
+
 </resources>

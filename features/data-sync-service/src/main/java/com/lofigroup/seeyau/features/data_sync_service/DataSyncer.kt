@@ -6,6 +6,7 @@ import com.lofigroup.domain.navigator.usecases.ConnectToWebsocketUseCase
 import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.usecases.SendFirebaseTokenUseCase
+import com.lofigroup.seeyau.domain.chat.usecases.GetNewMessagesUseCase
 import com.lofigroup.seeyau.domain.chat.usecases.PullChatDataUseCase
 import com.lofigroup.seeyau.domain.chat.usecases.SendLocalMessagesUseCase
 import com.lofigroup.seeyau.domain.profile.usecases.PullBlacklistDataUseCase
@@ -23,6 +24,8 @@ class DataSyncer @Inject constructor(
   private val pullBlacklistDataUseCase: PullBlacklistDataUseCase,
   private val pullContactsUseCase: PullContactsUseCase,
   private val sendLocalMessagesUseCase: SendLocalMessagesUseCase,
+
+  private val getNewMessagesUseCase: GetNewMessagesUseCase,
 
   private val connectToWebsocketUseCase: ConnectToWebsocketUseCase,
   private val syncStateHolder: ResourceStateHolder,
@@ -57,14 +60,19 @@ class DataSyncer @Inject constructor(
     pullProfileDataUseCase()
     pullContactsUseCase()
     pullLikesUseCase()
-    val newMessages = pullChatDataUseCase(sendNotification)
+    pullChatDataUseCase()
 
-    if (newMessages.isNotEmpty()) chatNotificationBuilder.sendNotification(newMessages)
+    if (sendNotification) sendNotifications()
 
     sendLocalMessagesUseCase()
     syncStateHolder.set(ResourceState.IS_READY)
 
     syncing = false
+  }
+
+  private suspend fun sendNotifications() {
+    val newMessages = getNewMessagesUseCase()
+    if (newMessages.isNotEmpty()) chatNotificationBuilder.sendNotification(newMessages)
   }
 
 }

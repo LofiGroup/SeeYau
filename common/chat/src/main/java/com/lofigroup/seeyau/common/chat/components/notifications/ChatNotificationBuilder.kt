@@ -72,7 +72,7 @@ class ChatNotificationBuilder @Inject constructor(
       for (i in messages.chatMessages.size-1 downTo 0) {
         val message = messages.chatMessages[i]
         style.addMessage(NotificationCompat.MessagingStyle.Message(
-          message.message,
+          message.text,
           message.createdIn,
           person
         ))

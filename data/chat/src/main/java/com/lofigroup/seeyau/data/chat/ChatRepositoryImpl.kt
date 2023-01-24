@@ -15,6 +15,7 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMes
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMessageWsRequest
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.model.extractLike
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.lofigroup.seeyau.data.profile.local.model.toUser
 import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificationChannel
 import com.lofigroup.seeyau.domain.base.user_notification_channel.model.UserNotification
@@ -30,6 +31,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
@@ -45,11 +47,12 @@ class ChatRepositoryImpl @Inject constructor(
   private val eventsDataSource: EventsDataSource,
   private val context: Context,
   private val userNotificationChannel: UserNotificationChannel,
-  private val chatNotificationBuilder: ChatNotificationBuilder
+  private val chatNotificationBuilder: ChatNotificationBuilder,
+
 ) : ChatRepository {
 
-  override suspend fun pullData(returnResult: Boolean): List<ChatNewMessages> {
-    return chatDataHandler.pullData(returnResult)
+  override suspend fun pullData() {
+    return chatDataHandler.pullData()
   }
 
   override suspend fun sendLocalMessages() {
@@ -131,6 +134,21 @@ class ChatRepositoryImpl @Inject constructor(
 
   override suspend fun getChatIdByUserId(userId: Long) = safeIOCall(ioDispatcher) {
     chatDao.getChatIdFromUserId(userId)
+  }
+
+  override suspend fun getNewMessages(): List<ChatNewMessages> = withContext(ioDispatcher) {
+    val newMessages = chatDao.getNewMessages()
+
+    val updates = newMessages.map { it.toTextMessage(context) }.groupBy { it.chatId }
+
+    updates.map {
+      ChatNewMessages(
+        chatMessages = it.value,
+        partner = chatDao.getUserFromChatId(chatId = it.key).toDomainModel(),
+        chatId = it.key,
+        count = it.value.size
+      )
+    }
   }
 
   override suspend fun updateChatDraft(chatDraftUpdate: ChatDraftUpdate) {

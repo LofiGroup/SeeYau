@@ -4,12 +4,12 @@ import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.ChatNewMessages
 import javax.inject.Inject
 
-class PullChatDataUseCase @Inject constructor(
+class GetNewMessagesUseCase @Inject constructor(
   private val repository: ChatRepository
 ) {
 
-  suspend operator fun invoke() {
-    return repository.pullData()
+  suspend operator fun invoke(): List<ChatNewMessages> {
+    return repository.getNewMessages()
   }
 
 }

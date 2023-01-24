@@ -38,7 +38,7 @@ class ChatDataHandler @Inject constructor(
   private val context: Context
 ) {
 
-  suspend fun pullData(returnResult: Boolean): List<ChatNewMessages> = withContext(ioDispatcher) {
+  suspend fun pullData() = withContext(ioDispatcher) {
     try {
       val fromDate = chatDao.getLastMessageCreatedIn() ?: 0L
 
@@ -48,21 +48,6 @@ class ChatDataHandler @Inject constructor(
     }
     catch (e: Exception) {
       Timber.e(getErrorMessage(e))
-    }
-
-    if (!returnResult) return@withContext emptyList()
-
-    val newMessages = chatDao.getNewMessages()
-
-    val updates = newMessages.map { it.toDomainModel(context) }.groupBy { it.chatId }
-
-    return@withContext updates.map {
-      ChatNewMessages(
-        chatMessages = it.value,
-        partner = chatDao.getUserFromChatId(chatId = it.key).toDomainModel(),
-        chatId = it.value.first().chatId,
-        count = it.value.size
-      )
     }
   }
 
