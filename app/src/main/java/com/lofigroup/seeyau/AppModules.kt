@@ -36,7 +36,7 @@ class AppModules(
       profileComponent = profileModule.domainComponent,
       baseComponent = baseDataModule.domainComponent,
       authModule = authModuleImpl,
-      notificationRequester = appComponent.getNotificationRequester(),
+      chatNotificationBuilder = appComponent.getChatNotificationBuilder(),
       context = appContext,
       mainScreenEventChannel = appComponent.getMainScreenEventChannel()
     )
@@ -98,7 +98,7 @@ class AppModules(
       profileDataHandler = profileModule.dataComponent.getProfileDataHandler(),
       userNotificationChannel = baseDataModule.domainComponent.getUserNotificationChannel(),
       context = appContext,
-      notificationRequester = appComponent.getNotificationRequester()
+      chatNotificationBuilder = appComponent.getChatNotificationBuilder()
     )
   }
 

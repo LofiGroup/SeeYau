@@ -91,7 +91,8 @@ dependencies {
   implementation project(":core:notifications")
   implementation project(":core:network")
   implementation project(":common:ui")
-  
+  implementation project(":common:chat")
+
   implementation project(":domain:navigator")
   implementation project(":domain:auth")
   implementation project(":domain:profile")

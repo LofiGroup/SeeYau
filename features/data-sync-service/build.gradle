@@ -33,10 +33,9 @@ android {
 dependencies {
   implementation project(":core:di")
   implementation project(":core:ui")
-  implementation project(":core:util")
-  implementation project(":core:notifications")
 
   implementation project(":common:ui")
+  implementation project(":common:chat")
 
   implementation project(":domain:navigator")
   implementation project(":domain:profile")

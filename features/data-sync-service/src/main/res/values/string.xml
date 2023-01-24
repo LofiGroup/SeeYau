@@ -1,8 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="chat_messages_notification_channel_title">Chat messages</string>
-  <string name="chat_messages_notification_channel_description">Messages from chats</string>
-
-  <string name="user">user_%1$d</string>
-  <string name="new_messages_count">%1$d new messages</string>
 </resources>

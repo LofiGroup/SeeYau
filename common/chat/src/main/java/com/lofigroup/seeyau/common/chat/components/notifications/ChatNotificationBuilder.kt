@@ -1,4 +1,4 @@
-package com.lofigroup.seeyau.features.data_sync_service.notification
+package com.lofigroup.seeyau.common.chat.components.notifications
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -14,15 +14,15 @@ import com.lofigroup.notifications.model.NotificationChannelData
 import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannel
 import com.lofigroup.seeyau.common.ui.main_screen_event_channel.model.MainScreenEvent
 import com.lofigroup.seeyau.domain.chat.models.ChatNewMessages
-import com.lofigroup.seeyau.features.data_sync_service.R
-import com.lofigroup.seeyau.features.data_sync_service.data.getBitmapFromContentUri
-import com.lofigroup.seeyau.features.data_sync_service.data.toPerson
+import com.lofigroup.seeyau.common.chat.R
+import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.ui.util.getCompatPendingIntentFlags
 import timber.log.Timber
 import com.lofigroup.seeyau.common.ui.R as CommonR
 import javax.inject.Inject
 
-class ChatMessagesNotificationBuilder @Inject constructor(
+@AppScope
+class ChatNotificationBuilder @Inject constructor(
   private val context: Context,
   private val notificationRequester: NotificationRequester,
   private val mainScreenEventChannel: MainScreenEventChannel
@@ -43,8 +43,7 @@ class ChatMessagesNotificationBuilder @Inject constructor(
     val notifications = mutableMapOf<Int, Notification>()
 
     for (messages in newMessages) {
-      val avatar = getBitmapFromContentUri(context, messages.partner.imageUrl)
-      val person = messages.partner.toPerson(context, avatar)
+      val person = messages.partner.toPerson(context)
 
       registerConversationShortcut(person, messages.chatId)
 
@@ -85,12 +84,16 @@ class ChatMessagesNotificationBuilder @Inject constructor(
       notifications[messages.chatId.toInt()] = notificationBuilder.build()
     }
 
+    Timber.e("Newmessages is ${newMessages}")
+
     val summaryNotification = NotificationCompat.Builder(context, CHANNEL_ID)
       .setSmallIcon(CommonR.drawable.ic_app_icon)
       .setStyle(NotificationCompat.InboxStyle()
         .setSummaryText(context.getString(R.string.new_messages_count, newMessages.sumOf { it.count })))
       .setGroup(GROUP_ID)
       .setGroupSummary(true)
+      .setAutoCancel(true)
+      .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
       .build()
 
     notificationRequester.showNotification(TAG, SUMMARY_ID, summaryNotification)
@@ -98,6 +101,16 @@ class ChatMessagesNotificationBuilder @Inject constructor(
     notifications.forEach {
       notificationRequester.showNotification(TAG, it.key, it.value)
     }
+  }
+
+  fun removeChatNotification(chatId: Long) {
+    Timber.e("Removing chat notification")
+    notificationRequester.removeNotification(TAG, chatId.toInt())
+    val notifications = notificationRequester.getNotificationsByTag(TAG)
+    val hasSummary = notifications.any { it.id == SUMMARY_ID }
+    Timber.e("list of notifications: ${notifications.map { it.id }}")
+    if (hasSummary && notifications.size < 2)
+      notificationRequester.removeNotification(TAG, SUMMARY_ID)
   }
 
   private fun registerConversationShortcut(person: Person, chatId: Long) {

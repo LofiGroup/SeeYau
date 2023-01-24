@@ -3,20 +3,14 @@ package com.lofigroup.seeyau.data.chat.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.lofigroup.backend_api.websocket.WebSocketChannel
-import com.lofigroup.core.util.EventChannel
-import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
 import com.lofigroup.seeyau.data.chat.ChatDataHandler
 import com.lofigroup.seeyau.data.chat.ChatRepositoryImpl
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
-import com.lofigroup.seeyau.data.profile.local.LikeDao
-import com.lofigroup.seeyau.data.profile.local.ProfileDataSource
-import com.lofigroup.seeyau.data.profile.local.UserDao
-import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificationChannel
 import com.lofigroup.seeyau.domain.chat.ChatRepository
-import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
 import dagger.*
@@ -57,7 +51,7 @@ interface ChatDataComponent {
     fun userNotificationChannel(userNotificationChannel: UserNotificationChannel): Builder
 
     @BindsInstance
-    fun notificationRequester(notificationRequester: NotificationRequester): Builder
+    fun chatNotificationBuilder(chatNotificationBuilder: ChatNotificationBuilder): Builder
 
     fun build(): ChatDataComponent
   }

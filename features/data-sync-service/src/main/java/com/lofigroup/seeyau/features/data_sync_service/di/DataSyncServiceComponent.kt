@@ -2,7 +2,7 @@ package com.lofigroup.seeyau.features.data_sync_service.di
 
 import android.content.Context
 import com.lofigroup.domain.navigator.di.NavigatorComponent
-import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
 import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannel
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.di.AuthComponent
@@ -35,10 +35,10 @@ interface DataSyncServiceComponent {
     fun context(context: Context): Builder
 
     @BindsInstance
-    fun notificationRequester(notificationRequester: NotificationRequester): Builder
+    fun chatNotificationBuilder(notificationRequester: ChatNotificationBuilder): Builder
 
     @BindsInstance
-    fun mainScreenEventChannel(mainScreenEventChannel: MainScreenEventChannel): Builder
+    fun mainScreenEventChannel(channel: MainScreenEventChannel): Builder
 
     fun build(): DataSyncServiceComponent
   }
@@ -51,7 +51,7 @@ fun buildDataSyncer(
   profileComponent: ProfileComponent,
   baseComponent: BaseModuleComponent,
   authModule: AuthModule,
-  notificationRequester: NotificationRequester,
+  chatNotificationBuilder: ChatNotificationBuilder,
   mainScreenEventChannel: MainScreenEventChannel,
   context: Context
 ): DataSyncer {
@@ -63,7 +63,7 @@ fun buildDataSyncer(
     .profileComponent(profileComponent)
     .authModule(authModule)
     .authComponent(authModule.domainComponent())
-    .notificationRequester(notificationRequester)
+    .chatNotificationBuilder(chatNotificationBuilder)
     .mainScreenEventChannel(mainScreenEventChannel)
     .context(context)
     .build()

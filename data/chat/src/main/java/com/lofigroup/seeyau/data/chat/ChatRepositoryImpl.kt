@@ -2,7 +2,7 @@ package com.lofigroup.seeyau.data.chat
 
 import android.content.Context
 import com.lofigroup.core.util.addToOrderedDesc
-import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.*
@@ -45,7 +45,7 @@ class ChatRepositoryImpl @Inject constructor(
   private val eventsDataSource: EventsDataSource,
   private val context: Context,
   private val userNotificationChannel: UserNotificationChannel,
-  private val notificationRequester: NotificationRequester
+  private val chatNotificationBuilder: ChatNotificationBuilder
 ) : ChatRepository {
 
   override suspend fun pullData(returnResult: Boolean): List<ChatNewMessages> {
@@ -79,7 +79,7 @@ class ChatRepositoryImpl @Inject constructor(
   override suspend fun markChatAsRead(chatId: Long) {
     safeIOCall(ioDispatcher) {
       chatWebSocket.markChatAsRead(chatId)
-      notificationRequester.removeNotification("CHAT_MESSAGES", chatId.toInt())
+      chatNotificationBuilder.removeChatNotification(chatId)
     }
   }
 

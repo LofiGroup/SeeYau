@@ -61,7 +61,7 @@ class ChatDataHandler @Inject constructor(
         chatMessages = it.value,
         partner = chatDao.getUserFromChatId(chatId = it.key).toDomainModel(),
         chatId = it.value.first().chatId,
-        count = newMessages.size
+        count = it.value.size
       )
     }
   }
