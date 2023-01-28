@@ -90,6 +90,8 @@ appVersioning {
 dependencies {
   implementation project(":core:notifications")
   implementation project(":core:network")
+  implementation project(":core:bluetooth")
+
   implementation project(":common:ui")
   implementation project(":common:chat")
 

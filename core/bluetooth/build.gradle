@@ -31,35 +31,11 @@ android {
 }
 
 dependencies {
-  implementation project(":core:di")
-  implementation project(":core:ui")
-  implementation project(":core:bluetooth")
-
-  implementation project(":common:ui")
-  implementation project(":core:notifications")
-
-  implementation project(":domain:base")
-  implementation project(":domain:navigator")
-  implementation project(":domain:profile")
-  implementation project(":domain:auth")
-  implementation project(":domain:settings")
-
   implementation appCompat
 
   implementation daggerDeps.core
   kapt daggerDeps.annotationProcessor
 
-  implementation lifecycleDeps.process
-
   implementation timberDep
-
-  testImplementation testDeps.core
-  testImplementation testDeps.truth
-  androidTestImplementation testDeps.android
-  androidTestImplementation testDeps.espresso
-
   implementation coroutinesDeps.core
-
-  implementation moshiDeps.core
-  kapt moshiDeps.codegen
 }

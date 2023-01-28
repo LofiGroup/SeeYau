@@ -1,10 +1,16 @@
 package com.lofigroup.seeyau
 
 import android.app.Application
+import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
+import com.lofigroup.core.bluetooth.BluetoothRequesterProvider
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.core.permission.PermissionRequestChannel
 import com.lofigroup.core.permission.PermissionRequestChannelProvider
+import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.notifications.NotificationRequesterProvider
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannel
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannelProvider
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
@@ -20,7 +26,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider,
-  PermissionRequestChannelProvider, BaseComponentProvider {
+  PermissionRequestChannelProvider, BaseComponentProvider, BluetoothRequesterProvider, MainScreenEventChannelProvider, NotificationRequesterProvider {
 
   private val appScope = MainScope()
 
@@ -70,4 +76,20 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
     return appModules.baseDataModule.domainComponent
   }
 
+  override fun provideBluetoothRequester(): BluetoothRequesterChannel {
+    return appModules.appComponent.getBluetoothRequester()
+  }
+
+  override fun providerMainScreenEventChannel(): MainScreenEventChannel {
+    return appModules.appComponent.getMainScreenEventChannel()
+  }
+
+  override fun provideNotificationRequester(): NotificationRequester {
+    return appModules.appComponent.getNotificationRequester()
+  }
+
+}
+
+interface Provider<T> {
+  fun provide(): T
 }

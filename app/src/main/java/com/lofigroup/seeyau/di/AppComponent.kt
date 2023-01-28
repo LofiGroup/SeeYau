@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.di
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
+import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
 import com.lofigroup.core.permission.PermissionRequestChannel
 import com.lofigroup.notifications.NotificationRequester
 import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
@@ -20,7 +21,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineScope
 
 @AppScope
-@Component(modules = [PersistenceModule::class, IOModule::class, PermissionModule::class, NotificationRequesterModule::class, MainScreenEventChannelModule::class])
+@Component(modules = [PersistenceModule::class, IOModule::class, PermissionModule::class, NotificationRequesterModule::class, MainScreenEventChannelModule::class, BluetoothRequesterModule::class])
 interface AppComponent {
 
   fun getSharedPref(): SharedPreferences
@@ -32,6 +33,8 @@ interface AppComponent {
   fun getPermissionChannel(): PermissionRequestChannel
 
   fun getNotificationRequester(): NotificationRequester
+
+  fun getBluetoothRequester(): BluetoothRequesterChannel
 
   fun getMainScreenEventChannel(): MainScreenEventChannel
 

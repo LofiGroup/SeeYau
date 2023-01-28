@@ -11,6 +11,7 @@
       <module name="SeeYau.common.notifications" target="11" />
       <module name="SeeYau.common.ui" target="11" />
       <module name="SeeYau.core.audio-recorder" target="11" />
+      <module name="SeeYau.core.bluetooth" target="11" />
       <module name="SeeYau.core.firebase-messaging" target="11" />
       <module name="SeeYau.core.network" target="11" />
       <module name="SeeYau.core.notifications" target="11" />

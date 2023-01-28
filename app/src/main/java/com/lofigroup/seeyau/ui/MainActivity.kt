@@ -11,6 +11,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
+import com.lofigroup.core.bluetooth.BluetoothRequesterProvider
+import com.lofigroup.core.permission.PermissionRequestChannelProvider
 import com.lofigroup.features.nearby_service.NearbyService
 import com.lofigroup.features.nearby_service.NearbyServiceImpl
 import com.lofigroup.seeyau.common.ui.components.specific.ExplainPermissionDialog
@@ -25,7 +28,11 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
   private val permissionChannel by lazy {
-    (application as App).appModules.appComponent.getPermissionChannel()
+    (application as PermissionRequestChannelProvider).providePermissionChannel()
+  }
+
+  private val bluetoothRequester by lazy {
+    (application as BluetoothRequesterProvider).provideBluetoothRequester()
   }
 
   private var nearbyService: NearbyService? = null
@@ -47,6 +54,7 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     permissionChannel.registerForPermissions(target = this)
+    bluetoothRequester.registerActivity(target = this)
 
     startServices()
     bindServices()
@@ -106,6 +114,7 @@ class MainActivity : ComponentActivity() {
   override fun onDestroy() {
     unbindServices()
     permissionChannel.unregister()
+    bluetoothRequester.unregister()
     super.onDestroy()
   }
 

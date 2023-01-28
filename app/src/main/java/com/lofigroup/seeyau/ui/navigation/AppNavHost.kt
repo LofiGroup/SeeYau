@@ -50,7 +50,10 @@ fun AppNavHost(
     }
 
     composable(route = Screen.PagerScreen.route) {
-      onStartNearbyService()
+      LaunchedEffect(Unit) {
+        onStartNearbyService()
+      }
+
       NavigationPager(
         appModules = appModules,
         mainScreenEvent = event,

@@ -104,11 +104,9 @@ class ChatNotificationBuilder @Inject constructor(
   }
 
   fun removeChatNotification(chatId: Long) {
-    Timber.e("Removing chat notification")
     notificationRequester.removeNotification(TAG, chatId.toInt())
     val notifications = notificationRequester.getNotificationsByTag(TAG)
     val hasSummary = notifications.any { it.id == SUMMARY_ID }
-    Timber.e("list of notifications: ${notifications.map { it.id }}")
     if (hasSummary && notifications.size < 2)
       notificationRequester.removeNotification(TAG, SUMMARY_ID)
   }

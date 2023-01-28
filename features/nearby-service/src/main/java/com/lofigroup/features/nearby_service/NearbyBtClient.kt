@@ -9,9 +9,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.ParcelUuid
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
+import com.lofigroup.features.nearby_service.search_mode.SearchModeDataSource
+import com.lofigroup.features.nearby_service.search_mode.SearchModeDataSourceImpl
 import com.lofigroup.seeyau.domain.profile.usecases.GetMyIdUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -25,7 +28,8 @@ class NearbyBtClient @Inject constructor(
   private val notifyUserIsNearbyUseCase: NotifyUserIsNearbyUseCase,
   private val notifyDeviceIsLostUseCase: NotifyDeviceIsLostUseCase,
   private val getMyIdUseCase: GetMyIdUseCase,
-  private val scope: CoroutineScope
+  private val scope: CoroutineScope,
+  private val searchModeDataSource: SearchModeDataSource
 ) {
 
   private var isDiscovering = false
@@ -82,8 +86,8 @@ class NearbyBtClient @Inject constructor(
     }
   }
 
-  private var bleAdvertiser: BluetoothLeAdvertiser? = null
-  private var bleScanner: BluetoothLeScanner? = null
+  private var bleAdvertiser: BluetoothLeAdvertiser = btAdapter.bluetoothLeAdvertiser
+  private var bleScanner: BluetoothLeScanner = btAdapter.bluetoothLeScanner
 
   init {
     scope.launch {
@@ -96,19 +100,15 @@ class NearbyBtClient @Inject constructor(
         .build()
 
       advertiseData = data
-    }
-  }
 
-  private fun turnBluetoothOn() {
-    btAdapter.enable()
-    bleAdvertiser = btAdapter.bluetoothLeAdvertiser
-    bleScanner = btAdapter.bluetoothLeScanner
+      searchModeDataSource.init()
+    }
   }
 
   private fun advertise() {
     val data = advertiseData ?: return
 
-    bleAdvertiser?.startAdvertising(advertiseSettings, data, advertisingCallback)
+    bleAdvertiser.startAdvertising(advertiseSettings, data, advertisingCallback)
   }
 
   private fun scan() {
@@ -120,33 +120,20 @@ class NearbyBtClient @Inject constructor(
       .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
       .build()
 
-    bleScanner?.startScan(listOf(filter), scanSettings, scanCallback)
+    bleScanner.startScan(listOf(filter), scanSettings, scanCallback)
   }
 
   private fun stopAdvertise() {
-    bleAdvertiser?.stopAdvertising(advertisingCallback)
+    bleAdvertiser.stopAdvertising(advertisingCallback)
   }
 
 
   private fun stopScan() {
-    bleScanner?.stopScan(scanCallback)
-  }
-
-  private fun bluetoothPermissionsNotGranted(vararg permissions: String): Boolean {
-    for (permission in permissions) {
-      if (ActivityCompat.checkSelfPermission(context, permission)
-        != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        Timber.e("Permission $permission is not granted!")
-        return true
-      }
-    }
-    return false
+    bleScanner.stopScan(scanCallback)
   }
 
   fun startDiscovery() {
-    turnBluetoothOn()
     if (isDiscovering) return
-    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
 
     scan()
     advertise()
@@ -157,11 +144,19 @@ class NearbyBtClient @Inject constructor(
   fun stopDiscovery() {
     if (!isDiscovering) return
 
-    if (bluetoothPermissionsNotGranted(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_ADVERTISE)) return
     stopScan()
     stopAdvertise()
 
     isDiscovering = false
+  }
+
+  fun bluetoothIsOn(): Boolean {
+    return btAdapter.isEnabled
+  }
+
+  fun destroy() {
+    stopDiscovery()
+    searchModeDataSource.destroy()
   }
 
 }
