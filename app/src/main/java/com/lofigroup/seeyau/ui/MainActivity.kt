@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import coil.imageLoader
 import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
 import com.lofigroup.core.bluetooth.BluetoothRequesterProvider
 import com.lofigroup.core.permission.PermissionRequestChannelProvider
@@ -115,6 +116,8 @@ class MainActivity : ComponentActivity() {
     unbindServices()
     permissionChannel.unregister()
     bluetoothRequester.unregister()
+    imageLoader.shutdown()
+
     super.onDestroy()
   }
 

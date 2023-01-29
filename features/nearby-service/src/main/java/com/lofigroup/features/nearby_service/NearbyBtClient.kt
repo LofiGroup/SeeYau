@@ -1,22 +1,19 @@
 package com.lofigroup.features.nearby_service
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.*
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.ParcelUuid
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import com.lofigroup.domain.navigator.usecases.NotifyDeviceIsLostUseCase
 import com.lofigroup.domain.navigator.usecases.NotifyUserIsNearbyUseCase
-import com.lofigroup.features.nearby_service.search_mode.SearchModeDataSource
-import com.lofigroup.features.nearby_service.search_mode.SearchModeDataSourceImpl
+import com.lofigroup.features.nearby_service.search_mode.BtSettingsDataSource
 import com.lofigroup.seeyau.domain.profile.usecases.GetMyIdUseCase
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -29,19 +26,13 @@ class NearbyBtClient @Inject constructor(
   private val notifyDeviceIsLostUseCase: NotifyDeviceIsLostUseCase,
   private val getMyIdUseCase: GetMyIdUseCase,
   private val scope: CoroutineScope,
-  private val searchModeDataSource: SearchModeDataSource
+  private val btSettingsDataSource: BtSettingsDataSource
 ) {
 
   private var isDiscovering = false
 
   private val btAdapter: BluetoothAdapter =
     (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
-
-  private val advertiseSettings = AdvertiseSettings.Builder()
-    .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
-    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
-    .setConnectable(false)
-    .build()
 
   private val pUuid = ParcelUuid(UUID.fromString("000043ef-0000-1000-8000-00805F9B34FB"))
 
@@ -50,18 +41,9 @@ class NearbyBtClient @Inject constructor(
   private val scanCallback = object : ScanCallback() {
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
       super.onScanResult(callbackType, result)
-      val data = result?.scanRecord?.getServiceData(pUuid)
 
-      if (data == null) {
-        Timber.e("BLE received incorrect data")
-        return
-      }
-
-      val id = data.toLong()
-
-      scope.launch {
-        notifyUserIsNearbyUseCase(id)
-      }
+      if (result != null)
+        notifyUserIsFound(result)
     }
 
     override fun onScanFailed(errorCode: Int) {
@@ -71,6 +53,26 @@ class NearbyBtClient @Inject constructor(
 
     override fun onBatchScanResults(results: MutableList<ScanResult>?) {
       super.onBatchScanResults(results)
+      if (results == null) return
+
+      for (result in results)
+        notifyUserIsFound(result)
+    }
+
+    private fun notifyUserIsFound(scanResult: ScanResult) {
+      val data = scanResult.scanRecord?.getServiceData(pUuid)
+
+      if (data == null) {
+        Timber.e("BLE received incorrect data")
+        return
+      }
+
+      val id = data.toLong()
+      Timber.e("Found user with id: $id")
+
+      scope.launch {
+        notifyUserIsNearbyUseCase(id)
+      }
     }
   }
 
@@ -86,8 +88,8 @@ class NearbyBtClient @Inject constructor(
     }
   }
 
-  private var bleAdvertiser: BluetoothLeAdvertiser = btAdapter.bluetoothLeAdvertiser
-  private var bleScanner: BluetoothLeScanner = btAdapter.bluetoothLeScanner
+  private var bleAdvertiser: BluetoothLeAdvertiser? = null
+  private var bleScanner: BluetoothLeScanner? = null
 
   init {
     scope.launch {
@@ -101,42 +103,50 @@ class NearbyBtClient @Inject constructor(
 
       advertiseData = data
 
-      searchModeDataSource.init()
+      btSettingsDataSource.init()
+
+      btSettingsDataSource.getState().collect {
+        scan(it.scanSetting)
+        advertise(it.advertisingSetting)
+      }
     }
   }
 
-  private fun advertise() {
+  private fun advertise(settings: AdvertiseSettings) {
     val data = advertiseData ?: return
 
-    bleAdvertiser.startAdvertising(advertiseSettings, data, advertisingCallback)
+    stopAdvertise()
+    bleAdvertiser?.startAdvertising(settings, data, advertisingCallback)
   }
 
-  private fun scan() {
+  private fun scan(settings: ScanSettings) {
+    stopScan()
+
     val filter = ScanFilter.Builder()
       .setServiceUuid(pUuid)
       .build()
 
-    val scanSettings = ScanSettings.Builder()
-      .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-      .build()
-
-    bleScanner.startScan(listOf(filter), scanSettings, scanCallback)
+    bleScanner?.startScan(listOf(filter), settings, scanCallback)
   }
 
   private fun stopAdvertise() {
-    bleAdvertiser.stopAdvertising(advertisingCallback)
+    bleAdvertiser?.stopAdvertising(advertisingCallback)
   }
 
-
   private fun stopScan() {
-    bleScanner.stopScan(scanCallback)
+    bleScanner?.stopScan(scanCallback)
   }
 
   fun startDiscovery() {
     if (isDiscovering) return
 
-    scan()
-    advertise()
+    Timber.e("Starting discovery")
+    bleAdvertiser = btAdapter.bluetoothLeAdvertiser
+    bleScanner = btAdapter.bluetoothLeScanner
+
+    val settings = btSettingsDataSource.getState().value
+    scan(settings.scanSetting)
+    advertise(settings.advertisingSetting)
 
     isDiscovering = true
   }
@@ -147,6 +157,9 @@ class NearbyBtClient @Inject constructor(
     stopScan()
     stopAdvertise()
 
+    bleAdvertiser = null
+    bleScanner = null
+
     isDiscovering = false
   }
 
@@ -156,7 +169,7 @@ class NearbyBtClient @Inject constructor(
 
   fun destroy() {
     stopDiscovery()
-    searchModeDataSource.destroy()
+    btSettingsDataSource.destroy()
   }
 
 }

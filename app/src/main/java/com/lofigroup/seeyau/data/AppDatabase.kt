@@ -28,7 +28,7 @@ import com.lofigroup.seeyau.data.profile.local.model.UserEntity
   version = 23,
   exportSchema = true,
   autoMigrations = [
-    AutoMigration(from = 20, to = 21, spec = AppDatabase.Migration20To21::class)
+//    AutoMigration(from = 20, to = 21, spec = AppDatabase.Migration20To21::class)
   ]
 )
 abstract class AppDatabase : RoomDatabase(), DatabaseHandler {
@@ -38,8 +38,8 @@ abstract class AppDatabase : RoomDatabase(), DatabaseHandler {
   abstract val likeDao: LikeDao
   abstract val blacklistDao: BlacklistDao
 
-  @RenameColumn(tableName = "messages", fromColumnName = "mediaUri", toColumnName = "extra")
-  class Migration20To21 : AutoMigrationSpec
+//  @RenameColumn(tableName = "messages", fromColumnName = "mediaUri", toColumnName = "extra")
+//  class Migration20To21 : AutoMigrationSpec
 
   override fun clearTables() {
     clearAllTables()
@@ -59,8 +59,8 @@ abstract class AppDatabase : RoomDatabase(), DatabaseHandler {
             AppDatabase::class.java,
             "seeyau_database"
           )
-            .addMigrations(Migration21To22, Migration22To23)
-            .fallbackToDestructiveMigrationFrom(*(1..19).toIntArray())
+//            .addMigrations(Migration21To22, Migration22To23)
+            .fallbackToDestructiveMigrationFrom(*(1..23).toIntArray())
             .build()
 
           INSTANCE = instance

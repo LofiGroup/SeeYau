@@ -5,7 +5,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 object Migration22To23: Migration(22, 23) {
   override fun migrate(database: SupportSQLiteDatabase) {
-    database.execSQL("alter table users rename column imageUrl to imageContentUri")
+    database.execSQL("alter table users rename column imageUri to imageContentUri")
     database.execSQL("alter table users add column imageRemoteUrl text")
 
     val cursor = database.query("select * from users")

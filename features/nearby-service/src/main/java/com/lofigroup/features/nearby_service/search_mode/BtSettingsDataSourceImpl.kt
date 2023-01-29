@@ -3,15 +3,15 @@ package com.lofigroup.features.nearby_service.search_mode
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.lofigroup.features.nearby_service.search_mode.model.SearchMode
-import kotlinx.coroutines.flow.Flow
+import com.lofigroup.features.nearby_service.search_mode.model.BtSettings
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
-class SearchModeDataSourceImpl @Inject constructor(): DefaultLifecycleObserver, SearchModeDataSource {
+class BtSettingsDataSourceImpl @Inject constructor(): DefaultLifecycleObserver, BtSettingsDataSource {
 
-  private val state = MutableStateFlow<SearchMode>(SearchMode.Normal)
+  private val state = MutableStateFlow(BtSettings.DefaultSetting)
 
   override fun init() {
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -21,16 +21,16 @@ class SearchModeDataSourceImpl @Inject constructor(): DefaultLifecycleObserver, 
     ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
   }
 
-  override fun getState(): Flow<SearchMode> = state
+  override fun getState(): StateFlow<BtSettings> = state
 
-  override fun onResume(owner: LifecycleOwner) {
+  override fun onStart(owner: LifecycleOwner) {
     Timber.e("App goes into foreground, setting Normal mode")
-    state.value = SearchMode.Normal
+    state.value = BtSettings.DefaultSetting
   }
 
-  override fun onPause(owner: LifecycleOwner) {
+  override fun onStop(owner: LifecycleOwner) {
     Timber.e("App goes into background, setting BatterySave mode")
-    state.value = SearchMode.BatterySave
+    state.value = BtSettings.LowConsumptionSetting
   }
 
 }

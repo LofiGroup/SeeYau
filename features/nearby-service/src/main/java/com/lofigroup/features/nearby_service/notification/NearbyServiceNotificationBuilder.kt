@@ -40,7 +40,7 @@ class NearbyServiceNotificationBuilder @Inject constructor(
     .addAction(
       R.drawable.ic_baseline_stop_24,
       context.getString(R.string.stop),
-      getPendingIntent(ACTION_STOP)
+      getPendingIntent(NearbyServiceImpl.ACTION_STOP)
     )
     .setContentIntent(
       PendingIntent.getActivity(
@@ -64,7 +64,6 @@ class NearbyServiceNotificationBuilder @Inject constructor(
 
   companion object {
     private const val CHANNEL_ID = "NearbyServiceChannelId"
-    private const val ACTION_STOP = "NearbyServiceStop"
   }
 
 }

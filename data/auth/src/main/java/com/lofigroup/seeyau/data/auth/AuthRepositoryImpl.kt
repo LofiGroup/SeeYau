@@ -108,6 +108,7 @@ class AuthRepositoryImpl @Inject constructor(
             }
           }
           is SocketTimeoutException, is ConnectException -> {
+            moduleStateHolder.set(ResourceState.INITIALIZED)
             resolveLoggedInState()
           }
           else -> {

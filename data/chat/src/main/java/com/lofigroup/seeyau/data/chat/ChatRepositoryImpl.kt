@@ -94,7 +94,6 @@ class ChatRepositoryImpl @Inject constructor(
           chatDao.observeLastMessage(chat.id),
           chatDao.observeUserNewMessages(chat.partnerId),
         ) { user, lastMessage, newMessages ->
-          Timber.e("Update in data: user: $user, lastmessage: $lastMessage")
           ChatBrief(
             id = chat.id,
             partner = user.toUser(),

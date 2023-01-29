@@ -148,6 +148,8 @@ dependencies {
 
   implementation timberDep
 
+  implementation coilCompose
+
   implementation roomDeps.runtime
   implementation roomDeps.ktx
   kapt roomDeps.annotationProcessor

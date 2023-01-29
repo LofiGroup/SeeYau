@@ -56,6 +56,10 @@ class NavigatorRepositoryImpl @Inject constructor(
     webSocketChannel.connect()
   }
 
+  override fun disconnectFromWebsocket() {
+    webSocketChannel.disconnect()
+  }
+
   override fun getNearbyUsers(): Flow<List<NearbyUser>> {
     return profileDataHandler.observeAssembledUsers().flatMapLatest { users ->
       combine(users.map { user ->

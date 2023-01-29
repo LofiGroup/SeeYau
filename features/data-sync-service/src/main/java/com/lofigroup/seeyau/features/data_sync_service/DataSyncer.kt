@@ -38,10 +38,16 @@ class DataSyncer @Inject constructor(
 
   suspend fun syncWhenReady() {
     authModule.observeState().collect() {
-      if (it == ResourceState.IS_READY) {
-        connectToWebsocketUseCase()
-        sync()
-        sendFirebaseTokenUseCase()
+      when (it) {
+        ResourceState.LOADING -> {}
+        ResourceState.INITIALIZED -> {
+          syncStateHolder.set(ResourceState.INITIALIZED)
+        }
+        ResourceState.IS_READY -> {
+          connectToWebsocketUseCase()
+          sync()
+          sendFirebaseTokenUseCase()
+        }
       }
     }
   }

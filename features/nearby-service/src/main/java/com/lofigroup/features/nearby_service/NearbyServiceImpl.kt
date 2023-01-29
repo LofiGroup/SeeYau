@@ -65,16 +65,19 @@ class NearbyServiceImpl : Service(), NearbyService {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    if (intent == null) return START_NOT_STICKY
+    if (intent == null) return START_STICKY_COMPATIBILITY
+
+    if (state.value == ResourceState.LOADING) return START_NOT_STICKY
 
     when (intent.action) {
       ACTION_BLUETOOTH_IS_ON -> {
-        Timber.e("Bluetooth is on command")
         canStart.value = true
       }
       ACTION_BLUETOOTH_IS_OFF -> {
-        Timber.e("Bluetooth is off command")
         canStart.value = false
+      }
+      ACTION_STOP -> {
+        stopForegroundCompat()
       }
     }
 
@@ -88,6 +91,15 @@ class NearbyServiceImpl : Service(), NearbyService {
     }
     Timber.e("Starting discovery...")
     scope.launch {
+      val isGranted = permissionChannel.requestPermission(BluetoothPermission)
+      if (!isGranted) return@launch
+
+      if (!nearbyBtClient.bluetoothIsOn()) {
+        val bluetoothIsOn = bluetoothRequester.requestToTurnBluetoothOn()
+
+        if (!bluetoothIsOn) return@launch
+      }
+
       nearbyBtClient.startDiscovery()
       goForeground()
     }
@@ -98,13 +110,9 @@ class NearbyServiceImpl : Service(), NearbyService {
       Timber.e("Trying to stop Nearby service while it is not initialized!")
       return
     }
-    Timber.e("Stopping discovery...")
     nearbyBtClient.stopDiscovery()
 
-    if (Build.VERSION.SDK_INT >= 24)
-      stopForeground(STOP_FOREGROUND_REMOVE)
-    else
-      stopForeground(true)
+    stopForegroundCompat()
   }
 
   private fun observeDataSyncState() {
@@ -112,7 +120,7 @@ class NearbyServiceImpl : Service(), NearbyService {
     scope.launch {
       baseComponent.moduleStateHolder().observe().collect()  { state ->
         when (state) {
-          ResourceState.IS_READY -> {
+          ResourceState.IS_READY, ResourceState.INITIALIZED -> {
             init()
           }
           else -> {}
@@ -127,7 +135,6 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   private fun observeVisibilitySetting() {
     scope.launch {
-      Timber.e("Observing visibility")
       combine(
         getVisibilityUseCase(),
         canStart
@@ -175,18 +182,7 @@ class NearbyServiceImpl : Service(), NearbyService {
   }
 
   override fun start() {
-    scope.launch {
-      val isGranted = permissionChannel.requestPermission(BluetoothPermission)
-      if (!isGranted) return@launch
-
-      if (!nearbyBtClient.bluetoothIsOn()) {
-        Timber.e("Requesting to turn bluetooth on")
-        bluetoothRequester.requestToTurnBluetoothOn()
-      }
-      else
-        canStart.value = true
-    }
-
+    canStart.value = true
   }
 
   companion object {
@@ -194,5 +190,6 @@ class NearbyServiceImpl : Service(), NearbyService {
 
     const val ACTION_BLUETOOTH_IS_ON = "BluetoothIsOn"
     const val ACTION_BLUETOOTH_IS_OFF = "BluetoothIsOff"
+    const val ACTION_STOP = "NearbyServiceStop"
   }
 }
