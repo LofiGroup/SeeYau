@@ -19,6 +19,7 @@ import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -123,5 +124,13 @@ class ChatDataHandler @Inject constructor(
     val messages = chatUpdates.newMessages.map { it.toMessageEntity(myId = profileDataHandler.getMyId(), readIn = chat.partnerLastVisited) }
     chatDao.upsertChat(chat)
     chatDao.insertMessages(messages)
+  }
+
+  suspend fun getUserIdByChatId(chatId: Long) = safeIOCall(ioDispatcher) {
+    chatDao.getUserIdFromChatId(chatId)
+  }
+
+  suspend fun getChatIdByUserId(userId: Long) = safeIOCall(ioDispatcher) {
+    chatDao.getChatIdFromUserId(userId)
   }
 }

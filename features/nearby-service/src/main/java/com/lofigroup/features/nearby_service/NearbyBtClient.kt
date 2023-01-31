@@ -41,6 +41,7 @@ class NearbyBtClient @Inject constructor(
   private val scanCallback = object : ScanCallback() {
     override fun onScanResult(callbackType: Int, result: ScanResult?) {
       super.onScanResult(callbackType, result)
+      Timber.e("Scan result")
 
       if (result != null)
         notifyUserIsFound(result)
@@ -53,6 +54,7 @@ class NearbyBtClient @Inject constructor(
 
     override fun onBatchScanResults(results: MutableList<ScanResult>?) {
       super.onBatchScanResults(results)
+      Timber.e("Scan result: $results")
       if (results == null) return
 
       for (result in results)
@@ -102,8 +104,6 @@ class NearbyBtClient @Inject constructor(
         .build()
 
       advertiseData = data
-
-      btSettingsDataSource.init()
 
       btSettingsDataSource.getState().collect {
         scan(it.scanSetting)
@@ -169,7 +169,6 @@ class NearbyBtClient @Inject constructor(
 
   fun destroy() {
     stopDiscovery()
-    btSettingsDataSource.destroy()
   }
 
 }

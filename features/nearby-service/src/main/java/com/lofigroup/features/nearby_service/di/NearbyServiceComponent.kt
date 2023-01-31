@@ -10,6 +10,7 @@ import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventC
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
 import com.sillyapps.core.di.FeatureScope
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycle
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +37,9 @@ interface NearbyServiceComponent {
 
     @BindsInstance
     fun mainScreenEventChannel(mainScreenEventChannel: MainScreenEventChannel): Builder
+
+    @BindsInstance
+    fun appLifecycle(appLifecycle: AppLifecycle): Builder
 
 
     fun settingsComponent(component: SettingsComponent): Builder

@@ -21,12 +21,15 @@ import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycle
+import com.sillyapps.core.ui.app_lifecycle.model.AppLifecycleState
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider,
-  PermissionRequestChannelProvider, BaseComponentProvider, BluetoothRequesterProvider, MainScreenEventChannelProvider, NotificationRequesterProvider {
+  PermissionRequestChannelProvider, BaseComponentProvider, BluetoothRequesterProvider, MainScreenEventChannelProvider, NotificationRequesterProvider, AppLifecycle {
 
   private val appScope = MainScope()
 
@@ -40,6 +43,7 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
   override fun onCreate() {
     super.onCreate()
     initTimber()
+    appModules.appLifecycle.init()
   }
 
   private fun initTimber() {
@@ -88,8 +92,6 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
     return appModules.appComponent.getNotificationRequester()
   }
 
-}
+  override fun observeLifecycle() = appModules.appLifecycle.observeLifecycle()
 
-interface Provider<T> {
-  fun provide(): T
 }

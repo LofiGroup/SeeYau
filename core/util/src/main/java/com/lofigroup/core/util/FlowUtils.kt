@@ -1,8 +1,7 @@
 package com.lofigroup.core.util
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 fun timerFlow(interval: Long) = flow {
   while (true) {
@@ -23,4 +22,12 @@ fun CoroutineScope.cancelAndLaunch(
 ) {
   coroutineContext.cancelChildren()
   launch(dispatcher) { block() }
+}
+
+fun <T, K> StateFlow<T>.mapState(
+  scope: CoroutineScope,
+  initialValue: K,
+  transform: suspend (data: T) -> K
+): StateFlow<K> {
+  return mapLatest { transform(it) }.stateIn(scope, SharingStarted.Eagerly, initialValue)
 }

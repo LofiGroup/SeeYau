@@ -14,21 +14,16 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.lofigroup.seeyau.common.chat.R
 import com.lofigroup.seeyau.domain.profile.model.User
+import com.sillyapps.core.ui.util.extractBitmapFromUri
 import timber.log.Timber
 
 fun User.toPerson(context: Context): Person {
   val personBuilder = Person.Builder()
     .setName(context.getString(R.string.user, id))
     .setKey(id.toString())
-  if (imageUrl != null) {
-    val loader = Coil.imageLoader(context)
 
-    val result = loader.executeBlocking(
-      ImageRequest.Builder(context)
-      .data(imageUrl)
-      .transformations(CircleCropTransformation())
-      .build())
-    val bitmap = result.drawable?.toBitmap()
+  if (imageUrl != null) {
+    val bitmap = extractBitmapFromUri(context, imageUrl)
     if (bitmap != null)
       personBuilder.setIcon(IconCompat.createWithBitmap(bitmap))
   }

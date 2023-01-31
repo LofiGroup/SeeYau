@@ -127,13 +127,9 @@ class ChatRepositoryImpl @Inject constructor(
     return eventsDataSource.observe()
   }
 
-  override suspend fun getUserIdByChatId(chatId: Long) = safeIOCall(ioDispatcher) {
-    chatDao.getUserIdFromChatId(chatId)
-  }
+  override suspend fun getUserIdByChatId(chatId: Long) = chatDataHandler.getUserIdByChatId(chatId)
 
-  override suspend fun getChatIdByUserId(userId: Long) = safeIOCall(ioDispatcher) {
-    chatDao.getChatIdFromUserId(userId)
-  }
+  override suspend fun getChatIdByUserId(userId: Long) = chatDataHandler.getChatIdByUserId(userId)
 
   override suspend fun getNewMessages(): List<ChatNewMessages> = withContext(ioDispatcher) {
     val newMessages = chatDao.getNewMessages()

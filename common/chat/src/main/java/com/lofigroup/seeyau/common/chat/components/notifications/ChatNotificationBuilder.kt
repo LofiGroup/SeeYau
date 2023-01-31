@@ -37,6 +37,15 @@ class ChatNotificationBuilder @Inject constructor(
     notificationRequester.registerChannel(data = notificationChannelData)
   }
 
+  private val baseMessageNotificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+    .setSmallIcon(CommonR.drawable.ic_interaction_notification_icon)
+    .setAutoCancel(true)
+    .setGroup(GROUP_ID)
+    .setGroupSummary(false)
+    .setShowWhen(true)
+    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+
   fun sendNotification(newMessages: List<ChatNewMessages>) {
     Timber.e("New messages: $newMessages")
 
@@ -47,24 +56,16 @@ class ChatNotificationBuilder @Inject constructor(
 
       registerConversationShortcut(person, messages.chatId)
 
-      val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-        .setSmallIcon(CommonR.drawable.ic_interaction_notification_icon)
-        .setAutoCancel(true)
+      val notificationBuilder = baseMessageNotificationBuilder
         .setContentIntent(PendingIntent.getActivity(
           context,
           0,
           mainScreenEventChannel.getEventIntent(MainScreenEvent.OpenChat(chatId = messages.chatId)),
           getCompatPendingIntentFlags()
         ))
-        .setGroup(GROUP_ID)
-        .setGroupSummary(false)
         .setWhen(messages.chatMessages[0].createdIn)
-        .setShowWhen(true)
         .setNumber(messages.count)
-        .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
         .setShortcutId(messages.chatId.toString())
-
 
       val style = NotificationCompat.MessagingStyle(person)
         .setGroupConversation(false)
@@ -80,11 +81,8 @@ class ChatNotificationBuilder @Inject constructor(
 
       style.setBuilder(notificationBuilder)
 
-      // TODO change notification id from server given id to local
       notifications[messages.chatId.toInt()] = notificationBuilder.build()
     }
-
-    Timber.e("Newmessages is ${newMessages}")
 
     val summaryNotification = NotificationCompat.Builder(context, CHANNEL_ID)
       .setSmallIcon(CommonR.drawable.ic_app_icon)

@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.profile
 
+import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.core.util.splitInTwo
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
@@ -77,8 +78,12 @@ class ProfileDataHandler @Inject constructor(
     return likeDao.observeUserLike(userId).map { it?.toDomainModel() }
   }
 
-  suspend fun insertUser(user: UserEntity) {
-    userDao.upsert(user)
+  suspend fun insertUser(user: UserDto): UserEntity {
+    downloadUserPicture(user.id, user.imageUrl)
+
+    val userEntity = user.toUserEntity()
+    userDao.upsert(userEntity)
+    return userEntity
   }
 
   suspend fun handleBlacklistUpdates(blacklistUpdates: List<BlackListDto>) {

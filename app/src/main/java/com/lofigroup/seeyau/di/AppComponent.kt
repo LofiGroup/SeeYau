@@ -7,6 +7,7 @@ import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
 import com.lofigroup.core.permission.PermissionRequestChannel
 import com.lofigroup.notifications.NotificationRequester
 import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
+import com.lofigroup.seeyau.common.profile.notifications.ProfileNotificationBuilder
 import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannel
 import com.lofigroup.seeyau.data.AppDatabase
 import com.lofigroup.seeyau.features.data_sync_service.DataSyncer
@@ -39,6 +40,8 @@ interface AppComponent {
   fun getMainScreenEventChannel(): MainScreenEventChannel
 
   fun getChatNotificationBuilder(): ChatNotificationBuilder
+
+  fun getProfileNotificationBuilder(): ProfileNotificationBuilder
 
   @Component.Builder
   interface Builder {

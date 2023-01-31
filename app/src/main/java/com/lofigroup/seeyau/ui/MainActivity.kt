@@ -118,6 +118,8 @@ class MainActivity : ComponentActivity() {
     bluetoothRequester.unregister()
     imageLoader.shutdown()
 
+    (application as App).appModules.navigatorModule.domainComponent.getRepository().disconnectFromWebsocket()
+
     super.onDestroy()
   }
 

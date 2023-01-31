@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="profile_notification_channel_title">Users nearby</string>
+  <string name="profile_notification_channel_text">Notifies when users are nearby</string>
+
+  <string name="found_new_user">Found new user!</string>
+  <string name="new_user_is_somewhere_nearby">A new user is found! Say hello!</string>
+</resources>

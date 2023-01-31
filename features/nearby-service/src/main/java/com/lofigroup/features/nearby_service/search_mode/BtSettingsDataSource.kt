@@ -6,10 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface BtSettingsDataSource {
 
-  fun init()
-
-  fun destroy()
-
   fun getState(): StateFlow<BtSettings>
 
 }

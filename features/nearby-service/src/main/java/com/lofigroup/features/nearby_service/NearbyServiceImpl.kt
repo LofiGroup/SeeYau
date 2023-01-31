@@ -20,6 +20,7 @@ import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -156,6 +157,7 @@ class NearbyServiceImpl : Service(), NearbyService {
       .settingsComponent((application as SettingsComponentProvider).provideSettingsModule())
       .mainScreenEventChannel((application as MainScreenEventChannelProvider).providerMainScreenEventChannel())
       .notificationRequester((application as NotificationRequesterProvider).provideNotificationRequester())
+      .appLifecycle(application as AppLifecycle)
       .context(this)
       .coroutineScope(scope)
       .build()

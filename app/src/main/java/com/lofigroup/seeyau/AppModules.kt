@@ -11,11 +11,14 @@ import com.lofigroup.seeyau.di.DaggerAppComponent
 import com.lofigroup.seeyau.features.data_sync_service.di.buildDataSyncer
 import kotlinx.coroutines.CoroutineScope
 import com.lofigroup.seeyau.di.DaggerMainActivityComponent
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycleImpl
 
 class AppModules(
   private val appScope: CoroutineScope,
   private val appContext: Context,
 ) {
+
+  val appLifecycle = AppLifecycleImpl()
 
   val appComponent by lazy {
     DaggerAppComponent.builder()
@@ -59,7 +62,9 @@ class AppModules(
       appScope = appScope,
       baseRetrofit = baseDataModule.component.getRetrofit(),
       profileRepository = profileModule.dataComponent.getRepository(),
-      webSocketChannel = baseDataModule.component.getWebSocketChannel()
+      webSocketChannel = baseDataModule.component.getWebSocketChannel(),
+      appLifecycle = appLifecycle,
+      profileNotificationBuilder = appComponent.getProfileNotificationBuilder()
     )
   }
 

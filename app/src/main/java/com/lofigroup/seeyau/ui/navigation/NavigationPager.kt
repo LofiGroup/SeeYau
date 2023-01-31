@@ -32,7 +32,10 @@ fun NavigationPager(
   })
 
   var currentChatId by rememberSaveable {
-    mutableStateOf(if (mainScreenEvent is MainScreenEvent.OpenChat) mainScreenEvent.chatId else 0L)
+    mutableStateOf(when (mainScreenEvent) {
+      is MainScreenEvent.OpenChat -> mainScreenEvent.chatId
+      else -> 0L
+    })
   }
 
   val profileScreenComponent = rememberProfileScreenComponent(

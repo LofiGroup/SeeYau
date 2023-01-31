@@ -94,6 +94,7 @@ dependencies {
 
   implementation project(":common:ui")
   implementation project(":common:chat")
+  implementation project(":common:profile")
 
   implementation project(":domain:navigator")
   implementation project(":domain:auth")

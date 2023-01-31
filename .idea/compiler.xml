@@ -9,6 +9,7 @@
       <module name="SeeYau.common.network.main" target="1.8" />
       <module name="SeeYau.common.network.test" target="1.8" />
       <module name="SeeYau.common.notifications" target="11" />
+      <module name="SeeYau.common.profile" target="11" />
       <module name="SeeYau.common.ui" target="11" />
       <module name="SeeYau.core.audio-recorder" target="11" />
       <module name="SeeYau.core.bluetooth" target="11" />
