@@ -15,12 +15,9 @@ import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.file_downloader.FileDownloader
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_network.utils.safeIOCall
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,7 +38,7 @@ class ProfileDataHandler @Inject constructor(
       if (userId == 0L || userId == getMyId()) return@safeIOCall
 
       val response = retrofitErrorHandler(api.getUser(userId))
-      downloadUserPicture(userId, response.imageUrl)
+      saveUserImage(response, )
 
       userDao.upsert(response.toUserEntity())
     }
@@ -52,7 +49,7 @@ class ProfileDataHandler @Inject constructor(
       val response = retrofitErrorHandler(api.getContacts())
 
       for (user in response) {
-        downloadUserPicture(user.id, user.imageUrl)
+        saveUserImage(user)
       }
       userDao.upsert(response.map { it.toUserEntity() })
     }
@@ -78,12 +75,14 @@ class ProfileDataHandler @Inject constructor(
     return likeDao.observeUserLike(userId).map { it?.toDomainModel() }
   }
 
-  suspend fun insertUser(user: UserDto): UserEntity {
-    downloadUserPicture(user.id, user.imageUrl)
+  // Returning null if user is already in the database
+  suspend fun insertUser(user: UserDto): UserEntity? {
+    val uri = getUserImage(user)
 
-    val userEntity = user.toUserEntity()
-    userDao.upsert(userEntity)
-    return userEntity
+    val userEntity = user.toUserEntity(imageContentUri = uri)
+    val userExists = userDao.upsert(userEntity)
+
+    return if (!userExists) userEntity else null
   }
 
   suspend fun handleBlacklistUpdates(blacklistUpdates: List<BlackListDto>) {
@@ -119,30 +118,23 @@ class ProfileDataHandler @Inject constructor(
     blacklistDao.delete(toDelete.map { it.toEntity(getMyId()) })
   }
 
-  private fun downloadUserPicture(userId: Long, imageUrl: String?) {
-    if (imageUrl == null) return
-
+  private fun saveUserImage(user: UserDto) {
     scope.launch(Dispatchers.IO) {
-      val localUser = userDao.getUser(userId)
-
-      if (localUser == null || localUser.imageRemoteUrl != imageUrl) {
-        Timber.e("Starting download for user with id: $userId, imageUri: $imageUrl")
-        val uri = fileDownloader.downloadToInternalStorage(imageUrl) ?: return@launch
-
-        try {
-          userDao.updateImageUrl(
-            UpdateUserImage(
-              id = userId,
-              imageContentUri = uri,
-              imageRemoteUrl = imageUrl
-            )
-          )
-          Timber.e("Download is completed for user with id: $userId, new imageUri: $uri")
-        } catch (e: Exception) {
-          Timber.e(e)
-        }
-      }
+      downloadUserImage(user.id, user.imageUrl)
     }
+  }
 
+  private suspend fun getUserImage(userDto: UserDto): String? = withContext(Dispatchers.IO) {
+    downloadUserImage(userDto.id, userDto.imageUrl)
+  }
+
+  private suspend fun downloadUserImage(userId: Long, imageUrl: String?): String? {
+    if (imageUrl == null) return null
+
+    val localUser = userDao.getUser(userId)
+
+    return if (localUser == null || localUser.imageRemoteUrl != imageUrl) {
+      fileDownloader.downloadToInternalStorage(imageUrl)
+    } else localUser.imageContentUri
   }
 }

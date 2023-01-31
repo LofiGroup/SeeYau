@@ -75,12 +75,17 @@ interface UserDao {
     update(usersToUpdate)
   }
 
+  // return true if user exists
   @Transaction
-  suspend fun upsert(user: UserEntity) {
+  suspend fun upsert(user: UserEntity): Boolean {
     val id = insert(user)
 
-    if (id == -1L)
+    if (id == -1L) {
       update(user.toUpdateUserExcludingImage())
+      return true
+    }
+
+    return false
   }
 
 }

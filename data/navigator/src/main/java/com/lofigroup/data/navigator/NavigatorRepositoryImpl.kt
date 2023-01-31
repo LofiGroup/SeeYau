@@ -40,18 +40,18 @@ class NavigatorRepositoryImpl @Inject constructor(
 
   override suspend fun notifyUserWithIdWasFound(id: Long) = withContext(ioDispatcher) {
     try {
+      if (!shouldUpdate(lastCallToApi[id], callInterval)) return@withContext
+      lastCallToApi[id] = System.currentTimeMillis()
+
       if (profileDataHandler.userIsInBlackList(id)) {
         return@withContext
       }
-
-      if (!shouldUpdate(lastCallToApi[id], callInterval)) return@withContext
-      lastCallToApi[id] = System.currentTimeMillis()
 
       val response = retrofitErrorHandler(api.contactedWithUser(id))
 
       val entity = profileDataHandler.insertUser(response)
 
-      if (appLifecycle.observeLifecycle().value == AppLifecycleState.ON_BACKGROUND)
+      if (entity != null && appLifecycle.observeLifecycle().value == AppLifecycleState.ON_BACKGROUND)
         profileNotificationBuilder.sendNotification(entity.toDomainModel(), chatDataHandler.getChatIdByUserId(entity.id))
       return@withContext
     } catch (e: HttpException) {

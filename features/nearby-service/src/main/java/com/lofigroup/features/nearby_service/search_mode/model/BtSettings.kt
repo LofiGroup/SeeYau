@@ -17,7 +17,7 @@ data class BtSettings(
         .build(),
       scanSetting = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-        .setReportDelay(5000L)
+//        .setReportDelay(5000L)
         .build()
     )
 
@@ -30,7 +30,7 @@ data class BtSettings(
         .build(),
       scanSetting = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-        .setReportDelay(10000L)
+//        .setReportDelay(10000L)
         .build()
     )
   }

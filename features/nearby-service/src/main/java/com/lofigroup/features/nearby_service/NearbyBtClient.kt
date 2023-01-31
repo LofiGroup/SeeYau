@@ -54,7 +54,6 @@ class NearbyBtClient @Inject constructor(
 
     override fun onBatchScanResults(results: MutableList<ScanResult>?) {
       super.onBatchScanResults(results)
-      Timber.e("Scan result: $results")
       if (results == null) return
 
       for (result in results)
@@ -140,7 +139,6 @@ class NearbyBtClient @Inject constructor(
   fun startDiscovery() {
     if (isDiscovering) return
 
-    Timber.e("Starting discovery")
     bleAdvertiser = btAdapter.bluetoothLeAdvertiser
     bleScanner = btAdapter.bluetoothLeScanner
 
@@ -153,6 +151,8 @@ class NearbyBtClient @Inject constructor(
 
   fun stopDiscovery() {
     if (!isDiscovering) return
+
+    Timber.e("Stopping discovery")
 
     stopScan()
     stopAdvertise()

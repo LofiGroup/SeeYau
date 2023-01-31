@@ -15,6 +15,7 @@ import com.sillyapps.core.ui.util.extractBitmapFromUri
 import com.sillyapps.core.ui.util.getCompatPendingIntentFlags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import com.lofigroup.seeyau.common.ui.R as CommonR
 
@@ -53,6 +54,7 @@ class ProfileNotificationBuilder @Inject constructor(
 
 
   fun sendNotification(user: User, chatId: Long?) {
+    Timber.e("User imageUri is ${user.imageUrl}")
     val notification = baseNotificationBuilder
       .setLargeIcon(extractBitmapFromUri(context, user.imageUrl))
       .setContentIntent(resolveContentIntent(chatId))

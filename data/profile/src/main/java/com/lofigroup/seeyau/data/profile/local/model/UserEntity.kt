@@ -35,11 +35,13 @@ fun UserEntity.toDomainModel(): User {
   )
 }
 
-fun UserDto.toUserEntity(): UserEntity {
+fun UserDto.toUserEntity(
+  imageContentUri: String? = null,
+): UserEntity {
   return UserEntity(
     id = id,
     name = name,
-    imageContentUri = null,
+    imageContentUri = imageContentUri,
     lastConnection = lastSeen,
     lastContact = lastContact,
     likesCount = likesCount
