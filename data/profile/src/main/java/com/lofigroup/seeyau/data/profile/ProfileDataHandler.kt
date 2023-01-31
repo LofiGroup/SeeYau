@@ -120,7 +120,16 @@ class ProfileDataHandler @Inject constructor(
 
   private fun saveUserImage(user: UserDto) {
     scope.launch(Dispatchers.IO) {
-      downloadUserImage(user.id, user.imageUrl)
+      val imageUrl = user.imageUrl ?: return@launch
+      val uri = downloadUserImage(user.id, imageUrl) ?: return@launch
+
+      userDao.updateImageUrl(
+        UpdateUserImage(
+          id = user.id,
+          imageContentUri = uri,
+          imageRemoteUrl = imageUrl
+        )
+      )
     }
   }
 
