@@ -1,4 +1,5 @@
 ext.versions = [
+    androidxcore      : "1.6.0",
     lifecycle         : "2.5.0",
     dagger            : "2.43",
     room              : "2.4.2",
@@ -21,21 +22,22 @@ ext.androidConfigs = [
 ]
 
 ext {
-  appCompat = 'androidx.appcompat:appcompat:1.4.2'
+  appCompat = "androidx.appcompat:appcompat:${versions.androidxcore}"
   coreKtx = 'androidx.core:core-ktx:1.8.0'
 
   testDeps = [
       core    : 'junit:junit:4.13.2',
       android : 'androidx.test.ext:junit:1.1.3',
       truth   : 'com.google.truth:truth:1.1.3',
-      espresso: 'androidx.test.espresso:espresso-core:3.4.0'
+      espresso: 'androidx.test.espresso:espresso-core:3.4.0',
   ]
 
   // Lifecycle
   lifecycleDeps = [
       liveData           : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}",
       viewModel          : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
-      annotationProcessor: "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
+      annotationProcessor: "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}",
+      process            : "androidx.lifecycle:lifecycle-process:${versions.lifecycle}"
   ]
 
   // Dagger
@@ -124,8 +126,6 @@ ext {
 
   shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.3"
 
-  nearbyDep = "com.google.android.gms:play-services-nearby:18.3.0"
-
   imageCropper = "com.github.CanHub:Android-Image-Cropper:4.3.2"
 
   accompanistDeps = [
@@ -142,5 +142,11 @@ ext {
       okHttp   : "androidx.media3:media3-datasource-okhttp:${versions.media3}",
       ui       : "androidx.media3:media3-ui:${versions.media3}",
       test     : "androidx.media3:media3-test-utils:${versions.media3}"
+  ]
+
+  firebaseDeps = [
+      bom       : 'com.google.firebase:firebase-bom:31.1.1',
+      messaging : "com.google.firebase:firebase-messaging",
+      coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${versions.coroutines}"
   ]
 }

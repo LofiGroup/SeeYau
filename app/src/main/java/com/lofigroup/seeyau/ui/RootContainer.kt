@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.lofigroup.seeyau.AppModules
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.model.MainScreenEvent
 import com.lofigroup.seeyau.ui.navigation.AppNavHost
 
 @Composable
 fun RootContainer(
   appModules: AppModules,
+  mainScreenEvent: MainScreenEvent?,
   onStartNearbyService: () -> Unit
 ) {
   val navController = rememberNavController()
@@ -23,6 +25,7 @@ fun RootContainer(
       .padding(),
   ) {
     AppNavHost(
+      mainScreenEvent,
       navController = navController,
       appModules = appModules,
       onStartNearbyService = onStartNearbyService,

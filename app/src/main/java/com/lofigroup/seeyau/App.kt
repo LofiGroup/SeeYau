@@ -1,10 +1,16 @@
 package com.lofigroup.seeyau
 
 import android.app.Application
+import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
+import com.lofigroup.core.bluetooth.BluetoothRequesterProvider
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.domain.navigator.di.NavigatorComponent
 import com.lofigroup.core.permission.PermissionRequestChannel
 import com.lofigroup.core.permission.PermissionRequestChannelProvider
+import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.notifications.NotificationRequesterProvider
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannel
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannelProvider
 import com.lofigroup.seeyau.domain.auth.api.AuthModule
 import com.lofigroup.seeyau.domain.auth.api.AuthModuleProvider
 import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
@@ -15,11 +21,15 @@ import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.profile.di.ProfileComponent
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.di.SettingsComponent
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycle
+import com.sillyapps.core.ui.app_lifecycle.model.AppLifecycleState
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class App: Application(), AuthModuleProvider, NavigatorComponentProvider, ProfileComponentProvider, ChatComponentProvider, SettingsComponentProvider,
-  com.lofigroup.core.permission.PermissionRequestChannelProvider, BaseComponentProvider {
+  PermissionRequestChannelProvider, BaseComponentProvider, BluetoothRequesterProvider, MainScreenEventChannelProvider, NotificationRequesterProvider, AppLifecycle {
 
   private val appScope = MainScope()
 
@@ -33,6 +43,7 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
   override fun onCreate() {
     super.onCreate()
     initTimber()
+    appModules.appLifecycle.init()
   }
 
   private fun initTimber() {
@@ -61,12 +72,26 @@ class App: Application(), AuthModuleProvider, NavigatorComponentProvider, Profil
     return appModules.settingsModule.domainComponent
   }
 
-  override fun providePermissionChannel(): com.lofigroup.core.permission.PermissionRequestChannel {
+  override fun providePermissionChannel(): PermissionRequestChannel {
     return appModules.appComponent.getPermissionChannel()
   }
 
   override fun provideBaseComponent(): BaseModuleComponent {
     return appModules.baseDataModule.domainComponent
   }
+
+  override fun provideBluetoothRequester(): BluetoothRequesterChannel {
+    return appModules.appComponent.getBluetoothRequester()
+  }
+
+  override fun providerMainScreenEventChannel(): MainScreenEventChannel {
+    return appModules.appComponent.getMainScreenEventChannel()
+  }
+
+  override fun provideNotificationRequester(): NotificationRequester {
+    return appModules.appComponent.getNotificationRequester()
+  }
+
+  override fun observeLifecycle() = appModules.appLifecycle.observeLifecycle()
 
 }

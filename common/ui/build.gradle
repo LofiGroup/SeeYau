@@ -1,6 +1,7 @@
 plugins {
   id 'com.android.library'
   id 'org.jetbrains.kotlin.android'
+  id 'kotlin-kapt'
 }
 
 android {
@@ -49,6 +50,10 @@ dependencies {
   testImplementation testDeps.truth
   androidTestImplementation testDeps.android
   androidTestImplementation testDeps.espresso
+
+  implementation moshiDeps.core
+  implementation moshiDeps.adapters
+  kapt moshiDeps.codegen
 
   implementation composeDeps.runtime
   implementation composeDeps.ui

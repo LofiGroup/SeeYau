@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="nearby_service_notification_channel_title">Nearby service</string>
+  <string name="nearby_service_notification_channel_description">A service which searches for people around you in the background</string>
+
+  <string name="ploom">Ploom</string>
+  <string name="searching_for_people">Searching for people nearby…</string>
+
+  <string name="stop">Stop</string>
+</resources>

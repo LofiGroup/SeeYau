@@ -37,6 +37,8 @@ android {
 }
 
 dependencies {
+  implementation project(":core:notifications")
+
   implementation project(":common:ui")
   implementation project(":domain:chat")
   implementation project(":domain:profile")

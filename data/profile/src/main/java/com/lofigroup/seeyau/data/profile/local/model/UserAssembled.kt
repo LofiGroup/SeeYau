@@ -7,7 +7,7 @@ import com.sillyapps.core_time.Time
 data class UserAssembled(
   val id: Long,
   val name: String,
-  val imageUrl: String?,
+  val imageContentUri: String?,
   val lastConnection: Long,
   val lastContact: Long,
   val likesCount: Int,
@@ -19,7 +19,7 @@ data class UserAssembled(
 fun UserAssembled.toUser() = User(
   id = id,
   name = name,
-  imageUrl = imageUrl,
+  imageUrl = imageContentUri,
   isOnline = lastConnection == Time.IS_ONLINE,
   lastConnection = lastConnection,
   isNear = lastContact > System.currentTimeMillis() - Time.m,

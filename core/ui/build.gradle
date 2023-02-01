@@ -48,6 +48,8 @@ dependencies {
   implementation composeDeps.navigation
   debugImplementation composeDeps.poolingContainer
 
+  implementation lifecycleDeps.process
+
   implementation timberDep
 
   implementation coilCompose

@@ -73,6 +73,7 @@ data class VideoExtra(
 fun MessageEntity.toDomainModel(context: Context): ChatMessage {
   return ChatMessage(
     id = id,
+    chatId = chatId,
     message = message,
     author = author,
     createdIn = createdIn,

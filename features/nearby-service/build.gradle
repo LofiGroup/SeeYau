@@ -33,8 +33,10 @@ android {
 dependencies {
   implementation project(":core:di")
   implementation project(":core:ui")
+  implementation project(":core:bluetooth")
 
   implementation project(":common:ui")
+  implementation project(":core:notifications")
 
   implementation project(":domain:base")
   implementation project(":domain:navigator")
@@ -44,10 +46,10 @@ dependencies {
 
   implementation appCompat
 
-  implementation nearbyDep
-
   implementation daggerDeps.core
   kapt daggerDeps.annotationProcessor
+
+  implementation lifecycleDeps.process
 
   implementation timberDep
 

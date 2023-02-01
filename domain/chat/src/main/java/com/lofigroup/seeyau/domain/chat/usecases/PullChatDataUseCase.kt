@@ -1,6 +1,7 @@
 package com.lofigroup.seeyau.domain.chat.usecases
 
 import com.lofigroup.seeyau.domain.chat.ChatRepository
+import com.lofigroup.seeyau.domain.chat.models.ChatNewMessages
 import javax.inject.Inject
 
 class PullChatDataUseCase @Inject constructor(
@@ -8,7 +9,7 @@ class PullChatDataUseCase @Inject constructor(
 ) {
 
   suspend operator fun invoke() {
-    repository.pullData()
+    return repository.pullData()
   }
 
 }

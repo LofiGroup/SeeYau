@@ -131,3 +131,8 @@ jobs:
             ${{ github.event.pull_request.body }}
             
             Ссылка на apk файл: ${{ fromJson(steps.publish.outputs.output).data.url }}    
+
+So basically:
+REST: Client -> Server.
+Webhook: Server -> Client.
+Websocket: Client <-> Server.

@@ -31,11 +31,16 @@ android {
 }
 
 dependencies {
+  implementation appCompat
   implementation project(":core:util")
+  implementation project(":core:di")
 
   implementation retrofitDeps.core
   implementation moshiDeps.core
   kapt moshiDeps.codegen
+
+  implementation daggerDeps.core
+  kapt daggerDeps.annotationProcessor
 
   implementation timberDep
   implementation coroutinesDeps.core

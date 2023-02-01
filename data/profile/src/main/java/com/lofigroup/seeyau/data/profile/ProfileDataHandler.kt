@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.data.profile
 
+import com.lofigroup.backend_api.models.UserDto
 import com.lofigroup.core.util.splitInTwo
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
@@ -11,9 +12,10 @@ import com.lofigroup.seeyau.data.profile.remote.http.model.BlackListDto
 import com.lofigroup.seeyau.data.profile.remote.http.model.toEntity
 import com.lofigroup.seeyau.domain.profile.model.Like
 import com.sillyapps.core.di.AppScope
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_network.utils.safeIOCall
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -26,15 +28,17 @@ class ProfileDataHandler @Inject constructor(
   private val profileDataSource: ProfileDataSource,
   private val blacklistDao: BlacklistDao,
   private val api: ProfileApi,
-  private val ioDispatcher: CoroutineDispatcher
+  private val ioDispatcher: CoroutineDispatcher,
+  private val fileDownloader: FileDownloader,
+  private val scope: CoroutineScope
 ) {
 
   suspend fun pullUserData(userId: Long) {
     safeIOCall(ioDispatcher) {
-      if (userId == 0L || userId == getMyId()) {
-        return@safeIOCall
-      }
+      if (userId == 0L || userId == getMyId()) return@safeIOCall
+
       val response = retrofitErrorHandler(api.getUser(userId))
+      saveUserImage(response, )
 
       userDao.upsert(response.toUserEntity())
     }
@@ -43,6 +47,10 @@ class ProfileDataHandler @Inject constructor(
   suspend fun pullContacts() {
     safeIOCall(ioDispatcher) {
       val response = retrofitErrorHandler(api.getContacts())
+
+      for (user in response) {
+        saveUserImage(user)
+      }
       userDao.upsert(response.map { it.toUserEntity() })
     }
   }
@@ -67,8 +75,14 @@ class ProfileDataHandler @Inject constructor(
     return likeDao.observeUserLike(userId).map { it?.toDomainModel() }
   }
 
-  suspend fun insertUser(user: UserEntity) {
-    userDao.upsert(user)
+  // Returning null if user is already in the database
+  suspend fun insertUser(user: UserDto): UserEntity? {
+    val uri = getUserImage(user)
+
+    val userEntity = user.toUserEntity(imageContentUri = uri)
+    val userExists = userDao.upsert(userEntity)
+
+    return if (!userExists) userEntity else null
   }
 
   suspend fun handleBlacklistUpdates(blacklistUpdates: List<BlackListDto>) {
@@ -102,5 +116,34 @@ class ProfileDataHandler @Inject constructor(
 
   private suspend fun removeBlacklist(toDelete: List<BlackListDto>) {
     blacklistDao.delete(toDelete.map { it.toEntity(getMyId()) })
+  }
+
+  private fun saveUserImage(user: UserDto) {
+    scope.launch(Dispatchers.IO) {
+      val imageUrl = user.imageUrl ?: return@launch
+      val uri = downloadUserImage(user.id, imageUrl) ?: return@launch
+
+      userDao.updateImageUrl(
+        UpdateUserImage(
+          id = user.id,
+          imageContentUri = uri,
+          imageRemoteUrl = imageUrl
+        )
+      )
+    }
+  }
+
+  private suspend fun getUserImage(userDto: UserDto): String? = withContext(Dispatchers.IO) {
+    downloadUserImage(userDto.id, userDto.imageUrl)
+  }
+
+  private suspend fun downloadUserImage(userId: Long, imageUrl: String?): String? {
+    if (imageUrl == null) return null
+
+    val localUser = userDao.getUser(userId)
+
+    return if (localUser == null || localUser.imageRemoteUrl != imageUrl) {
+      fileDownloader.downloadToInternalStorage(imageUrl)
+    } else localUser.imageContentUri
   }
 }

@@ -2,6 +2,7 @@ package com.lofigroup.seeyau.data.chat
 
 import android.content.Context
 import com.lofigroup.core.util.addToOrderedDesc
+import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
 import com.lofigroup.seeyau.data.chat.local.models.*
@@ -14,6 +15,7 @@ import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMes
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.toSendMessageWsRequest
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
 import com.lofigroup.seeyau.data.profile.local.model.extractLike
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.lofigroup.seeyau.data.profile.local.model.toUser
 import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificationChannel
 import com.lofigroup.seeyau.domain.base.user_notification_channel.model.UserNotification
@@ -29,6 +31,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,11 +46,13 @@ class ChatRepositoryImpl @Inject constructor(
   private val chatWebSocket: ChatWebSocketListener,
   private val eventsDataSource: EventsDataSource,
   private val context: Context,
-  private val userNotificationChannel: UserNotificationChannel
+  private val userNotificationChannel: UserNotificationChannel,
+  private val chatNotificationBuilder: ChatNotificationBuilder,
+
 ) : ChatRepository {
 
   override suspend fun pullData() {
-    chatDataHandler.pullData()
+    return chatDataHandler.pullData()
   }
 
   override suspend fun sendLocalMessages() {
@@ -77,6 +82,7 @@ class ChatRepositoryImpl @Inject constructor(
   override suspend fun markChatAsRead(chatId: Long) {
     safeIOCall(ioDispatcher) {
       chatWebSocket.markChatAsRead(chatId)
+      chatNotificationBuilder.removeChatNotification(chatId)
     }
   }
 
@@ -88,11 +94,10 @@ class ChatRepositoryImpl @Inject constructor(
           chatDao.observeLastMessage(chat.id),
           chatDao.observeUserNewMessages(chat.partnerId),
         ) { user, lastMessage, newMessages ->
-          Timber.e("Update in data: user: $user, lastmessage: $lastMessage")
           ChatBrief(
             id = chat.id,
             partner = user.toUser(),
-            lastMessage = getLastMessage(lastMessage, user.extractLike()),
+            lastMessage = getLastMessage(lastMessage, user.extractLike(), chat.id),
             newMessagesCount = newMessages.size,
             draft = chat.draft.toDomainModel(),
             createdIn = chat.createdIn,
@@ -113,7 +118,7 @@ class ChatRepositoryImpl @Inject constructor(
         profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
         messages.map { it.toDomainModel(context) }
-          .addToOrderedDesc(like?.toChatMessage()) { it.createdIn }
+          .addToOrderedDesc(like?.toChatMessage(chatId)) { it.createdIn }
       }
     }
   }
@@ -122,12 +127,23 @@ class ChatRepositoryImpl @Inject constructor(
     return eventsDataSource.observe()
   }
 
-  override suspend fun getUserIdByChatId(chatId: Long) = safeIOCall(ioDispatcher) {
-    chatDao.getUserIdFromChatId(chatId)
-  }
+  override suspend fun getUserIdByChatId(chatId: Long) = chatDataHandler.getUserIdByChatId(chatId)
 
-  override suspend fun getChatIdByUserId(userId: Long) = safeIOCall(ioDispatcher) {
-    chatDao.getChatIdFromUserId(userId)
+  override suspend fun getChatIdByUserId(userId: Long) = chatDataHandler.getChatIdByUserId(userId)
+
+  override suspend fun getNewMessages(): List<ChatNewMessages> = withContext(ioDispatcher) {
+    val newMessages = chatDao.getNewMessages()
+
+    val updates = newMessages.map { it.toTextMessage(context) }.groupBy { it.chatId }
+
+    updates.map {
+      ChatNewMessages(
+        chatMessages = it.value,
+        partner = chatDao.getUserFromChatId(chatId = it.key).toDomainModel(),
+        chatId = it.key,
+        count = it.value.size
+      )
+    }
   }
 
   override suspend fun updateChatDraft(chatDraftUpdate: ChatDraftUpdate) {
@@ -136,12 +152,12 @@ class ChatRepositoryImpl @Inject constructor(
     }
   }
 
-  private fun getLastMessage(lastMessage: MessageEntity?, like: Like?): ChatMessage? {
+  private fun getLastMessage(lastMessage: MessageEntity?, like: Like?, chatId: Long): ChatMessage? {
     val lastMessageCreatedIn = lastMessage?.createdIn ?: 0L
     val likeCreatedIn = like?.createdIn ?: 0L
 
     return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel(context)
-    else like?.toChatMessage()
+    else like?.toChatMessage(chatId)
   }
 
   private suspend fun sendMessageWithMedia(request: SendMessageDto) {

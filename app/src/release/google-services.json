@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1007773513104",
+    "project_id": "plum-93fcd",
+    "storage_bucket": "plum-93fcd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007773513104:android:7c281df69406f2eb19af15",
+        "android_client_info": {
+          "package_name": "com.lofigroup.seeyau"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007773513104-q06o1dnasqp31ti806e0ju0ceji8jkmh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCfdV2526EIX9nKzHZG9O776GK2j7PJmE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007773513104-q06o1dnasqp31ti806e0ju0ceji8jkmh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

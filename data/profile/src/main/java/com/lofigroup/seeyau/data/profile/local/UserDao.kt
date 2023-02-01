@@ -1,8 +1,7 @@
 package com.lofigroup.seeyau.data.profile.local
 
 import androidx.room.*
-import com.lofigroup.seeyau.data.profile.local.model.UserAssembled
-import com.lofigroup.seeyau.data.profile.local.model.UserEntity
+import com.lofigroup.seeyau.data.profile.local.model.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -41,6 +40,8 @@ interface UserDao {
   @Query("select * from users where id > 0 limit 1")
   suspend fun getSomeone(): UserEntity?
 
+  @Query("select * from users where id in (:userIds)")
+  suspend fun getUsersIn(userIds: List<Long>): List<UserEntity>
 
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insert(entities: List<UserEntity>): List<Long>
@@ -48,11 +49,14 @@ interface UserDao {
   @Insert(onConflict = OnConflictStrategy.IGNORE)
   suspend fun insert(userEntity: UserEntity): Long
 
-  @Update
-  suspend fun update(entities: List<UserEntity>)
+  @Update(entity = UserEntity::class)
+  suspend fun update(entities: List<UpdateUserExcludingImage>)
 
-  @Update
-  suspend fun update(entity: UserEntity)
+  @Update(entity = UserEntity::class)
+  suspend fun update(entity: UpdateUserExcludingImage)
+
+  @Update(entity = UserEntity::class)
+  suspend fun updateImageUrl(update: UpdateUserImage)
 
   @Query("delete from users where id = :userId")
   suspend fun delete(userId: Long)
@@ -67,16 +71,21 @@ interface UserDao {
   suspend fun upsert(users: List<UserEntity>) {
     val ids = insert(users)
 
-    val usersToUpdate = users.filterIndexed { index, userEntity -> ids[index] == -1L }
+    val usersToUpdate = users.filterIndexed { index, userEntity -> ids[index] == -1L }.map { it.toUpdateUserExcludingImage() }
     update(usersToUpdate)
   }
 
+  // return true if user exists
   @Transaction
-  suspend fun upsert(user: UserEntity) {
+  suspend fun upsert(user: UserEntity): Boolean {
     val id = insert(user)
 
-    if (id == -1L)
-      update(user)
+    if (id == -1L) {
+      update(user.toUpdateUserExcludingImage())
+      return true
+    }
+
+    return false
   }
 
 }

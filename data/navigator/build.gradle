@@ -34,8 +34,10 @@ dependencies {
   implementation project(":core:network")
   implementation project(":core:util")
   implementation project(":core:time")
+  implementation project(":core:ui")
 
   implementation project(":common:network")
+  implementation project(":common:profile")
   implementation project(':data:base')
 
   implementation project(":data:profile")

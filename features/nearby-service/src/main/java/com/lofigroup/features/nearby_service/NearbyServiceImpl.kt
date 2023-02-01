@@ -3,16 +3,24 @@ package com.lofigroup.features.nearby_service
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import com.lofigroup.core.bluetooth.BluetoothRequesterChannel
+import com.lofigroup.core.bluetooth.BluetoothRequesterProvider
 import com.lofigroup.core.util.ResourceState
 import com.lofigroup.domain.navigator.api.NavigatorComponentProvider
 import com.lofigroup.features.nearby_service.di.DaggerNearbyServiceComponent
 import com.lofigroup.core.permission.PermissionRequestChannelProvider
 import com.lofigroup.core.permission.model.BluetoothPermission
+import com.lofigroup.features.nearby_service.notification.NearbyServiceNotificationBuilder
+import com.lofigroup.notifications.NotificationRequester
+import com.lofigroup.notifications.NotificationRequesterProvider
+import com.lofigroup.seeyau.common.ui.main_screen_event_channel.MainScreenEventChannelProvider
 import com.lofigroup.seeyau.domain.base.api.BaseComponentProvider
 import com.lofigroup.seeyau.domain.profile.api.ProfileComponentProvider
 import com.lofigroup.seeyau.domain.settings.api.SettingsComponentProvider
 import com.lofigroup.seeyau.domain.settings.usecases.GetVisibilityUseCase
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,8 +34,10 @@ import javax.inject.Inject
 class NearbyServiceImpl : Service(), NearbyService {
 
   @Inject
-  @JvmField
-  var nearbyBtClient: NearbyBtClient? = null
+  lateinit var nearbyBtClient: NearbyBtClient
+
+  @Inject
+  lateinit var notificationBuilder: NearbyServiceNotificationBuilder
 
   @Inject
   lateinit var getVisibilityUseCase: GetVisibilityUseCase
@@ -35,12 +45,12 @@ class NearbyServiceImpl : Service(), NearbyService {
   private val serviceJob = Job()
   private val scope = CoroutineScope(Dispatchers.Main + serviceJob)
 
-
   private val binder = LocalBinder()
   private val state = MutableStateFlow(ResourceState.LOADING)
   private val canStart = MutableStateFlow(false)
 
-  private val permissionChannel by lazy { (application as com.lofigroup.core.permission.PermissionRequestChannelProvider).providePermissionChannel() }
+  private val permissionChannel by lazy { (application as PermissionRequestChannelProvider).providePermissionChannel() }
+  private val bluetoothRequester by lazy { (application as BluetoothRequesterProvider).provideBluetoothRequester() }
 
   override fun onBind(p0: Intent?): IBinder {
     return binder
@@ -55,28 +65,55 @@ class NearbyServiceImpl : Service(), NearbyService {
     observeDataSyncState()
   }
 
+  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    if (intent == null) return START_STICKY_COMPATIBILITY
+
+    if (state.value == ResourceState.LOADING) return START_NOT_STICKY
+
+    when (intent.action) {
+      ACTION_BLUETOOTH_IS_ON -> {
+        canStart.value = true
+      }
+      ACTION_BLUETOOTH_IS_OFF -> {
+        canStart.value = false
+      }
+      ACTION_STOP -> {
+        stopForegroundCompat()
+      }
+    }
+
+    return START_NOT_STICKY
+  }
+
   private fun startDiscovery() {
     if (state.value == ResourceState.LOADING) {
-      Timber.e("Nearby service is not initialized!")
+      Timber.e("Trying to start Nearby service while it is not initialized!")
       return
     }
     Timber.e("Starting discovery...")
     scope.launch {
-      val isGranted = permissionChannel.requestPermission(com.lofigroup.core.permission.model.BluetoothPermission)
-      Timber.e("Is granted = $isGranted")
+      val isGranted = permissionChannel.requestPermission(BluetoothPermission)
       if (!isGranted) return@launch
 
-      nearbyBtClient?.startDiscovery()
+      if (!nearbyBtClient.bluetoothIsOn()) {
+        val bluetoothIsOn = bluetoothRequester.requestToTurnBluetoothOn()
+
+        if (!bluetoothIsOn) return@launch
+      }
+
+      nearbyBtClient.startDiscovery()
+      goForeground()
     }
   }
 
   private fun stopDiscovery() {
-    if (state.value != ResourceState.LOADING) {
-      Timber.e("Nearby service is not initialized!")
+    if (state.value == ResourceState.LOADING) {
+      Timber.e("Trying to stop Nearby service while it is not initialized!")
       return
     }
-    Timber.e("Stopping discovery...")
-    nearbyBtClient?.stopDiscovery()
+    nearbyBtClient.stopDiscovery()
+
+    stopForegroundCompat()
   }
 
   private fun observeDataSyncState() {
@@ -84,7 +121,7 @@ class NearbyServiceImpl : Service(), NearbyService {
     scope.launch {
       baseComponent.moduleStateHolder().observe().collect()  { state ->
         when (state) {
-          ResourceState.IS_READY -> {
+          ResourceState.IS_READY, ResourceState.INITIALIZED -> {
             init()
           }
           else -> {}
@@ -93,14 +130,16 @@ class NearbyServiceImpl : Service(), NearbyService {
     }
   }
 
+  private fun goForeground() {
+    startForeground(SERVICE_ID, notificationBuilder.getNotification())
+  }
+
   private fun observeVisibilitySetting() {
     scope.launch {
-      Timber.e("Observing visibility")
       combine(
         getVisibilityUseCase(),
         canStart
       ) { visibility, canStart -> Pair(visibility, canStart) }.collect { (visibility, canStart) ->
-        Timber.e("Visibility: ${visibility.isVisible}, canStart: $canStart")
         if (visibility.isVisible && canStart)
           startDiscovery()
         else
@@ -116,6 +155,9 @@ class NearbyServiceImpl : Service(), NearbyService {
       .navigatorComponent((application as NavigatorComponentProvider).provideNavigatorComponent())
       .profileComponent((application as ProfileComponentProvider).provideProfileComponent())
       .settingsComponent((application as SettingsComponentProvider).provideSettingsModule())
+      .mainScreenEventChannel((application as MainScreenEventChannelProvider).providerMainScreenEventChannel())
+      .notificationRequester((application as NotificationRequesterProvider).provideNotificationRequester())
+      .appLifecycle(application as AppLifecycle)
       .context(this)
       .coroutineScope(scope)
       .build()
@@ -129,8 +171,10 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun onDestroy() {
     Timber.e("Destroying NearbyService")
-    nearbyBtClient?.stopDiscovery()
-    serviceJob.cancel()
+    if (state.value != ResourceState.LOADING) {
+      nearbyBtClient.destroy()
+      serviceJob.cancel()
+    }
 
     super.onDestroy()
   }
@@ -141,5 +185,13 @@ class NearbyServiceImpl : Service(), NearbyService {
 
   override fun start() {
     canStart.value = true
+  }
+
+  companion object {
+    const val SERVICE_ID = 1
+
+    const val ACTION_BLUETOOTH_IS_ON = "BluetoothIsOn"
+    const val ACTION_BLUETOOTH_IS_OFF = "BluetoothIsOff"
+    const val ACTION_STOP = "NearbyServiceStop"
   }
 }

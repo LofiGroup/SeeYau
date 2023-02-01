@@ -13,6 +13,7 @@ import com.lofigroup.seeyau.data.profile.local.model.events.ProfileChannelEvent
 import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,9 @@ interface ProfileDataComponent {
 
     @BindsInstance
     fun contentResolver(contentResolver: ContentResolver): Builder
+
+    @BindsInstance
+    fun fileDownloader(fileDownloader: FileDownloader): Builder
 
     fun build(): ProfileDataComponent
   }

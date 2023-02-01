@@ -1,26 +1,25 @@
 package com.lofigroup.seeyau.data.chat
 
 import android.content.Context
-import android.net.Uri
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.chat.local.EventsDataSource
-import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
-import com.lofigroup.seeyau.data.chat.local.models.resolveMessageType
-import com.lofigroup.seeyau.data.chat.local.models.toLocalMessage
-import com.lofigroup.seeyau.data.chat.local.models.toNewMessageEvent
+import com.lofigroup.seeyau.data.chat.local.models.*
 import com.lofigroup.seeyau.data.chat.remote.http.ChatApi
 import com.lofigroup.seeyau.data.chat.remote.http.models.*
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.requests.SendMessageWsRequest
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.ChatIsReadWsResponse
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.MessageIsReceivedResponse
 import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.NewMessageWsResponse
-import com.lofigroup.seeyau.data.chat.remote.websocket.models.toWebSocketRequest
+import com.lofigroup.seeyau.data.chat.remote.websocket.models.responses.toChatEvent
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
+import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.ChatMessageRequest
+import com.lofigroup.seeyau.domain.chat.models.ChatNewMessages
 import com.lofigroup.seeyau.domain.chat.models.events.NewChatMessage
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
+import com.sillyapps.core_network.utils.safeIOCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -77,7 +76,7 @@ class ChatDataHandler @Inject constructor(
       } else {
         chatDao.markMessages(response.chatId)
         chatDao.updateChatPartnerLastVisited(response.chatId, response.readIn)
-        eventsDataSource.onChatIsReadEvent(response)
+        eventsDataSource.onEvent(response.toChatEvent())
       }
     }
   }
@@ -104,20 +103,20 @@ class ChatDataHandler @Inject constructor(
       )
       chatDao.insertNewMessage(message)
 
-      eventsDataSource.onNewMessageEvent(message.toNewMessageEvent())
+      eventsDataSource.onEvent(message.toNewMessageEvent())
     }
   }
 
   fun saveLocalMessage(response: MessageIsReceivedResponse) {
     ioScope.launch(ioDispatcher) {
       val message = chatDao.insertSentMessage(response.localId, response.realId, response.createdIn) ?: return@launch
-      eventsDataSource.onNewMessageEvent(message.toNewMessageEvent())
+      eventsDataSource.onEvent(message.toNewMessageEvent())
     }
   }
 
   private suspend fun insertMessage(message: MessageEntity) {
     chatDao.insertMessage(message)
-    eventsDataSource.onNewMessageEvent(NewChatMessage(authorIsMe = true, chatId = message.chatId))
+    eventsDataSource.onEvent(NewChatMessage(authorIsMe = true, chatId = message.chatId))
   }
 
   private suspend fun insertUpdates(chatUpdates: ChatUpdatesDto) {
@@ -125,5 +124,13 @@ class ChatDataHandler @Inject constructor(
     val messages = chatUpdates.newMessages.map { it.toMessageEntity(myId = profileDataHandler.getMyId(), readIn = chat.partnerLastVisited) }
     chatDao.upsertChat(chat)
     chatDao.insertMessages(messages)
+  }
+
+  suspend fun getUserIdByChatId(chatId: Long) = safeIOCall(ioDispatcher) {
+    chatDao.getUserIdFromChatId(chatId)
+  }
+
+  suspend fun getChatIdByUserId(userId: Long) = safeIOCall(ioDispatcher) {
+    chatDao.getChatIdFromUserId(userId)
   }
 }

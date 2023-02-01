@@ -1,9 +1,6 @@
 package com.lofigroup.seeyau.data.auth
 
-import com.lofigroup.seeyau.data.auth.model.AccessRequest
-import com.lofigroup.seeyau.data.auth.model.StartAuthRequest
-import com.lofigroup.seeyau.data.auth.model.TokenResponse
-import com.lofigroup.seeyau.data.auth.model.VerifyResponse
+import com.lofigroup.seeyau.data.auth.model.*
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -22,5 +19,8 @@ interface AuthApi {
   @Multipart
   @POST("/api/auth/quick-auth")
   suspend fun quickAuth(@Part image: MultipartBody.Part?): Response<TokenResponse>
+
+  @POST("/api/auth/update-firebase-token")
+  suspend fun updateFirebaseToken(@Body body: FirebaseToken): Response<Unit>
 
 }

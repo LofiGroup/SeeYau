@@ -5,9 +5,13 @@ import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.core.util.timerFlow
 import com.lofigroup.domain.navigator.NavigatorRepository
 import com.lofigroup.domain.navigator.model.NearbyUser
+import com.lofigroup.seeyau.common.profile.notifications.ProfileNotificationBuilder
 import com.lofigroup.seeyau.data.chat.ChatDataHandler
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
+import com.lofigroup.seeyau.data.profile.local.model.toDomainModel
 import com.lofigroup.seeyau.data.profile.local.model.toUserEntity
+import com.sillyapps.core.ui.app_lifecycle.AppLifecycle
+import com.sillyapps.core.ui.app_lifecycle.model.AppLifecycleState
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_time.Time
@@ -26,24 +30,29 @@ class NavigatorRepositoryImpl @Inject constructor(
   private val webSocketChannel: WebSocketChannel,
   private val profileDataHandler: ProfileDataHandler,
   private val chatDataHandler: ChatDataHandler,
-  private val context: Context
+  private val context: Context,
+  private val profileNotificationBuilder: ProfileNotificationBuilder,
+  private val appLifecycle: AppLifecycle
 ) : NavigatorRepository {
 
   private var lastCallToApi = HashMap<Long, Long>()
-  private val callInterval = 4 * Time.s
+  private val callInterval = 30 * Time.s
 
   override suspend fun notifyUserWithIdWasFound(id: Long) = withContext(ioDispatcher) {
     try {
+      if (!shouldUpdate(lastCallToApi[id], callInterval)) return@withContext
+      lastCallToApi[id] = System.currentTimeMillis()
+
       if (profileDataHandler.userIsInBlackList(id)) {
         return@withContext
       }
 
-      if (!shouldUpdate(lastCallToApi[id], callInterval)) return@withContext
-      lastCallToApi[id] = System.currentTimeMillis()
-
       val response = retrofitErrorHandler(api.contactedWithUser(id))
 
-      profileDataHandler.insertUser(response.toUserEntity())
+      val entity = profileDataHandler.insertUser(response)
+
+      if (entity != null && appLifecycle.observeLifecycle().value == AppLifecycleState.ON_BACKGROUND)
+        profileNotificationBuilder.sendNotification(entity.toDomainModel(), chatDataHandler.getChatIdByUserId(entity.id))
       return@withContext
     } catch (e: HttpException) {
       Timber.e("Couldn't find user with id: $id. Error message ${e.message}")
@@ -54,6 +63,10 @@ class NavigatorRepositoryImpl @Inject constructor(
 
   override fun connectToWebsocket() {
     webSocketChannel.connect()
+  }
+
+  override fun disconnectFromWebsocket() {
+    webSocketChannel.disconnect()
   }
 
   override fun getNearbyUsers(): Flow<List<NearbyUser>> {

@@ -16,11 +16,14 @@
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/common/chat" />
             <option value="$PROJECT_DIR$/common/network" />
+            <option value="$PROJECT_DIR$/common/profile" />
             <option value="$PROJECT_DIR$/common/ui" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/audio-recorder" />
+            <option value="$PROJECT_DIR$/core/bluetooth" />
             <option value="$PROJECT_DIR$/core/di" />
             <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/notifications" />
             <option value="$PROJECT_DIR$/core/permission" />
             <option value="$PROJECT_DIR$/core/time" />
             <option value="$PROJECT_DIR$/core/ui" />

@@ -82,7 +82,7 @@ fun SwipeToDismissBackground() {
       modifier = Modifier
         .fillMaxWidth(0.5f)
         .fillMaxHeight()
-        .background(MaterialTheme.colors.surface)
+        .background(MaterialTheme.colors.error)
     )
     Row(
       verticalAlignment = Alignment.CenterVertically,
@@ -212,7 +212,8 @@ fun ChatItemPreview() {
       author = 0,
       createdIn = 0L,
       status = MessageStatus.SENT,
-      type = MessageType.Like
+      type = MessageType.Like,
+      chatId = 0L
     ),
     newMessagesCount = 1,
     createdIn = 0L

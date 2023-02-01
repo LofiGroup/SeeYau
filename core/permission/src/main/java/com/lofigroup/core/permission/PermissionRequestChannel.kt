@@ -63,6 +63,7 @@ class PermissionRequestChannel() {
 
   fun unregister() {
     mTarget = null
+    requestPermissionLauncher?.unregister()
     requestPermissionLauncher = null
     showRationaleToUserCallback = null
   }

@@ -13,6 +13,6 @@ data class ProfileDataModel(
 fun UserEntity.toProfile(likesCount: Int) = Profile(
   id = id,
   name = name,
-  imageUrl = imageUrl,
+  imageUrl = imageContentUri,
   likesCount = likesCount
 )

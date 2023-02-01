@@ -3,6 +3,7 @@ plugins {
   id 'org.jetbrains.kotlin.android'
   id 'kotlin-kapt'
   id "io.github.reactivecircus.app-versioning" version "1.2.0"
+  id "com.google.gms.google-services"
 }
 
 android {
@@ -87,8 +88,14 @@ appVersioning {
 }
 
 dependencies {
+  implementation project(":core:notifications")
+  implementation project(":core:network")
+  implementation project(":core:bluetooth")
+
   implementation project(":common:ui")
-  
+  implementation project(":common:chat")
+  implementation project(":common:profile")
+
   implementation project(":domain:navigator")
   implementation project(":domain:auth")
   implementation project(":domain:profile")
@@ -142,6 +149,8 @@ dependencies {
 
   implementation timberDep
 
+  implementation coilCompose
+
   implementation roomDeps.runtime
   implementation roomDeps.ktx
   kapt roomDeps.annotationProcessor
@@ -156,4 +165,11 @@ dependencies {
 
   implementation okHttp.core
   implementation okHttp.loggingInterceptor
+
+  implementation workManagerDeps.core
+  testImplementation workManagerDeps.testing
+
+  implementation platform(firebaseDeps.bom)
+  implementation firebaseDeps.messaging
+  implementation firebaseDeps.coroutines
 }

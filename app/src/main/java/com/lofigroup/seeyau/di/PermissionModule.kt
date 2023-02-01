@@ -10,8 +10,8 @@ object PermissionModule {
 
   @AppScope
   @Provides
-  fun providePermissionRequestChannel(): com.lofigroup.core.permission.PermissionRequestChannel {
-    return com.lofigroup.core.permission.PermissionRequestChannel()
+  fun providePermissionRequestChannel(): PermissionRequestChannel {
+    return PermissionRequestChannel()
   }
 
 }
