@@ -8,6 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -18,22 +19,23 @@ import com.lofigroup.seeyau.common.ui.R as CommonR
 import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.conditional
+import timber.log.Timber
 
-private val notFoldable: (Boolean) -> Unit = {}
+private val notFoldable: () -> Unit = {}
 
 fun LazyListScope.FolderItem(
   title: String,
   imageResId: Int,
   content: LazyListScope.() -> Unit,
   expanded: Boolean = true,
-  setExpanded: (Boolean) -> Unit = notFoldable,
+  toggleExpanded: () -> Unit = notFoldable,
 ) {
   item {
     FolderHeader(
       isExpanded = expanded,
       text = title,
       painter = painterResource(id = imageResId),
-      setExpanded = setExpanded
+      toggleExpanded = toggleExpanded
     )
   }
 
@@ -48,13 +50,16 @@ fun FolderHeader(
   isExpanded: Boolean,
   text: String,
   painter: Painter,
-  setExpanded: (Boolean) -> Unit
+  toggleExpanded: () -> Unit
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.conditional(setExpanded != notFoldable) {
-      clickable(onClick = { setExpanded(!isExpanded) })
-    }
+    modifier = Modifier
+      .conditional(toggleExpanded != notFoldable) {
+        clickable(onClick = {
+          toggleExpanded()
+        })
+      }
       .padding(top = LocalSpacing.current.small)
   ) {
     Icon(
@@ -69,7 +74,7 @@ fun FolderHeader(
 
     Spacer(modifier = Modifier.weight(1f))
 
-    if (setExpanded != notFoldable) {
+    if (toggleExpanded != notFoldable) {
       Icon(
         painter = painterResource(id = if (!isExpanded) CommonR.drawable.ic_arrow_up else CommonR.drawable.ic_arrow_down),
         contentDescription = null

@@ -119,8 +119,6 @@ dependencies {
   implementation project(":features:chat-screen")
   implementation project(":features:auth-screen-flow")
 
-  implementation accompanistDeps.pager
-
   implementation appCompat
   implementation coreKtx
 

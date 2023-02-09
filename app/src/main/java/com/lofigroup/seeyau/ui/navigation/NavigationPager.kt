@@ -1,11 +1,11 @@
 package com.lofigroup.seeyau.ui.navigation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.lofigroup.seeyau.AppModules
 import com.lofigroup.seeyau.common.ui.main_screen_event_channel.model.MainScreenEvent
 import com.lofigroup.seeyau.features.chat.api.ChatScreenNavigation
@@ -15,9 +15,12 @@ import com.lofigroup.seeyau.features.chat_screen.api.rememberChatListScreenCompo
 import com.lofigroup.seeyau.features.profile_screen.api.ProfileScreenNavigation
 import com.lofigroup.seeyau.features.profile_screen.api.rememberProfileScreenComponent
 import com.lofigroup.seeyau.ui.permission.NotificationPermission
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NavigationPager(
   appModules: AppModules,
@@ -64,7 +67,8 @@ fun NavigationPager(
   HorizontalPager(
     state = pagerState,
     key = { it },
-    count = if (currentChatId != 0L) 3 else 2
+    beyondBoundsPageCount = 3,
+    pageCount = if (currentChatId != 0L) 3 else 2
   ) { page ->
     when (page) {
       PROFILE_SCREEN -> {
@@ -74,15 +78,20 @@ fun NavigationPager(
             coroutineScope.launch { pagerState.animateScrollToPage(1) }
           },
           onNavigateToAuthScreen = { navigateTo(Screen.AuthScreen.route) },
-          isFocused = currentPage == page
+          isFocused = pagerState.currentPage == page
         )
       }
       MAIN_SCREEN -> {
         ChatListScreenNavigation(
           component = chatListScreenComponent,
           onNavigateToChatScreen = {
+            Timber.e("Navigating to chat: $it")
             currentChatId = it
-            coroutineScope.launch { pagerState.animateScrollToPage(CHAT_SCREEN) }
+
+            coroutineScope.launch {
+              delay(300L)
+              pagerState.animateScrollToPage(CHAT_SCREEN)
+            }
           },
           onNavigateToSettingsScreen = {
             coroutineScope.launch { pagerState.animateScrollToPage(PROFILE_SCREEN) }
@@ -96,7 +105,7 @@ fun NavigationPager(
           onUpButtonClick = {
             coroutineScope.launch { pagerState.animateScrollToPage(MAIN_SCREEN) }
           },
-          isFocused = currentPage == page
+          isFocused = pagerState.currentPage == page
         )
       }
     }

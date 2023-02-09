@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,12 +34,13 @@ fun ChatList(
   modifier: Modifier = Modifier,
 ) {
 
-  val (nearbyExpanded, setNearbyExpanded) = rememberSaveable() {
+  var nearbyExpanded by remember() {
     mutableStateOf(true)
   }
-  val (metExpanded, setMetExpanded) = rememberSaveable() {
+  var metExpanded by remember() {
     mutableStateOf(true)
   }
+
   val context = LocalContext.current
 
   LazyColumn(modifier = modifier) {
@@ -56,7 +56,7 @@ fun ChatList(
           item { InvisibleInfo() }
       },
       expanded = nearbyExpanded,
-      setExpanded = setNearbyExpanded,
+      toggleExpanded = { nearbyExpanded = !nearbyExpanded },
       title = context.getString(R.string.folder_title_nearby),
       imageResId = CommonR.drawable.nearby_icon,
     )
@@ -69,7 +69,7 @@ fun ChatList(
         )
       },
       expanded = metExpanded,
-      setExpanded = setMetExpanded,
+      toggleExpanded = { metExpanded = !metExpanded },
       title = context.getString(R.string.folder_title_met),
       imageResId = CommonR.drawable.ic_history,
     )

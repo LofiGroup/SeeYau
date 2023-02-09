@@ -60,6 +60,7 @@ abstract class AppDatabase : RoomDatabase(), DatabaseHandler {
             "seeyau_database"
           )
 //            .addMigrations(Migration21To22, Migration22To23)
+            .fallbackToDestructiveMigrationOnDowngrade()
             .fallbackToDestructiveMigrationFrom(*(1..23).toIntArray())
             .build()
 
