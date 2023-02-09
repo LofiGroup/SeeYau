@@ -28,13 +28,11 @@ fun ChatScreenNavigation(
     viewModel.setChatId(chatId)
   }
 
-  if (isFocused) {
-    ChatScreen(
-      stateHolder = viewModel,
-      onUpButtonClick = onUpButtonClick,
-      isFocused = isFocused
-    )
-  }
+  ChatScreen(
+    stateHolder = viewModel,
+    onUpButtonClick = onUpButtonClick,
+    isFocused = isFocused
+  )
 }
 
 @Composable

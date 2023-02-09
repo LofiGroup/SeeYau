@@ -51,11 +51,11 @@ class ProfileScreenViewModel @Inject constructor(
   }
 
   private fun validateData(): Boolean {
-    val data = state.value
-    if (data.name.isBlank()) {
-      state.value = data.copy(errorMessage = "Name is blank")
-      return false
-    }
+//    val data = state.value
+//    if (data.name.isBlank()) {
+//      state.value = data.copy(errorMessage = "Name is blank")
+//      return false
+//    }
     return true
   }
 

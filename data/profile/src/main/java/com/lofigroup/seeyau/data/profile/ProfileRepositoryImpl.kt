@@ -1,7 +1,6 @@
 package com.lofigroup.seeyau.data.profile
 
 import android.content.ContentResolver
-import android.net.Uri
 import com.lofigroup.core.util.Result
 import com.lofigroup.seeyau.data.profile.local.BlacklistDao
 import com.lofigroup.seeyau.data.profile.local.LikeDao
@@ -19,7 +18,6 @@ import com.lofigroup.seeyau.domain.profile.ProfileRepository
 import com.lofigroup.seeyau.domain.profile.model.Profile
 import com.lofigroup.seeyau.domain.profile.model.ProfileUpdate
 import com.lofigroup.seeyau.domain.profile.model.User
-import com.sillyapps.core_network.ContentUriRequestBody
 import com.sillyapps.core_network.exceptions.EmptyResponseBodyException
 import com.sillyapps.core_network.getErrorMessage
 import com.sillyapps.core_network.retrofitErrorHandler
@@ -31,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,9 +48,7 @@ class ProfileRepositoryImpl @Inject constructor(
   override suspend fun pullProfileData() {
     safeIOCall(ioDispatcher) {
       val response = retrofitErrorHandler(api.getProfile())
-
-      userDao.upsert(response.toUserEntity())
-      profileData.update(response.id)
+      profileDataHandler.saveProfileData(response)
     }
   }
 
@@ -112,8 +107,7 @@ class ProfileRepositoryImpl @Inject constructor(
         )
       )
 
-      userDao.upsert(newProfile.toUserEntity())
-      profileData.update(newProfile.id)
+      profileDataHandler.saveProfileData(newProfile)
       Result.Success
     }
     catch (e: Exception) {

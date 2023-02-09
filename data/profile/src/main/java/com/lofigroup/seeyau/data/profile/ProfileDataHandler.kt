@@ -9,7 +9,9 @@ import com.lofigroup.seeyau.data.profile.local.UserDao
 import com.lofigroup.seeyau.data.profile.local.model.*
 import com.lofigroup.seeyau.data.profile.remote.http.ProfileApi
 import com.lofigroup.seeyau.data.profile.remote.http.model.BlackListDto
+import com.lofigroup.seeyau.data.profile.remote.http.model.ProfileDto
 import com.lofigroup.seeyau.data.profile.remote.http.model.toEntity
+import com.lofigroup.seeyau.data.profile.remote.http.model.toUserEntity
 import com.lofigroup.seeyau.domain.profile.model.Like
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core_network.file_downloader.FileDownloader
@@ -33,12 +35,21 @@ class ProfileDataHandler @Inject constructor(
   private val scope: CoroutineScope
 ) {
 
+  suspend fun saveProfileData(profileDto: ProfileDto) {
+    safeIOCall(ioDispatcher) {
+      saveUserImage(0, profileDto.imageUrl)
+
+      userDao.upsert(profileDto.toUserEntity())
+      profileDataSource.update(profileDto.id)
+    }
+  }
+
   suspend fun pullUserData(userId: Long) {
     safeIOCall(ioDispatcher) {
       if (userId == 0L || userId == getMyId()) return@safeIOCall
 
       val response = retrofitErrorHandler(api.getUser(userId))
-      saveUserImage(response, )
+      saveUserImage(response.id, response.imageUrl)
 
       userDao.upsert(response.toUserEntity())
     }
@@ -49,7 +60,7 @@ class ProfileDataHandler @Inject constructor(
       val response = retrofitErrorHandler(api.getContacts())
 
       for (user in response) {
-        saveUserImage(user)
+        saveUserImage(user.id, user.imageUrl)
       }
       userDao.upsert(response.map { it.toUserEntity() })
     }
@@ -118,14 +129,14 @@ class ProfileDataHandler @Inject constructor(
     blacklistDao.delete(toDelete.map { it.toEntity(getMyId()) })
   }
 
-  private fun saveUserImage(user: UserDto) {
+  private fun saveUserImage(userId: Long, imageUrl: String?) {
+    if (imageUrl == null) return
     scope.launch(Dispatchers.IO) {
-      val imageUrl = user.imageUrl ?: return@launch
-      val uri = downloadUserImage(user.id, imageUrl) ?: return@launch
+      val uri = downloadUserImage(userId, imageUrl) ?: return@launch
 
       userDao.updateImageUrl(
         UpdateUserImage(
-          id = user.id,
+          id = userId,
           imageContentUri = uri,
           imageRemoteUrl = imageUrl
         )

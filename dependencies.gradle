@@ -1,18 +1,18 @@
 ext.versions = [
     androidxcore      : "1.6.0",
     lifecycle         : "2.5.0",
-    dagger            : "2.43",
-    room              : "2.4.2",
+    dagger            : "2.44.2",
+    room              : "2.5.0",
     coroutines        : "1.6.4",
-    moshi             : "1.13.0",
-    compose           : "1.3.2",
-    compose_foundation: "1.3.1",
-    compose_material  : "1.3.1",
-    composeCompiler   : "1.3.2",
+    moshi             : "1.14.0",
+    compose           : "1.4.0-alpha05",
+    compose_foundation: "1.4.0-alpha05",
+    compose_material  : "1.4.0-alpha05",
+    composeCompiler   : "1.4.0",
     workManager       : "2.7.1",
     okHttp            : "4.10.0",
     retrofit          : "2.9.0",
-    media3            : "1.0.0-beta02"
+    media3            : "1.0.0-beta03"
 ]
 
 ext.androidConfigs = [
@@ -78,8 +78,6 @@ ext {
       loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${versions.okHttp}"
   ]
 
-  materialDep = 'com.google.android.material:material:1.4.0'
-
   // Preferences
   preferencesDep = "androidx.preference:preference-ktx:1.1.1"
 
@@ -116,8 +114,8 @@ ext {
   ]
 
   okHttpDeps = [
-      core              : "com.squareup.okhttp3:okhttp:4.9.3",
-      loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:4.9.3"
+      core              : "com.squareup.okhttp3:okhttp:${versions.okHttp}",
+      loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${versions.okHttp}"
   ]
 
   coilCompose = "io.coil-kt:coil-compose:2.2.2"
@@ -126,11 +124,7 @@ ext {
 
   shimmer = "com.valentinilk.shimmer:compose-shimmer:1.0.3"
 
-  imageCropper = "com.github.CanHub:Android-Image-Cropper:4.3.2"
-
-  accompanistDeps = [
-      pager: "com.google.accompanist:accompanist-pager:0.28.0"
-  ]
+  imageCropper = "com.vanniktech:android-image-cropper:4.5.0"
 
   workManagerDeps = [
       core   : "androidx.work:work-runtime-ktx:${versions.workManager}",
