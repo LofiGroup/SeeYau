@@ -23,4 +23,6 @@ interface ChatRepository {
 
   suspend fun updateChatDraft(chatDraftUpdate: ChatDraftUpdate)
 
+  fun downloadMediaForMessage(messageId: Long)
+
 }

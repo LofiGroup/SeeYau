@@ -42,11 +42,13 @@ class ChatScreenViewModel @Inject constructor(
 
   private val blacklistUserUseCase: BlacklistUserUseCase,
 
+  private val downloadMediaForMessage: DownloadMediaForMessage,
+
   private val resources: Resources,
 
   private val mediaPlayer: MediaPlayer,
 
-  private val audioRecorder: AudioRecorder
+  private val audioRecorder: AudioRecorder,
 ) : ViewModel(), ChatScreenStateHolder {
 
   private val state = MutableStateFlow(ChatScreenState())
@@ -139,6 +141,10 @@ class ChatScreenViewModel @Inject constructor(
     state.set {
       it.copy(currentCloseUpVideo = video)
     }
+  }
+
+  override fun startMediaDownload(messageId: Long) {
+    downloadMediaForMessage(messageId)
   }
 
   private suspend fun observeProfileUpdates(chatId: Long) {

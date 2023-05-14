@@ -1,19 +1,10 @@
-package com.lofigroup.seeyau.features.chat.ui.providers
+package com.lofigroup.seeyau.features.chat.ui.composition_locals
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.lofigroup.seeyau.common.ui.theme.SkyBlue
-import com.sillyapps.core.ui.theme.LocalExtendedColors
-import com.sillyapps.core.ui.theme.Purple
-import com.sillyapps.core.ui.theme.PurpleDarker
 
 data class ChatMessageStyles(
   val myMessageStyle: ChatMessageStyle,
@@ -29,20 +20,6 @@ data class ChatMessageStyle(
   val hasMessageMark: Boolean
 )
 
-@Composable
-fun ChatMessageStyleProvider(
-  content: @Composable () -> Unit
-) {
-  CompositionLocalProvider(
-    LocalChatMessageStyles provides ChatMessageStyles(
-      myMessageStyleDefault.copy(color = MaterialTheme.colors.primaryVariant),
-      partnerMessageStyleDefault.copy(color = LocalExtendedColors.current.itemsColors)
-    )
-  ) {
-    content()
-  }
-}
-
 val LocalChatMessageStyles = staticCompositionLocalOf {
   ChatMessageStyles(
     myMessageStyle = myMessageStyleDefault,
@@ -50,7 +27,7 @@ val LocalChatMessageStyles = staticCompositionLocalOf {
   )
 }
 
-private val myMessageStyleDefault = ChatMessageStyle(
+val myMessageStyleDefault = ChatMessageStyle(
   alignment = Alignment.CenterEnd,
   startPadding = 64.dp,
   endPadding = 16.dp,
@@ -59,7 +36,7 @@ private val myMessageStyleDefault = ChatMessageStyle(
   hasMessageMark = true
 )
 
-private val partnerMessageStyleDefault = ChatMessageStyle(
+val partnerMessageStyleDefault = ChatMessageStyle(
   alignment = Alignment.CenterStart,
   startPadding = 16.dp,
   endPadding = 64.dp,

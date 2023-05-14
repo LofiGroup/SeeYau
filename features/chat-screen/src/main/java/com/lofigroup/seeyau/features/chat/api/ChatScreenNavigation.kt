@@ -11,6 +11,7 @@ import com.lofigroup.seeyau.features.chat.di.ChatScreenComponent
 import com.lofigroup.seeyau.features.chat.ui.ChatScreen
 import com.lofigroup.seeyau.features.chat.di.DaggerChatScreenComponent
 import com.sillyapps.core.ui.daggerViewModel
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import timber.log.Timber
 
 @Composable
@@ -39,7 +40,7 @@ fun ChatScreenNavigation(
 fun rememberChatScreenComponent(
   chatComponent: ChatComponent,
   profileComponent: ProfileComponent,
-  permissionChannel: PermissionRequestChannel,
+  permissionChannel: PermissionRequestChannel
 ): ChatScreenComponent {
   val context = LocalContext.current
   return DaggerChatScreenComponent.builder()

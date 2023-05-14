@@ -66,7 +66,11 @@ class WebSocketChannel @Inject constructor(
   fun sendMessage(type: String, request: String) {
     val message = "{\"type\":\"$type\",\"data\":$request}"
     Timber.d("Sending message through websocket: $message")
-    mWebSocket?.send(message)
+    try {
+      mWebSocket?.send(message)
+    } catch (e: Exception) {
+      Timber.e("Exception while sending message through websocket: $message")
+    }
   }
 
   companion object {

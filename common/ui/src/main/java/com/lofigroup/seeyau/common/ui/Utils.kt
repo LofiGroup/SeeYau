@@ -1,5 +1,6 @@
 package com.lofigroup.seeyau.common.ui
 
+import android.content.Context
 import android.content.res.Resources
 import com.sillyapps.core_time.DateAndTime
 import com.sillyapps.core_time.LastSeen
@@ -24,4 +25,17 @@ fun getLocalizedDatedAndTimeFromMillis(millis: Long, resources: Resources): Date
     else -> temp
   }
   return dateTime.copy(date = date)
+}
+
+fun getFormattedFileSize(sizeInBytes: Long): String {
+  return when {
+    sizeInBytes >= ByteMeasures.MB -> "%.1f Mb".format(sizeInBytes.toFloat() / ByteMeasures.MB)
+    sizeInBytes >= ByteMeasures.KB -> "%.1f Kb".format(sizeInBytes.toFloat() / ByteMeasures.KB)
+    else -> "$sizeInBytes bytes"
+  }
+}
+
+object ByteMeasures {
+  const val KB = 1024
+  const val MB = 1024 * 1024
 }

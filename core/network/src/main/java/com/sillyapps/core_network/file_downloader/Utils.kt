@@ -3,9 +3,11 @@ package com.sillyapps.core_network.file_downloader
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
 import com.lofigroup.core.util.generateRandomString
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -19,7 +21,7 @@ fun createNewFile(context: Context): File {
 }
 
 @Throws(IOException::class)
-fun writeToFile(file: File, body: ResponseBody) {
+fun writeToFile(file: File, body: ResponseBody, onDownloadProgress: (Float) -> Unit) {
   var inputStream: InputStream? = null
   var outputStream: OutputStream? = null
 
@@ -27,13 +29,20 @@ fun writeToFile(file: File, body: ResponseBody) {
     inputStream = body.byteStream()
     outputStream = FileOutputStream(file)
 
+    val totalBytes = body.contentLength()
+    var downloadedBytes = 0L
+
     val fileReader = ByteArray(4096)
 
     while (true) {
-      val read = inputStream.read(fileReader)
-      if (read == -1) break
+      val readBytes = inputStream.read(fileReader)
+      if (readBytes == -1) break
 
-      outputStream.write(fileReader, 0, read)
+      outputStream.write(fileReader, 0, readBytes)
+
+      downloadedBytes += readBytes
+      onDownloadProgress(downloadedBytes.toFloat() / totalBytes)
+      Timber.e("Downloaded some bytes, progress: ${downloadedBytes.toFloat() / totalBytes}")
     }
     outputStream.flush()
   } catch (e: IOException) {

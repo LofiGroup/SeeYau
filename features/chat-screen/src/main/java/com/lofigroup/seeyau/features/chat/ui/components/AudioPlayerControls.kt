@@ -26,7 +26,8 @@ val defaultMediaState = MediaPlayerState()
 @Composable
 fun AudioPlayerControls(
   audioContent: UIMessageType.Audio,
-  id: Long
+  id: Long,
+  modifier: Modifier = Modifier
 ) {
   val state = rememberMediaPlayerState(id = id, duration = audioContent.duration)
 
@@ -45,7 +46,8 @@ fun AudioPlayerControls(
     PlaybackControls(
       mediaItem = audioContent.mediaItem,
       state = state,
-      id = id
+      id = id,
+      modifier = modifier
     )
   }
 }

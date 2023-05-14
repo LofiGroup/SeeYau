@@ -2,11 +2,13 @@ package com.lofigroup.seeyau.data.chat.api
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.lofigroup.backend_api.di.BaseDataComponent
 import com.lofigroup.backend_api.websocket.WebSocketChannel
 import com.lofigroup.seeyau.common.chat.components.notifications.ChatNotificationBuilder
 import com.lofigroup.seeyau.data.chat.di.DaggerChatDataComponent
 import com.lofigroup.seeyau.data.chat.local.ChatDao
 import com.lofigroup.seeyau.data.profile.ProfileDataHandler
+import com.lofigroup.seeyau.domain.base.di.BaseModuleComponent
 import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificationChannel
 import com.lofigroup.seeyau.domain.chat.di.DaggerChatComponent
 import kotlinx.coroutines.CoroutineScope
@@ -14,9 +16,8 @@ import retrofit2.Retrofit
 
 class ChatModule(
   chatDao: ChatDao,
+  baseDataComponent: BaseDataComponent,
   sharedPreferences: SharedPreferences,
-  baseRetrofit: Retrofit,
-  webSocketChannel: WebSocketChannel,
   ioScope: CoroutineScope,
   profileDataHandler: ProfileDataHandler,
   userNotificationChannel: UserNotificationChannel,
@@ -27,13 +28,14 @@ class ChatModule(
   val dataComponent = DaggerChatDataComponent.builder()
     .chatDao(chatDao)
     .sharedPref(sharedPreferences)
-    .baseRetrofit(baseRetrofit)
+    .baseRetrofit(baseDataComponent.getRetrofit())
     .profileDataHandler(profileDataHandler)
     .ioScope(ioScope)
-    .webSocketChannel(webSocketChannel)
+    .webSocketChannel(baseDataComponent.getWebSocketChannel())
     .context(context)
     .userNotificationChannel(userNotificationChannel)
     .chatNotificationBuilder(chatNotificationBuilder)
+    .fileDownloader(baseDataComponent.getFileDownloader())
     .build()
 
   val domainComponent = DaggerChatComponent.builder()

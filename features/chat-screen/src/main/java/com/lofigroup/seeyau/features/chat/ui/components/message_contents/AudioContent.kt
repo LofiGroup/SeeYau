@@ -1,16 +1,18 @@
 package com.lofigroup.seeyau.features.chat.ui.components.message_contents
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lofigroup.seeyau.common.ui.getFormattedFileSize
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.domain.chat.models.MediaData
 import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.lofigroup.seeyau.features.chat.media_player.ui.rememberMediaPlayerState
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
@@ -19,8 +21,12 @@ import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
 import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
 import com.lofigroup.seeyau.features.chat.ui.components.PlaybackControls
 import com.lofigroup.seeyau.features.chat.ui.components.PlayerProgressBar
+import com.lofigroup.seeyau.features.chat.ui.composition_locals.LocalChatMediaDownloader
 import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.sillyapps.core.ui.theme.LocalSize
 import com.sillyapps.core.ui.theme.LocalSpacing
+import com.sillyapps.core_network.file_downloader.models.DownloadProgress
+import timber.log.Timber
 
 @Composable
 fun AudioContent(
@@ -38,11 +44,21 @@ fun AudioContent(
     Row(
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      PlaybackControls(
-        mediaItem = audioContent.mediaItem,
-        state = state,
-        id = message.id
-      )
+      if (audioContent.mediaData.isSavedLocally) {
+        PlaybackControls(
+          mediaItem = audioContent.mediaItem,
+          state = state,
+          id = message.id,
+          modifier = Modifier
+            .size(LocalSize.current.medium)
+        )
+      } else {
+        DownloadAudioButton(
+          messageId = message.id,
+          modifier = Modifier
+            .size(LocalSize.current.medium)
+        )
+      }
 
       Spacer(modifier = Modifier.width(LocalSpacing.current.small))
 
@@ -67,13 +83,45 @@ fun AudioContent(
   }
 }
 
+@Composable
+fun DownloadAudioButton(
+  messageId: Long,
+  modifier: Modifier = Modifier
+) {
+  val fileDownloader = LocalChatMediaDownloader.current
+
+  val loadingProgress by fileDownloader.subscribe(messageId).collectAsState(initial = DownloadProgress())
+
+  Box(modifier = modifier) {
+    if (loadingProgress.isStarted) {
+      LaunchedEffect(key1 = loadingProgress) {
+        Timber.e("New progress: ${loadingProgress.progress}")
+      }
+      CircularProgressIndicator(
+        progress = loadingProgress.progress,
+        color = LocalExtendedColors.current.disabled,
+      )
+    } else {
+      IconButton(
+        onClick = { fileDownloader.startDownload(messageId) },
+      ) {
+        Icon(
+          imageVector = Icons.Filled.Download,
+          contentDescription = null,
+          modifier = Modifier.fillMaxSize()
+        )
+      }
+    }
+  }
+}
+
 @Preview
 @Composable
 fun AudioContentPreview() {
   AppTheme {
     Surface() {
       ChatMessageItem(chatMessage = getPreviewMessage(
-        type = MessageType.Audio(uri = "", duration = 10000L),
+        type = MessageType.Audio(MediaData(uri = "", fileSize = 1), duration = 10000L),
       ))
     }
   }

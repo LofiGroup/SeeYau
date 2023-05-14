@@ -3,6 +3,7 @@ package com.lofigroup.seeyau.features.chat.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,13 +17,15 @@ import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.domain.profile.model.getUserPreviewModel
 import com.lofigroup.seeyau.features.chat.R
 import com.lofigroup.seeyau.features.chat.media_player.FakeMediaPlayer
+import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.lofigroup.seeyau.features.chat.model.ChatScreenCommand
 import com.lofigroup.seeyau.features.chat.model.ChatScreenState
 import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
-import com.lofigroup.seeyau.features.chat.media_player.ui.LocalPlayerProvider
 import com.lofigroup.seeyau.features.chat.ui.components.*
+import com.lofigroup.seeyau.features.chat.ui.composition_locals.*
 import com.lofigroup.seeyau.features.send_media.SendMediaDialog
 import com.sillyapps.core.ui.components.showToast
+import com.sillyapps.core.ui.theme.LocalExtendedColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,7 +76,17 @@ fun ChatScreen(
     }
   }
 
-  LocalPlayerProvider(mediaPlayer = stateHolder.getMediaPlayer()) {
+  CompositionLocalProvider(
+    LocalMediaPlayer provides stateHolder.getMediaPlayer(),
+    LocalChatMessageStyles provides ChatMessageStyles(
+      myMessageStyleDefault.copy(color = MaterialTheme.colors.primaryVariant),
+      partnerMessageStyleDefault.copy(color = LocalExtendedColors.current.itemsColors)
+    ),
+    LocalChatMediaDownloader provides provideChatMediaDownloader(
+      fileDownloader = LocalFileDownloader.current,
+      startDownload = stateHolder::startMediaDownload
+    )
+  ) {
     Column(
       modifier = Modifier
         .fillMaxSize()

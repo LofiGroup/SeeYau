@@ -95,8 +95,7 @@ class AppModules(
 
   val chatModule by lazy {
     ChatModule(
-      baseRetrofit = baseDataModule.component.getRetrofit(),
-      webSocketChannel = baseDataModule.component.getWebSocketChannel(),
+      baseDataComponent = baseDataModule.component,
       chatDao = appComponent.getDatabase().chatDao,
       sharedPreferences = appComponent.getSharedPref(),
       ioScope = appScope,

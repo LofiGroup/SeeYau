@@ -30,4 +30,6 @@ interface ChatScreenStateHolder {
 
   fun setCloseUpVideo(video: UIMessageType.Video) {}
 
+  fun startMediaDownload(messageId: Long) {}
+
 }

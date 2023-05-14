@@ -13,6 +13,7 @@ import com.lofigroup.seeyau.domain.base.user_notification_channel.UserNotificati
 import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.sillyapps.core.di.AppScope
 import com.sillyapps.core.di.IOModule
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import dagger.*
 import kotlinx.coroutines.CoroutineScope
 import retrofit2.Retrofit
@@ -52,6 +53,9 @@ interface ChatDataComponent {
 
     @BindsInstance
     fun chatNotificationBuilder(chatNotificationBuilder: ChatNotificationBuilder): Builder
+
+    @BindsInstance
+    fun fileDownloader(fileDownloader: FileDownloader): Builder
 
     fun build(): ChatDataComponent
   }

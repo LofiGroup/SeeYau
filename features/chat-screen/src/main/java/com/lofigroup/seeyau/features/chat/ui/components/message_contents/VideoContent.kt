@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,9 @@ import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import com.lofigroup.core.util.cancelAndLaunch
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
+import com.lofigroup.seeyau.domain.chat.models.MediaData
 import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.lofigroup.seeyau.domain.chat.models.PreviewData
 import com.lofigroup.seeyau.features.chat.media_player.MediaPlayer
 import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
 import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
@@ -63,44 +66,52 @@ fun VideoContent(
       .padding(bottom = LocalSpacing.current.extraSmall)
       .clip(MaterialTheme.shapes.large)
   ) {
-    if (state.isCurrentItem) {
-      VideoPlayer(
-        mediaPlayer = mediaPlayer,
-        id = message.id,
-        state = state,
-        videoContent = videoItem,
-        onFullScreenButtonClick = { onVideoClick(videoItem) },
-        modifier = Modifier
-          .background(LocalExtendedColors.current.darkBackground.copy(alpha = 0.2f))
-      )
-    } else {
-      RemoteImage(
-        model = ImageRequest.Builder(LocalContext.current)
-          .data(videoItem.mediaItem.localConfiguration?.uri)
-          .crossfade(true)
-          .decoderFactory { result, options, _ -> VideoFrameDecoder(result.source, options) }
-          .build(),
-        shape = RectangleShape,
-        modifier = Modifier
-          .fillMaxSize()
-      )
+    if (videoItem.mediaData.isSavedLocally) {
+      if (state.isCurrentItem) {
+        VideoPlayer(
+          mediaPlayer = mediaPlayer,
+          id = message.id,
+          state = state,
+          videoContent = videoItem,
+          onFullScreenButtonClick = { onVideoClick(videoItem) },
+          modifier = Modifier
+            .background(LocalExtendedColors.current.darkBackground.copy(alpha = 0.2f))
+        )
+      } else {
+        RemoteImage(
+          model = ImageRequest.Builder(LocalContext.current)
+            .data(videoItem.mediaItem.localConfiguration?.uri)
+            .crossfade(true)
+            .decoderFactory { result, options, _ -> VideoFrameDecoder(result.source, options) }
+            .build(),
+          shape = RectangleShape,
+          modifier = Modifier
+            .fillMaxSize()
+        )
 
-      IconButton(
-        onClick = { mediaPlayer.playMedia(videoItem.mediaItem, message.id) },
-        modifier = Modifier.align(Alignment.Center)
-      ) {
-        Icon(
-          imageVector = Icons.Filled.PlayArrow,
-          contentDescription = null,
-          modifier = Modifier.size(LocalSize.current.medium)
+        IconButton(
+          onClick = { mediaPlayer.playMedia(videoItem.mediaItem, message.id) },
+          modifier = Modifier.align(Alignment.Center)
+        ) {
+          Icon(
+            imageVector = Icons.Filled.PlayArrow,
+            contentDescription = null,
+            modifier = Modifier.size(LocalSize.current.medium)
+          )
+        }
+
+        MessageDate(
+          message = message,
+          modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(LocalSpacing.current.small)
         )
       }
-
-      MessageDate(
-        message = message,
-        modifier = Modifier
-          .align(Alignment.BottomEnd)
-          .padding(LocalSpacing.current.small)
+    } else {
+      DownloadMediaWithPreview(
+        base64Image = videoItem.preview,
+        messageId = message.id,
+        mediaData = videoItem.mediaData
       )
     }
   }
@@ -253,7 +264,7 @@ fun VideoMessagePreview() {
     Surface() {
       ChatMessageItem(
         chatMessage = getPreviewMessage(
-          type = MessageType.Video("")
+          type = MessageType.Video(mediaData = MediaData("", 1), duration = 1, previewData = PreviewData("", 1, 1))
         ),
         onImageClick = {},
         onVideoClick = {}

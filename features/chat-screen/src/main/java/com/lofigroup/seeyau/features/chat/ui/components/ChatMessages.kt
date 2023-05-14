@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.features.chat.ui.components
 
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -10,11 +9,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.lofigroup.seeyau.features.chat.media_player.model.MediaPlayerState
-import com.lofigroup.seeyau.features.chat.media_player.ui.LocalMediaPlayer
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
-import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.rememberLastItemKey
 import kotlinx.coroutines.delay
@@ -26,47 +22,44 @@ fun ChatMessages(
   onImageClick: (String) -> Unit,
   onVideoClick: (UIMessageType.Video) -> Unit
 ) {
-
-  ChatMessageStyleProvider() {
-    Box(modifier = Modifier
-      .fillMaxSize()) {
-      LazyColumn(
-        reverseLayout = true,
-        state = listState,
-        modifier = Modifier.fillMaxSize()
-      ) {
-        items.forEach { (date, messages) ->
-          items(
-            items = messages,
-            key = { "${date}_${it.id}" },
-            contentType = { "chatMessageItem" }
-          ) { message ->
-            ChatMessageItem(
-              chatMessage = message,
-              onImageClick = onImageClick,
-              onVideoClick = onVideoClick
-            )
-          }
-          item(
-            contentType = "dateHeader"
-          ) {
-            DateHeader(date = date)
-          }
+  Box(modifier = Modifier
+    .fillMaxSize()) {
+    LazyColumn(
+      reverseLayout = true,
+      state = listState,
+      modifier = Modifier.fillMaxSize()
+    ) {
+      items.forEach { (date, messages) ->
+        items(
+          items = messages,
+          key = { "${date}_${it.id}" },
+          contentType = { "chatMessageItem" }
+        ) { message ->
+          ChatMessageItem(
+            chatMessage = message,
+            onImageClick = onImageClick,
+            onVideoClick = onVideoClick
+          )
+        }
+        item(
+          contentType = "dateHeader"
+        ) {
+          DateHeader(date = date)
         }
       }
-
-      val lastItemKey by listState.rememberLastItemKey()
-      val key = lastItemKey
-      val date = if (key is String)
-        key.split("_")[0]
-      else
-        null
-
-      DateStickyLabel(
-        date = date,
-        scrollInProgress = listState.isScrollInProgress
-      )
     }
+
+    val lastItemKey by listState.rememberLastItemKey()
+    val key = lastItemKey
+    val date = if (key is String)
+      key.split("_")[0]
+    else
+      null
+
+    DateStickyLabel(
+      date = date,
+      scrollInProgress = listState.isScrollInProgress
+    )
   }
 }
 

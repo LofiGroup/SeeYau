@@ -1,6 +1,5 @@
 package com.lofigroup.seeyau.features.chat.ui.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -14,8 +13,7 @@ import com.lofigroup.seeyau.features.chat.model.UIChatMessage
 import com.lofigroup.seeyau.features.chat.model.UIMessageType
 import com.lofigroup.seeyau.features.chat.model.getPreviewMessage
 import com.lofigroup.seeyau.features.chat.ui.components.message_contents.*
-import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
-import com.lofigroup.seeyau.features.chat.ui.providers.LocalChatMessageStyles
+import com.lofigroup.seeyau.features.chat.ui.composition_locals.LocalChatMessageStyles
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable
@@ -88,11 +86,9 @@ fun ChatMessageItem(
 fun ChatMyMessagePreview() {
   AppTheme() {
     Surface() {
-      ChatMessageStyleProvider() {
-        ChatMessageItem(
-          chatMessage = getPreviewMessage(),
-        )
-      }
+      ChatMessageItem(
+        chatMessage = getPreviewMessage(),
+      )
     }
   }
 }
@@ -102,11 +98,9 @@ fun ChatMyMessagePreview() {
 fun ChatPartnerMessagePreview() {
   AppTheme() {
     Surface() {
-      ChatMessageStyleProvider() {
-        ChatMessageItem(
-          chatMessage = getPreviewMessage(authorIsMe = false),
-        )
-      }
+      ChatMessageItem(
+        chatMessage = getPreviewMessage(authorIsMe = false),
+      )
     }
   }
 }

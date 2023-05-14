@@ -283,7 +283,7 @@ fun RowScope.RecordingFinishedMessageInput(
         mediaItem = MediaItem.fromUri(audioUri),
         duration = getAudioFileDuration(audioUri.toString(), context)
       ),
-      id = -2L
+      id = -2L,
     )
   }
 }

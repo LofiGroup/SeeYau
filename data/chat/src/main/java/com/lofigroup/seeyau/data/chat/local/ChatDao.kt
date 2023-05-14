@@ -58,6 +58,7 @@ interface ChatDao {
   @Query("update chats set partnerLastVisited = :lastVisited where id = :chatId")
   suspend fun updateChatPartnerLastVisited(chatId: Long, lastVisited: Long)
 
+
   @Query("update messages set isRead = 1 where chatId = :chatId and createdIn > :fromDate")
   suspend fun markMessagesAsRead(chatId: Long, fromDate: Long)
 
@@ -72,6 +73,9 @@ interface ChatDao {
 
   @Update(entity = ChatEntity::class)
   suspend fun updateChat(chat: ChatUpdate)
+
+  @Update(entity = MessageEntity::class)
+  suspend fun updateMessageExtra(messageExtraUpdate: MessageExtraUpdate)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertMessages(messages: List<MessageEntity>)

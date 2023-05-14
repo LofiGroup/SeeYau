@@ -15,5 +15,5 @@ fun UserAssembled.toNearbyUser(newMessages: List<MessageEntity>, context: Contex
   likesCount = likesCount,
   lastContact = lastContact,
   isOnline = lastConnection == Time.IS_ONLINE,
-  newMessages = newMessages.map { it.toDomainModel(context) }
+  newMessages = newMessages.map { it.toDomainModel() }
 )

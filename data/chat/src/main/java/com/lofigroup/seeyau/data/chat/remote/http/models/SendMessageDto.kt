@@ -2,7 +2,6 @@ package com.lofigroup.seeyau.data.chat.remote.http.models
 
 import com.lofigroup.seeyau.data.chat.local.models.MessageEntity
 import com.lofigroup.seeyau.data.chat.local.models.extractMediaUri
-import com.lofigroup.seeyau.data.chat.local.models.toMessageType
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass

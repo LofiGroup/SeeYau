@@ -8,9 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.lofigroup.seeyau.common.chat.components.MessageStatusIcon
 import com.lofigroup.seeyau.features.chat.model.UIChatMessage
-import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyle
+import com.lofigroup.seeyau.features.chat.ui.composition_locals.ChatMessageStyle
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable

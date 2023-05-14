@@ -154,7 +154,7 @@ class ProfileDataHandler @Inject constructor(
     val localUser = userDao.getUser(userId)
 
     return if (localUser == null || localUser.imageRemoteUrl != imageUrl) {
-      fileDownloader.downloadToInternalStorage(imageUrl)
+      fileDownloader.downloadToInternalStorage("user_${userId}", imageUrl)
     } else localUser.imageContentUri
   }
 }

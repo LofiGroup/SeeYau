@@ -3,8 +3,11 @@ package com.lofigroup.seeyau.data.chat.local.models
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.webkit.MimeTypeMap
+import com.lofigroup.seeyau.domain.chat.models.MediaData
 import com.lofigroup.seeyau.domain.chat.models.MessageType
+import com.lofigroup.seeyau.domain.chat.models.PreviewData
 import timber.log.Timber
 
 enum class MessageTypeEntity {
@@ -22,67 +25,61 @@ fun toMessageType(type: String): MessageTypeEntity {
   }
 }
 
-fun MessageTypeEntity.toMessageType(extra: String?, context: Context): MessageType {
+fun MessageTypeEntity.toMessageType(extra: String?): MessageType {
   return when (this) {
     MessageTypeEntity.PLAIN -> MessageType.Plain
     MessageTypeEntity.CONTACT -> MessageType.Contact()
-    MessageTypeEntity.VIDEO, MessageTypeEntity.AUDIO, MessageTypeEntity.IMAGE -> {
-      val uri = extractMediaUri(extra)
+
+    else -> {
+      if (extra == null) return MessageType.Plain
+
       when (this) {
-        MessageTypeEntity.VIDEO -> resolveVideoType(rawUri = uri, context = context)
-        MessageTypeEntity.AUDIO -> MessageType.Audio(
-          uri = uri,
-          duration = getAudioFileDuration(uri, context)
-        )
-        else -> MessageType.Image(uri = uri,)
+        MessageTypeEntity.VIDEO -> {
+          val videoExtra = VideoExtra.adapter.fromJson(extra)!!
+          videoExtra.toVideoType()
+        }
+        MessageTypeEntity.IMAGE -> {
+          val imageExtra = ImageExtra.adapter.fromJson(extra)!!
+          imageExtra.toImageType()
+        }
+        MessageTypeEntity.AUDIO -> {
+          val audioExtra = AudioExtra.adapter.fromJson(extra)!!
+          audioExtra.toAudioType()
+        }
+
+        else -> MessageType.Plain
       }
     }
   }
 }
 
-fun resolveVideoType(rawUri: String, context: Context): MessageType.Video {
-  val mmr = MediaMetadataRetriever()
-  val uri = Uri.parse(rawUri)
+fun AudioExtra.toAudioType() = MessageType.Audio(
+  mediaData = fileInfo.toMediaData(),
+  duration = duration,
+)
 
-  if (uri.scheme == "content") mmr.setDataSource(context, uri)
-  else mmr.setDataSource(rawUri)
+fun VideoExtra.toVideoType() = MessageType.Video(
+  mediaData = fileInfo.toMediaData(),
+  duration = duration,
+  previewData = preview.toPreviewData()
+)
 
-  val width = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 1
-  val height = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 1
-  val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
+fun ImageExtra.toImageType() = MessageType.Image(
+  mediaData = fileInfo.toMediaData(),
+  previewData = preview.toPreviewData()
+)
 
-  mmr.release()
+fun FileInfo.toMediaData() = MediaData(
+  uri = uri,
+  fileSize = fileSize,
+  isSavedLocally = !uri.startsWith("http")
+)
 
-  return MessageType.Video(
-    uri = rawUri,
-    width = width,
-    height = height,
-    duration = duration
-  )
-}
-
-fun extractMediaUri(extra: String?): String {
-  return extra?.let { MediaExtra.adapter.fromJson(it)?.uri } ?: ""
-}
-
-fun getAudioFileDuration(rawUri: String, context: Context): Long {
-  if (rawUri.isBlank()) return 0L
-
-  return try {
-    val mmr = MediaMetadataRetriever()
-
-    val uri = Uri.parse(rawUri)
-    if (uri.scheme == "content") mmr.setDataSource(context, uri)
-    else mmr.setDataSource(rawUri)
-
-    val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) ?: "0"
-
-    mmr.release()
-    duration.toLong()
-  } catch (e: Exception) {
-    0L
-  }
-}
+fun ThumbnailPreview.toPreviewData() = PreviewData(
+  previewBase64 = base64,
+  height = height,
+  width = width
+)
 
 fun resolveMessageType(uri: String?, context: Context): MessageTypeEntity {
   if (uri == null) return MessageTypeEntity.PLAIN

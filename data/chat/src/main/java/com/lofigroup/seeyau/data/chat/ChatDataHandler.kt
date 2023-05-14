@@ -85,7 +85,7 @@ class ChatDataHandler @Inject constructor(
     val id = (chatDao.getLastLocalMessageId() ?: (MessageEntity.LOCAL_MESSAGES_ID_OFFSET - 1)) + 1
 
     val messageType = resolveMessageType(request.mediaUri, context)
-    val messageEntity = request.toLocalMessage(id = id, type = messageType)
+    val messageEntity = request.toLocalMessage(id = id, type = messageType, context)
     insertMessage(messageEntity)
 
     return messageEntity.toSendMessageDto()

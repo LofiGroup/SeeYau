@@ -23,15 +23,14 @@ import com.lofigroup.seeyau.domain.chat.ChatRepository
 import com.lofigroup.seeyau.domain.chat.models.*
 import com.lofigroup.seeyau.domain.chat.models.events.ChatEvent
 import com.lofigroup.seeyau.domain.profile.model.Like
+import com.sillyapps.core_network.file_downloader.FileDownloader
 import com.sillyapps.core_network.retrofitErrorHandler
 import com.sillyapps.core_network.utils.createMultipartBody
 import com.sillyapps.core_network.utils.safeIOCall
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
@@ -48,7 +47,8 @@ class ChatRepositoryImpl @Inject constructor(
   private val context: Context,
   private val userNotificationChannel: UserNotificationChannel,
   private val chatNotificationBuilder: ChatNotificationBuilder,
-
+  private val scope: CoroutineScope,
+  private val downloader: FileDownloader
 ) : ChatRepository {
 
   override suspend fun pullData() {
@@ -117,7 +117,7 @@ class ChatRepositoryImpl @Inject constructor(
         chatDao.observeChatMessages(chat.id),
         profileDataHandler.observeUserLike(chat.partnerId)
       ) { messages, like ->
-        messages.map { it.toDomainModel(context) }
+        messages.map { it.toDomainModel() }
           .addToOrderedDesc(like?.toChatMessage(chatId)) { it.createdIn }
       }
     }
@@ -152,11 +152,32 @@ class ChatRepositoryImpl @Inject constructor(
     }
   }
 
+  override fun downloadMediaForMessage(messageId: Long) {
+    scope.launch(ioDispatcher) {
+      val message = chatDao.getMessage(messageId) ?: return@launch
+      val extra = message.extra ?: return@launch
+
+      val url = extractMediaUri(extra) ?: return@launch
+
+      Timber.e("Starting media download for message with id: $messageId")
+      val newUri = downloader.downloadToInternalStorage("message_${messageId}", url) ?: return@launch
+
+      val newExtra = updateExtraUri(newUri, extra, message.type) ?: return@launch
+
+      chatDao.updateMessageExtra(
+        MessageExtraUpdate(
+          id = messageId,
+          extra = newExtra
+        )
+      )
+    }
+  }
+
   private fun getLastMessage(lastMessage: MessageEntity?, like: Like?, chatId: Long): ChatMessage? {
     val lastMessageCreatedIn = lastMessage?.createdIn ?: 0L
     val likeCreatedIn = like?.createdIn ?: 0L
 
-    return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel(context)
+    return if (lastMessageCreatedIn >= likeCreatedIn) lastMessage?.toDomainModel()
     else like?.toChatMessage(chatId)
   }
 

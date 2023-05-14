@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 import com.lofigroup.seeyau.data.profile.local.model.UserEntity
 import com.lofigroup.seeyau.domain.chat.models.ChatMessage
 import com.lofigroup.seeyau.domain.chat.models.MessageStatus
-import com.lofigroup.seeyau.domain.chat.models.MessageType
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
@@ -50,27 +49,12 @@ data class MessageEntity(
   }
 }
 
-@JsonClass(generateAdapter = true)
-data class MediaExtra(
-  val uri: String
-) {
-  companion object {
-    val adapter: JsonAdapter<MediaExtra> = Moshi.Builder().build().adapter(MediaExtra::class.java)
-  }
-}
+data class MessageExtraUpdate(
+  val id: Long,
+  val extra: String
+)
 
-@JsonClass(generateAdapter = true)
-data class VideoExtra(
-  val uri: String,
-  @Json(name = "thumbnail_uri")
-  val thumbnailUri: String
-) {
-  companion object {
-    val adapter: JsonAdapter<VideoExtra> = Moshi.Builder().build().adapter(VideoExtra::class.java)
-  }
-}
-
-fun MessageEntity.toDomainModel(context: Context): ChatMessage {
+fun MessageEntity.toDomainModel(): ChatMessage {
   return ChatMessage(
     id = id,
     chatId = chatId,
@@ -78,7 +62,7 @@ fun MessageEntity.toDomainModel(context: Context): ChatMessage {
     author = author,
     createdIn = createdIn,
     status = getStatus(),
-    type = type.toMessageType(extra, context)
+    type = type.toMessageType(extra)
   )
 }
 

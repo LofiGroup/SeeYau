@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.lofigroup.seeyau.common.ui.R
-import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyle
+import com.lofigroup.seeyau.features.chat.ui.composition_locals.ChatMessageStyle
 import com.sillyapps.core.ui.theme.LocalSpacing
 
 @Composable

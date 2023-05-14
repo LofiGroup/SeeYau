@@ -30,9 +30,7 @@ import com.lofigroup.features.navigator_screen.model.UserItemUIModel
 import com.lofigroup.seeyau.common.ui.theme.AppTheme
 import com.lofigroup.seeyau.features.chat.ui.components.ChatMessageItem
 import com.lofigroup.seeyau.features.chat.ui.components.DateHeader
-import com.lofigroup.seeyau.features.chat.ui.providers.ChatMessageStyleProvider
-import com.lofigroup.seeyau.features.chat.ui.providers.LocalChatMessageStyles
-import com.sillyapps.core.ui.theme.LocalExtendedColors
+import com.lofigroup.seeyau.features.chat.ui.composition_locals.LocalChatMessageStyles
 import com.sillyapps.core.ui.theme.LocalSpacing
 import com.sillyapps.core.ui.util.dpToPx
 
@@ -51,39 +49,36 @@ fun UserNewMessages(
     mutableStateOf(-1)
   }
 
-  ChatMessageStyleProvider() {
-    if (selectedUser.messagesIsCollapsed) {
-      Column(
-        modifier = modifier
-          .clickable { onClick(selectedUser.id) }
-      ) {
-        val lastItem = selectedUser.newMessages.getOrNull(lastItemPos)
-        if (isOverflowed && lastItem != null) {
-          DateHeader(date = lastItem.message.dateTime.date)
-          OnOverflowLabel(messagesCount = selectedUser.newMessages.lastIndex - lastItemPos)
-        }
+  if (selectedUser.messagesIsCollapsed) {
+    Column(
+      modifier = modifier
+        .clickable { onClick(selectedUser.id) }
+    ) {
+      val lastItem = selectedUser.newMessages.getOrNull(lastItemPos)
+      if (isOverflowed && lastItem != null) {
+        DateHeader(date = lastItem.message.dateTime.date)
+        OnOverflowLabel(messagesCount = selectedUser.newMessages.lastIndex - lastItemPos)
+      }
 
-        ConstrainedColumn(
-          maxHeight = 200.dp,
-          setOverflowed = setIsOverflowed,
-          setLastItemPos = setLastItemPos
-        ) {
-          selectedUser.newMessagesMapped.forEach { (date, messages) ->
-            for (message in messages)
-              UserMessage(message = message)
-            DateHeader(date = date)
-          }
+      ConstrainedColumn(
+        maxHeight = 200.dp,
+        setOverflowed = setIsOverflowed,
+        setLastItemPos = setLastItemPos
+      ) {
+        selectedUser.newMessagesMapped.forEach { (date, messages) ->
+          for (message in messages)
+            UserMessage(message = message)
+          DateHeader(date = date)
         }
       }
     }
-    else if (selectedUser.hasNewMessages) {
-      ControlItem(
-        resId = R.drawable.ic_stm_1_icon,
-        onClick = showChat,
-        modifier = modifier.padding(start = LocalSpacing.current.medium)
-      )
-    }
-
+  }
+  else if (selectedUser.hasNewMessages) {
+    ControlItem(
+      resId = R.drawable.ic_stm_1_icon,
+      onClick = showChat,
+      modifier = modifier.padding(start = LocalSpacing.current.medium)
+    )
   }
 }
 
